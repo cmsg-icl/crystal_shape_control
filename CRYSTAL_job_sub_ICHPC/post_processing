@@ -1,0 +1,141 @@
+#!/bin/bash
+
+# Restore variables - kept same as job submission script
+SETFILE=`echo ${0%/*}`/settings
+JOBTYPE=$1
+JOBNAME=`echo $2`
+JOBID=${PBS_JOBID%.*}
+OUTDIR=`pwd`
+OUTPUT=${JOBNAME}.out
+JOBTMPDIR=`echo $(grep -w -A 1 'JOB_TMPDIR' ${SETFILE} | tail -1)`
+JOBTMPDIR=${JOBTMPDIR}/${JOBNAME}_${JOBID}
+
+cd ${JOBTMPDIR}
+
+echo -n "end_date " >> ${OUTDIR}/${OUTPUT}
+date >> ${OUTDIR}/${OUTPUT}
+
+#tag_start_for_checkfile
+
+## Cat error report to outputs
+
+ls ERROR* > /dev/null 2>&1
+if [[ $? == 0 ]]; then
+    head ERROR*
+    head ERROR* >> ${OUTDIR}/${OUTPUT}
+fi
+
+echo " "                                         >> ${OUTDIR}/${OUTPUT}
+echo "TEMPORARY          SAVED (in ${OUTDIR})"   >> ${OUTDIR}/${OUTPUT}
+
+## Most important one - fort.9
+
+if [[ -e ${JOBTMPDIR}/fort.9 && ! -z ${JOBTMPDIR}/fort.9 ]]; then
+    MASTER_WITH_PROC_0="YES"
+else
+    echo 'binary wf (fort.9) is not written on this node' >> ${OUTDIR}/${OUTPUT}
+fi
+
+## Read Crystal list
+
+if [[ ${JOBTYPE} == 'crys' ]]; then
+    LINE_POSTCRYS=`grep -nw 'POST_CRYS' ${SETFILE}`
+    LINE_POSTCRYS=`echo "scale=0;${LINE_POSTCRYS%%:*}+4" | bc`
+
+    SAVED_NAME=`awk 'NR=="'${LINE_POSTCRYS}'"{printf("%s", $1)}' ${SETFILE} | sed 's/.\{7\}//'`
+    TMP_NAME=`awk 'NR=="'${LINE_POSTCRYS}'"{printf("%s", $2)}' ${SETFILE}`
+
+    while [[ ! -z ${TMP_NAME} ]]; do
+        if [[ -e ${JOBTMPDIR}/${TMP_NAME} && ! -z ${JOBTMPDIR}/${TMP_NAME} ]]; then
+            cp ${JOBTMPDIR}/${TMP_NAME} ${OUTDIR}/${JOBNAME}${SAVED_NAME}
+            echo ${TMP_NAME} ${JOBNAME}${SAVED_NAME} | awk '{printf("%-18s %-18s"),$1,$2}' >> ${OUTDIR}/${OUTPUT} 2>&1
+            ls -l ${OUTDIR}/${JOBNAME}${SAVED_NAME} | awk '{printf("%-8s %s %s %s\n"),$5,$6,$7,$8}'>> ${OUTDIR}/${OUTPUT} 2>&1
+            echo "File saved: ${JOBTMPDIR}/${TMP_NAME} as ${OUTDIR}/${JOBNAME}${SAVED_NAME}"
+
+### Optimisation and scanmode
+
+        elif [[ ${TMP_NAME: -1} == '*' ]]; then
+            ls ${JOBTMPDIR}/${TMP_NAME} > /dev/null 2>&1
+            if [[ $? == 0 ]]; then
+                mkdir ${OUTDIR}/${JOBNAME}${SAVED_NAME}
+                cp ${JOBTMPDIR}/${TMP_NAME} ${OUTDIR}/${JOBNAME}${SAVED_NAME}
+                echo ${TMP_NAME} ${JOBNAME}${SAVED_NAME} | awk '{printf("%-18s %-18s"),$1,$2}' >> ${OUTDIR}/${OUTPUT} 2>&1
+                echo "Files saved: ${JOBTMPDIR}/${TMP_NAME} as ${OUTDIR}/${JOBNAME}${SAVED_NAME}"
+            fi
+        fi
+        LINE_POSTCRYS=`echo "scale=0;${LINE_POSTCRYS}+1" | bc`
+        SAVED_NAME=`awk 'NR=="'${LINE_POSTCRYS}'"{printf("%s", $1)}' ${SETFILE} | sed 's/.\{7\}//'`
+        TMP_NAME=`awk 'NR=="'${LINE_POSTCRYS}'"{printf("%s", $2)}' ${SETFILE}`
+    done
+fi
+
+## Read Properties list
+
+if [[ ${JOBTYPE} == 'prop' ]]; then
+    LINE_POSTPROP=`grep -nw 'POST_PROP' ${SETFILE}`
+    LINE_POSTPROP=`echo "scale=0;${LINE_POSTPROP%%:*}+4" | bc`
+
+    SAVED_NAME=`awk 'NR=="'${LINE_POSTPROP}'"{printf("%s", $1)}' ${SETFILE} | sed 's/.\{7\}//'`
+    TMP_NAME=`awk 'NR=="'${LINE_POSTPROP}'"{printf("%s", $2)}' ${SETFILE}`
+
+    while [[ ! -z ${TMP_NAME} ]]; do
+        if [[ -e ${JOBTMPDIR}/${TMP_NAME} && ! -z ${JOBTMPDIR}/${TMP_NAME} ]]; then
+            cp ${JOBTMPDIR}/${TMP_NAME} ${OUTDIR}/${JOBNAME}${SAVED_NAME}
+            echo ${TMP_NAME} ${JOBNAME}${SAVED_NAME} | awk '{printf("%-18s %-18s"),$1,$2}' >> ${OUTDIR}/${OUTPUT} 2>&1
+            ls -l ${OUTDIR}/${JOBNAME}${SAVED_NAME} | awk '{printf("%-8s %s %s %s\n"),$5,$6,$7,$8}'>> ${OUTDIR}/${OUTPUT} 2>&1
+            echo "File saved: ${JOBTMPDIR}/${TMP_NAME} as ${OUTDIR}/${JOBNAME}${SAVED_NAME}"
+        fi
+        LINE_POSTPROP=`echo "scale=0;${LINE_POSTPROP}+1" | bc`
+        SAVED_NAME=`awk 'NR=="'${LINE_POSTPROP}'"{printf("%s", $1)}' ${SETFILE} | sed 's/.\{7\}//'`
+        TMP_NAME=`awk 'NR=="'${LINE_POSTPROP}'"{printf("%s", $2)}' ${SETFILE}`
+    done
+fi
+
+## Calculation summary
+
+echo " "                 >> ${OUTDIR}/${OUTPUT}
+echo -n "Disk usage:"    >> ${OUTDIR}/${OUTPUT} 2>&1
+ls -l  ${JOBTMPDIR}      >> ${OUTDIR}/${OUTPUT} 2>&1
+echo "<du -m>"           >> ${OUTDIR}/${OUTPUT}
+du -m  ${JOBTMPDIR}      >> ${OUTDIR}/${OUTPUT} 2>&1
+echo "</du -m>"          >> ${OUTDIR}/${OUTPUT}
+df .   ${JOBTMPDIR}      >> ${OUTDIR}/${OUTPUT} 2>&1
+
+#tag_end_for_checkfile
+
+if [[ ! -z ${MASTER_WITH_PROC_0} ]]; then
+    touch ${JOBTMPDIR}/checkfile0
+else
+    ### start checkfile ###
+    cat << EOF > ${JOBTMPDIR}/checkfile0
+    #!/bin/bash
+    JOBNAME=${JOBNAME}
+    OUTDIR=${OUTDIR}
+    OUTPUT=${OUTPUT}
+    JOBTMPDIR=${JOBTMPDIR}
+    cd  ${JOBTMPDIR}
+EOF
+    sed '1,/^#tag_s/d;/^#tag_e/,$d'  ${JOBTMPDIR}/${SCRIPT} >> ${JOBTMPDIR}/checkfile0
+    chmod 755 ${JOBTMPDIR}/checkfile0
+    hostname
+    echo '<checkfile0>'
+    cat ${JOBTMPDIR}/checkfile0
+    echo '</checkfile0>'
+    ### end checkfile ###
+fi
+
+if [[ ! -z ${PBS_NODEFILE} ]]; then
+    for PC in ${PCLIST[@]}; do
+        echo "#########"                 >> ${OUTDIR}/${OUTPUT}
+        echo "node: "${PC}               >> ${OUTDIR}/${OUTPUT}
+        echo "scp ${JOBTMPDIR}/checkfile0   ${PC}:${JOBTMPDIR}/checkfile"
+        scp ${JOBTMPDIR}/checkfile0         ${PC}:${JOBTMPDIR}/checkfile
+        ssh ${PC} "                         ${JOBTMPDIR}/checkfile"
+    done
+fi
+
+# Remove temporary directory
+
+cd ${OUTDIR}
+rm -fr ${JOBTMPDIR}
+exit

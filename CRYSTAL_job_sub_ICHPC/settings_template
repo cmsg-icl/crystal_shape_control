@@ -1,0 +1,112 @@
+# Job submission scripts
+SUBMISSION_EXT
+
+NCPU_PER_NODE
+
+MEM_PER_NODE
+
+BUDGET_CODE
+
+
+# Job execution scripts. 
+# NB: Should be kept at the same directory as 'settings' and 'gen_sub'!
+CRYSTAL_SCRIPT
+
+PROPERTIES_SCRIPT
+
+POST_PROCESSING_SCRIPT
+
+JOB_TMPDIR
+
+
+# Executables
+EXEDIR
+
+EXE_PCRYSTAL
+
+EXE_MPP
+
+EXE_PPROPERTIES
+
+EXE_CRYSTAL
+
+EXE_PROPERTIES
+
+# file formats table
+PRE_CALC
+-------------------------------------------------------------------------------------
+SAVED                TEMPORARY        DEFINITION
+-------------------------------------------------------------------------------------
+jobname.d12          INPUT            crystal input file
+jobname.d3           INPUT            properties input file
+jobname.gui          fort.34          geometry input
+jobname.POINTCHG     POINTCHG.INP     Dummy atoms with 0 mass and given charge
+----------------------------- RESTART FILES -----------------------------------------
+pre_job.f9           fort.20          last step wavefunction - input
+pre_job.OPTINFO      OPTINFO.DAT      optimisation restart data
+pre_job.FREQINFO     FREQINFO.DAT     frequency restart data
+pre_job.BORN         BORN.DAT         Born tensor
+pre_job.TENS_RAMAN   TENS_RAMAN.DAT   Raman tensor
+pre_job.f13          fort.13          binary reducible density matrix       
+pre_job.f28          fort.28          binary IR intensity restart data       
+pre_job.f81          fort.81          Wannier funcion restart data
+pre_job.EOSINFO      EOSINFO.DAT      QHA and equation of states information
+pre_job.f32          fort.32          CPHF/KS restart data
+-------------------------------------------------------------------------------------
+
+POST_CRYS
+-------------------------------------------------------------------------------------
+SAVED                TEMPORARY        DEFINITION
+-------------------------------------------------------------------------------------
+jobname.ERROR        fort.87          error report
+jobname.gui          fort.34          geometry, periodic
+jobname.xyz          fort.33          geometry, atom coordinates only
+jobname.cif          GEOMETRY.CIF     geometry, cif format (CIFPRT/CIFPRTSYM)
+jobname.STRUC        STRUC.INCOOR     geometry, STRUC.INCOOR format
+jobname.FINDSYM      FINDSYM.DAT      geometry, for FINDSYM
+jobname.GAUSSIAN     GAUSSIAN.DAT     geometry, for Gaussian98/03
+jobname.f9           fort.9           last step wavefunction - output
+jobname.f98          fort.98          formatted wavefunction
+jobname.PPAN         PPAN.DAT         mulliken population
+jobname.SCFLOG       SCFOUT.LOG       SCF output per step
+jobname.OPTINFO      OPTINFO.DAT      optimisation restart data
+jobname.HESSOPT      HESSOPT.DAT      Hessian matrix per optimisation step
+jobname.optstory/    opt*             optimised geometry per step 
+jobname.FREQINFO     FREQINFO.DAT     frequency restart data
+jobname.f13          fort.13          binary reducible density matrix       
+jobname.f28          fort.28          binary IR intensity restart data       
+jobname.f81          fort.80          Wannier funcion restart data
+jobname.scanmode/    SCAN*            Displaced .gui along scanned mode
+jobname.f25          fort.25          Phonon bands Crgra2006 format
+jobname.PHONBANDS    PHONBANDS.DAT    Phonon bands xmgrace format
+jobname.IRDIEL       IRDIEL.DAT       IR dielectric function
+jobname.IRREFR       IRREFR.DAT       IR refractive index
+jobname.IRSPEC       IRSPEC.DAT       IR absorbance and reflectance
+jobname.BORN         BORN.DAT         Born tensor
+jobname.RAMSPEC      RAMSPEC.DAT      Raman spectra
+jobname.TENS_RAMAN   TENS_RAMAN.DAT   Raman tensor
+jobname.EOSINFO      EOSINFO.DAT      QHA and equation of states information
+jobname.f32          fort.31          CPHF/KS restart data
+-------------------------------------------------------------------------------------
+                         
+POST_PROP
+-------------------------------------------------------------------------------------
+SAVED                TEMPORARY        DEFINITION
+-------------------------------------------------------------------------------------
+jobname.ERROR        fort.87          error report
+jobname.GRED         GRED.DAT         real space information for cryapi_inp
+jobname.KRED         KRED.DAT         k spack information for cryapi_inp
+jobname.DIEL         DIEL.DAT         dielectric constants
+jobname.f25          fort.25          all Crgra2006 format data 
+jobname.BAND         BAND.DAT         band xmgrace format 
+jobname.DOSS         BAND.DOSS        dos xmgrace format
+jobname.prop3d       fort.31          all 3D grid data
+jobname_CHG.CUBE     DENS_CUBE.DAT    3D charge density Gaussian CUBE format
+jobname.RHOLINE      RHOLINE.DAT      1D charge density and gradient 
+jobname_SPIN.CUBE    SPIN_CUBE.DAT    3D spin density CUBE format
+jobname_POT.CUBE     POT_CUBE.DAT     3D electrostatic potential CUBE format  
+jobname.POTC         POTC.DAT         electrostatic potential and derivatives
+jobname.DIEL         DIEL.DAT         dielectric constant   
+-------------------------------------------------------------------------------------
+
+JOB_SUBMISSION_TEMPLATE
