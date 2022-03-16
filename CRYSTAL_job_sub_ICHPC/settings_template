@@ -7,6 +7,8 @@ MEM_PER_NODE
 
 BUDGET_CODE
 
+TIME_OUT
+
 
 # Job execution scripts. 
 # NB: Should be kept at the same directory as 'settings' and 'gen_sub'!

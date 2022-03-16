@@ -30,7 +30,7 @@ echo "TEMPORARY          SAVED (in ${OUTDIR})"   >> ${OUTDIR}/${OUTPUT}
 
 ## Most important one - fort.9
 
-if [[ -e ${JOBTMPDIR}/fort.9 && ! -z ${JOBTMPDIR}/fort.9 ]]; then
+if [[ -e ${JOBTMPDIR}/fort.9 && -s ${JOBTMPDIR}/fort.9 ]]; then
     MASTER_WITH_PROC_0="YES"
 else
     echo 'binary wf (fort.9) is not written on this node' >> ${OUTDIR}/${OUTPUT}
@@ -46,7 +46,7 @@ if [[ ${JOBTYPE} == 'crys' ]]; then
     TMP_NAME=`awk 'NR=="'${LINE_POSTCRYS}'"{printf("%s", $2)}' ${SETFILE}`
 
     while [[ ! -z ${TMP_NAME} ]]; do
-        if [[ -e ${JOBTMPDIR}/${TMP_NAME} && ! -z ${JOBTMPDIR}/${TMP_NAME} ]]; then
+        if [[ -e ${JOBTMPDIR}/${TMP_NAME} && -s ${JOBTMPDIR}/${TMP_NAME} ]]; then
             cp ${JOBTMPDIR}/${TMP_NAME} ${OUTDIR}/${JOBNAME}${SAVED_NAME}
             echo ${TMP_NAME} ${JOBNAME}${SAVED_NAME} | awk '{printf("%-18s %-18s"),$1,$2}' >> ${OUTDIR}/${OUTPUT} 2>&1
             ls -l ${OUTDIR}/${JOBNAME}${SAVED_NAME} | awk '{printf("%-8s %s %s %s\n"),$5,$6,$7,$8}'>> ${OUTDIR}/${OUTPUT} 2>&1
@@ -79,7 +79,7 @@ if [[ ${JOBTYPE} == 'prop' ]]; then
     TMP_NAME=`awk 'NR=="'${LINE_POSTPROP}'"{printf("%s", $2)}' ${SETFILE}`
 
     while [[ ! -z ${TMP_NAME} ]]; do
-        if [[ -e ${JOBTMPDIR}/${TMP_NAME} && ! -z ${JOBTMPDIR}/${TMP_NAME} ]]; then
+        if [[ -e ${JOBTMPDIR}/${TMP_NAME} && -s ${JOBTMPDIR}/${TMP_NAME} ]]; then
             cp ${JOBTMPDIR}/${TMP_NAME} ${OUTDIR}/${JOBNAME}${SAVED_NAME}
             echo ${TMP_NAME} ${JOBNAME}${SAVED_NAME} | awk '{printf("%-18s %-18s"),$1,$2}' >> ${OUTDIR}/${OUTPUT} 2>&1
             ls -l ${OUTDIR}/${JOBNAME}${SAVED_NAME} | awk '{printf("%-8s %s %s %s\n"),$5,$6,$7,$8}'>> ${OUTDIR}/${OUTPUT} 2>&1

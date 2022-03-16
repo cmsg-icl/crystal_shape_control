@@ -223,7 +223,7 @@ EOF
         exit
     fi
 ### wrong extension
-    if [[ ! -e ${jobfile} || -z ${jobfile} ]]; then
+    if [[ ! -e ${jobfile} || ! -s ${jobfile} ]]; then
         cat << EOF
     ERROR:
         input file extension is not consistent with the jobtype specified. 
@@ -231,6 +231,18 @@ EOF
 
         .d12 ---> CRYSTAL calculations
         .d3  ---> PROPERTIES calculations
+
+EOF
+        exit
+    fi
+### output exists
+    if [[ -e ${INPDIR}/${JOBNAME}.out && -s ${INPDIR}/${JOBNAME}.out ]]; then
+        cat << EOF
+    ERROR:
+        output file ${JOBNAME}.out already exists in ${INPDIR}/. 
+        Please consider to move it to a safe place. 
+
+        Exit without performing calculations. 
 
 EOF
         exit
@@ -266,6 +278,7 @@ EOF
 }
 
 # get submission file template and necessary information
+
 function get_subtemplate_ {
     ## template file
     BG_TEMP=`grep -nw 'JOB_SUBMISSION_TEMPLATE' ${SETFILE}`
@@ -330,7 +343,8 @@ EOF
     thr=${WT%:*}
     tmn=${WT#*:}
     ## set timeout=walltime-5min, i.e., 5 mins for post processing. 
-    TOUT=`echo "scale=0;${thr}*60+${tmn}-5" | bc`
+    TOUT=`echo $(grep -w -A 1 'TIME_OUT' ${SETFILE} | tail -1)`
+    TOUT=`echo "scale=0;${thr}*60+${tmn}-${TOUT}" | bc`
 	TOUT=`echo ${TOUT}m`
 
     sed -i "s|\${V_JOBNAME}|${JOBNAME}|g" ${JOBNAME}.${SUB_EXT}
@@ -387,7 +401,7 @@ generate_subfile_
 
 cat << EOF
 
- file ${JOBNAMEB}.${SUB_EXT} has been generated.
+ file ${JOBNAME}.${SUB_EXT} has been generated.
 
 EOF
 exit

@@ -25,7 +25,7 @@ fi
 JOBNAME=`echo $1`
 OUTPUT=${JOBNAME}.out
 
-if [[ -e ${OUTPUT} && ! -z ${OUTPUT} ]]; then
+if [[ -e ${OUTPUT} && -s ${OUTPUT} ]]; then
     echo "Output exists: ${OUTPUT}"
     echo "Job terminated without calculation."
     exit
@@ -139,14 +139,14 @@ TMP_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $2)}' ${SETFILE}`
 
 ### d12 and d3
 
-if [[ -e ${INPDIR}/${JOBNAME}.d3 && ! -z ${INPDIR}/${JOBNAME}.d3 ]]; then
+if [[ -e ${INPDIR}/${JOBNAME}.d3 && -s ${INPDIR}/${JOBNAME}.d3 ]]; then
     echo "Error: Properties calculation input identified. Remove it before continuing."
     echo "Exit without calculation."
     exit
 fi
 
 while [[ ${TMP_NAME} != 'RESTART' ]]; do
-    if [[ -e ${INPDIR}/${JOBNAME}${SAVED_NAME} && ! -z ${INPDIR}/${JOBNAME}${SAVED_NAME} ]]; then
+    if [[ -e ${INPDIR}/${JOBNAME}${SAVED_NAME} && -s ${INPDIR}/${JOBNAME}${SAVED_NAME} ]]; then
 
 ### Copy files to the main temporary directory
 
@@ -183,7 +183,7 @@ if [[ $# > 1 ]]; then
     SAVED_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $1)}' ${SETFILE} | sed 's/.\{7\}//'`
     TMP_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $2)}' ${SETFILE}`
     while [[ ! -z ${TMP_NAME} ]]; do
-        if [[ -e ${INPDIR}/${PRE_JOB}${SAVED_NAME} && ! -z ${INPDIR}/${PRE_JOB}${SAVED_NAME} ]]; then
+        if [[ -e ${INPDIR}/${PRE_JOB}${SAVED_NAME} && -s ${INPDIR}/${PRE_JOB}${SAVED_NAME} ]]; then
 
 ### Copy files to the main temporary directory
 

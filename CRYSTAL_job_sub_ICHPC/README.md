@@ -16,16 +16,31 @@ Crystal job submitter for [Imperial Cluster](https://www.imperial.ac.uk/admin-se
 3. By default, CRYSTAL17v2.2gnu will be set as the executable.  
 
 ## Usage & command list
+
+Printed out information can be found in '.out' file and '.o\<jobid\>' file. 
+
+If a '.out' file with the same name as the job to be submitted exists in the same directory, that job won't be executed before output is either transferred to another folder or removed. 
+
+If the job is terminated due to exceeding wall time, temporary files will be saved in the output directory. The temporary directory will be removed.
+
+If the job is terminated due to improper settings of calculation parameters, temporary files will be saved in the output directory. The temporary directory will be removed.
+
+If the job is killed before 'timeout', temporary will be saved in the temporary directory with temporary names. The temporary directory will not be removed. Refer to '.out' file or '.o\<jobid\>' file for the path. 
+
+By default, the temporary directory is set as `/rds/general/ephemeral/user/${USER}/ephemeral`, where the contents will be automatically removed after 30 days. 
+
+Here are user defined commands: 
+
 1. `Pcry` - executing parallel crystal calculations (Pcrystal and MPP)  
 
 ``` bash
 Pcry ND WT jobname [refname]
 ```
 
-`ND` -       int, number of nodes  
-`WT` -       str, walltime, hh:mm format  
-`jobname` -  str, name of input .d12 file  
-`refname` -  str, optional, name of the previous job  
+`ND`      - int, number of nodes  
+`WT`      - str, walltime, hh:mm format  
+`jobname` - str, name of input .d12 file  
+`refname` - str, optional, name of the previous job  
 
 Equivalent examples:
 
@@ -47,10 +62,10 @@ Submit files:
 Pprop ND WT jobname SCFname
 ``` 
 
-`ND` -       int, number of nodes
-`WT` -       str, walltime, hh:mm format
-`jobname` -  str, name of input .d3 file
-`SCFname` -  str, name of the previous 'crystal' job
+`ND`      - int, number of nodes  
+`WT`      - str, walltime, hh:mm format  
+`jobname` - str, name of input .d3 file  
+`SCFname` - str, name of the previous 'crystal' job  
 
 Equivalent examples:
 
@@ -71,8 +86,8 @@ Then submit files.
 `settings-template` - empty `settings` file, will be used to cover `settings` file when installing/re-installing the job submitter.  
 `gen_sub` - generate submission file.  
 `runcryP` - execute 'CRYSTAL' type calculations in parallel (P and MPP).  
-`runpropP` - execute 'PROPERTIES' type calculations in parallel.
-`post_processing` - Copy & save files from temporary directory to the output directory. 
+`runpropP` - execute 'PROPERTIES' type calculations in parallel.  
+`post_processing` - Copy & save files from temporary directory to the output directory.  
 
 ## Keyword list
 Keywords used for the script `settings` are listed in the table below. Any change in parameters should be made in that script.
@@ -83,6 +98,7 @@ Keywords used for the script `settings` are listed in the table below. Any chang
 | NCPU_PER_NODE           | 48              | Number of processors per node |
 | MEM_PER_NODE            | 50              | Allocated memory per node |
 | BUDGET_CODE             | -               | Budget code of a research project |
+| TIME_OUT                | 3               | Unit: min. Time spared for post processing |
 | CRYSTAL_SCRIPT          | runcryP         | Script for crystal type calculations |
 | PROPERTIES_SCRIPT       | runpropP        | Script for properties type calculations |
 | POST_PROCESSING_SCRIPT  | post_processing | Post processing script |

@@ -18,7 +18,7 @@ function welcome_msg {
 CRYSTAL17 job submitter for Imperial HPC - Setting up
 
 Job submitter installed at: `date`
-Job submitter edition:      v0.1
+Job submitter edition:      v0.2
 Supported job scheduler:    PBS
 
 By Spica-Vir, Mar. 16-22, ICL, spica.h.zhou@gmail.com
@@ -82,7 +82,7 @@ EOF
         EXEDIR=/rds/general/user/gmallia/home/CRYSTAL17_cx1/v2.2gnu/bin/Linux-mpigfortran_MPP/Xeon___mpich__3.2.1
     fi
 
-    if [[ -z ${EXEDIR} || ! -e ${EXEDIR} ]]; then
+    if [[ ! -s ${EXEDIR} || ! -e ${EXEDIR} ]]; then
         cat << EOF
 --------------------------------------------------------------------------------
     Error: Directory does not exist. Exiting current job. 
@@ -117,6 +117,7 @@ function set_settings {
     sed -i "/SUBMISSION_EXT/a .qsub" ${SETFILE}
     sed -i "/NCPU_PER_NODE/a 48" ${SETFILE}
     sed -i "/MEM_PER_NODE/a 50" ${SETFILE}
+    sed -i "/TIME_OUT/a 3" ${SETFILE}
     sed -i "/CRYSTAL_SCRIPT/a runcryP" ${SETFILE}
     sed -i "/PROPERTIES_SCRIPT/a runpropP" ${SETFILE}
     sed -i "/POST_PROCESSING_SCRIPT/a post_processing" ${SETFILE}
@@ -202,7 +203,7 @@ function set_commands {
 ================================================================================
     User defined commands set, including: 
 
-    Pcry - executing parallel cyrstal calculations (Pcrystal and MPP)
+    Pcry - executing parallel crystal calculations (Pcrystal and MPP)
 
         Pcry ND WT jobname [refname]
 
