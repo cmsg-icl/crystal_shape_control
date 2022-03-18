@@ -6,8 +6,10 @@ SETFILE=`echo ${0%/*}`/settings
 
 # Check temporary directory
 
-JOBTMPDIR=`echo $(grep -w -A 1 'JOB_TMPDIR' ${SETFILE} | tail -1)`
-JOBID=${PBS_JOBID%.*}
+JOBNAME=`echo $1`
+JOBTMPDIR=`pwd`
+JOBID=`sacct -u ${USER} -n -X --format jobid --name ${JOBNAME}.slurm --state r`
+JOBID=`echo ${JOBID} | rev | cut -d' ' -f1 | rev`
 
 # No/too many input parameter
 
@@ -22,7 +24,6 @@ fi
 
 # Input and output file directories
 
-JOBNAME=`echo $1`
 OUTPUT=${JOBNAME}.out
 
 if [[ -e ${OUTPUT} && -s ${OUTPUT} ]]; then
@@ -34,24 +35,24 @@ fi
 echo "printed output filename ${OUTPUT}"
 
 # Set executing command
-
-XDIR=`echo $(grep -w -A 1 'EXEDIR' ${SETFILE} | tail -1)`
+# XDIR=`echo $(grep -w -A 1 'EXEDIR' ${SETFILE} | tail -1)`
 ## Pcrysal or MPPcrystal
 INPDIR=`pwd`
 more +2 ${INPDIR}/${JOBNAME}.d12 | grep 'MPP' > /dev/null 2>&1
 if [[ $? == 0 ]]; then
-    CRYSTAL_TYPE=`echo $(grep -w -A 1 'EXE_MPP' ${SETFILE} | tail -1)`
+    CRYSTAL_TYPE='MPPcrystal'
 else
-    CRYSTAL_TYPE=`echo $(grep -w -A 1 'EXE_PCRYSTAL' ${SETFILE} | tail -1)`
+    CRYSTAL_TYPE='Pcrystal'
 fi
-MPIRUN=mpiexec
-MPIRUN_OPTIONS=""
-echo ${MPIRUN} ${MPIRUN_OPTIONS}
-CRYCOMMAND="${MPIRUN} ${MPIRUN_OPTIONS} ${XDIR}/${CRYSTAL_TYPE}"
+MPIRUN='srun'
+MPIRUN_OPTIONS='--hint=nomultithread --distribution=block:block'
+echo "${MPIRUN} ${MPIRUN_OPTIONS}"
+# CRYCOMMAND="${MPIRUN} ${MPIRUN_OPTIONS} ${XDIR}/${CRYSTAL_TYPE}"
+CRYCOMMAND="${MPIRUN} ${MPIRUN_OPTIONS} ${CRYSTAL_TYPE}"
 
 # Temporary directory
 
-JOBTMPDIR=${JOBTMPDIR}/${JOBNAME}_${JOBID}
+JOBTMPDIR=${JOBTMPDIR}/tmp_${JOBNAME}_${JOBID}
 mkdir -p ${JOBTMPDIR}
 
 echo "creating temporary directory ${JOBTMPDIR}"
@@ -77,23 +78,6 @@ exit
 # Copied content: Below are copied in temporary directory
 
 #tag_copy
-# Synchronise nodes
-
-if [[ ! -z ${PBS_NODEFILE} ]]; then
-    if [[ -e ${PBS_NODEFILE} ]]; then
-        echo '${PBS_NODEFILE}' found: ${PBS_NODEFILE}
-        cat ${PBS_NODEFILE}
-        PCLIST=`awk '{if ($I != old){printf("%s ",$I);old=$I}}' ${PBS_NODEFILE}`
-    else
-        echo '${PBS_NODEFILE} not found'
-        exit
-    fi
-
-    for PC in ${PCLIST[@]}; do
-        ssh ${PC} "if [[ ! -d ${JOBTMPDIR} ]]; then mkdir -p ${JOBTMPDIR} ;fi; echo 'temporary directory on '${PC}"
-	done
-fi
-
 # Generate basic information of output file
 
 OUTDIR=`pwd`
@@ -108,19 +92,16 @@ user:                `whoami`
 input:               ${OUTDIR}/${JOBNAME}.d12
 output:              ${OUTDIR}/${OUTPUT}
 executable script:   $0
-executable dir:      ${XDIR}
-executables:     
-`ls -l ${XDIR} | awk '/-rwxr-xr-x/ {printf "                    ";print}'` 
-
+executable:          ${CRYSTAL_TYPE}
 Command:             ${CRYCOMMAND}
-PBS JobID:           ${JOBID}
+Slurm JobID:         ${JOBID}
 temporary directory: ${JOBTMPDIR}      
 EOF
 
-if [[ ! -z ${PBS_JOBID} ]]; then
-    echo "<qstat -f ${PBS_JOBID}>"  >> ${OUTDIR}/${OUTPUT}
-    qstat -f ${PBS_JOBID}           >> ${OUTDIR}/${OUTPUT} 2>&1
-    echo "</qstat -f ${PBS_JOBID}>" >> ${OUTDIR}/${OUTPUT}
+if [[ ! -z ${JOBID} ]]; then
+    echo "<squeue -j ${JOBID}>"  >> ${OUTDIR}/${OUTPUT}
+    squeue -j ${JOBID}           >> ${OUTDIR}/${OUTPUT} 2>&1
+    echo "</squeue -j ${JOBID}>" >> ${OUTDIR}/${OUTPUT}
 fi
 
 echo "temporary directory: ${JOBTMPDIR}"
@@ -157,15 +138,6 @@ while [[ ${TMP_NAME} != 'RESTART' ]]; do
         fi
         cp ${INPDIR}/${JOBNAME}${SAVED_NAME} ${JOBTMPDIR}/${TMP_NAME}
         echo "input ${JOBNAME}${SAVED_NAME} copied."
-
-### Synchonise files on all nodes
-
-        if [[ ! -z ${PCLIST} ]]; then
-            for PC in ${PCLIST[@]}; do
-                ssh ${PC} "cp ${INPDIR}/${JOBNAME}${SAVED_NAME} ${JOBTMPDIR}/${TMP_NAME}"
-                echo "File synchonised on ${PC} : ${JOBTMPDIR}/${TMP_NAME}"
-            done
-        fi
     else
         echo "Input data ${INPDIR}/${JOBNAME}${SAVED_NAME} not found or empty."
     fi
@@ -190,15 +162,6 @@ if [[ $# > 1 ]]; then
             cp ${INPDIR}/${PRE_JOB}${SAVED_NAME} ${JOBTMPDIR}/${TMP_NAME}
             echo "File found: ${INPDIR}/${PRE_JOB}${SAVED_NAME}, temporarily saved as ${JOBTMPDIR}/${TMP_NAME}" >> ${OUTDIR}/${OUTPUT} 2>&1
             echo "File found: ${INPDIR}/${PRE_JOB}${SAVED_NAME}, temporarily saved as ${JOBTMPDIR}/${TMP_NAME}" 
-
-### Synchonise files on all nodes
-
-            if [[ ! -z ${PCLIST} ]]; then
-                for PC in ${PCLIST[@]}; do
-                    ssh ${PC} "cp ${INPDIR}/${PRE_JOB}${SAVED_NAME} ${JOBTMPDIR}/${TMP_NAME}"
-                    echo "File synchonised on ${PC} : ${JOBTMPDIR}/${TMP_NAME}"
-                done
-            fi
         fi
 
         LINE_PRECALC=`echo "scale=0;${LINE_PRECALC}+1" | bc`

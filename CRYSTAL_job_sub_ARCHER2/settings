@@ -1,26 +1,35 @@
 # Job submission scripts
 SUBMISSION_EXT
+.slurm
 
 NCPU_PER_NODE
+128
 
 MEM_PER_NODE
 
 BUDGET_CODE
+e89-ic_c
 
 QOS
+standard
 
 PARTITION
+standard
 
 TIME_OUT
+3
 
 
 # Job execution scripts. 
 # NB: Should be kept at the same directory as 'settings' and 'gen_sub'!
 CRYSTAL_SCRIPT
+Pcry_slurm
 
 PROPERTIES_SCRIPT
+Pprop_slurm
 
 POST_PROCESSING_SCRIPT
+post_proc_slurm
 
 JOB_TMPDIR
 
@@ -116,3 +125,28 @@ jobname.DIEL         DIEL.DAT         dielectric constant
 -------------------------------------------------------------------------------------
 
 JOB_SUBMISSION_TEMPLATE
+----------------------------------------------------------------------------------------
+#!/bin/bash
+#SBATCH --nodes=${V_ND}
+#SBATCH --ntasks-per-node=${V_NCPU}
+#SBATCH --cpus-per-task=1
+#SBATCH --time=${V_WT}
+
+# Replace [budget code] below with your full project code
+#SBATCH --account=${V_BUDGET}
+#SBATCH --partition=${V_PARTITION}
+#SBATCH --qos=${V_QOS}
+#SBATCH --export=none
+
+module load epcc-job-env
+module load other-software
+module load crystal
+
+# Address the memory leak
+export FI_MR_CACHE_MAX_COUNT=0 
+
+# Run calculations
+timeout ${V_TOUT} ${V_SCRIPTDIR}/${V_SCRIPT} ${V_JOBNAME} ${V_REFNAME}
+${V_SCRIPTDIR}/${V_POSCRIPT} ${V_JOBTYPE} ${V_JOBNAME}
+----------------------------------------------------------------------------------------
+

@@ -333,18 +333,18 @@ function get_subinfo_ {
 EOF
         exit
     fi
-## number of processors
-    NP=`echo "scale=0;${ND}*${NCPU}" | bc`
-## memory per node
-    MEM=`echo $(grep -w -A 1 'MEM_PER_NODE' ${SETFILE} | tail -1)`
-    MEM=${MEM%G*}
-    MEM=${MEM%g*}
-# ## Budget code
-#     BUDGET=`echo $(grep -w -A 1 'BUDGET_CODE' ${SETFILE} | tail -1)`
-# ## Quality of service
-#     QOS=`echo $(grep -w -A 1 'QOS' ${SETFILE} | tail -1)`
-# ## Partition of service
-#     QOS=`echo $(grep -w -A 1 'PARTITION' ${SETFILE} | tail -1)`
+# ## number of processors
+#     NP=`echo "scale=0;${ND}*${NCPU}" | bc`
+# ## memory per node
+#     MEM=`echo $(grep -w -A 1 'MEM_PER_NODE' ${SETFILE} | tail -1)`
+#     MEM=${MEM%G*}
+#     MEM=${MEM%g*}
+## Budget code
+    BUDGET=`echo $(grep -w -A 1 'BUDGET_CODE' ${SETFILE} | tail -1)`
+## Quality of service
+    QOS=`echo $(grep -w -A 1 'QOS' ${SETFILE} | tail -1)`
+## Partition of service
+    PARTITION=`echo $(grep -w -A 1 'PARTITION' ${SETFILE} | tail -1)`
 ## Time spared for post processing
     TOUT=`echo $(grep -w -A 1 'TIME_OUT' ${SETFILE} | tail -1)`
 }
@@ -360,7 +360,7 @@ EOF
     
 ## Calculate the timeout for runnning calculations
     thr=${WT%:*}
-    tmn=${WT#*:}
+    tmn=${WT#*:} 
     TOUT=`echo "scale=0;${thr}*60+${tmn}-${TOUT}" | bc`
 	TOUT=`echo ${TOUT}m`
 ## Add seconds for WT
@@ -369,12 +369,12 @@ EOF
     sed -i "s|\${V_JOBNAME}|${JOBNAME}|g" ${JOBNAME}.${SUB_EXT}
     sed -i "s|\${V_ND}|${ND}|g" ${JOBNAME}.${SUB_EXT}
     sed -i "s|\${V_NCPU}|${NCPU}|g" ${JOBNAME}.${SUB_EXT}
-    sed -i "s|\${V_MEM}|${MEM}GB|g" ${JOBNAME}.${SUB_EXT}
+    # sed -i "s|\${V_MEM}|${MEM}GB|g" ${JOBNAME}.${SUB_EXT}
     sed -i "s|\${V_WT}|${WT}|g" ${JOBNAME}.${SUB_EXT}
-    sed -i "s|\${V_NP}|${NP}|g" ${JOBNAME}.${SUB_EXT}
-    # sed -i "s|\${V_BUDGET}|${BUDGET}|g" ${JOBNAME}.${SUB_EXT}
-    # sed -i "s|\${V_QOS}|${QOS}|g" ${JOBNAME}.${SUB_EXT}
-    # sed -i "s|\${V_PARTITION}|${PARTITION}|g" ${JOBNAME}.${SUB_EXT}
+    # sed -i "s|\${V_NP}|${NP}|g" ${JOBNAME}.${SUB_EXT}
+    sed -i "s|\${V_BUDGET}|${BUDGET}|g" ${JOBNAME}.${SUB_EXT}
+    sed -i "s|\${V_QOS}|${QOS}|g" ${JOBNAME}.${SUB_EXT}
+    sed -i "s|\${V_PARTITION}|${PARTITION}|g" ${JOBNAME}.${SUB_EXT}
     sed -i "s|\${V_TOUT}|${TOUT}|g" ${JOBNAME}.${SUB_EXT}
     sed -i "s|\${V_SCRIPTDIR}|${SCRIPTDIR}|g" ${JOBNAME}.${SUB_EXT}
     sed -i "s|\${V_SCRIPT}|${SCRIPT}|g" ${JOBNAME}.${SUB_EXT}

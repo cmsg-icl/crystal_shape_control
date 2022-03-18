@@ -15,11 +15,11 @@ function welcome_msg {
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
-CRYSTAL17 job submitter for Imperial HPC - Setting up
+CRYSTAL17 job submitter for ARCHER2 - Setting up
 
 Job submitter installed at: `date`
-Job submitter edition:      v0.2.1
-Supported job scheduler:    PBS
+Job submitter edition:      v0.2
+Supported job scheduler:    SLURM
 
 By Spica-Vir, Mar. 18-22, ICL, spica.h.zhou@gmail.com
 
@@ -68,24 +68,20 @@ EOF
     fi
 }
 
-function get_exedir {
+function get_budget_code {
     cat << EOF
 ================================================================================
-    Please specify the directory of CRYSTAL exectuables (by default cry17gnu v2.2):
+    Please specify your budget code:
 
 EOF
     
-    read -p " " EXEDIR
-    EXEDIR=`echo ${EXEDIR}`
+    read -p " " BUDGET_CODE
+    BUDGET_CODE=`echo ${BUDGET_CODE}`
 
-    if [[ -z ${EXEDIR} ]]; then
-        EXEDIR=/rds/general/user/gmallia/home/CRYSTAL17_cx1/v2.2gnu/bin/Linux-mpigfortran_MPP/Xeon___mpich__3.2.1
-    fi
-
-    if [[ ! -s ${EXEDIR} || ! -e ${EXEDIR} ]]; then
+    if [[ -z ${BUDGET_CODE} ]]; then
         cat << EOF
 --------------------------------------------------------------------------------
-    Error: Directory does not exist. Exiting current job. 
+    Error: Budget code must be specified. Exiting current job. 
 
 EOF
         exit
@@ -114,66 +110,43 @@ EOF
 
 function set_settings {
     SETFILE=${SCRIPTDIR}/settings
-    sed -i "/SUBMISSION_EXT/a .qsub" ${SETFILE}
-    sed -i "/NCPU_PER_NODE/a 48" ${SETFILE}
-    sed -i "/MEM_PER_NODE/a 50" ${SETFILE}
+    sed -i "/SUBMISSION_EXT/a .slurm" ${SETFILE}
+    sed -i "/NCPU_PER_NODE/a 128" ${SETFILE}
+    sed -i "/BUDGET_CODE/a ${BUDGET_CODE}" ${SETFILE}
+    sed -i "/QOS/a standard" ${SETFILE}
+    sed -i "/PARTITION/a standard" ${SETFILE}
     sed -i "/TIME_OUT/a 3" ${SETFILE}
-    sed -i "/CRYSTAL_SCRIPT/a runcryP" ${SETFILE}
-    sed -i "/PROPERTIES_SCRIPT/a runpropP" ${SETFILE}
-    sed -i "/POST_PROCESSING_SCRIPT/a post_processing" ${SETFILE}
-    sed -i "/JOB_TMPDIR/a \/rds\/general\/ephemeral\/user\/${USER}\/ephemeral" ${SETFILE}
-    sed -i "/EXEDIR/a ${EXEDIR}" ${SETFILE}
-    sed -i "/EXE_PCRYSTAL/a Pcrystal" ${SETFILE}
-    sed -i "/EXE_MPP/a MPPcrystal" ${SETFILE}
-    sed -i "/EXE_PPROPERTIES/a Pproperties" ${SETFILE}
+    sed -i "/CRYSTAL_SCRIPT/a Pcry_slurm" ${SETFILE}
+    sed -i "/PROPERTIES_SCRIPT/a Pprop_slurm" ${SETFILE}
+    sed -i "/POST_PROCESSING_SCRIPT/a post_proc_slurm" ${SETFILE}
+    JOBTMPDIR=/work${HOME:5}
+    sed -i "/JOB_TMPDIR/a "${JOBTMPDIR}"" ${SETFILE}
 
 # Job submission file template - should be placed at the end of file
     cat << EOF >> ${SETFILE}
 ----------------------------------------------------------------------------------------
-#!/bin/bash  --login
-#PBS -N \${V_JOBNAME}
-#PBS -l select=\${V_ND}:ncpus=\${V_NCPU}:mpiprocs=\${V_NCPU}:ompthreads=1:mem=\${V_MEM}
-#PBS -l walltime=\${V_WT}
+#!/bin/bash
+#SBATCH --nodes=\${V_ND}
+#SBATCH --ntasks-per-node=\${V_NCPU}
+#SBATCH --cpus-per-task=1
+#SBATCH --time=\${V_WT}
 
-echo "<qsub_standard_output>"
-date
-echo "<qstat -f \${PBS_JOBID}>"
-qstat -f \${PBS_JOBID}
-echo "</qstat -f \${PBS_JOBID}>"
+# Replace [budget code] below with your full project code
+#SBATCH --account=\${V_BUDGET}
+#SBATCH --partition=\${V_PARTITION}
+#SBATCH --qos=\${V_QOS}
+#SBATCH --export=none
 
-# number of cores per node used
-export NCORES=\${V_NCPU}
-# number of processes
-export NPROCESSES=\${V_NP}
+module load epcc-job-env
+module load other-software
+module load crystal
 
-# Make sure any symbolic links are resolved to absolute path
-export PBS_O_WORKDIR=\$(readlink -f \${PBS_O_WORKDIR})
+# Address the memory leak
+export FI_MR_CACHE_MAX_COUNT=0 
 
-# Set the number of threads to 1
-#   This prevents any system libraries from automatically
-#   using threading.
-export OMP_NUM_THREADS=1
-env
-echo "</qsub_standard_output>"
-
-#to sync nodes
-cd \${PBS_O_WORKDIR}
-touch wood
-export MODULEPATH=\$MODULEPATH:\${HOME}/../../gmallia/home/CRYSTAL17_cx1/v2.2gnu/modules
-echo "MODULEPATH= "\${MODULEPATH}
-echo Initial list of module loaded
-module list -l
-module load  mpich/3.2.1
-
-# start calculation
+# Run calculations
 timeout \${V_TOUT} \${V_SCRIPTDIR}/\${V_SCRIPT} \${V_JOBNAME} \${V_REFNAME}
 \${V_SCRIPTDIR}/\${V_POSCRIPT} \${V_JOBTYPE} \${V_JOBNAME}
-
-###
-if [[ -f ./\${V_JOBNAME}.run ]];then
-chmod 755 ./\${V_JOBNAME}.run
-./\${V_JOBNAME}.run
-fi
 ----------------------------------------------------------------------------------------
 
 EOF

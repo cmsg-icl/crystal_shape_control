@@ -4,11 +4,12 @@
 SETFILE=`echo ${0%/*}`/settings
 JOBTYPE=$1
 JOBNAME=`echo $2`
-JOBID=${PBS_JOBID%.*}
+JOBID=`sacct -u ${USER} -n -X --format jobid --name ${JOBNAME}.slurm --state r`
+JOBID=`echo ${JOBID} | rev | cut -d' ' -f1 | rev`
 OUTDIR=`pwd`
 OUTPUT=${JOBNAME}.out
-JOBTMPDIR=`echo $(grep -w -A 1 'JOB_TMPDIR' ${SETFILE} | tail -1)`
-JOBTMPDIR=${JOBTMPDIR}/${JOBNAME}_${JOBID}
+JOBTMPDIR=`pwd`
+JOBTMPDIR=${JOBTMPDIR}/tmp_${JOBNAME}_${JOBID}
 
 cd ${JOBTMPDIR}
 
@@ -95,7 +96,7 @@ fi
 
 echo " "                 >> ${OUTDIR}/${OUTPUT}
 echo -n "Disk usage:"    >> ${OUTDIR}/${OUTPUT} 2>&1
-ls -l  ${JOBTMPDIR}      >> ${OUTDIR}/${OUTPUT} 2>&1
+# ls -l  ${JOBTMPDIR}      >> ${OUTDIR}/${OUTPUT} 2>&1
 echo "<du -m>"           >> ${OUTDIR}/${OUTPUT}
 du -m  ${JOBTMPDIR}      >> ${OUTDIR}/${OUTPUT} 2>&1
 echo "</du -m>"          >> ${OUTDIR}/${OUTPUT}
@@ -124,18 +125,9 @@ EOF
     ### end checkfile ###
 fi
 
-if [[ ! -z ${PBS_NODEFILE} ]]; then
-    for PC in ${PCLIST[@]}; do
-        echo "#########"                 >> ${OUTDIR}/${OUTPUT}
-        echo "node: "${PC}               >> ${OUTDIR}/${OUTPUT}
-        echo "scp ${JOBTMPDIR}/checkfile0   ${PC}:${JOBTMPDIR}/checkfile"
-        scp ${JOBTMPDIR}/checkfile0         ${PC}:${JOBTMPDIR}/checkfile
-        ssh ${PC} "                         ${JOBTMPDIR}/checkfile"
-    done
-fi
-
 # Remove temporary directory
 
 cd ${OUTDIR}
+mv slurm-${JOBID}.out ${JOBNAME}.log
 rm -fr ${JOBTMPDIR}
 exit
