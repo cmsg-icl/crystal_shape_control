@@ -1,0 +1,203 @@
+#!/bin/bash
+
+# List of available formats & executables
+
+SETFILE=`echo ${0%/*}`/settings
+
+# Check temporary directory
+
+JOBTMPDIR=`echo $(grep -w -A 1 'JOB_TMPDIR' ${SETFILE} | tail -1)`
+JOBID=${PBS_JOBID%.*}
+
+# No/too many input parameter
+
+if [[ $# < 1 ]]; then
+    echo "ERROR: No input. Job terminated without calculation."
+    exit
+fi
+if [[ $# > 2 ]]; then
+    echo "ERROR: Too many input. Job terminated without calculation."
+    exit
+fi
+
+# Input and output file directories
+
+JOBNAME=`echo $1`
+OUTPUT=${JOBNAME}.out
+
+if [[ -e ${OUTPUT} && -s ${OUTPUT} ]]; then
+    echo "Output exists: ${OUTPUT}"
+    echo "Job terminated without calculation."
+    exit
+fi
+
+echo "printed output filename ${OUTPUT}"
+
+# Set executing command
+
+XDIR=`echo $(grep -w -A 1 'EXEDIR' ${SETFILE} | tail -1)`
+LMP_TYPE=`echo $(grep -w -A 1 'EXE_PLMP' ${SETFILE} | tail -1)`
+MPIRUN='mpiexec'
+MPIRUN_OPTIONS=""
+
+echo "mpi command: ${MPIRUN} ${MPIRUN_OPTIONS}"
+
+if [[ ${XDIR} == *'module load'* ]]; then
+    ${XDIR} ${LMP_TYPE} 2>&1 
+    LMPSCOMMAND="${MPIRUN} ${MPIRUN_OPTIONS} lmp_mpi"
+else
+    LMPSCOMMAND="${MPIRUN} ${MPIRUN_OPTIONS} ${XDIR}/${LMP_TYPE}"
+fi
+
+# Temporary directory
+
+JOBTMPDIR=${JOBTMPDIR}/${JOBNAME}_${JOBID}
+mkdir -p ${JOBTMPDIR}
+
+echo "creating temporary directory ${JOBTMPDIR}"
+
+# Create temporary copy of the script for execution
+
+SCRIPT=`basename $0`
+sed '1,/^#tag_copy/d' $0 > ${JOBTMPDIR}/${SCRIPT}
+
+# Execute file and post processing
+
+echo "<script>"
+cat ${JOBTMPDIR}/${SCRIPT}
+echo "</script>"
+echo -n "DATE START:"
+date
+source ${JOBTMPDIR}/${SCRIPT}
+echo -n "DATE END:"
+date
+echo "DONE"
+exit
+
+# Copied content: Below are copied in temporary directory
+
+#tag_copy
+# Synchronise nodes
+
+if [[ ! -z ${PBS_NODEFILE} ]]; then
+    if [[ -e ${PBS_NODEFILE} ]]; then
+        echo '${PBS_NODEFILE}' found: ${PBS_NODEFILE}
+        cat ${PBS_NODEFILE}
+        PCLIST=`awk '{if ($I != old){printf("%s ",$I);old=$I}}' ${PBS_NODEFILE}`
+    else
+        echo '${PBS_NODEFILE} not found'
+        exit
+    fi
+
+    for PC in ${PCLIST[@]}; do
+        ssh ${PC} "if [[ ! -d ${JOBTMPDIR} ]]; then mkdir -p ${JOBTMPDIR} ;fi; echo 'temporary directory on '${PC}"
+	done
+fi
+
+# Generate basic information of output file
+
+OUTDIR=`pwd`
+INPDIR=`pwd`
+
+echo "output file: ${OUTDIR}/${OUTPUT}"
+cat << EOF > ${OUTDIR}/${OUTPUT}
+date:                `date`
+hostname:            `hostname`
+system:              `uname -a`
+user:                `whoami`
+input:               ${OUTDIR}/${JOBNAME}.in
+output:              ${OUTDIR}/${OUTPUT}
+executable script:   $0
+executable dir:      ${XDIR}
+executable:          ${LMP_TYPE}
+EOF
+
+if [[ ! -z ${PBS_JOBID} ]]; then
+    echo "<qstat -f ${PBS_JOBID}>"  >> ${OUTDIR}/${OUTPUT}
+    qstat -f ${PBS_JOBID}           >> ${OUTDIR}/${OUTPUT} 2>&1
+    echo "</qstat -f ${PBS_JOBID}>" >> ${OUTDIR}/${OUTPUT}
+fi
+
+echo "temporary directory: ${JOBTMPDIR}"
+
+# Prepare input files
+
+## Restart file: pre_job.restart.stepnumber, edit the main input file
+
+if [[ $# > 1 ]]; then
+    PRE_JOB=`echo $2`
+    PRE_STEP=`echo ${2%.*}`
+    TMP_NAME="pre.restart.${PRE_STEP}"
+
+### Find the restart file
+
+    ls ${PRE_JOB} > /dev/null 2>&1 
+    if [[ ? != 0 ]]; then
+        PRE_JOB="${PRE_JOB#*.}.restart/${PRE_JOB}"
+    fi
+
+    cp ${INPDIR}/${PRE_JOB} ${JOBTMPDIR}/${TMP_NAME}
+    echo "Restart file found: ${INPDIR}/${PRE_JOB}, temporarily saved as ${JOBTMPDIR}/${TMP_NAME}" >> ${OUTDIR}/${OUTPUT} 2>&1
+    echo "Restart file found: ${INPDIR}/${PRE_JOB}, temporarily saved as ${JOBTMPDIR}/${TMP_NAME}" 
+
+    if [[ ! -z ${PCLIST} ]]; then
+        for PC in ${PCLIST[@]}; do
+            ssh ${PC} "cp ${INPDIR}/${PRE_JOB} ${JOBTMPDIR}/${TMP_NAME}"
+            echo "File synchonised on ${PC} : ${JOBTMPDIR}/${TMP_NAME}"
+        done
+    fi
+
+    sed -i '/read_restart/d' ${JOBNAME}.in 
+    sed -i '1i # auto_generated read_restart line ' ${JOBNAME}.in
+    sed -i "1a read_restart    ${TMP_NAME}" ${JOBNAME}.in
+    sed -i "1a                            " ${JOBNAME}.in
+fi
+
+## Read list
+
+LINE_PRECALC=`grep -nw 'PRE_CALC' ${SETFILE}`
+LINE_PRECALC=`echo "scale=0;${LINE_PRECALC%%:*}+4" | bc`
+
+SAVED_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $1)}' ${SETFILE}`
+TMP_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $2)}' ${SETFILE}`
+
+## Mandatory & optional files
+
+while [[ ${TMP_NAME} != 'OPTIONAL' ]]; do
+    SAVED_NAME="${JOBNAME}.${SAVED_NAME#*.}"
+    TMP_NAME="${JOBNAME}.${TMP_NAME#*.}"
+
+    if [[ -e ${INPDIR}/${SAVED_NAME} && -s ${INPDIR}/${SAVED_NAME} ]]; then
+
+### Copy files to the main temporary directory
+
+        echo "input expected in ${INPDIR}/${SAVED_NAME}"
+        echo "input data ${INPDIR}/${SAVED_NAME}" >> ${OUTDIR}/${OUTPUT} 2>&1
+        cp ${INPDIR}/${SAVED_NAME} ${JOBTMPDIR}/${TMP_NAME}
+        echo "input ${SAVED_NAME} copied."
+
+### Synchonise files on all nodes
+
+        if [[ ! -z ${PCLIST} ]]; then
+            for PC in ${PCLIST[@]}; do
+                ssh ${PC} "cp ${INPDIR}/${SAVED_NAME} ${JOBTMPDIR}/${TMP_NAME}"
+                echo "File synchonised on ${PC} : ${JOBTMPDIR}/${TMP_NAME}"
+            done
+        fi
+    else
+        echo "Input data ${INPDIR}/${SAVED_NAME} not found or empty."
+    fi
+
+    LINE_PRECALC=`echo "scale=0;${LINE_PRECALC}+1" | bc`
+    SAVED_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $1)}' ${SETFILE}`
+    TMP_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $2)}' ${SETFILE}`
+done
+
+# Launch calculations
+
+cd ${JOBTMPDIR}
+echo "Entering ${JOBTMPDIR}, job is about to be started."
+
+${CRYCOMMAND} >> ${OUTDIR}/${OUTPUT} 2>&1
+
+exit

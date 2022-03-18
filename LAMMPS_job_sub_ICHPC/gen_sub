@@ -1,0 +1,427 @@
+#!/bin/bash
+
+# General input format
+# gen_sub jobtype ND WT jobname (refname)
+# jobtype: str, crys / prop
+# ND:      int, number of nodes
+# WT:      str, walltime, hh:mm time format
+# jobname: str, input .d12 or .d3 file, with or without extension
+# refname: str, optional, name of the previous run
+
+# Instruction for jobtype
+
+function print_HOWTO_jobtype_ {
+    cat << EOF
+    -------------------------------------------
+    To avoid ambiguity, the job type can be set
+    by using the following options:
+
+    crys
+    CRYS
+    prop
+    PROP
+
+    Examples:
+    `basename $0` CRYS 16 wt=30:00 mgo.d12 
+    `basename $0` prop 16 WT=30:00 mgo.d12 
+
+EOF
+}
+
+# Instruction for ND
+
+function print_HOWTO_ND_ {
+    cat << EOF
+    -------------------------------------------
+    To avoid ambiguity, the number of nodes can be set 
+    by using the following options:
+
+    nd=
+    ND=
+        
+    Examples:
+    `basename $0` crys nd=16 30:00 mgo.d12 
+    `basename $0` crys ND=16 30:00 mgo.d12 
+
+EOF
+}
+
+# Instruction for WT
+
+function print_HOWTO_WT_ {
+    cat << EOF
+    -------------------------------------------
+    To avoid ambiguity, the walltime can be set
+    by using the following options:
+
+    wt=
+    WT=
+
+    Examples:
+    `basename $0` crys 16 wt=30:00 mgo.d12 
+    `basename $0` crys 16 WT=30:00 mgo.d12 
+
+EOF
+}
+
+# General instruction
+
+function print_HOWTO_ {
+    cat << EOF
+    ERROR:
+        number of input parameters does not meet the requirements or is ambiguous. 
+        please check your command. 
+
+    HOWTO: 
+        `basename $0` jobtype ND WT jobname (refname)
+        jobtype --> str, crys / prop
+        ND      --> int, number of nodes
+        WT      --> str, walltime, hh:mm time format
+        jobname --> str, input .d12 or .d3 file, with or without extension
+        refname --> optional, name of the previous run, with or without extension
+
+    Examples:
+        `basename $0` 16 30:00 mgo-opt2.d12 mgo-opt1
+
+EOF
+    print_HOWTO_jobtype_
+    print_HOWTO_ND_
+    print_HOWTO_WT_
+}
+
+# Get jobtype from input & define the script
+
+function get_jobtype_ {
+    SETFILE=${SCRIPTDIR}/settings
+
+    if [[ ${JOBTYPE} == 'crys' || ${JOBTYPE} == 'CRYS' ]]; then
+        JOBTYPE=crys
+        SCRIPT=`echo $(grep -w -A 1 'CRYSTAL_SCRIPT' ${SETFILE} | tail -1)`
+    elif [[ ${JOBTYPE} == 'prop' || ${JOBTYPE} == 'PROP' ]]; then
+        JOBTYPE=prop
+        SCRIPT=`echo $(grep -w -A 1 'PROPERTIES_SCRIPT' ${SETFILE} | tail -1)`
+    else
+        cat << EOF
+    ERROR: 
+        the jobtype has to be either 'crys' or 'prop', 
+        please check the value: ${JOBTYPE}
+
+EOF
+        print_HOWTO_jobtype_
+        exit
+    fi
+
+    POSCRIPT=`echo $(grep -w -A 1 'POST_PROCESSING_SCRIPT' ${SETFILE} | tail -1)`
+}
+
+# Get ND from input
+
+function get_ND_ {
+    ND=${ND##*=}
+
+    if [[ ${ND} -eq 0 ]]; then
+        cat << EOF
+    ERROR:
+        number of nodes has to be specified
+        no queue system file has been generated
+
+EOF
+        print_HOWTO_ND_
+        exit
+    fi
+
+    CHECK_IF_ND_IS_AN_INTEGER=`echo $ND | awk 'BEGIN{S="YES"};{
+        L=length($1);
+        for(i=1;i<=L;i++){
+            if(substr($1,i,1) !~  /[0-9]/ ){
+                S="NO";
+                exit
+            }
+        }};END{print S}'`
+
+    if [[ ${CHECK_IF_ND_IS_AN_INTEGER} == "NO" ]]; then
+        cat << EOF
+    ERROR:
+        the number of nodes has to be an integer number, 
+        please check the value: ${ND}
+
+EOF
+        exit
+    fi
+}
+
+# Get MT from input
+
+function get_WT_ {
+    WT=${WT##*=}
+
+    separator=`echo ${WT} | grep ':'`
+
+    if [[ -z ${separator} ]]; then
+        cat << EOF
+    WARNING:
+        Separator not specified, any number will be regarded as minutes.
+
+EOF
+        WT="00:${WT}"
+    fi
+
+    if [[ -z ${WT} ]]; then
+        cat << EOF
+    WARNING:
+       wall time has to be specified
+       if not specified, the walltime is set to 12:00
+
+EOF
+        WT="12:00"
+    fi
+    CHECK_IF_WT_HAS_A_hhmm_FORMAT=`echo ${WT} | awk 'BEGIN{S="YES"};{
+        c=length($1)-match($1,":");
+        if(c!=2){S="NO";exit}};{
+        gsub(":","",$1);
+        L=length($1);
+        for(i=1;i<=L;i++){
+            if(substr($1,i,1) !~  /[0-9]/ ){
+                S="NO";
+                exit
+            }
+        }};END{print S}'`
+
+    if [[ ${CHECK_IF_WT_HAS_A_hhmm_FORMAT} == "NO" ]]; then
+        cat << EOF
+    ERROR:
+        the format of walltime has to be hh:mm 
+        please check the format: ${WT}
+
+EOF
+        exit
+    fi
+}
+
+# Get jobname and refname from input
+
+function get_jobname_ {
+    INPDIR=`pwd`
+    if [[ $# -eq 4 ]]; then
+        JOBNAME=${JOBNAME%.*}
+    else
+        JOBNAME=${JOBNAME%.*}
+        REFNAME=${REFNAME%.*}
+    fi
+## check input
+    if [[ ${JOBTYPE} == 'crys' ]]; then
+        jobfile=${INPDIR}/${JOBNAME}.d12
+    else
+        jobfile=${INPDIR}/${JOBNAME}.d3
+    fi
+### input not exist
+    ls ${jobfile} > /dev/null 2>&1
+    if [[ $? == 1 ]]; then
+        cat << EOF
+    ERROR: 
+        input file does not exist. please check: ${JOBNAME}
+
+EOF
+        exit
+    fi
+### wrong extension
+    if [[ ! -e ${jobfile} || ! -s ${jobfile} ]]; then
+        cat << EOF
+    ERROR:
+        input file extension is not consistent with the jobtype specified. 
+        please check the jobtype: ${JOBTYPE} or the jobname: ${JOBNAME}
+
+        .d12 ---> CRYSTAL calculations
+        .d3  ---> PROPERTIES calculations
+
+EOF
+        exit
+    fi
+### output exists
+    if [[ -e ${INPDIR}/${JOBNAME}.out && -s ${INPDIR}/${JOBNAME}.out ]]; then
+        cat << EOF
+    ERROR:
+        output file ${JOBNAME}.out already exists in ${INPDIR}/. 
+        Please consider to move it to a safe place. 
+
+        Exit without performing calculations. 
+
+EOF
+        exit
+    fi
+## check reference data
+    if [[ ! -z ${REFNAME} ]]; then
+        ls "${INPDIR}/${REFNAME}*" > /dev/null 2>&1
+        if [[ $? == 1 ]]; then
+            cat << EOF
+    ERROR:
+        reference data not found in ${INPDIR}, 
+        please check: ${REFNAME}
+
+EOF
+        exit
+        fi
+    fi
+}
+
+# check job execution scripts
+
+function check_scripts_ {
+    ls ${SCRIPTDIR}/${SCRIPT} > /dev/null 2>&1
+    if [[ $? == 1 ]]; then
+        cat << EOF
+    ERROR:
+        cannot find job execution script in ${SCRIPTDIR}/${SCRIPT}.
+        please check: ${SETFILE}
+
+EOF
+        exit
+    fi
+
+    ls ${SCRIPTDIR}/${POSCRIPT} > /dev/null 2>&1
+    if [[ $? == 1 ]]; then
+        cat << EOF
+    ERROR:
+        cannot find post processing script in ${SCRIPTDIR}/${POSCRIPT}.
+        please check: ${SETFILE}
+
+EOF
+        exit
+    fi
+}
+
+# get submission file template and necessary information
+
+function get_subtemplate_ {
+## template file
+    BG_TEMP=`grep -nw 'JOB_SUBMISSION_TEMPLATE' ${SETFILE}`
+    BG_TEMP=`echo "scale=0;${BG_TEMP%%:*}+2" | bc`
+
+    line_endflag=${BG_TEMP}
+    endflag=`awk NR==${line_endflag}'{print}' ${SETFILE}`
+
+    while [[ ${endflag} != *'------------------'* ]]; do
+        line_endflag=`echo "scale=0;${line_endflag}+1" | bc`
+        endflag=`awk NR==${line_endflag}'{print}' ${SETFILE}`
+    done
+
+    ED_TEMP=`echo "scale=0;${line_endflag}-1" | bc`
+    TEMPT=`sed -n "${BG_TEMP},${ED_TEMP}p" ${SETFILE}`
+}
+
+# get necessary information from settings file
+function get_subinfo_ {
+## extension for submission file
+    SUB_EXT=`echo $(grep -w -A 1 'SUBMISSION_EXT' ${SETFILE} | tail -1)`
+    SUB_EXT=${SUB_EXT#*.}
+## number of processors per node
+    NCPU=`echo $(grep -w -A 1 'NCPU_PER_NODE' ${SETFILE} | tail -1)`
+    CHECK_IF_NCPU_IS_AN_INTEGER=`echo ${NCPU} | awk 'BEGIN{S="YES"};{
+        L=length($1);
+        for(i=1;i<=L;i++){
+            if(substr($1,i,1) !~  /[0-9]/ ){
+                S="NO";
+                exit
+            }
+        }};END{print S}'`
+    if [[ ${CHECK_IF_NCPU_IS_AN_INTEGER} == "NO" ]]; then
+        cat << EOF
+    ERROR:
+        the number of CPUs has to be hh:mm 
+        please check the keyword 'NCPU_PER_NODE' in: ${SETFILE}
+
+EOF
+        exit
+    fi
+## number of processors
+    NP=`echo "scale=0;${ND}*${NCPU}" | bc`
+## memory per node
+    MEM=`echo $(grep -w -A 1 'MEM_PER_NODE' ${SETFILE} | tail -1)`
+    MEM=${MEM%G*}
+    MEM=${MEM%g*}
+# ## Budget code
+#     BUDGET=`echo $(grep -w -A 1 'BUDGET_CODE' ${SETFILE} | tail -1)`
+# ## Quality of service
+#     QOS=`echo $(grep -w -A 1 'QOS' ${SETFILE} | tail -1)`
+# ## Partition of service
+#     QOS=`echo $(grep -w -A 1 'PARTITION' ${SETFILE} | tail -1)`
+## Time spared for post processing
+    TOUT=`echo $(grep -w -A 1 'TIME_OUT' ${SETFILE} | tail -1)`
+}
+
+# generate submission file
+
+function generate_subfile_ {
+    get_subtemplate_
+    get_subinfo_
+    cat << EOF > ${JOBNAME}.${SUB_EXT}
+${TEMPT}
+EOF
+    
+## Calculate the timeout for runnning calculations
+    thr=${WT%:*}
+    tmn=${WT#*:}
+    TOUT=`echo "scale=0;${thr}*60+${tmn}-${TOUT}" | bc`
+	TOUT=`echo ${TOUT}m`
+## Add seconds for WT
+    WT="${WT}:00"
+
+    sed -i "s|\${V_JOBNAME}|${JOBNAME}|g" ${JOBNAME}.${SUB_EXT}
+    sed -i "s|\${V_ND}|${ND}|g" ${JOBNAME}.${SUB_EXT}
+    sed -i "s|\${V_NCPU}|${NCPU}|g" ${JOBNAME}.${SUB_EXT}
+    sed -i "s|\${V_MEM}|${MEM}GB|g" ${JOBNAME}.${SUB_EXT}
+    sed -i "s|\${V_WT}|${WT}|g" ${JOBNAME}.${SUB_EXT}
+    sed -i "s|\${V_NP}|${NP}|g" ${JOBNAME}.${SUB_EXT}
+    # sed -i "s|\${V_BUDGET}|${BUDGET}|g" ${JOBNAME}.${SUB_EXT}
+    # sed -i "s|\${V_QOS}|${QOS}|g" ${JOBNAME}.${SUB_EXT}
+    # sed -i "s|\${V_PARTITION}|${PARTITION}|g" ${JOBNAME}.${SUB_EXT}
+    sed -i "s|\${V_TOUT}|${TOUT}|g" ${JOBNAME}.${SUB_EXT}
+    sed -i "s|\${V_SCRIPTDIR}|${SCRIPTDIR}|g" ${JOBNAME}.${SUB_EXT}
+    sed -i "s|\${V_SCRIPT}|${SCRIPT}|g" ${JOBNAME}.${SUB_EXT}
+    sed -i "s|\${V_REFNAME}|${REFNAME}|g" ${JOBNAME}.${SUB_EXT}
+    sed -i "s|\${V_POSCRIPT}|${POSCRIPT}|g" ${JOBNAME}.${SUB_EXT}
+    sed -i "s|\${V_JOBTYPE}|${JOBTYPE}|g" ${JOBNAME}.${SUB_EXT}
+}
+
+# Main I/O function
+
+if [[ $# > 5 || $# < 4 ]]; then
+    print_HOWTO_
+    exit
+fi
+
+SCRIPTDIR=`echo ${0%/*}`
+JOBTYPE=$1
+ND=$2
+WT=$3
+JOBNAME=$4
+if [[ $# -eq 5 ]]; then
+	REFNAME=$5
+else
+	REFNAME=""
+fi
+
+get_jobtype_
+get_ND_
+get_WT_
+get_jobname_
+check_scripts_
+
+echo "jobtype                       = " ${JOBTYPE}
+echo "job submission script         = " ${SCRIPT}
+echo "number of nodes requested     = " ${ND}
+echo "wall time                     = " ${WT}
+echo "input directory               = " ${INPDIR}
+echo "input file                    = " ${JOBNAME}
+if [[ ! -z ${REFNAME} ]]; then
+    echo "reference file                = " ${REFNAME}
+fi
+
+generate_subfile_
+
+cat << EOF
+
+ file ${JOBNAME}.${SUB_EXT} has been generated.
+
+EOF
+exit
