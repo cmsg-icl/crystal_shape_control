@@ -83,11 +83,17 @@ Then submit files.
 
 `setup.sh` - set up the settings file and create job submission commands.  
 `settings` - store all parameters needed for CRYSTAL/PROPERTIES jobs. see the 'Keyword list' below.  
-`settings-template` - empty `settings` file, will be used to cover `settings` file when installing/re-installing the job submitter.  
+`settings_template` - empty `settings` file, will be used to cover `settings` file when installing/re-installing the job submitter.  
 `gen_sub` - generate submission file.  
 `runcryP` - execute 'CRYSTAL' type calculations in parallel (P and MPP).  
 `runpropP` - execute 'PROPERTIES' type calculations in parallel.  
 `post_processing` - Copy & save files from temporary directory to the output directory.  
+
+**NOTE**
+
+1. The name of file `settings` `gen_sub` `settings_template` shouldn't be changed.
+2. `settings` `gen_sub` `settings_template` are applicable to ARHCER2, comment the corresponding parameters in `gen_sub`. 
+2. Names of `runcryP` `runpropP` `post_processing` can be changed, but should corresponds to the values in `settings`.  
 
 ## Keyword list
 Keywords used for the script `settings` are listed in the table below. Any change in parameters should be made in that script.

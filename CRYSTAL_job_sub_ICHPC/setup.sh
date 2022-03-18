@@ -133,7 +133,7 @@ function set_settings {
 #!/bin/bash  --login
 #PBS -N \${V_JOBNAME}
 #PBS -l select=\${V_ND}:ncpus=\${V_NCPU}:mpiprocs=\${V_NCPU}:ompthreads=1:mem=\${V_MEM}
-#PBS -l walltime=\${V_WT}:00
+#PBS -l walltime=\${V_WT}
 
 echo "<qsub_standard_output>"
 date
