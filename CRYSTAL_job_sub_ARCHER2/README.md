@@ -1,10 +1,10 @@
-# Crystal job submitter - Imperial Cluster version
+# Crystal job submitter - ARCHER2 version
 
-Crystal job submitter for [Imperial Cluster](https://www.imperial.ac.uk/admin-services/ict/self-service/research-support/rcs/), PBS job scheduler.  
+Crystal job submitter for [ARCHER2](https://www.archer2.ac.uk/), Slurm job scheduler. Similar to the PBS version on Imperial HPC.  
 
 ## Install
 
-1. Use `scp -r` to upload this folder to any sub-directory of `${HOME}` on the cluster.  
+1. Use `scp -r` to upload this folder to any sub-directory of `/work/` on the cluster.  
 2. Enter the folder and execute the script `setup.sh`.  
 3. Following the instructions, specify the directory of job submitter and the directory of executables. 
 4. Type `source ~/.bashrc` to implement user-defined commands. 
@@ -12,22 +12,33 @@ Crystal job submitter for [Imperial Cluster](https://www.imperial.ac.uk/admin-se
 **Note**
 
 1. All the scripts should be placed in the same directory.  
-2. By default, job submitter scripts will be stored in `${HOME}/runCRYSTAL/`.  
-3. By default, CRYSTAL17v2.2gnu will be set as the executable.  
+2. By default, job submitter scripts will be stored in `/work/consortium/consortium/user/runCRYSTAL/`.  
+3. Due to the file transfer rule, scripts cannot be placed in `${HOME}` directory. The nodes executing calculations cannot identify directories in `${HOME}`.  
+3. CRYSTAL is loaded as a module.  
 
 ## Usage & command list
 
-Printed out information can be found in '.out' file and '.o\<jobid\>' file. 
+### Output and job executing information
+
+Printed out information can be found in '.out' file and '.log' file. '.log' file is the original `slurm-[jobid].out` file processed by `post_proc_slurm`. If the script is terminated normally, the file will be named as `[jobname].log`. If killed, in its original name.
 
 If a '.out' file with the same name as the job to be submitted exists in the same directory, that job won't be executed before output is either transferred to another folder or removed. 
 
-If the job is terminated due to exceeding wall time, temporary files will be saved in the output directory. The temporary directory will be removed.
+### Temporary directory
 
-If the job is terminated due to improper settings of calculation parameters, temporary files will be saved in the output directory. The temporary directory will be removed.
+* If the job is terminated due to exceeding wall time, temporary files will be saved in the output directory. The temporary directory will be removed.
 
-If the job is killed before 'timeout', temporary will be saved in the temporary directory with temporary names. The temporary directory will not be removed. Refer to '.out' file or '.o\<jobid\>' file for the path. 
+* If the job is terminated due to improper settings of calculation parameters, temporary files will be saved in the output directory. The temporary directory will be removed.
 
-By default, the temporary directory is set as `/rds/general/ephemeral/user/${USER}/ephemeral`, where the contents will be automatically removed after 30 days. 
+* If the job is killed before 'timeout', temporary will be saved in the temporary directory with temporary names. The temporary directory will not be removed. Refer to '.out' file or '.o\<jobid\>' file for the path. 
+
+By default, the temporary directory is set as the sub folder `tmp_[jobname]_[jobid]/`, which is in the same directory as the input/output files. 
+
+### Work directory
+
+Files in work directory are not backed up, and occupy storage quota - so finished jobs are recommended to be transferred to `${HOME}`. Common `cp` works on login nodes. See [ARCEHR2 manual](https://docs.archer2.ac.uk/user-guide/data/) for details. 
+
+### Commands
 
 Here are user defined commands: 
 
@@ -85,36 +96,36 @@ Then submit files.
 `settings` - store all parameters needed for CRYSTAL/PROPERTIES jobs. see the 'Keyword list' below.  
 `settings_template` - empty `settings` file, will be used to cover `settings` file when installing/re-installing the job submitter.  
 `gen_sub` - generate submission file.  
-`runcryP` - execute 'CRYSTAL' type calculations in parallel (P and MPP).  
-`runpropP` - execute 'PROPERTIES' type calculations in parallel.  
+`Pcry_slurm` - execute 'CRYSTAL' type calculations in parallel (P and MPP).  
+`Pprop_slurm` - execute 'PROPERTIES' type calculations in parallel.  
 `post_processing` - Copy & save files from temporary directory to the output directory.  
 
 **NOTE**
 
 1. The name of file `settings` `gen_sub` `settings_template` shouldn't be changed.
-2. `settings` `gen_sub` `settings_template` are applicable to ARHCER2, comment the corresponding `sed` and `grep` sentences in `gen_sub`. 
-2. Names of `runcryP` `runpropP` `post_processing` can be changed, but should corresponds to the values in `settings`.  
+2. `settings` `gen_sub` `settings_template` are applicable to Imperial HPC, comment the corresponding `sed` and `grep` sentences in `gen_sub`. 
+2. Names of `Pcry_slurm` `Pprop_slurm` `post_processing` can be changed, but should corresponds to the values in `settings`.  
 
 ## Keyword list
 Keywords used for the script `settings` are listed in the table below. Any change in parameters should be made in that script.
 
 | KEYWORD                 | DEFAULT VALUE   | DEFINITION |
 |:------------------------|:---------------:|:-----------|
-| SUBMISSION_EXT          | .qsub           | extension of job submission script |
-| NCPU_PER_NODE           | 48              | Number of processors per node |
-| MEM_PER_NODE            | 50              | Allocated memory per node |
-| BUDGET_CODE             | -               | Budget code of a research project, for ARCHER2|
-| QOS                     | standard        | Quality of service, for ARCHER2 |
-| PARTITION               | standard        | Partition of jobs, for ARCHER2 |
+| SUBMISSION_EXT          | .slurm          | extension of job submission script |
+| NCPU_PER_NODE           | 128             | Number of processors per node |
+| MEM_PER_NODE            | -               | Allocated memory per node, for Imperial cluster |
+| BUDGET_CODE             | *user defined*  | Budget code of a research project, see [ARCHER2 manual](https://docs.archer2.ac.uk/user-guide/scheduler/#checking-available-budget)|
+| QOS                     | standard        | Quality of service, see [ARCHER2 manual](https://docs.archer2.ac.uk/user-guide/scheduler/#quality-of-service-qos) |
+| PARTITION               | standard        | Partition of jobs, see [ARCHER2 manual](https://docs.archer2.ac.uk/user-guide/scheduler/#partitions) |
 | TIME_OUT                | 3               | Unit: min. Time spared for post processing |
 | CRYSTAL_SCRIPT          | runcryP         | Script for crystal type calculations |
 | PROPERTIES_SCRIPT       | runpropP        | Script for properties type calculations |
 | POST_PROCESSING_SCRIPT  | post_processing | Post processing script |
-| JOB_TMPDIR              | /rds/general/ephemeral/user/hz1420/ephemeral | Temporary directory for calculations |
-| EXEDIR                  | /rds/general/user/gmallia/home/CRYSTAL17_cx1/v2.2gnu/bin/Linux-mpigfortran_MPP/Xeon___mpich__3.2.1 | Directory of executables |
-| EXE_PCRYSTAL            | Pcrystal        | Executable for parallel crystal type calculation |
-| EXE_MPP                 | MPPcrystal      | Executable for massively parallel crystal type calculation |
-| EXE_PPROPERTIES         | Pproperties     | Executable for parallel properties type calculation |
+| JOB_TMPDIR              | -               | Temporary directory for calculations |
+| EXEDIR                  | -               | Directory of executables, for Imperial cluster |
+| EXE_PCRYSTAL            | -               | Executable for parallel crystal type calculation, for Imperial cluster |
+| EXE_MPP                 | -               | Executable for massively parallel crystal type calculation, for Imperial cluster |
+| EXE_PPROPERTIES         | -               | Executable for parallel properties type calculation, for Imperial cluster |
 | EXE_CRYSTAL             | -               | Executable for serial crystal type calculation, for workstation |
 | EXE_PROPERTIES          | -               | Executable for serial properties type calculation, for workstation |
 | PRE_CALC                | \[Table\]       | Saved names, temporary names, and definitions of input files |
