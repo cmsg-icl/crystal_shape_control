@@ -18,7 +18,7 @@ function welcome_msg {
 CRYSTAL17 job submitter for ARCHER2 - Setting up
 
 Job submitter installed at: `date`
-Job submitter edition:      v0.1
+Job submitter edition:      v0.2
 Supported job scheduler:    SLURM
 
 By Spica-Vir, Mar. 18-22, ICL, spica.h.zhou@gmail.com

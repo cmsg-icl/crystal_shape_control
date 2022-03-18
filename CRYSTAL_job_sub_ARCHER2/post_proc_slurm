@@ -116,7 +116,7 @@ else
     JOBTMPDIR=${JOBTMPDIR}
     cd  ${JOBTMPDIR}
 EOF
-    sed '1,/^#tag_s/d;/^#tag_e/,$d'  ${JOBTMPDIR}/${SCRIPT} >> ${JOBTMPDIR}/checkfile0
+    sed '1,/^#tag_s/d;/^#tag_e/,$d'  ${JOBTMPDIR}/Job_script >> ${JOBTMPDIR}/checkfile0
     chmod 755 ${JOBTMPDIR}/checkfile0
     hostname
     echo '<checkfile0>'
@@ -128,5 +128,6 @@ fi
 # Remove temporary directory
 
 cd ${OUTDIR}
+mv slurm-${JOBID}.out ${JOBNAME}.log
 rm -fr ${JOBTMPDIR}
 exit

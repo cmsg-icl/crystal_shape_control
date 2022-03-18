@@ -54,7 +54,7 @@ echo "creating temporary directory ${JOBTMPDIR}"
 
 # Create temporary copy of the script for execution
 
-SCRIPT=`basename $0`
+SCRIPT='Job_script'
 sed '1,/^#tag_copy/d' $0 > ${JOBTMPDIR}/${SCRIPT}
 
 # Execute file and post processing
