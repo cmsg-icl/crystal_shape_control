@@ -51,7 +51,7 @@ echo "creating temporary directory ${JOBTMPDIR}"
 
 # Create temporary copy of the script for execution
 
-SCRIPT=`basename $0`
+SCRIPT='Job_script'
 sed '1,/^#tag_copy/d' $0 > ${JOBTMPDIR}/${SCRIPT}
 
 # Execute file and post processing
@@ -206,7 +206,13 @@ if [[ ! -e ${JOBTMPDIR}/fort.20 || ! -s ${JOBTMPDIR}/fort.20 ]]; then
 	echo "ERROR: ${JOBTMPDIR}/fort.9 not found or empty. Check ${INPDIR}/${PRE_JOB}.f9"
 	exit
 else
-	mv ${JOBTMPDIR}/fort.20 ${JOBTMPDIR}/fort.9
+    mv ${JOBTMPDIR}/fort.20 ${JOBTMPDIR}/fort.9
+    if [[ ! -z ${PCLIST} ]]; then
+        for PC in ${PCLIST[@]}; do
+            ssh ${PC} "mv ${JOBTMPDIR}/fort.20 ${JOBTMPDIR}/fort.9"
+            echo "extension changed on ${PC} : ${JOBTMPDIR}/${TMP_NAME}"
+        done
+    fi
 fi
 
 # Launch calculations

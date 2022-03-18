@@ -18,10 +18,10 @@ function welcome_msg {
 CRYSTAL17 job submitter for Imperial HPC - Setting up
 
 Job submitter installed at: `date`
-Job submitter edition:      v0.2
+Job submitter edition:      v0.2.1
 Supported job scheduler:    PBS
 
-By Spica-Vir, Mar. 16-22, ICL, spica.h.zhou@gmail.com
+By Spica-Vir, Mar. 18-22, ICL, spica.h.zhou@gmail.com
 
 Developed based on Dr G.Mallia's scripts on Imperial cluster
 Special thanks to G.Mallia & N.M.Harrison
