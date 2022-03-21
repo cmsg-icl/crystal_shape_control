@@ -1,0 +1,56 @@
+# Job submission scripts
+SUBMISSION_EXT
+
+NCPU_PER_NODE
+
+MEM_PER_NODE
+
+BUDGET_CODE
+
+QOS
+
+PARTITION
+
+TIME_OUT
+
+# Job execution scripts. 
+# NB: Should be kept at the same directory as 'settings' and 'gen_sub'!
+LMP_SCRIPT
+
+POST_PROCESSING_SCRIPT
+
+JOB_TMPDIR
+
+
+# Executables
+EXEDIR
+
+EXE_PLMP
+
+EXE_LMP
+
+
+# file formats table
+PRE_CALC
+-----------------------------------------------------------------------------------
+SAVED                TEMPORARY            DEFINITION
+-----------------------------------------------------------------------------------
+jobname.in           jobname.in           LAMMPS main input file
+jobname.in.init      jobname.in.init      init section
+jobname.data         jobname.data         atom definition section
+jobname.in.settings  jobname.in.settings  settings section
+------------------------------------ RESTART FILES --------------------------------
+pre_job.restart*     pre_job.restart*     restart file from a previous job
+-----------------------------------------------------------------------------------
+
+POST_CALC
+-----------------------------------------------------------------------------------
+SAVED                TEMPORARY            DEFINITION
+-----------------------------------------------------------------------------------
+jobname.out          log.lammps           lammps output - no diagnosis information
+jobname.restart/     *.restart*           restart files
+jobname.dump/        *.dump*              dump files
+-----------------------------------------------------------------------------------
+                         
+
+JOB_SUBMISSION_TEMPLATE

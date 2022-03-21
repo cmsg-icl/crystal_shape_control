@@ -1,0 +1,489 @@
+#!/bin/bash
+
+# General input format
+# gen_sub jobtype ND WT jobname (refname)
+# jobtype: str, crys / prop
+# ND:      int, number of nodes
+# WT:      str, walltime, hh:mm time format
+# jobname: str, input .d12 or .d3 file, with or without extension
+# refname: str, optional, name of the previous run
+
+# Instruction for input file
+
+function print_HOWTO_input_ {
+    cat << EOF
+    -------------------------------------------
+    To avoid ambiguity, the input file name can be set
+    by using the following options:
+
+     -in jobname.in
+    --in jobname.in
+     -in=jobname.in
+    --in=jobname.in
+
+    Examples:
+    `basename $0` -in mgo.in -wt 30:00 -nd 4 
+    `basename $0` --in=mgo.in -wt 30:00 -nd 4
+
+EOF
+}
+
+# Instruction for restart file
+
+function print_HOWTO_restart_ {
+    cat << EOF
+    -------------------------------------------
+    To avoid ambiguity, the input file name can be set
+    by using the following options:
+
+     -ref *.restart*
+    --ref *.restart*
+     -ref=*.restart*
+    --ref=*.restart*
+
+    Examples:
+    `basename $0` -in mgo.in -wt 30:00 -nd 4 -ref mgo-r0.restart 
+    `basename $0` -in mgo.in -wt 30:00 -nd 4 --ref=mgo-r0.restart
+
+EOF
+}
+
+# Instruction for ND
+
+function print_HOWTO_ND_ {
+    cat << EOF
+    -------------------------------------------
+    To avoid ambiguity, the number of nodes can be set 
+    by using the following options:
+
+     -nd int
+    --nd int
+     -nd=int
+    --nd=int
+        
+    Examples:
+    `basename $0` -in mgo.in -wt 30:00 -nd 4 
+    `basename $0` -in mgo.in -wt 30:00 --nd=4
+
+EOF
+}
+
+# Instruction for WT
+
+function print_HOWTO_WT_ {
+    cat << EOF
+    -------------------------------------------
+    To avoid ambiguity, the walltime can be set
+    by using the following options:
+
+     -wt hh:mm
+    --wt hh:mm
+     -wt=hh:mm
+    --wt=hh:mm
+
+    Examples:
+    `basename $0` -in mgo.in -wt 30:00 -nd 4 
+    `basename $0` -in mgo.in --wt=30:00 -nd 4
+
+EOF
+}
+
+# General instruction
+
+function print_HOWTO_ {
+    cat << EOF
+    ERROR:
+        number of input parameters does not meet the requirements or is ambiguous. 
+        please check your command. 
+
+    HOWTO: 
+        `basename $0` -in jobname.in -wt hh:mm -nd int -ref reffile.restart -- (other LAMMPS options)
+        in   --> str, main input file, must include '.in'
+        wt   --> str, walltime, hh:mm time format
+        nd   --> int, number of nodes
+        ref  --> str, optional, restart file, must include '.restart*'
+
+    The sequence of options is flexible.
+
+    Examples:
+        `basename $0` -in mgo.in -wt 30:00 -nd 4 -ref mgo-r0.restart 
+
+EOF
+    print_HOWTO_input_
+    print_HOWTO_restart_
+    print_HOWTO_ND_
+    print_HOWTO_WT_
+}
+
+# Check input & restart file from input
+
+function check_files_ {
+
+    if [[ -z ${JOBFILE} ]]; then
+        cat << EOF
+    ERROR: 
+        job input file must be specified.
+
+EOF
+    print_HOWTO_input_
+    exit
+    fi
+
+    if [[ ! -e ${JOBFILE} || ! -s ${JOBFILE} ]]; then
+        cat << EOF
+    ERROR: 
+        input file not found or empty, check your input. 
+
+EOF
+    print_HOWTO_input_
+    exit
+    fi
+
+	if [[ ${JOBFILE##*.} != 'in' ]]; then
+		cat << EOF
+	ERROR:
+		input file shoud be ended with '.in'. Check your input.
+	
+EOF
+	print_HOWTO_input_
+	exit
+	fi
+
+    if [[ ! -z ${REFNAME} ]]; then
+        if [[ ! -e ${REFNAME} || ! -s ${REFNAME} ]]; then
+            cat << EOF
+    ERROR: 
+        restart file not found or empty, check your input. 
+
+EOF
+        fi
+    fi
+}
+
+# Check ND from input
+
+function check_ND_ {
+
+    if [[ -z ${ND} ]]; then
+        cat << EOF
+    ERROR:
+        Number of nodes MUST BE specified.
+
+EOF
+        print_HOWTO_ND_
+        exit
+    fi
+
+    if [[ ${ND} -eq 0 ]]; then
+        cat << EOF
+    ERROR:
+        number of nodes has to be specified
+        no queue system file has been generated
+
+EOF
+        print_HOWTO_ND_
+        exit
+    fi
+
+    CHECK_IF_ND_IS_AN_INTEGER=`echo $ND | awk 'BEGIN{S="YES"};{
+        L=length($1);
+        for(i=1;i<=L;i++){
+            if(substr($1,i,1) !~  /[0-9]/ ){
+                S="NO";
+                exit
+            }
+        }};END{print S}'`
+
+    if [[ ${CHECK_IF_ND_IS_AN_INTEGER} == "NO" ]]; then
+        cat << EOF
+    ERROR:
+        the number of nodes has to be an integer number, 
+        please check the value: ${ND}
+
+EOF
+        exit
+    fi
+}
+
+# Check MT from input
+
+function check_WT_ {
+
+    separator=`echo ${WT} | grep ':'`
+
+    if [[ -z ${separator} ]]; then
+        cat << EOF
+    WARNING:
+        Separator not specified, any number will be regarded as minutes.
+
+EOF
+        WT="00:${WT}"
+    fi
+
+    if [[ -z ${WT} ]]; then
+        cat << EOF
+    WARNING:
+       wall time has to be specified
+       if not specified, the walltime is set to 12:00
+
+EOF
+        WT="12:00"
+    fi
+    CHECK_IF_WT_HAS_A_hhmm_FORMAT=`echo ${WT} | awk 'BEGIN{S="YES"};{
+        c=length($1)-match($1,":");
+        if(c!=2){S="NO";exit}};{
+        gsub(":","",$1);
+        L=length($1);
+        for(i=1;i<=L;i++){
+            if(substr($1,i,1) !~  /[0-9]/ ){
+                S="NO";
+                exit
+            }
+        }};END{print S}'`
+
+    if [[ ${CHECK_IF_WT_HAS_A_hhmm_FORMAT} == "NO" ]]; then
+        cat << EOF
+    ERROR:
+        the format of walltime has to be hh:mm 
+        please check the format: ${WT}
+
+EOF
+        exit
+    fi
+}
+
+# get inputs in command line style
+
+function get_input_ {
+
+    param_list=$(getopt -a -l in:,ref:,nd:,wt: -n "$0" -- ${in_var} 2> /dev/null) 
+
+    cat << EOF
+    INPUT parameters:
+        ${param_list}
+
+EOF
+
+    eval set -- "${param_list}"
+    OTHER_INPT=""
+    while [[ true ]]; do
+        case $1 in
+        --in ) 
+            shift; JOBFILE=$1; check_files_ ;;
+        --ref ) 
+            shift; REFNAME=$1; check_files_ ;;
+        --nd ) 
+            shift; ND=$1; check_ND_ ;;
+        --wt ) 
+            shift; WT=$1; check_WT_ ;;
+        -- ) 
+            shift;
+            while [[ ! -z $1 ]]; do
+                OTHER_INPT=`echo "${OTHER_INPT} $(echo $1)"`;
+                shift;
+            done; 
+            break ;;
+        * ) 
+            cat << EOF
+    ERROR: 
+        Format error in input list, check: 
+        ${param_list}
+
+EOF
+            exit ;;
+        esac
+        shift
+    done
+
+    cat << EOF
+    Formatted INPUT parameters:
+----------------------------------
+    input file    = ${JOBFILE}
+    restart file  = ${REFNAME}
+    nodes         = ${ND}
+    walltime      = ${WT}
+    other options = ${OTHER_INPT}
+----------------------------------
+
+EOF
+}
+
+# check the existing output files
+
+function check_out_ {
+    if [[ -e ${JOBNAME}.out && -s ${JOBNAME}.out ]]; then
+        cat << EOF
+    ERROR:
+        output file exists: ${JOBNAME}.out
+        please remove it or move it to a safer folder. 
+        Exiting.
+
+EOF
+        exit
+    fi
+
+    if [[ -e ${JOBNAME}.log && -s ${JOBNAME}.log ]]; then
+        cat << EOF
+    ERROR:
+        output file exists: ${JOBNAME}.log
+        please remove it or move it to a safer folder. 
+        Exiting.
+
+EOF
+        exit
+    fi
+}
+
+# check job execution scripts
+
+function check_scripts_ {
+    ls ${SCRIPTDIR}/${SCRIPT} > /dev/null 2>&1
+    if [[ $? == 1 ]]; then
+        cat << EOF
+    ERROR:
+        cannot find job execution script in ${SCRIPTDIR}/${SCRIPT}.
+        please check: ${SETFILE}
+
+EOF
+        exit
+    fi
+
+    ls ${SCRIPTDIR}/${POSCRIPT} > /dev/null 2>&1
+    if [[ $? == 1 ]]; then
+        cat << EOF
+    ERROR:
+        cannot find post processing script in ${SCRIPTDIR}/${POSCRIPT}.
+        please check: ${SETFILE}
+
+EOF
+        exit
+    fi
+}
+
+# get submission file template and necessary information
+
+function get_subtemplate_ {
+## template file
+    BG_TEMP=`grep -nw 'JOB_SUBMISSION_TEMPLATE' ${SETFILE}`
+    BG_TEMP=`echo "scale=0;${BG_TEMP%%:*}+2" | bc`
+
+    line_endflag=${BG_TEMP}
+    endflag=`awk NR==${line_endflag}'{print}' ${SETFILE}`
+
+    while [[ ${endflag} != *'------------------'* ]]; do
+        line_endflag=`echo "scale=0;${line_endflag}+1" | bc`
+        endflag=`awk NR==${line_endflag}'{print}' ${SETFILE}`
+    done
+
+    ED_TEMP=`echo "scale=0;${line_endflag}-1" | bc`
+    TEMPT=`sed -n "${BG_TEMP},${ED_TEMP}p" ${SETFILE}`
+}
+
+# get necessary information from settings file
+function get_subinfo_ {
+## generate jobname
+    JOBNAME=${JOBFILE%%.*}
+## get job executation script
+	SCRIPT=`echo $(grep -w -A 1 'LMP_SCRIPT' ${SETFILE} | tail -1)`
+## get post processing script
+	POSCRIPT=`echo $(grep -w -A 1 'POST_PROCESSING_SCRIPT' ${SETFILE} | tail -1)`
+## extension for submission file
+    SUB_EXT=`echo $(grep -w -A 1 'SUBMISSION_EXT' ${SETFILE} | tail -1)`
+    SUB_EXT=${SUB_EXT#*.}
+## number of processors per node
+    NCPU=`echo $(grep -w -A 1 'NCPU_PER_NODE' ${SETFILE} | tail -1)`
+    CHECK_IF_NCPU_IS_AN_INTEGER=`echo ${NCPU} | awk 'BEGIN{S="YES"};{
+        L=length($1);
+        for(i=1;i<=L;i++){
+            if(substr($1,i,1) !~  /[0-9]/ ){
+                S="NO";
+                exit
+            }
+        }};END{print S}'`
+    if [[ ${CHECK_IF_NCPU_IS_AN_INTEGER} == "NO" ]]; then
+        cat << EOF
+    ERROR:
+        the number of CPUs has to be hh:mm 
+        please check the keyword 'NCPU_PER_NODE' in: ${SETFILE}
+
+EOF
+        exit
+    fi
+## number of processors
+    NP=`echo "scale=0;${ND}*${NCPU}" | bc`
+## memory per node
+    MEM=`echo $(grep -w -A 1 'MEM_PER_NODE' ${SETFILE} | tail -1)`
+    MEM=${MEM%G*}
+    MEM=${MEM%g*}
+## Time spared for post processing
+    TOUT=`echo $(grep -w -A 1 'TIME_OUT' ${SETFILE} | tail -1)`
+}
+
+# generate submission file
+
+function generate_subfile_ {
+    get_subtemplate_
+    get_subinfo_
+    cat << EOF > ${JOBNAME}.${SUB_EXT}
+${TEMPT}
+EOF
+    
+## Calculate the timeout for runnning calculations
+    thr=${WT%:*}
+    tmn=${WT#*:}
+    TOUT=`echo "scale=0;${thr}*60+${tmn}-${TOUT}" | bc`
+	TOUT=`echo ${TOUT}m`
+## Add seconds for WT
+    WT="${WT}:00"
+## Edit jobname and refile input
+	JOBNAME_IN=`echo "-in ${JOBNAME}"`
+	if [[ ! -z ${REFNAME} ]]; then
+		REFNAME_IN=`echo "-ref ${REFNAME}"`
+	else
+		REFNAME_IN=""
+	fi
+## Edit template
+    sed -i "s|\${V_JOBNAME}|${JOBNAME}|g" ${JOBNAME}.${SUB_EXT}
+    sed -i "s|\${V_ND}|${ND}|g" ${JOBNAME}.${SUB_EXT}
+    sed -i "s|\${V_NCPU}|${NCPU}|g" ${JOBNAME}.${SUB_EXT}
+    sed -i "s|\${V_MEM}|${MEM}GB|g" ${JOBNAME}.${SUB_EXT}
+    sed -i "s|\${V_WT}|${WT}|g" ${JOBNAME}.${SUB_EXT}
+    sed -i "s|\${V_NP}|${NP}|g" ${JOBNAME}.${SUB_EXT}
+    # sed -i "s|\${V_BUDGET}|${BUDGET}|g" ${JOBNAME}.${SUB_EXT}
+    # sed -i "s|\${V_QOS}|${QOS}|g" ${JOBNAME}.${SUB_EXT}
+    # sed -i "s|\${V_PARTITION}|${PARTITION}|g" ${JOBNAME}.${SUB_EXT}
+    sed -i "s|\${V_TOUT}|${TOUT}|g" ${JOBNAME}.${SUB_EXT}
+    sed -i "s|\${V_SCRIPTDIR}|${SCRIPTDIR}|g" ${JOBNAME}.${SUB_EXT}
+    sed -i "s|\${V_SCRIPT}|${SCRIPT}|g" ${JOBNAME}.${SUB_EXT}
+    sed -i "s|\${V_JOBNAME_IN}|${JOBNAME_IN}|g" ${JOBNAME}.${SUB_EXT}
+    sed -i "s|\${V_REFNAME}|${REFNAME_IN}|g" ${JOBNAME}.${SUB_EXT}
+    sed -i "s|\${V_OTHER}|${OTHER_INPT}|g" ${JOBNAME}.${SUB_EXT}
+    sed -i "s|\${V_POSCRIPT}|${POSCRIPT}|g" ${JOBNAME}.${SUB_EXT}
+}
+
+# Main I/O function
+in_var="header "$@""
+INPDIR=`pwd`
+SCRIPTDIR=`echo ${0%/*}`
+SETFILE=${SCRIPTDIR}/settings
+
+get_input_
+check_scripts_
+generate_subfile_
+check_out_
+
+echo "job submission script         = " ${SCRIPT}
+echo "input directory               = " ${INPDIR}
+echo "input file                    = " ${JOBFILE}
+if [[ ! -z ${REFNAME} ]]; then
+    echo "reference file                = " ${REFNAME}
+fi
+echo "number of nodes requested     = " ${ND}
+echo "wall time                     = " ${WT}
+
+cat << EOF
+
+ file ${JOBNAME}.${SUB_EXT} has been generated.
+
+EOF
+exit
