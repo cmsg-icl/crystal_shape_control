@@ -1,12 +1,9 @@
 # Job submission scripts
 SUBMISSION_EXT
-.qsub
 
 NCPU_PER_NODE
-24
 
 MEM_PER_NODE
-50
 
 BUDGET_CODE
 
@@ -15,26 +12,20 @@ QOS
 PARTITION
 
 TIME_OUT
-3
 
 # Job execution scripts. 
 # NB: Should be kept at the same directory as 'settings' and 'gen_sub'!
 LMP_SCRIPT
-runPlmp
 
 POST_PROCESSING_SCRIPT
-postlmp
 
 JOB_TMPDIR
-/rds/general/ephemeral/user/hz1420/ephemeral
 
 
 # Executables
 EXEDIR
-module load  lammps/19Mar2020
 
 EXE_PLMP
-lmp_mpi
 
 EXE_LMP
 
@@ -63,48 +54,3 @@ jobname.dump/        *.dump*              dump files
                          
 
 JOB_SUBMISSION_TEMPLATE
------------------------------------------------------------------------------------
-#!/bin/bash  --login
-#PBS -N ${V_JOBNAME}
-#PBS -l select=${V_ND}:ncpus=${V_NCPU}:mpiprocs=${V_NCPU}:ompthreads=1:mem=${V_MEM}
-#PBS -l walltime=${V_WT}
-
-echo "<qsub_standard_output>"
-date
-echo "<qstat -f ${PBS_JOBID}>"
-qstat -f ${PBS_JOBID}
-echo "</qstat -f ${PBS_JOBID}>"
-
-# number of cores per node used
-export NCORES=${V_NCPU}
-# number of processes
-export NPROCESSES=${V_NP}
-
-# Make sure any symbolic links are resolved to absolute path
-export PBS_O_WORKDIR=$(readlink -f ${PBS_O_WORKDIR})
-
-# Set the number of threads to 1
-#   This prevents any system libraries from automatically
-#   using threading.
-export OMP_NUM_THREADS=1
-# env (Uncomment this line to get all environmental variables)
-echo "</qsub_standard_output>"
-
-# to sync nodes
-cd ${PBS_O_WORKDIR}
-# MPI dependends on modules - for lammps/19Mar2020
-# can be commended - dependents will be loaded when loading lammps/19Mar2020
-module load  intel-suite/2019.4
-module load  mpi/intel-2019
-
-# start calculation
-timeout ${V_TOUT} ${V_SCRIPTDIR}/${V_SCRIPT} ${V_JOBNAME_IN} ${V_REFNAME} -- ${V_OTHER}
-${V_SCRIPTDIR}/${V_POSCRIPT} ${V_JOBNAME_IN} ${V_REFNAME}
-
-###
-if [[ -f ./${V_JOBNAME}.run ]];then
-chmod 755 ./${V_JOBNAME}.run
-./${V_JOBNAME}.run
-fi
------------------------------------------------------------------------------------
-

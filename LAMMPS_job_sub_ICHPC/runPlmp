@@ -1,29 +1,46 @@
 #!/bin/bash
 
-# List of available formats & executables
+# get inputs in command line style
 
-SETFILE=`echo ${0%/*}`/settings
+function get_input_ {
 
-# Check temporary directory
+    ## Useful variables: JOBNAME, REFNAME, LMP_OPT: other options of lammps
 
-JOBTMPDIR=`echo $(grep -w -A 1 'JOB_TMPDIR' ${SETFILE} | tail -1)`
-JOBID=${PBS_JOBID%.*}
+    param_list=$(getopt -a -l in:,ref: -n "$0" -- ${in_var} 2> /dev/null) 
+    echo ${param_list}
 
-# No/too many input parameter
+    eval set -- "${param_list}"
+    LMP_OPT=""
+    while [[ true ]]; do
+        case $1 in
+        --in ) 
+            shift; JOBNAME=$1 ;;
+        --ref )  
+            shift; REFNAME=$1 ;;
+        -- ) 
+            shift;
+            while [[ ! -z $1 ]]; do
+                LMP_OPT=`echo "${LMP_OPT} $(echo $1)"`;
+                shift;
+            done; 
+            break;;
+        * ) 
+            echo "Error: input and options should be specified, please refer to the manual. ";
+            echo "Job terminated without calculation. ";
+            exit;;
+        esac
+        shift
+    done
+}
 
-if [[ $# < 1 ]]; then
-    echo "ERROR: No input. Job terminated without calculation."
-    exit
-fi
-if [[ $# > 2 ]]; then
-    echo "ERROR: Too many input. Job terminated without calculation."
-    exit
-fi
+# Reorganize input parameters
+
+in_var="header "$@""
+get_input_
 
 # Input and output file directories
 
-JOBNAME=`echo $1`
-OUTPUT=${JOBNAME}.out
+OUTPUT=${JOBNAME}.log
 
 if [[ -e ${OUTPUT} && -s ${OUTPUT} ]]; then
     echo "Output exists: ${OUTPUT}"
@@ -32,6 +49,15 @@ if [[ -e ${OUTPUT} && -s ${OUTPUT} ]]; then
 fi
 
 echo "printed output filename ${OUTPUT}"
+
+# List of available formats & executables
+
+SETFILE=`echo ${0%/*}`/settings
+
+# Check temporary directory
+
+JOBTMPDIR=`echo $(grep -w -A 1 'JOB_TMPDIR' ${SETFILE} | tail -1)`
+JOBID=${PBS_JOBID%.*}
 
 # Set executing command
 
@@ -43,11 +69,10 @@ MPIRUN_OPTIONS=""
 echo "mpi command: ${MPIRUN} ${MPIRUN_OPTIONS}"
 
 if [[ ${XDIR} == *'module load'* ]]; then
-    ${XDIR} ${LMP_TYPE} 2>&1 
-    LMPSCOMMAND="${MPIRUN} ${MPIRUN_OPTIONS} lmp_mpi"
-else
-    LMPSCOMMAND="${MPIRUN} ${MPIRUN_OPTIONS} ${XDIR}/${LMP_TYPE}"
+    ${XDIR} 2>&1 
 fi
+
+LMPCOMMAND="${MPIRUN} ${MPIRUN_OPTIONS} ${LMP_TYPE} -in ${JOBNAME}.in ${LMP_OPT}"
 
 # Temporary directory
 
@@ -58,7 +83,7 @@ echo "creating temporary directory ${JOBTMPDIR}"
 
 # Create temporary copy of the script for execution
 
-SCRIPT=`basename $0`
+SCRIPT='Job_script'
 sed '1,/^#tag_copy/d' $0 > ${JOBTMPDIR}/${SCRIPT}
 
 # Execute file and post processing
@@ -122,35 +147,38 @@ echo "temporary directory: ${JOBTMPDIR}"
 
 # Prepare input files
 
-## Restart file: pre_job.restart.stepnumber, edit the main input file
+## Restart file: refname.restart.stepnumber, edit the main input file
 
-if [[ $# > 1 ]]; then
-    PRE_JOB=`echo $2`
-    PRE_STEP=`echo ${2%.*}`
-    TMP_NAME="pre.restart.${PRE_STEP}"
+if [[ ! -z ${REFNAME} ]]; then
+
+    if [[ ${REFNAME%%.*} == ${JOBNAME} ]]; then
+        echo "Warning: Restart file has the same name as current job."
+    fi
+
+    if [[ ${REFNAME} == '*.restart*' ]]; then
+        echo "Error: Incorrect restart file name, '.restart*' pattern not found."
+        exit
+    fi
+
+    TMP_NAME=${REFNAME}
 
 ### Find the restart file
 
-    ls ${PRE_JOB} > /dev/null 2>&1 
-    if [[ ? != 0 ]]; then
-        PRE_JOB="${PRE_JOB#*.}.restart/${PRE_JOB}"
-    fi
-
-    cp ${INPDIR}/${PRE_JOB} ${JOBTMPDIR}/${TMP_NAME}
-    echo "Restart file found: ${INPDIR}/${PRE_JOB}, temporarily saved as ${JOBTMPDIR}/${TMP_NAME}" >> ${OUTDIR}/${OUTPUT} 2>&1
-    echo "Restart file found: ${INPDIR}/${PRE_JOB}, temporarily saved as ${JOBTMPDIR}/${TMP_NAME}" 
+    cp ${INPDIR}/${REFNAME} ${JOBTMPDIR}/${TMP_NAME}
+    echo "Restart file found: ${INPDIR}/${REFNAME}, temporarily saved as ${JOBTMPDIR}/${TMP_NAME}" >> ${OUTDIR}/${OUTPUT} 2>&1
+    echo "Restart file found: ${INPDIR}/${REFNAME}, temporarily saved as ${JOBTMPDIR}/${TMP_NAME}" 
 
     if [[ ! -z ${PCLIST} ]]; then
         for PC in ${PCLIST[@]}; do
-            ssh ${PC} "cp ${INPDIR}/${PRE_JOB} ${JOBTMPDIR}/${TMP_NAME}"
+            ssh ${PC} "cp ${INPDIR}/${REFNAME} ${JOBTMPDIR}/${TMP_NAME}"
             echo "File synchonised on ${PC} : ${JOBTMPDIR}/${TMP_NAME}"
         done
     fi
 
-    sed -i '/read_restart/d' ${JOBNAME}.in 
-    sed -i '1i # auto_generated read_restart line ' ${JOBNAME}.in
-    sed -i "1a read_restart    ${TMP_NAME}" ${JOBNAME}.in
-    sed -i "1a                            " ${JOBNAME}.in
+    sed -i '/read_restart/d' ${JOBNAME}.in 2> /dev/null
+    sed -i '1i\# auto_generated read_restart line ' ${JOBNAME}.in
+    sed -i "1a\ read_restart    ${TMP_NAME}" ${JOBNAME}.in
+    sed -i "1a\                           " ${JOBNAME}.in
 fi
 
 ## Read list
@@ -163,7 +191,7 @@ TMP_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $2)}' ${SETFILE}`
 
 ## Mandatory & optional files
 
-while [[ ${TMP_NAME} != 'OPTIONAL' ]]; do
+while [[ ${TMP_NAME} != 'RESTART' ]]; do
     SAVED_NAME="${JOBNAME}.${SAVED_NAME#*.}"
     TMP_NAME="${JOBNAME}.${TMP_NAME#*.}"
 
@@ -193,11 +221,16 @@ while [[ ${TMP_NAME} != 'OPTIONAL' ]]; do
     TMP_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $2)}' ${SETFILE}`
 done
 
+echo "All files are synchonised." >> ${OUTDIR}/${OUTPUT}
+
 # Launch calculations
 
+echo "" >> ${OUTDIR}/${OUTPUT}
 cd ${JOBTMPDIR}
-echo "Entering ${JOBTMPDIR}, job is about to be started."
+echo "Entering temporary directory ${JOBTMPDIR}" >> ${OUTDIR}/${OUTPUT}
+echo "Job name: ${JOBNAME} ID: ${PBS_JOBID} is about to start." >> ${OUTDIR}/${OUTPUT}
+echo "" >> ${OUTDIR}/${OUTPUT}
 
-${CRYCOMMAND} >> ${OUTDIR}/${OUTPUT} 2>&1
+${LMPCOMMAND} >> ${OUTDIR}/${OUTPUT} 2>&1
 
 exit

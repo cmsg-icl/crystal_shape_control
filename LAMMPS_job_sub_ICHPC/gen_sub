@@ -8,22 +8,42 @@
 # jobname: str, input .d12 or .d3 file, with or without extension
 # refname: str, optional, name of the previous run
 
-# Instruction for jobtype
+# Instruction for input file
 
-function print_HOWTO_jobtype_ {
+function print_HOWTO_input_ {
     cat << EOF
     -------------------------------------------
-    To avoid ambiguity, the job type can be set
+    To avoid ambiguity, the input file name can be set
     by using the following options:
 
-    crys
-    CRYS
-    prop
-    PROP
+     -in jobname.in
+    --in jobname.in
+     -in=jobname.in
+    --in=jobname.in
 
     Examples:
-    `basename $0` CRYS 16 wt=30:00 mgo.d12 
-    `basename $0` prop 16 WT=30:00 mgo.d12 
+    `basename $0` -in mgo.in -wt 30:00 -nd 4 
+    `basename $0` --in=mgo.in -wt 30:00 -nd 4
+
+EOF
+}
+
+# Instruction for restart file
+
+function print_HOWTO_restart_ {
+    cat << EOF
+    -------------------------------------------
+    To avoid ambiguity, the input file name can be set
+    by using the following options:
+
+     -ref *.restart*
+    --ref *.restart*
+     -ref=*.restart*
+    --ref=*.restart*
+
+    Examples:
+    `basename $0` -in mgo.in -wt 30:00 -nd 4 -ref mgo-r0.restart 
+    `basename $0` -in mgo.in -wt 30:00 -nd 4 --ref=mgo-r0.restart
 
 EOF
 }
@@ -36,12 +56,14 @@ function print_HOWTO_ND_ {
     To avoid ambiguity, the number of nodes can be set 
     by using the following options:
 
-    nd=
-    ND=
+     -nd int
+    --nd int
+     -nd=int
+    --nd=int
         
     Examples:
-    `basename $0` crys nd=16 30:00 mgo.d12 
-    `basename $0` crys ND=16 30:00 mgo.d12 
+    `basename $0` -in mgo.in -wt 30:00 -nd 4 
+    `basename $0` -in mgo.in -wt 30:00 --nd=4
 
 EOF
 }
@@ -54,12 +76,14 @@ function print_HOWTO_WT_ {
     To avoid ambiguity, the walltime can be set
     by using the following options:
 
-    wt=
-    WT=
+     -wt hh:mm
+    --wt hh:mm
+     -wt=hh:mm
+    --wt=hh:mm
 
     Examples:
-    `basename $0` crys 16 wt=30:00 mgo.d12 
-    `basename $0` crys 16 WT=30:00 mgo.d12 
+    `basename $0` -in mgo.in -wt 30:00 -nd 4 
+    `basename $0` -in mgo.in --wt=30:00 -nd 4
 
 EOF
 }
@@ -73,51 +97,82 @@ function print_HOWTO_ {
         please check your command. 
 
     HOWTO: 
-        `basename $0` jobtype ND WT jobname (refname)
-        jobtype --> str, crys / prop
-        ND      --> int, number of nodes
-        WT      --> str, walltime, hh:mm time format
-        jobname --> str, input .d12 or .d3 file, with or without extension
-        refname --> optional, name of the previous run, with or without extension
+        `basename $0` -in jobname.in -wt hh:mm -nd int -ref reffile.restart -- (other LAMMPS options)
+        in   --> str, main input file, must include '.in'
+        wt   --> str, walltime, hh:mm time format
+        nd   --> int, number of nodes
+        ref  --> str, optional, restart file, must include '.restart*'
+
+    The sequence of options is flexible.
 
     Examples:
-        `basename $0` 16 30:00 mgo-opt2.d12 mgo-opt1
+        `basename $0` -in mgo.in -wt 30:00 -nd 4 -ref mgo-r0.restart 
 
 EOF
-    print_HOWTO_jobtype_
+    print_HOWTO_input_
+    print_HOWTO_restart_
     print_HOWTO_ND_
     print_HOWTO_WT_
 }
 
-# Get jobtype from input & define the script
+# Check input & restart file from input
 
-function get_jobtype_ {
-    SETFILE=${SCRIPTDIR}/settings
+function check_files_ {
 
-    if [[ ${JOBTYPE} == 'crys' || ${JOBTYPE} == 'CRYS' ]]; then
-        JOBTYPE=crys
-        SCRIPT=`echo $(grep -w -A 1 'CRYSTAL_SCRIPT' ${SETFILE} | tail -1)`
-    elif [[ ${JOBTYPE} == 'prop' || ${JOBTYPE} == 'PROP' ]]; then
-        JOBTYPE=prop
-        SCRIPT=`echo $(grep -w -A 1 'PROPERTIES_SCRIPT' ${SETFILE} | tail -1)`
-    else
+    if [[ -z ${JOBFILE} ]]; then
         cat << EOF
     ERROR: 
-        the jobtype has to be either 'crys' or 'prop', 
-        please check the value: ${JOBTYPE}
+        job input file must be specified.
 
 EOF
-        print_HOWTO_jobtype_
-        exit
+    print_HOWTO_input_
+    exit
     fi
 
-    POSCRIPT=`echo $(grep -w -A 1 'POST_PROCESSING_SCRIPT' ${SETFILE} | tail -1)`
+    if [[ ! -e ${JOBFILE} || ! -s ${JOBFILE} ]]; then
+        cat << EOF
+    ERROR: 
+        input file not found or empty, check your input. 
+
+EOF
+    print_HOWTO_input_
+    exit
+    fi
+
+	if [[ ${JOBFILE##*.} != 'in' ]]; then
+		cat << EOF
+	ERROR:
+		input file shoud be ended with '.in'. Check your input.
+	
+EOF
+	print_HOWTO_input_
+	exit
+	fi
+
+    if [[ ! -z ${REFNAME} ]]; then
+        if [[ ! -e ${REFNAME} || ! -s ${REFNAME} ]]; then
+            cat << EOF
+    ERROR: 
+        restart file not found or empty, check your input. 
+
+EOF
+        fi
+    fi
 }
 
-# Get ND from input
+# Check ND from input
 
-function get_ND_ {
-    ND=${ND##*=}
+function check_ND_ {
+
+    if [[ -z ${ND} ]]; then
+        cat << EOF
+    ERROR:
+        Number of nodes MUST BE specified.
+
+EOF
+        print_HOWTO_ND_
+        exit
+    fi
 
     if [[ ${ND} -eq 0 ]]; then
         cat << EOF
@@ -150,10 +205,9 @@ EOF
     fi
 }
 
-# Get MT from input
+# Check MT from input
 
-function get_WT_ {
-    WT=${WT##*=}
+function check_WT_ {
 
     separator=`echo ${WT} | grep ':'`
 
@@ -198,69 +252,85 @@ EOF
     fi
 }
 
-# Get jobname and refname from input
+# get inputs in command line style
 
-function get_jobname_ {
-    INPDIR=`pwd`
-    if [[ $# -eq 4 ]]; then
-        JOBNAME=${JOBNAME%.*}
-    else
-        JOBNAME=${JOBNAME%.*}
-        REFNAME=${REFNAME%.*}
-    fi
-## check input
-    if [[ ${JOBTYPE} == 'crys' ]]; then
-        jobfile=${INPDIR}/${JOBNAME}.d12
-    else
-        jobfile=${INPDIR}/${JOBNAME}.d3
-    fi
-### input not exist
-    ls ${jobfile} > /dev/null 2>&1
-    if [[ $? == 1 ]]; then
-        cat << EOF
-    ERROR: 
-        input file does not exist. please check: ${JOBNAME}
+function get_input_ {
+
+    param_list=$(getopt -a -l in:,ref:,nd:,wt: -n "$0" -- ${in_var} 2> /dev/null) 
+
+    cat << EOF
+    INPUT parameters:
+        ${param_list}
 
 EOF
-        exit
-    fi
-### wrong extension
-    if [[ ! -e ${jobfile} || ! -s ${jobfile} ]]; then
-        cat << EOF
-    ERROR:
-        input file extension is not consistent with the jobtype specified. 
-        please check the jobtype: ${JOBTYPE} or the jobname: ${JOBNAME}
 
-        .d12 ---> CRYSTAL calculations
-        .d3  ---> PROPERTIES calculations
-
-EOF
-        exit
-    fi
-### output exists
-    if [[ -e ${INPDIR}/${JOBNAME}.out && -s ${INPDIR}/${JOBNAME}.out ]]; then
-        cat << EOF
-    ERROR:
-        output file ${JOBNAME}.out already exists in ${INPDIR}/. 
-        Please consider to move it to a safe place. 
-
-        Exit without performing calculations. 
-
-EOF
-        exit
-    fi
-## check reference data
-    if [[ ! -z ${REFNAME} ]]; then
-        ls "${INPDIR}/${REFNAME}*" > /dev/null 2>&1
-        if [[ $? == 1 ]]; then
+    eval set -- "${param_list}"
+    OTHER_INPT=""
+    while [[ true ]]; do
+        case $1 in
+        --in ) 
+            shift; JOBFILE=$1; check_files_ ;;
+        --ref ) 
+            shift; REFNAME=$1; check_files_ ;;
+        --nd ) 
+            shift; ND=$1; check_ND_ ;;
+        --wt ) 
+            shift; WT=$1; check_WT_ ;;
+        -- ) 
+            shift;
+            while [[ ! -z $1 ]]; do
+                OTHER_INPT=`echo "${OTHER_INPT} $(echo $1)"`;
+                shift;
+            done; 
+            break ;;
+        * ) 
             cat << EOF
+    ERROR: 
+        Format error in input list, check: 
+        ${param_list}
+
+EOF
+            exit ;;
+        esac
+        shift
+    done
+
+    cat << EOF
+    Formatted INPUT parameters:
+----------------------------------
+    input file    = ${JOBFILE}
+    restart file  = ${REFNAME}
+    nodes         = ${ND}
+    walltime      = ${WT}
+    other options = ${OTHER_INPT}
+----------------------------------
+
+EOF
+}
+
+# check the existing output files
+
+function check_out_ {
+    if [[ -e ${JOBNAME}.out && -s ${JOBNAME}.out ]]; then
+        cat << EOF
     ERROR:
-        reference data not found in ${INPDIR}, 
-        please check: ${REFNAME}
+        output file exists: ${JOBNAME}.out
+        please remove it or move it to a safer folder. 
+        Exiting.
 
 EOF
         exit
-        fi
+    fi
+
+    if [[ -e ${JOBNAME}.log && -s ${JOBNAME}.log ]]; then
+        cat << EOF
+    ERROR:
+        output file exists: ${JOBNAME}.log
+        please remove it or move it to a safer folder. 
+        Exiting.
+
+EOF
+        exit
     fi
 }
 
@@ -311,6 +381,12 @@ function get_subtemplate_ {
 
 # get necessary information from settings file
 function get_subinfo_ {
+## generate jobname
+    JOBNAME=${JOBFILE%%.*}
+## get job executation script
+	SCRIPT=`echo $(grep -w -A 1 'LMP_SCRIPT' ${SETFILE} | tail -1)`
+## get post processing script
+	POSCRIPT=`echo $(grep -w -A 1 'POST_PROCESSING_SCRIPT' ${SETFILE} | tail -1)`
 ## extension for submission file
     SUB_EXT=`echo $(grep -w -A 1 'SUBMISSION_EXT' ${SETFILE} | tail -1)`
     SUB_EXT=${SUB_EXT#*.}
@@ -339,12 +415,6 @@ EOF
     MEM=`echo $(grep -w -A 1 'MEM_PER_NODE' ${SETFILE} | tail -1)`
     MEM=${MEM%G*}
     MEM=${MEM%g*}
-# ## Budget code
-#     BUDGET=`echo $(grep -w -A 1 'BUDGET_CODE' ${SETFILE} | tail -1)`
-# ## Quality of service
-#     QOS=`echo $(grep -w -A 1 'QOS' ${SETFILE} | tail -1)`
-# ## Partition of service
-#     QOS=`echo $(grep -w -A 1 'PARTITION' ${SETFILE} | tail -1)`
 ## Time spared for post processing
     TOUT=`echo $(grep -w -A 1 'TIME_OUT' ${SETFILE} | tail -1)`
 }
@@ -365,7 +435,14 @@ EOF
 	TOUT=`echo ${TOUT}m`
 ## Add seconds for WT
     WT="${WT}:00"
-
+## Edit jobname and refile input
+	JOBNAME_IN=`echo "-in ${JOBNAME}"`
+	if [[ ! -z ${REFNAME} ]]; then
+		REFNAME_IN=`echo "-ref ${REFNAME}"`
+	else
+		REFNAME_IN=""
+	fi
+## Edit template
     sed -i "s|\${V_JOBNAME}|${JOBNAME}|g" ${JOBNAME}.${SUB_EXT}
     sed -i "s|\${V_ND}|${ND}|g" ${JOBNAME}.${SUB_EXT}
     sed -i "s|\${V_NCPU}|${NCPU}|g" ${JOBNAME}.${SUB_EXT}
@@ -378,46 +455,31 @@ EOF
     sed -i "s|\${V_TOUT}|${TOUT}|g" ${JOBNAME}.${SUB_EXT}
     sed -i "s|\${V_SCRIPTDIR}|${SCRIPTDIR}|g" ${JOBNAME}.${SUB_EXT}
     sed -i "s|\${V_SCRIPT}|${SCRIPT}|g" ${JOBNAME}.${SUB_EXT}
-    sed -i "s|\${V_REFNAME}|${REFNAME}|g" ${JOBNAME}.${SUB_EXT}
+    sed -i "s|\${V_JOBNAME_IN}|${JOBNAME_IN}|g" ${JOBNAME}.${SUB_EXT}
+    sed -i "s|\${V_REFNAME}|${REFNAME_IN}|g" ${JOBNAME}.${SUB_EXT}
+    sed -i "s|\${V_OTHER}|${OTHER_INPT}|g" ${JOBNAME}.${SUB_EXT}
     sed -i "s|\${V_POSCRIPT}|${POSCRIPT}|g" ${JOBNAME}.${SUB_EXT}
-    sed -i "s|\${V_JOBTYPE}|${JOBTYPE}|g" ${JOBNAME}.${SUB_EXT}
 }
 
 # Main I/O function
-
-if [[ $# > 5 || $# < 4 ]]; then
-    print_HOWTO_
-    exit
-fi
-
+in_var="header "$@""
+INPDIR=`pwd`
 SCRIPTDIR=`echo ${0%/*}`
-JOBTYPE=$1
-ND=$2
-WT=$3
-JOBNAME=$4
-if [[ $# -eq 5 ]]; then
-	REFNAME=$5
-else
-	REFNAME=""
-fi
+SETFILE=${SCRIPTDIR}/settings
 
-get_jobtype_
-get_ND_
-get_WT_
-get_jobname_
+get_input_
 check_scripts_
+generate_subfile_
+check_out_
 
-echo "jobtype                       = " ${JOBTYPE}
 echo "job submission script         = " ${SCRIPT}
-echo "number of nodes requested     = " ${ND}
-echo "wall time                     = " ${WT}
 echo "input directory               = " ${INPDIR}
-echo "input file                    = " ${JOBNAME}
+echo "input file                    = " ${JOBFILE}
 if [[ ! -z ${REFNAME} ]]; then
     echo "reference file                = " ${REFNAME}
 fi
-
-generate_subfile_
+echo "number of nodes requested     = " ${ND}
+echo "wall time                     = " ${WT}
 
 cat << EOF
 

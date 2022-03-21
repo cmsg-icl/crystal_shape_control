@@ -15,16 +15,15 @@ function welcome_msg {
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
-CRYSTAL17 job submitter for Imperial HPC - Setting up
+LAMMPS job submitter for Imperial HPC - Setting up
 
 Job submitter installed at: `date`
-Job submitter edition:      v0.2
+Job submitter edition:      v0.1
 Supported job scheduler:    PBS
 
-By Spica-Vir, Mar. 16-22, ICL, spica.h.zhou@gmail.com
+By Spica-Vir, Mar. 21-22, ICL, spica.h.zhou@gmail.com
 
-Developed based on Dr G.Mallia's scripts on Imperial cluster
-Special thanks to G.Mallia & N.M.Harrison
+Special thanks to G.Mallia, N.M.Harrison, A. Arber
 
 EOF
 }
@@ -33,7 +32,7 @@ function get_scriptdir {
     cat << EOF
 ================================================================================
     Note: all scripts should be placed into the same directory!
-    Please specify your installation path (by default ${HOME}/runCRYSTAL/):
+    Please specify your installation path (by default ${HOME}/runLAMMPS/):
 
 EOF
 
@@ -41,7 +40,7 @@ EOF
     SCRIPTDIR=`echo ${SCRIPTDIR}`
 
 	if [[ -z ${SCRIPTDIR} ]]; then
-        SCRIPTDIR=${HOME}/runCRYSTAL/
+        SCRIPTDIR=${HOME}/runLAMMPS/
     fi
 
 	if [[ ${SCRIPTDIR: -1} == '/' ]]; then
@@ -71,7 +70,8 @@ EOF
 function get_exedir {
     cat << EOF
 ================================================================================
-    Please specify the directory of CRYSTAL exectuables (by default cry17gnu v2.2):
+    Please specify the directory of LAMMPS exectuables, 
+    or the command to load lammps modules (by default module load  lammps/19Mar2020):
 
 EOF
     
@@ -79,16 +79,28 @@ EOF
     EXEDIR=`echo ${EXEDIR}`
 
     if [[ -z ${EXEDIR} ]]; then
-        EXEDIR=/rds/general/user/gmallia/home/CRYSTAL17_cx1/v2.2gnu/bin/Linux-mpigfortran_MPP/Xeon___mpich__3.2.1
+        EXEDIR='module load  lammps/19Mar2020'
     fi
 
-    if [[ ! -s ${EXEDIR} || ! -e ${EXEDIR} ]]; then
+    if [[ (! -s ${EXEDIR} || ! -e ${EXEDIR}) && (${EXEDIR} != *'module load'*) ]]; then
         cat << EOF
 --------------------------------------------------------------------------------
-    Error: Directory does not exist. Exiting current job. 
+    Error: Directory or command does not exist. Exiting current job. 
 
 EOF
         exit
+    fi
+
+    if [[ ${EXEDIR} == *'module load'* ]]; then
+        ${EXEDIR} > /dev/null 2>&1
+        if [[ $? != 0 ]]; then
+                    cat << EOF
+--------------------------------------------------------------------------------
+    Error: Module specified not available. Check your input: ${EXEDIR}
+
+EOF
+            exit
+        fi
     fi
 }
 
@@ -98,10 +110,9 @@ function copy_scripts {
     if [[ ${SCRIPTDIR} != ${curr_dir} ]]; then
         mkdir -p             ${SCRIPTDIR}
         cp gen_sub           ${SCRIPTDIR}/gen_sub
-        cp runcryP           ${SCRIPTDIR}/runcryP
-        cp runpropP          ${SCRIPTDIR}/runpropP
+        cp runPlmp           ${SCRIPTDIR}/runPlmp
         cp settings_template ${SCRIPTDIR}/settings
-        cp post_processing   ${SCRIPTDIR}/post_processing
+        cp postlmp           ${SCRIPTDIR}/postlmp
 	else
 		cp settings_template settings
     fi
@@ -115,21 +126,20 @@ EOF
 function set_settings {
     SETFILE=${SCRIPTDIR}/settings
     sed -i "/SUBMISSION_EXT/a .qsub" ${SETFILE}
-    sed -i "/NCPU_PER_NODE/a 48" ${SETFILE}
+    sed -i "/NCPU_PER_NODE/a 24" ${SETFILE}
     sed -i "/MEM_PER_NODE/a 50" ${SETFILE}
     sed -i "/TIME_OUT/a 3" ${SETFILE}
-    sed -i "/CRYSTAL_SCRIPT/a runcryP" ${SETFILE}
+    sed -i "/LMP_SCRIPT/a runPlmp" ${SETFILE}
     sed -i "/PROPERTIES_SCRIPT/a runpropP" ${SETFILE}
-    sed -i "/POST_PROCESSING_SCRIPT/a post_processing" ${SETFILE}
+    sed -i "/POST_PROCESSING_SCRIPT/a postlmp" ${SETFILE}
     sed -i "/JOB_TMPDIR/a \/rds\/general\/ephemeral\/user\/${USER}\/ephemeral" ${SETFILE}
     sed -i "/EXEDIR/a ${EXEDIR}" ${SETFILE}
-    sed -i "/EXE_PCRYSTAL/a Pcrystal" ${SETFILE}
-    sed -i "/EXE_MPP/a MPPcrystal" ${SETFILE}
-    sed -i "/EXE_PPROPERTIES/a Pproperties" ${SETFILE}
+    sed -i "/EXE_PLMP/a lmp_mpi" ${SETFILE}
+    # sed -i "/EXE_LMP/a lmp" ${SETFILE}
 
 # Job submission file template - should be placed at the end of file
     cat << EOF >> ${SETFILE}
-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
 #!/bin/bash  --login
 #PBS -N \${V_JOBNAME}
 #PBS -l select=\${V_ND}:ncpus=\${V_NCPU}:mpiprocs=\${V_NCPU}:ompthreads=1:mem=\${V_MEM}
@@ -153,28 +163,26 @@ export PBS_O_WORKDIR=\$(readlink -f \${PBS_O_WORKDIR})
 #   This prevents any system libraries from automatically
 #   using threading.
 export OMP_NUM_THREADS=1
-env
+# env (Uncomment this line to get all environmental variables)
 echo "</qsub_standard_output>"
 
-#to sync nodes
+# to sync nodes
 cd \${PBS_O_WORKDIR}
-touch wood
-export MODULEPATH=\$MODULEPATH:\${HOME}/../../gmallia/home/CRYSTAL17_cx1/v2.2gnu/modules
-echo "MODULEPATH= "\${MODULEPATH}
-echo Initial list of module loaded
-module list -l
-module load  mpich/3.2.1
+# MPI dependends on modules - for lammps/19Mar2020
+# can be commended - dependents will be loaded when loading lammps/19Mar2020
+module load  intel-suite/2019.4
+module load  mpi/intel-2019
 
 # start calculation
-timeout \${V_TOUT} \${V_SCRIPTDIR}/\${V_SCRIPT} \${V_JOBNAME} \${V_REFNAME}
-\${V_SCRIPTDIR}/\${V_POSCRIPT} \${V_JOBTYPE} \${V_JOBNAME}
+timeout \${V_TOUT} \${V_SCRIPTDIR}/\${V_SCRIPT} \${V_JOBNAME_IN} \${V_REFNAME} -- \${V_OTHER}
+\${V_SCRIPTDIR}/\${V_POSCRIPT} \${V_JOBNAME_IN} \${V_REFNAME}
 
 ###
 if [[ -f ./\${V_JOBNAME}.run ]];then
 chmod 755 ./\${V_JOBNAME}.run
 ./\${V_JOBNAME}.run
 fi
-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
 
 EOF
     cat << EOF
@@ -186,16 +194,14 @@ EOF
 }
 
 function set_commands {
-    sed -i '/CRYSTAL job submitter settings/d' ${HOME}/.bashrc
-    sed -i '/Pcry=/d' ${HOME}/.bashrc
-    sed -i '/Pprop=/d' ${HOME}/.bashrc
-    sed -i '/setfile=/d' ${HOME}/.bashrc
+    sed -i '/LAMMPS job submitter settings/d' ${HOME}/.bashrc
+    sed -i '/Plmp=/d' ${HOME}/.bashrc
+    sed -i '/setlmp=/d' ${HOME}/.bashrc
 
-    echo "# >>> CRYSTAL job submitter settings >>>" >> ${HOME}/.bashrc
-    echo "alias Pcry='${SCRIPTDIR}/gen_sub crys'" >> ${HOME}/.bashrc
-    echo "alias Pprop='${SCRIPTDIR}/gen_sub prop'" >> ${HOME}/.bashrc
-    echo "alias setfile='cat ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "# <<< finish CRYSTAL job submitter settings <<<" >> ${HOME}/.bashrc
+    echo "# >>> LAMMPS job submitter settings >>>" >> ${HOME}/.bashrc
+    echo "alias Plmp='${SCRIPTDIR}/gen_sub'" >> ${HOME}/.bashrc
+    echo "alias setlmp='cat ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
+    echo "# <<< finish LAMMPS job submitter settings <<<" >> ${HOME}/.bashrc
 
     source ${HOME}/.bashrc
 
@@ -203,25 +209,20 @@ function set_commands {
 ================================================================================
     User defined commands set, including: 
 
-    Pcry - executing parallel crystal calculations (Pcrystal and MPP)
+    Plmp - executing parallel LAMMPS calculations
 
-        Pcry ND WT jobname [refname]
+        Plmp -in <input> -wt <walltime> -nd <node> -ref <restart> -- <other LAMMPS options>
 
-        ND:       int, number of nodes
-        WT:       str, walltime, hh:mm format
-        jobname:  str, name of input .d12 file
-        refname:  str, optional, name of the previous job
+         -in:  str, main input file, must include '.in'
+         -wt:  str, walltime, hh:mm format
+         -nd:  int, number of nodes
+        -ref:  str, optional, restart file
+          --:  str, optional, other LAMMPS options behind this label
 
-    Pprop - executing parallel properties calculations (Pproperties)
+        the sequence of -in, -wt, -nd, -ref can be changed. '--' should always
+        be placed at the end. 
 
-        Pprop ND WT jobname SCFname
-
-        ND:       int, number of nodes
-        WT:       str, walltime, hh:mm format
-        jobname:  str, name of input .d3 file
-        SCFname:  str, optional, name of the previous 'crystal' job
-
-    setfile - print the file 'settings'
+    setlmp - print the file 'settings'
 	
 ================================================================================
 EOF
