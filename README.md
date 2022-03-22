@@ -12,4 +12,4 @@ The repository for Imperial-BASF research project on multi-scale modelling of mo
 * [LAMMPS](https://www.lammps.org/): Classical force field MD simulator. 
 
 ## Students:
-H. Zhou (Yr1 PhD, GitHub page: [Spica-Vir](https://github.com/Spica-Vir)), A. Arber (MRes)
+H. Zhou (Chem. Dept. Yr1 PhD, GitHub: [Spica-Vir](https://github.com/Spica-Vir)), A. Arber (IMSE MRes), K. Tallat-Kelpsa (IMSE MRes)
