@@ -177,8 +177,7 @@ if [[ ! -z ${REFNAME} ]]; then
 
     sed -i '/read_restart/d' ${JOBNAME}.in 2> /dev/null
     sed -i '1i\# auto_generated read_restart line ' ${JOBNAME}.in
-    sed -i "1a\ read_restart    ${TMP_NAME}" ${JOBNAME}.in
-    sed -i "1a\                           " ${JOBNAME}.in
+    sed -i "1a\read_restart    ${TMP_NAME}" ${JOBNAME}.in
 fi
 
 ## Read list

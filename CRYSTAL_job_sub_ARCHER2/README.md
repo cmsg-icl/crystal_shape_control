@@ -1,6 +1,6 @@
 # Crystal job submitter - ARCHER2 version
 
-Crystal job submitter for [ARCHER2](https://www.archer2.ac.uk/), Slurm job scheduler. Similar to the PBS version on Imperial HPC.  
+[Crystal](https://www.crystal.unito.it/index.php) job submitter for [ARCHER2](https://www.archer2.ac.uk/), Slurm job scheduler. Similar to the PBS version on Imperial HPC.  
 
 ## Install
 
@@ -88,7 +88,7 @@ Equivalent examples:
 
 Then submit files. 
 
-3. `setfile` - print the file `settings`. No input required.
+3. `setcrys` - print the file `settings`. No input required.
 
 ## Script list
 

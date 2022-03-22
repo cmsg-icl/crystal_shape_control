@@ -1,6 +1,6 @@
 # Crystal job submitter - Imperial Cluster version
 
-Crystal job submitter for [Imperial Cluster](https://www.imperial.ac.uk/admin-services/ict/self-service/research-support/rcs/), PBS job scheduler.  
+[Crystal](https://www.crystal.unito.it/index.php) job submitter for [Imperial Cluster](https://www.imperial.ac.uk/admin-services/ict/self-service/research-support/rcs/), PBS job scheduler.  
 
 ## Install
 
@@ -77,7 +77,7 @@ Equivalent examples:
 
 Then submit files. 
 
-3. `setfile` - print the file `settings`. No input required.
+3. `setcrys` - print the file `settings`. No input required.
 
 ## Script list
 
@@ -102,15 +102,15 @@ Keywords used for the script `settings` are listed in the table below. Any chang
 |:------------------------|:---------------:|:-----------|
 | SUBMISSION_EXT          | .qsub           | extension of job submission script |
 | NCPU_PER_NODE           | 48              | Number of processors per node |
-| MEM_PER_NODE            | 50              | Allocated memory per node |
+| MEM_PER_NODE            | 50              | Unit: GB. Allocated memory per node |
 | BUDGET_CODE             | -               | Budget code of a research project, for ARCHER2|
-| QOS                     | standard        | Quality of service, for ARCHER2 |
-| PARTITION               | standard        | Partition of jobs, for ARCHER2 |
+| QOS                     | -               | Quality of service, for ARCHER2 |
+| PARTITION               | -               | Partition of jobs, for ARCHER2 |
 | TIME_OUT                | 3               | Unit: min. Time spared for post processing |
 | CRYSTAL_SCRIPT          | runcryP         | Script for crystal type calculations |
 | PROPERTIES_SCRIPT       | runpropP        | Script for properties type calculations |
 | POST_PROCESSING_SCRIPT  | post_processing | Post processing script |
-| JOB_TMPDIR              | /rds/general/ephemeral/user/hz1420/ephemeral | Temporary directory for calculations |
+| JOB_TMPDIR              | /rds/general/ephemeral/user/${USER}/ephemeral | Temporary directory for calculations |
 | EXEDIR                  | /rds/general/user/gmallia/home/CRYSTAL17_cx1/v2.2gnu/bin/Linux-mpigfortran_MPP/Xeon___mpich__3.2.1 | Directory of executables |
 | EXE_PCRYSTAL            | Pcrystal        | Executable for parallel crystal type calculation |
 | EXE_MPP                 | MPPcrystal      | Executable for massively parallel crystal type calculation |
