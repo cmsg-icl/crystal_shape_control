@@ -108,14 +108,14 @@ if [[ ! -z ${MASTER_WITH_PROC_0} ]]; then
 else
     ### start checkfile ###
     cat << EOF > ${JOBTMPDIR}/checkfile0
-    #!/bin/bash
-    JOBNAME=${JOBNAME}
-    OUTDIR=${OUTDIR}
-    OUTPUT=${OUTPUT}
-    JOBTMPDIR=${JOBTMPDIR}
-    cd  ${JOBTMPDIR}
+#!/bin/bash
+JOBNAME=${JOBNAME}
+OUTDIR=${OUTDIR}
+OUTPUT=${OUTPUT}
+JOBTMPDIR=${JOBTMPDIR}
+cd  ${JOBTMPDIR}
 EOF
-    sed '1,/^#tag_s/d;/^#tag_e/,$d'  ${JOBTMPDIR}/Job_script >> ${JOBTMPDIR}/checkfile0
+    sed '1,/^#tag_s/d;/^#tag_e/,$d'  $0 >> ${JOBTMPDIR}/checkfile0
     chmod 755 ${JOBTMPDIR}/checkfile0
     hostname
     echo '<checkfile0>'
