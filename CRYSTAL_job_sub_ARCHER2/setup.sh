@@ -162,12 +162,12 @@ function set_commands {
     sed -i '/CRYSTAL job submitter settings/d' ${HOME}/.bashrc
     sed -i '/Pcry=/d' ${HOME}/.bashrc
     sed -i '/Pprop=/d' ${HOME}/.bashrc
-    sed -i '/setfile=/d' ${HOME}/.bashrc
+    sed -i '/setcrys=/d' ${HOME}/.bashrc
 
     echo "# >>> CRYSTAL job submitter settings >>>" >> ${HOME}/.bashrc
     echo "alias Pcry='${SCRIPTDIR}/gen_sub crys'" >> ${HOME}/.bashrc
     echo "alias Pprop='${SCRIPTDIR}/gen_sub prop'" >> ${HOME}/.bashrc
-    echo "alias setfile='cat ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
+    echo "alias setcrys='cat ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
     echo "# <<< finish CRYSTAL job submitter settings <<<" >> ${HOME}/.bashrc
 
     source ${HOME}/.bashrc
@@ -194,7 +194,7 @@ function set_commands {
         jobname:  str, name of input .d3 file
         SCFname:  str, optional, name of the previous 'crystal' job
 
-    setfile - print the file 'settings'
+    setcrys - print the file 'settings'
 	
 ================================================================================
 EOF
