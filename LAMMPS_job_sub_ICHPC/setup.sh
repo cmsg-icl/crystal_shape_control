@@ -18,7 +18,7 @@ function welcome_msg {
 LAMMPS job submitter for Imperial HPC - Setting up
 
 Job submitter installed at: `date`
-Job submitter edition:      v0.1
+Job submitter edition:      v0.1.1
 Supported job scheduler:    PBS
 
 By Spica-Vir, Mar. 21-22, ICL, spica.h.zhou@gmail.com
@@ -200,6 +200,7 @@ function set_commands {
 
     echo "# >>> LAMMPS job submitter settings >>>" >> ${HOME}/.bashrc
     echo "alias Plmp='${SCRIPTDIR}/gen_sub'" >> ${HOME}/.bashrc
+	echo "chmod 777 ${SCRIPTDIR}/gen_sub" >> ${HOME}/.bashrc
     echo "alias setlmp='cat ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
     echo "# <<< finish LAMMPS job submitter settings <<<" >> ${HOME}/.bashrc
 
