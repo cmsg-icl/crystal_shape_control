@@ -200,8 +200,10 @@ function set_commands {
 
     echo "# >>> LAMMPS job submitter settings >>>" >> ${HOME}/.bashrc
     echo "alias Plmp='${SCRIPTDIR}/gen_sub'" >> ${HOME}/.bashrc
-	echo "chmod 777 ${SCRIPTDIR}/gen_sub" >> ${HOME}/.bashrc
     echo "alias setlmp='cat ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
+	echo "chmod 777 ${SCRIPTDIR}/gen_sub" >> ${HOME}/.bashrc
+	echo "chmod 777 ${SCRIPTDIR}/runPlmp" >> ${HOME}/.bashrc
+	echo "chmod 777 ${SCRIPTDIR}/postlmp" >> ${HOME}/.bashrc 
     echo "# <<< finish LAMMPS job submitter settings <<<" >> ${HOME}/.bashrc
 
     source ${HOME}/.bashrc

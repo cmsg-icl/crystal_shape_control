@@ -70,9 +70,12 @@ echo "mpi command: ${MPIRUN} ${MPIRUN_OPTIONS}"
 
 if [[ ${XDIR} == *'module load'* ]]; then
     ${XDIR} 2>&1 
+else
+    LMP_TYPE=${XDIR}/${LMP_TYPE}
 fi
 
 LMPCOMMAND="${MPIRUN} ${MPIRUN_OPTIONS} ${LMP_TYPE} -in ${JOBNAME}.in ${LMP_OPT}"
+echo "Job execution command: ${LMPCOMMAND}"
 
 # Temporary directory
 
