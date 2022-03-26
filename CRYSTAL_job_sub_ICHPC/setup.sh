@@ -18,7 +18,7 @@ function welcome_msg {
 CRYSTAL17 job submitter for Imperial HPC - Setting up
 
 Job submitter installed at: `date`
-Job submitter edition:      v0.2.2
+Job submitter edition:      v0.2.3
 Supported job scheduler:    PBS
 
 By Spica-Vir, Mar. 18-22, ICL, spica.h.zhou@gmail.com
@@ -195,6 +195,10 @@ function set_commands {
     echo "alias Pcry='${SCRIPTDIR}/gen_sub crys'" >> ${HOME}/.bashrc
     echo "alias Pprop='${SCRIPTDIR}/gen_sub prop'" >> ${HOME}/.bashrc
     echo "alias setcrys='cat ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
+    echo "chmod 777 ${SCRIPTDIR}/gen_sub" >> ${HOME}/.bashrc
+    echo "chmod 777 ${SCRIPTDIR}/runcryP" >> ${HOME}/.bashrc
+    echo "chmod 777 ${SCRIPTDIR}/runpropP" >> ${HOME}/.bashrc 
+    echo "chmod 777 ${SCRIPTDIR}/post_processing" >> ${HOME}/.bashrc 
     echo "# <<< finish CRYSTAL job submitter settings <<<" >> ${HOME}/.bashrc
 
     source ${HOME}/.bashrc
