@@ -4,9 +4,9 @@
 
 function get_input_ {
 
-    ## Useful variables: JOBNAME, REFNAME
+    ## Useful variables: JOBNAME
 
-    param_list=$(getopt -a -l in:,ref: -n "$0" -- ${in_var} 2> /dev/null) 
+    param_list=$(getopt -a -l in: -n "$0" -- ${in_var} 2> /dev/null) 
     echo ${param_list}
 
     eval set -- "${param_list}"
@@ -15,8 +15,6 @@ function get_input_ {
         case $1 in
         --in ) 
             shift; JOBNAME=$1 ;;
-        --ref ) 
-            shift; REFNAME=$1 ;;
         -- ) 
             break;;
         * ) 
@@ -33,6 +31,7 @@ in_var="header "$@""
 get_input_
 SETFILE=`echo ${0%/*}`/settings
 JOBID=${PBS_JOBID%.*}
+INPDIR=`pwd`
 OUTDIR=`pwd`
 OUTPUT=${JOBNAME}.log
 JOBTMPDIR=`echo $(grep -w -A 1 'JOB_TMPDIR' ${SETFILE} | tail -1)`
@@ -44,6 +43,28 @@ echo -n "end_date " >> ${OUTDIR}/${OUTPUT}
 date >> ${OUTDIR}/${OUTPUT}
 
 #tag_start_for_checkfile
+# Remove external files
+
+LINE_EXT=`grep -nw 'FILE_EXT' ${SETFILE}`
+LINE_EXT=`echo "scale=0;${LINE_EXT%%:*}+4" | bc`
+
+COMMAND=`awk 'NR=="'${LINE_EXT}'"{printf("%s", $1)}' ${SETFILE}`
+
+while [[ ${COMMAND} != *'------------'* ]]; do
+    grep "${COMMAND}" ${INPDIR}/${JOBNAME}.in > /dev/null 2>&1 
+
+    if [[ $? == 0 ]]; then
+        lines=`sed -n "/${COMMAND}/=" ${INPDIR}/${JOBNAME}.in`
+        lines=(${lines// /})
+        for line in ${lines[@]}; do
+            EXT_NAME=`awk 'NR=='"${line}"'{printf "%s", $2}' ${INPDIR}/${JOBNAME}.in | sed 's/\"//g'`
+            rm ${EXT_NAME}
+        done
+    fi
+
+    LINE_EXT=`echo "scale=0;${LINE_EXT}+1" | bc`
+    COMMAND=`awk 'NR=="'${LINE_EXT}'"{printf("%s", $1)}' ${SETFILE}`
+done
 
 # Read POST_CALC list
 
@@ -69,16 +90,19 @@ while [[ ! -z ${TMP_NAME} ]]; do
     elif [[ ${SAVED_NAME: -1} = '/' ]]; then
         filelist=`find ${JOBTMPDIR} -name "${TMP_NAME}"`
         filelist=(${filelist//${JOBTMPDIR}\//})
-        if [[ ${#filelist[@]} > 0 ]]; then
+        if [[ ${#filelist[@]} > 1 ]]; then
             mkdir "${OUTDIR}/${SAVED_NAME}"
-            echo "File(s) identified: ${TMP_NAME}, saved in: ${OUTDIR}/${SAVED_NAME}" >> ${OUTDIR}/${OUTPUT} 2>&1
+            echo "Files identified: ${TMP_NAME}, saved in: ${OUTDIR}/${SAVED_NAME}" >> ${OUTDIR}/${OUTPUT} 2>&1
             for file in ${filelist[@]}; do
-                if [[ ${file} != ${REFNAME} ]]; then
-                    cp ${JOBTMPDIR}/${file} ${OUTDIR}/${SAVED_NAME}
-                    echo "${file} ${SAVED_NAME}" | awk '{printf("%-18s %-18s"),$1,$2}' >> ${OUTDIR}/${OUTPUT} 2>&1
-                    ls -l ${file} | awk '{printf("%-8s %s %s %s\n"),$5,$6,$7,$8}'>> ${OUTDIR}/${OUTPUT} 2>&1
-                fi
+                cp ${JOBTMPDIR}/${file} ${OUTDIR}/${SAVED_NAME}
+                echo "${file} ${SAVED_NAME}" | awk '{printf("%-18s %-18s"),$1,$2}' >> ${OUTDIR}/${OUTPUT} 2>&1
+                ls -l ${file} | awk '{printf("%-8s %s %s %s\n"),$5,$6,$7,$8}'>> ${OUTDIR}/${OUTPUT} 2>&1
             done
+        elif [[ ${#filelist[@]} -eq 1 ]]; then
+            echo "File identified: ${filelist[0]}, saved in: ${OUTDIR}/${filelist[0]}" >> ${OUTDIR}/${OUTPUT} 2>&1
+            cp ${JOBTMPDIR}/${filelist[0]} ${OUTDIR}/${filelist[0]}
+            echo "${filelist[0]} ${filelist[0]}" | awk '{printf("%-18s %-18s"),$1,$2}' >> ${OUTDIR}/${OUTPUT} 2>&1
+            ls -l ${filelist[0]} | awk '{printf("%-8s %s %s %s\n"),$5,$6,$7,$8}'>> ${OUTDIR}/${OUTPUT} 2>&1
         fi
     fi
 

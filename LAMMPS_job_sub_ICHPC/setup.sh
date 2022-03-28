@@ -18,12 +18,12 @@ function welcome_msg {
 LAMMPS job submitter for Imperial HPC - Setting up
 
 Job submitter installed at: `date`
-Job submitter edition:      v0.1.1
+Job submitter edition:      v1.0
 Supported job scheduler:    PBS
 
-By Spica-Vir, Mar. 21-22, ICL, spica.h.zhou@gmail.com
+By Spica-Vir, Mar. 28-22, ICL, spica.h.zhou@gmail.com
 
-Special thanks to G.Mallia, N.M.Harrison, A. Arber
+Special thanks to G.Mallia, N.M.Harrison, A. Arber, K. Tallat Kelpsa
 
 EOF
 }
@@ -174,8 +174,8 @@ module load  intel-suite/2019.4
 module load  mpi/intel-2019
 
 # start calculation
-timeout \${V_TOUT} \${V_SCRIPTDIR}/\${V_SCRIPT} \${V_JOBNAME_IN} \${V_REFNAME} -- \${V_OTHER}
-\${V_SCRIPTDIR}/\${V_POSCRIPT} \${V_JOBNAME_IN} \${V_REFNAME}
+timeout \${V_TOUT} \${V_SCRIPTDIR}/\${V_SCRIPT} -in \${V_JOBNAME} -- \${V_OTHER}
+\${V_SCRIPTDIR}/\${V_POSCRIPT} -in \${V_JOBNAME_IN}
 
 ###
 if [[ -f ./\${V_JOBNAME}.run ]];then
@@ -195,7 +195,9 @@ EOF
 
 function set_commands {
     sed -i '/LAMMPS job submitter settings/d' ${HOME}/.bashrc
-    sed -i '/Plmp=/d' ${HOME}/.bashrc
+    sed -i '/gen_sub/d' ${HOME}/.bashrc
+    sed -i '/runPlmp/d' ${HOME}/.bashrc
+    sed -i '/postlmp/d' ${HOME}/.bashrc
     sed -i '/setlmp=/d' ${HOME}/.bashrc
 
     echo "# >>> LAMMPS job submitter settings >>>" >> ${HOME}/.bashrc
@@ -214,15 +216,14 @@ function set_commands {
 
     Plmp - executing parallel LAMMPS calculations
 
-        Plmp -in <input> -wt <walltime> -nd <node> -ref <restart> -- <other LAMMPS options>
+        Plmp -in <input> -wt <walltime> -nd <node> -- <other LAMMPS options>
 
          -in:  str, main input file, must include '.in'
          -wt:  str, walltime, hh:mm format
          -nd:  int, number of nodes
-        -ref:  str, optional, restart file
           --:  str, optional, other LAMMPS options behind this label
 
-        the sequence of -in, -wt, -nd, -ref can be changed. '--' should always
+        the sequence of -in, -wt, -nd can be changed. '--' should always
         be placed at the end. 
 
     setlmp - print the file 'settings'

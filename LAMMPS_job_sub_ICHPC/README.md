@@ -26,21 +26,20 @@ Here are the user defined commands:
 1. `Plmp` - executing parallel LAMMPS calculations  
 
 ``` bash
-Plmp -in <input> -wt <walltime> -nd <node> -ref <restart> -- <opts>
+Plmp -in <input> -wt <walltime> -nd <node> -- <opts>
 ```
 
 `-in`       : str, main input file, must include '.in'  
 `-wt`       : str, walltime, hh:mm format  
 `-nd`       : int, number of nodes  
-`-ref`      : str, optional, restart file, including '.restart' is recommended  
 `-- <opts>` : str, optional, other LAMMPS options, in `-opt value` pairs  
 
-The sequence of `-in` `-wt` `-nd` `-ref` is arbitrary, but `-- <opts>` should always be placed at the end. The sequence within `<opts>` is arbitrary. 
+The sequence of `-in` `-wt` `-nd` is arbitrary, but `-- <opts>` should always be placed at the end. The sequence within `<opts>` is arbitrary. 
 
 Examples:
 
 ``` bash
-> Plmp -in input.in -wt 12:00 -nd 2 -ref pre_job.restart
+> Plmp -in input.in -wt 12:00 -nd 2
 > Plmp -in=input.in -wt=12:00 -nd=2 
 > Plmp -in input.in -wt 12:00 -nd 2 -- -screen screen.dump
 ```
