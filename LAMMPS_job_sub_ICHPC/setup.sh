@@ -109,7 +109,7 @@ function copy_scripts {
 
     if [[ ${SCRIPTDIR} != ${curr_dir} ]]; then
         mkdir -p             ${SCRIPTDIR}
-        cp gen_sub           ${SCRIPTDIR}/gen_sub
+        cp gen_sub_lmp       ${SCRIPTDIR}/gen_sub_lmp
         cp runPlmp           ${SCRIPTDIR}/runPlmp
         cp settings_template ${SCRIPTDIR}/settings
         cp postlmp           ${SCRIPTDIR}/postlmp
@@ -195,15 +195,15 @@ EOF
 
 function set_commands {
     sed -i '/LAMMPS job submitter settings/d' ${HOME}/.bashrc
-    sed -i '/gen_sub/d' ${HOME}/.bashrc
+    sed -i '/gen_sub_lmp/d' ${HOME}/.bashrc
     sed -i '/runPlmp/d' ${HOME}/.bashrc
     sed -i '/postlmp/d' ${HOME}/.bashrc
     sed -i '/setlmp=/d' ${HOME}/.bashrc
 
     echo "# >>> LAMMPS job submitter settings >>>" >> ${HOME}/.bashrc
-    echo "alias Plmp='${SCRIPTDIR}/gen_sub'" >> ${HOME}/.bashrc
+    echo "alias Plmp='${SCRIPTDIR}/gen_sub_lmp'" >> ${HOME}/.bashrc
     echo "alias setlmp='cat ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-	echo "chmod 777 ${SCRIPTDIR}/gen_sub" >> ${HOME}/.bashrc
+	echo "chmod 777 ${SCRIPTDIR}/gen_sub_lmp" >> ${HOME}/.bashrc
 	echo "chmod 777 ${SCRIPTDIR}/runPlmp" >> ${HOME}/.bashrc
 	echo "chmod 777 ${SCRIPTDIR}/postlmp" >> ${HOME}/.bashrc 
     echo "# <<< finish LAMMPS job submitter settings <<<" >> ${HOME}/.bashrc
