@@ -40,13 +40,13 @@ EOF
     read -p " " SCRIPTDIR
     SCRIPTDIR=`echo ${SCRIPTDIR}`
 
-	if [[ -z ${SCRIPTDIR} ]]; then
+    if [[ -z ${SCRIPTDIR} ]]; then
         SCRIPTDIR=${HOME}/runCRYSTAL/
     fi
 
-	if [[ ${SCRIPTDIR: -1} == '/' ]]; then
-		SCRIPTDIR=${SCRIPTDIR%/*}
-	fi
+    if [[ ${SCRIPTDIR: -1} == '/' ]]; then
+        SCRIPTDIR=${SCRIPTDIR%/*}
+    fi
 
     curr_dir=`pwd`
     if [[ ${curr_dir} == ${SCRIPTDIR} ]]; then
@@ -102,11 +102,11 @@ function copy_scripts {
         cp runpropP          ${SCRIPTDIR}/runpropP
         cp settings_template ${SCRIPTDIR}/settings
         cp post_processing   ${SCRIPTDIR}/post_processing
-	else
-		cp settings_template settings
+    else
+        cp settings_template settings
     fi
 
-	cat << EOF
+    cat << EOF
 ================================================================================
     modified scripts at ${SCRIPTDIR}/
 EOF
@@ -228,7 +228,7 @@ function set_commands {
         SCFname:  str, optional, name of the previous 'crystal' job
 
     setcrys - print the file 'settings'
-	
+    
 ================================================================================
 EOF
 }
