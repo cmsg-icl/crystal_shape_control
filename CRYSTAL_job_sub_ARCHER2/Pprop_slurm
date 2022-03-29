@@ -170,10 +170,10 @@ fi
 # Most critical one: fort.9 (named as fort.20 now)
 
 if [[ ! -e ${JOBTMPDIR}/fort.20 || ! -s ${JOBTMPDIR}/fort.20 ]]; then
-	echo "ERROR: ${JOBTMPDIR}/fort.9 not found or empty. Check ${INPDIR}/${PRE_JOB}.f9"
-	exit
+    echo "ERROR: ${JOBTMPDIR}/fort.9 not found or empty. Check ${INPDIR}/${PRE_JOB}.f9"
+    exit
 else
-	mv ${JOBTMPDIR}/fort.20 ${JOBTMPDIR}/fort.9
+    mv ${JOBTMPDIR}/fort.20 ${JOBTMPDIR}/fort.9
 fi
 
 # Launch calculations

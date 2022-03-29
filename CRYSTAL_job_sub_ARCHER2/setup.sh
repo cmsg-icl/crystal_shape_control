@@ -18,7 +18,7 @@ function welcome_msg {
 CRYSTAL17 job submitter for ARCHER2 - Setting up
 
 Job submitter installed at: `date`
-Job submitter edition:      v0.2.1
+Job submitter edition:      v0.3
 Supported job scheduler:    SLURM
 
 By Spica-Vir, Mar. 18-22, ICL, spica.h.zhou@gmail.com
@@ -40,13 +40,13 @@ EOF
     read -p " " SCRIPTDIR
     SCRIPTDIR=`echo ${SCRIPTDIR}`
 
-	if [[ -z ${SCRIPTDIR} ]]; then
+    if [[ -z ${SCRIPTDIR} ]]; then
         SCRIPTDIR=${HOME}/runCRYSTAL/
     fi
 
-	if [[ ${SCRIPTDIR: -1} == '/' ]]; then
-		SCRIPTDIR=${SCRIPTDIR%/*}
-	fi
+    if [[ ${SCRIPTDIR: -1} == '/' ]]; then
+        SCRIPTDIR=${SCRIPTDIR%/*}
+    fi
 
     curr_dir=`pwd`
     if [[ ${curr_dir} == ${SCRIPTDIR} ]]; then
@@ -93,16 +93,16 @@ function copy_scripts {
 
     if [[ ${SCRIPTDIR} != ${curr_dir} ]]; then
         mkdir -p             ${SCRIPTDIR}
-        cp gen_sub           ${SCRIPTDIR}/gen_sub
-        cp runcryP           ${SCRIPTDIR}/runcryP
-        cp runpropP          ${SCRIPTDIR}/runpropP
+        cp gen_sub_Scrys     ${SCRIPTDIR}/gen_sub_Scrys
+        cp Pcry_slurm        ${SCRIPTDIR}/Pcry_slurm
+        cp Pprop_slurm       ${SCRIPTDIR}/Pprop_slurm
         cp settings_template ${SCRIPTDIR}/settings
-        cp post_processing   ${SCRIPTDIR}/post_processing
-	else
-		cp settings_template settings
+        cp post_proc_slurm   ${SCRIPTDIR}/post_proc_slurm
+    else
+        cp settings_template settings
     fi
 
-	cat << EOF
+    cat << EOF
 ================================================================================
     modified scripts at ${SCRIPTDIR}/
 EOF
@@ -160,14 +160,20 @@ EOF
 
 function set_commands {
     sed -i '/CRYSTAL job submitter settings/d' ${HOME}/.bashrc
-    sed -i '/Pcry=/d' ${HOME}/.bashrc
-    sed -i '/Pprop=/d' ${HOME}/.bashrc
     sed -i '/setcrys=/d' ${HOME}/.bashrc
+    sed -i '/gen_sub_Scrys/d' ${HOME}/.bashrc
+    sed -i '/Pcry_slurm/d' ${HOME}/.bashrc
+    sed -i '/Pprop_slurm/d' ${HOME}/.bashrc
+    sed -i '/post_proc_slurm/d' ${HOME}/.bashrc
 
     echo "# >>> CRYSTAL job submitter settings >>>" >> ${HOME}/.bashrc
-    echo "alias Pcry='${SCRIPTDIR}/gen_sub crys'" >> ${HOME}/.bashrc
-    echo "alias Pprop='${SCRIPTDIR}/gen_sub prop'" >> ${HOME}/.bashrc
+    echo "alias Pcry='${SCRIPTDIR}/gen_sub_Scrys crys'" >> ${HOME}/.bashrc
+    echo "alias Pprop='${SCRIPTDIR}/gen_sub_Scrys prop'" >> ${HOME}/.bashrc
     echo "alias setcrys='cat ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
+    echo "chmod 777 ${SCRIPTDIR}/gen_sub_Scrys" >> ${HOME}/.bashrc
+    echo "chmod 777 ${SCRIPTDIR}/Pcry_slurm" >> ${HOME}/.bashrc
+    echo "chmod 777 ${SCRIPTDIR}/Pprop_slurm" >> ${HOME}/.bashrc 
+    echo "chmod 777 ${SCRIPTDIR}/post_proc_slurm" >> ${HOME}/.bashrc 
     echo "# <<< finish CRYSTAL job submitter settings <<<" >> ${HOME}/.bashrc
 
     source ${HOME}/.bashrc
@@ -195,7 +201,7 @@ function set_commands {
         SCFname:  str, optional, name of the previous 'crystal' job
 
     setcrys - print the file 'settings'
-	
+    
 ================================================================================
 EOF
 }

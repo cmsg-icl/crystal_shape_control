@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # General input format
-# gen_sub jobtype ND WT jobname (refname)
+# gen_sub_Scrys jobtype ND WT jobname (refname)
 # jobtype: str, crys / prop
 # ND:      int, number of nodes
 # WT:      str, walltime, hh:mm time format
@@ -362,7 +362,7 @@ EOF
     thr=${WT%:*}
     tmn=${WT#*:} 
     TOUT=`echo "scale=0;${thr}*60+${tmn}-${TOUT}" | bc`
-	TOUT=`echo ${TOUT}m`
+    TOUT=`echo ${TOUT}m`
 ## Add seconds for WT
     WT="${WT}:00"
 
@@ -396,9 +396,9 @@ ND=$2
 WT=$3
 JOBNAME=$4
 if [[ $# -eq 5 ]]; then
-	REFNAME=$5
+    REFNAME=$5
 else
-	REFNAME=""
+    REFNAME=""
 fi
 
 get_jobtype_
