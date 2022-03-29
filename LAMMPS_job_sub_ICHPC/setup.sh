@@ -18,7 +18,7 @@ function welcome_msg {
 LAMMPS job submitter for Imperial HPC - Setting up
 
 Job submitter installed at: `date`
-Job submitter edition:      v1.0
+Job submitter edition:      v1.1
 Supported job scheduler:    PBS
 
 By Spica-Vir, Mar. 28-22, ICL, spica.h.zhou@gmail.com
