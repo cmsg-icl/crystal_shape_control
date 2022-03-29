@@ -117,7 +117,7 @@ if [[ ! -z ${PBS_NODEFILE} ]]; then
 
     for PC in ${PCLIST[@]}; do
         ssh ${PC} "if [[ ! -d ${JOBTMPDIR} ]]; then mkdir -p ${JOBTMPDIR} ;fi; echo 'temporary directory on '${PC}"
-	done
+    done
 fi
 
 # Generate basic information of output file

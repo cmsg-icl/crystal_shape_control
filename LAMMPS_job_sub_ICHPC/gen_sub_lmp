@@ -116,15 +116,15 @@ EOF
     exit
     fi
 
-	if [[ ${JOBFILE##*.} != 'in' ]]; then
-		cat << EOF
-	ERROR:
-		input file shoud be ended with '.in'. Check your input.
-	
+    if [[ ${JOBFILE##*.} != 'in' ]]; then
+        cat << EOF
+    ERROR:
+        input file shoud be ended with '.in'. Check your input.
+    
 EOF
-	print_HOWTO_input_
-	exit
-	fi
+    print_HOWTO_input_
+    exit
+    fi
 }
 
 # Check ND from input
@@ -371,9 +371,9 @@ function get_subinfo_ {
 ## generate jobname
     JOBNAME=${JOBFILE%%.*}
 ## get job executation script
-	SCRIPT=`echo $(grep -w -A 1 'LMP_SCRIPT' ${SETFILE} | tail -1)`
+    SCRIPT=`echo $(grep -w -A 1 'LMP_SCRIPT' ${SETFILE} | tail -1)`
 ## get post processing script
-	POSCRIPT=`echo $(grep -w -A 1 'POST_PROCESSING_SCRIPT' ${SETFILE} | tail -1)`
+    POSCRIPT=`echo $(grep -w -A 1 'POST_PROCESSING_SCRIPT' ${SETFILE} | tail -1)`
 ## extension for submission file
     SUB_EXT=`echo $(grep -w -A 1 'SUBMISSION_EXT' ${SETFILE} | tail -1)`
     SUB_EXT=${SUB_EXT#*.}
@@ -419,7 +419,7 @@ EOF
     thr=${WT%:*}
     tmn=${WT#*:}
     TOUT=`echo "scale=0;${thr}*60+${tmn}-${TOUT}" | bc`
-	TOUT=`echo ${TOUT}m`
+    TOUT=`echo ${TOUT}m`
 ## Add seconds for WT
     WT="${WT}:00"
 
