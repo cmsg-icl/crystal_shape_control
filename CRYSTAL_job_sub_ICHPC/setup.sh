@@ -18,7 +18,7 @@ function welcome_msg {
 CRYSTAL17 job submitter for Imperial HPC - Setting up
 
 Job submitter installed at: `date`
-Job submitter edition:      v0.2.3
+Job submitter edition:      v0.3
 Supported job scheduler:    PBS
 
 By Spica-Vir, Mar. 18-22, ICL, spica.h.zhou@gmail.com
@@ -97,7 +97,7 @@ function copy_scripts {
 
     if [[ ${SCRIPTDIR} != ${curr_dir} ]]; then
         mkdir -p             ${SCRIPTDIR}
-        cp gen_sub           ${SCRIPTDIR}/gen_sub
+        cp gen_sub_crys      ${SCRIPTDIR}/gen_sub_crys
         cp runcryP           ${SCRIPTDIR}/runcryP
         cp runpropP          ${SCRIPTDIR}/runpropP
         cp settings_template ${SCRIPTDIR}/settings
@@ -187,15 +187,17 @@ EOF
 
 function set_commands {
     sed -i '/CRYSTAL job submitter settings/d' ${HOME}/.bashrc
-    sed -i '/Pcry=/d' ${HOME}/.bashrc
-    sed -i '/Pprop=/d' ${HOME}/.bashrc
     sed -i '/setcrys=/d' ${HOME}/.bashrc
+    sed -i '/gen_sub_crys/d' ${HOME}/.bashrc
+    sed -i '/runcryP/d' ${HOME}/.bashrc
+    sed -i '/runpropP/d' ${HOME}/.bashrc
+    sed -i '/post_processing/d' ${HOME}/.bashrc
 
     echo "# >>> CRYSTAL job submitter settings >>>" >> ${HOME}/.bashrc
-    echo "alias Pcry='${SCRIPTDIR}/gen_sub crys'" >> ${HOME}/.bashrc
-    echo "alias Pprop='${SCRIPTDIR}/gen_sub prop'" >> ${HOME}/.bashrc
+    echo "alias Pcry='${SCRIPTDIR}/gen_sub_crys crys'" >> ${HOME}/.bashrc
+    echo "alias Pprop='${SCRIPTDIR}/gen_sub_crys prop'" >> ${HOME}/.bashrc
     echo "alias setcrys='cat ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "chmod 777 ${SCRIPTDIR}/gen_sub" >> ${HOME}/.bashrc
+    echo "chmod 777 ${SCRIPTDIR}/gen_sub_crys" >> ${HOME}/.bashrc
     echo "chmod 777 ${SCRIPTDIR}/runcryP" >> ${HOME}/.bashrc
     echo "chmod 777 ${SCRIPTDIR}/runpropP" >> ${HOME}/.bashrc 
     echo "chmod 777 ${SCRIPTDIR}/post_processing" >> ${HOME}/.bashrc 
