@@ -1,0 +1,240 @@
+#!/bin/bash
+
+# General input format
+# runprop jobname refname
+# jobname: str, input .d12 or .d3 file, with or without extension
+# refname: str, name of the previous crystal run
+
+# List of available formats & executables
+
+SETFILE=`echo ${0%/*}`/settings
+
+# No/too many input parameter
+
+if [[ $# < 2 ]]; then
+    echo "ERROR: No input or reference data. Job terminated without calculation."
+    exit
+fi
+if [[ $# > 2 ]]; then
+    echo "ERROR: Too many input. Job terminated without calculation."
+    exit
+fi
+
+# Get jobname and reference file name
+
+JOBNAME=${1%.*}
+JOBNAME=${JOBNAME##*/}
+REFNAME=${2%.*}
+REFNAME=${REFNAME##*/}
+
+# Check temporary directory
+
+JOBTMPDIR=`pwd`
+
+# Input and output file directories
+
+OUTPUT=${JOBNAME}.out
+
+if [[ -e ${OUTPUT} && -s ${OUTPUT} ]]; then
+    echo "Output exists: ${OUTPUT}"
+    echo "Job terminated without calculation."
+    exit
+fi
+
+echo "printed output filename ${OUTPUT}"
+
+# Set executing command
+
+XDIR=`echo $(grep -w -A 1 'EXEDIR' ${SETFILE} | tail -1)`
+CRYSTAL_TYPE=`echo $(grep -w -A 1 'EXE_PROPERTIES' ${SETFILE} | tail -1)`
+CRYCOMMAND="${XDIR}/${CRYSTAL_TYPE}"
+
+# Temporary directory
+
+JOBTMPDIR=${JOBTMPDIR}/tmp_${JOBNAME}
+mkdir -p ${JOBTMPDIR}
+
+echo "creating temporary directory ${JOBTMPDIR}"
+
+# Create temporary copy of the script for execution
+
+SCRIPT='Job_script'
+sed '1,/^#tag_start_calc/d;/^#tag_end_calc/,$d' $0 >> ${JOBTMPDIR}/${SCRIPT}
+
+POST_PROS='Post_script'
+sed '1,/^#tag_start_post/d;/^#tag_end_post/,$d' $0 >> ${JOBTMPDIR}/${POST_PROS}
+
+# Execute file and post processing
+
+echo -n "DATE START:"
+date
+source ${JOBTMPDIR}/${SCRIPT}
+
+echo -n "CALCULATION END DATE " >> ${OUTDIR}/${OUTPUT}
+date >> ${OUTDIR}/${OUTPUT}
+source ${JOBTMPDIR}/Post_script
+cd ${OUTDIR}
+rm -fr ${JOBTMPDIR}
+
+echo -n "DATE END:"
+date
+echo "DONE"
+exit
+
+# Copied content: Below are copied in temporary directory
+
+#tag_start_calc
+# Generate basic information of output file
+
+echo "output file: ${OUTDIR}/${OUTPUT}"
+cat << EOF > ${OUTDIR}/${OUTPUT}
+date:                `date`
+hostname:            `hostname`
+system:              `uname -a`
+user:                `whoami`
+input:               ${OUTDIR}/${JOBNAME}.d3
+output:              ${OUTDIR}/${OUTPUT}
+executable script:   $0
+executable:          ${XDIR}/${CRYSTAL_TYPE}
+Command:             ${CRYCOMMAND}
+temporary directory: ${JOBTMPDIR}
+reference job:       ${REFNAME}    
+EOF
+
+echo "temporary directory: ${JOBTMPDIR}"
+cd  ${JOBTMPDIR}
+
+# Prepare input files
+
+## Read list
+
+LINE_PRECALC=`grep -nw 'PRE_CALC' ${SETFILE}`
+LINE_PRECALC=`echo "scale=0;${LINE_PRECALC%%:*}+4" | bc`
+
+SAVED_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $1)}' ${SETFILE} | sed 's/.\{7\}//'`
+TMP_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $2)}' ${SETFILE}`
+
+## Mandatory files
+
+### d12 and d3
+
+if [[ -e ${INPDIR}/${JOBNAME}.d12 && -s ${INPDIR}/${JOBNAME}.d12 ]]; then
+    echo "Error: Properties calculation input identified. Remove it before continuing."
+    echo "Exit without calculation."
+    exit
+fi
+
+while [[ ${TMP_NAME} != 'RESTART' ]]; do
+    if [[ -e ${INPDIR}/${JOBNAME}${SAVED_NAME} && -s ${INPDIR}/${JOBNAME}${SAVED_NAME} ]]; then
+
+### Copy files to the main temporary directory
+
+        echo "input expected in ${INPDIR}/${JOBNAME}${SAVED_NAME}"
+        echo "input data ${INPDIR}/${JOBNAME}${SAVED_NAME}" >> ${OUTDIR}/${OUTPUT} 2>&1
+        if [[ ${SAVED_NAME} == '.d3' ]]; then
+            cat ${INPDIR}/${JOBNAME}${SAVED_NAME} >> ${OUTDIR}/${OUTPUT} 2>&1
+        fi
+        cp ${INPDIR}/${JOBNAME}${SAVED_NAME} ${JOBTMPDIR}/${TMP_NAME}
+        echo "input ${JOBNAME}${SAVED_NAME} copied."
+
+    else
+        echo "Input data ${INPDIR}/${JOBNAME}${SAVED_NAME} not found or empty."
+    fi
+
+    LINE_PRECALC=`echo "scale=0;${LINE_PRECALC}+1" | bc`
+    SAVED_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $1)}' ${SETFILE} | sed 's/.\{7\}//'`
+    TMP_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $2)}' ${SETFILE}`
+done
+
+## Restart files
+PRE_JOB=${REFNAME}
+LINE_PRECALC=`echo "scale=0;${LINE_PRECALC}+1" | bc`
+SAVED_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $1)}' ${SETFILE} | sed 's/.\{7\}//'`
+TMP_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $2)}' ${SETFILE}`
+while [[ ! -z ${TMP_NAME} ]]; do
+    if [[ -e ${INPDIR}/${PRE_JOB}${SAVED_NAME} && -s ${INPDIR}/${PRE_JOB}${SAVED_NAME} ]]; then
+
+### Copy files to the main temporary directory
+
+        cp ${INPDIR}/${PRE_JOB}${SAVED_NAME} ${JOBTMPDIR}/${TMP_NAME}
+        echo "File found: ${INPDIR}/${PRE_JOB}${SAVED_NAME}, temporarily saved as ${JOBTMPDIR}/${TMP_NAME}" >> ${OUTDIR}/${OUTPUT} 2>&1
+        echo "File found: ${INPDIR}/${PRE_JOB}${SAVED_NAME}, temporarily saved as ${JOBTMPDIR}/${TMP_NAME}" 
+
+    fi
+
+    LINE_PRECALC=`echo "scale=0;${LINE_PRECALC}+1" | bc`
+    SAVED_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $1)}' ${SETFILE} | sed 's/.\{7\}//'`
+    TMP_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $2)}' ${SETFILE}`
+done
+
+# Most critical one: fort.9 (named as fort.20 now)
+
+if [[ ! -e ${JOBTMPDIR}/fort.20 || ! -s ${JOBTMPDIR}/fort.20 ]]; then
+    echo "ERROR: ${JOBTMPDIR}/fort.9 not found or empty. Check ${INPDIR}/${PRE_JOB}.f9"
+    exit
+else
+    mv ${JOBTMPDIR}/fort.20 ${JOBTMPDIR}/fort.9
+fi
+
+# Launch calculations
+
+cd ${JOBTMPDIR}
+${CRYCOMMAND} >> ${OUTDIR}/${OUTPUT} 2>&1
+
+exit
+#tag_end_calc
+
+#tag_start_post
+cd ${JOBTMPDIR}
+# Cat error report to outputs
+
+ls ERROR* > /dev/null 2>&1
+if [[ $? == 0 ]]; then
+    head ERROR*
+    head ERROR* >> ${OUTDIR}/${OUTPUT}
+fi
+
+echo " "                                         >> ${OUTDIR}/${OUTPUT}
+echo "TEMPORARY          SAVED (in ${OUTDIR})"   >> ${OUTDIR}/${OUTPUT}
+
+# Most important one - fort.9
+
+if [[ -e ${JOBTMPDIR}/fort.9 && -s ${JOBTMPDIR}/fort.9 ]]; then
+    MASTER_WITH_PROC_0="YES"
+else
+    echo 'binary wf (fort.9) is not written on this node' >> ${OUTDIR}/${OUTPUT}
+fi
+
+# Read Properties list
+
+if [[ ${JOBTYPE} == 'prop' ]]; then
+    LINE_POSTPROP=`grep -nw 'POST_PROP' ${SETFILE}`
+    LINE_POSTPROP=`echo "scale=0;${LINE_POSTPROP%%:*}+4" | bc`
+
+    SAVED_NAME=`awk 'NR=="'${LINE_POSTPROP}'"{printf("%s", $1)}' ${SETFILE} | sed 's/.\{7\}//'`
+    TMP_NAME=`awk 'NR=="'${LINE_POSTPROP}'"{printf("%s", $2)}' ${SETFILE}`
+
+    while [[ ! -z ${TMP_NAME} ]]; do
+        if [[ -e ${JOBTMPDIR}/${TMP_NAME} && -s ${JOBTMPDIR}/${TMP_NAME} ]]; then
+            cp ${JOBTMPDIR}/${TMP_NAME} ${OUTDIR}/${JOBNAME}${SAVED_NAME}
+            echo ${TMP_NAME} ${JOBNAME}${SAVED_NAME} | awk '{printf("%-18s %-18s"),$1,$2}' >> ${OUTDIR}/${OUTPUT} 2>&1
+            ls -l ${OUTDIR}/${JOBNAME}${SAVED_NAME} | awk '{printf("%-8s %s %s %s\n"),$5,$6,$7,$8}'>> ${OUTDIR}/${OUTPUT} 2>&1
+            echo "File saved: ${JOBTMPDIR}/${TMP_NAME} as ${OUTDIR}/${JOBNAME}${SAVED_NAME}"
+        fi
+        LINE_POSTPROP=`echo "scale=0;${LINE_POSTPROP}+1" | bc`
+        SAVED_NAME=`awk 'NR=="'${LINE_POSTPROP}'"{printf("%s", $1)}' ${SETFILE} | sed 's/.\{7\}//'`
+        TMP_NAME=`awk 'NR=="'${LINE_POSTPROP}'"{printf("%s", $2)}' ${SETFILE}`
+    done
+fi
+
+# Calculation summary
+
+echo " "                 >> ${OUTDIR}/${OUTPUT}
+echo -n "Disk usage:"    >> ${OUTDIR}/${OUTPUT} 2>&1
+ls -l  ${JOBTMPDIR}      >> ${OUTDIR}/${OUTPUT} 2>&1
+echo "<du -m>"           >> ${OUTDIR}/${OUTPUT}
+du -m  ${JOBTMPDIR}      >> ${OUTDIR}/${OUTPUT} 2>&1
+echo "</du -m>"          >> ${OUTDIR}/${OUTPUT}
+df .   ${JOBTMPDIR}      >> ${OUTDIR}/${OUTPUT} 2>&1
+
+#tag_end_post
