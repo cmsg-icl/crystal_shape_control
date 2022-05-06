@@ -1,61 +1,180 @@
 #!/bin/bash
 
 # General input format
-# runcrys jobname (refname)
-# jobname: str, input .d12 or .d3 file, with or without extension
-# refname: str, optional, name of the previous run
+# runcrys --np NCPU --in input --ref refname
+# NCPU: int, number of CPUs used
+# input: str, input .d3 file, basename recommanded
+# refname: str, optional, basename of the reference SCF calculation. (With extension also accepted)
+
+function get_input_ {
+
+    ## Useful variables: NCPU, JOBNAME, REFNAME
+
+    param_list=$(getopt -a -l np:,in:,ref: -n "$0" -- ${in_var} 2> /dev/null) 
+    cat << EOF
+    INPUT parameters:
+        ${param_list}
+
+EOF
+
+    eval set -- "${param_list}"
+    while [[ true ]]; do
+        case $1 in
+        --in ) 
+            shift; JOBNAME=${1%.*}; JOBNAME=${JOBNAME##*/}; check_JOBNAME_ ;;
+        --ref ) 
+            shift; REFNAME=${1%.*}; REFNAME=${REFNAME##*/}; check_REFNAME_ ;;
+        --np ) 
+            shift; NCPU=$1; check_NCPU_ ;;
+        -- ) 
+            break;;
+        * ) 
+            echo "Error: input and options should be specified, please refer to the manual. ";
+            echo "Job terminated without calculation. ";
+            exit;;
+        esac
+        shift
+    done
+}
+
+function check_JOBNAME_ {
+## Whether JOBNAME is specified
+    if [[ -z ${JOBNAME} ]]; then
+        cat << EOF
+    ERROR:
+        Jobname MUST BE specified.
+
+EOF
+        exit
+    fi
+## Whether .d12 file exists
+    ls -l ${JOBNAME}.d12 > /dev/null 2>&1 
+    if [[ $? > 0 ]]; then
+        cat << EOF
+    ERROR:
+        ${JOBNAME}.d12 not found.
+
+EOF
+        exit
+    fi
+## Whether .out file exists
+    OUTPUT=${JOBNAME}.out
+    ls -l ${OUTPUT} > /dev/null 2>&1 
+    if [[ $? == 0 ]]; then
+        cat << EOF
+    ERROR:
+        Output exists: ${OUTPUT}. Move it to a safe place.
+        Exit without running calculation.
+
+EOF
+        exit
+    fi
+    echo "printed output filename ${OUTPUT}"
+}
+
+function check_REFNAME_ {
+    if [[ ! -z ${REFNAME} ]]; then
+## Wheter any file contains the string ${REFNAME} exists
+        ls -l ${REFNAME}* > /dev/null 2>&1 
+        if [[ $? > 0 ]]; then
+            cat << EOF
+    ERROR:
+        ${REFNAME}* not found.
+
+EOF
+            exit
+        fi
+    fi
+}
+
+function check_NCPU_ {
+    if [[ -z ${NCPU} ]]; then
+        cat << EOF
+    WARNING:
+        Number of CPUs MUST BE specified. Set to default value NCPU=1
+
+EOF
+        NCPU=1
+    fi
+
+    if [[ ${NCPU} -eq 0 ]]; then
+        cat << EOF
+    ERROR:
+        number of CPUs has to be specified
+
+EOF
+        exit
+    fi
+
+    CHECK_IF_NCPU_IS_AN_INTEGER=`echo $NCPU | awk 'BEGIN{S="YES"};{
+        L=length($1);
+        for(i=1;i<=L;i++){
+            if(substr($1,i,1) !~  /[0-9]/ ){
+                S="NO";
+                exit
+            }
+        }};END{print S}'`
+
+    if [[ ${CHECK_IF_NCPU_IS_AN_INTEGER} == "NO" ]]; then
+        cat << EOF
+    ERROR:
+        the number of CPUs has to be an integer number, 
+        please check the value: ${NCPU}
+
+EOF
+        exit
+    fi
+}
 
 # List of available formats & executables
 
 SETFILE=`echo ${0%/*}`/settings
 
-# No/too many input parameter
-
-if [[ $# < 1 ]]; then
-    echo "ERROR: No input. Job terminated without calculation."
-    exit
-fi
-if [[ $# > 2 ]]; then
-    echo "ERROR: Too many input. Job terminated without calculation."
-    exit
-fi
-
 # Get jobname and reference file name
 
-JOBNAME=${1%.*}
-JOBNAME=${JOBNAME##*/}
-if [[ $# -eq 2 ]]; then
-    REFNAME=${2%.*}
-    REFNAME=${REFNAME##*/}
-fi
+in_var="header "$@""
+get_input_
 
 # Check temporary directory
 
 JOBTMPDIR=`pwd`
-
-# Input and output file directories
-
-OUTPUT=${JOBNAME}.out
-
-if [[ -e ${OUTPUT} && -s ${OUTPUT} ]]; then
-    echo "Output exists: ${OUTPUT}"
-    echo "Job terminated without calculation."
-    exit
-fi
-
-echo "printed output filename ${OUTPUT}"
+OUTDIR=`pwd`
+INPDIR=`pwd`
 
 # Set executing command
+
+## Find executables
 XDIR=`echo $(grep -w -A 1 'EXEDIR' ${SETFILE} | tail -1)`
-CRYSTAL_TYPE=`echo $(grep -w -A 1 'EXE_CRYSTAL' ${SETFILE} | tail -1)`
-## MPPcrystal
+if [[ ! -s ${XDIR} ]]; then
+    MODULE="module load ${XDIR}"
+    echo "Module '${XDIR}' will be loaded."
+    XDIR=""
+else
+    MODULE=""
+    XDIR="${XDIR}/"
+fi
+if [[ ${NCPU} == 1 ]]; then
+    CRYSTAL_TYPE=`echo $(grep -w -A 1 'EXE_CRYSTAL' ${SETFILE} | tail -1)`
+else
+    CRYSTAL_TYPE=`echo $(grep -w -A 1 'EXE_PCRYSTAL' ${SETFILE} | tail -1)`
+fi
+### MPPcrystal
 INPDIR=`pwd`
 more +2 ${INPDIR}/${JOBNAME}.d12 | grep 'MPP' > /dev/null 2>&1
 if [[ $? == 0 ]]; then
-    echo "Warning: MPP crystal detected, run as serial crystal"
-    sed -i '/MPP/d' ${JOBNAME}.d12
+    CRYSTAL_TYPE=`echo $(grep -w -A 1 'EXE_MPP' ${SETFILE} | tail -1)`
 fi
-CRYCOMMAND="${XDIR}/${CRYSTAL_TYPE}"
+
+## Determine whether to use MPI
+if [[ ${NCPU} != 1 ]]; then
+    MPI="mpiexec -np ${NCPU}"
+else
+    MPI=""
+fi
+
+## Generate command
+${MODULE}
+CRYCOMMAND="${MPI} ${XDIR}${CRYSTAL_TYPE}"
 
 # Temporary directory
 
@@ -80,7 +199,7 @@ source ${JOBTMPDIR}/${SCRIPT}
 
 echo -n "CALCULATION END DATE " >> ${OUTDIR}/${OUTPUT}
 date >> ${OUTDIR}/${OUTPUT}
-source ${JOBTMPDIR}/Post_script
+source ${JOBTMPDIR}/${POST_PROS}
 cd ${OUTDIR}
 rm -fr ${JOBTMPDIR}
 
@@ -102,8 +221,9 @@ system:              `uname -a`
 user:                `whoami`
 input:               ${OUTDIR}/${JOBNAME}.d12
 output:              ${OUTDIR}/${OUTPUT}
-executable script:   $0
-executable:          ${XDIR}/${CRYSTAL_TYPE}
+executable script:   ${EXE_SCRIPT}
+executable:          ${XDIR}${CRYSTAL_TYPE}
+module:              ${MODULE}
 Command:             ${CRYCOMMAND}
 temporary directory: ${JOBTMPDIR}      
 EOF
@@ -186,13 +306,12 @@ fi
 cd ${JOBTMPDIR}
 ${CRYCOMMAND} >> ${OUTDIR}/${OUTPUT} 2>&1
 
-exit
 #tag_end_calc
 
 #tag_start_post
 cd ${JOBTMPDIR}
 # Cat error report to outputs
-
+echo 'JOB FINISHED - BEGIN POST PROCESSING'
 ls ERROR* > /dev/null 2>&1
 if [[ $? == 0 ]]; then
     head ERROR*

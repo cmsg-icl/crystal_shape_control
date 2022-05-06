@@ -15,12 +15,12 @@ function welcome_msg {
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
-CRYSTAL17 job submitter for local servers - Setting up
+CRYSTAL17 job submitter for local servers (No job schedular) - Setting up
 
 Job submitter installed at: `date`
-Job submitter edition:      v0.1
+Job submitter edition:      v0.2
 
-By Spica-Vir, Apr.27, 22, ICL, spica.h.zhou@gmail.com
+By Spica-Vir, May 6, 22, ICL, spica.h.zhou@gmail.com
 
 Developed based on Dr G.Mallia's scripts on Imperial cluster
 Special thanks to G.Mallia & N.M.Harrison
@@ -70,7 +70,7 @@ EOF
 function get_exedir {
     cat << EOF
 ================================================================================
-    Please specify the directory of CRYSTAL exectuables:
+    Please specify the directory or module name of CRYSTAL exectuables:
 
 EOF
     
@@ -88,10 +88,9 @@ EOF
     if [[ ! -s ${EXEDIR} || ! -e ${EXEDIR} ]]; then
         cat << EOF
 --------------------------------------------------------------------------------
-    Error: Directory does not exist. Exiting current job. 
+    Warning: Directory does not exist. Input will be recognised as a module name.
 
 EOF
-        exit
     fi
 }
 
@@ -118,27 +117,36 @@ function set_settings {
     SETFILE=${SCRIPTDIR}/settings
     sed -i "/CRYSTAL_SCRIPT/a runcrys" ${SETFILE}
     sed -i "/PROPERTIES_SCRIPT/a runprop" ${SETFILE}
+    sed -i "/EXEDIR/a ${EXEDIR}" ${SETFILE}
+    sed -i "/EXE_PCRYSTAL/a Pcrystal" ${SETFILE}
+    sed -i "/EXE_MPP/a MPPcrystal" ${SETFILE}
+    sed -i "/EXE_PPROPERTIES/a Pproperties" ${SETFILE}
     sed -i "/EXE_CRYSTAL/a crystal" ${SETFILE}
     sed -i "/EXE_PROPERTIES/a properties" ${SETFILE}
 
     cat << EOF
 ================================================================================
     Paramters specified in ${SETFILE}. 
-    Note that job submission tempelate should be placed at the end of the file. 
 
 EOF
 }
 
 function set_commands {
-    sed -i '/CRYSTAL job submitter settings/d' ${HOME}/.bashrc
-    sed -i '/setcrys=/d' ${HOME}/.bashrc
-    sed -i '/runcrys/d' ${HOME}/.bashrc
-    sed -i '/runprop/d' ${HOME}/.bashrc
+    bgline=`grep -nw "# >>> CRYSTAL job submitter settings >>>" ${HOME}/.bashrc`
+    edline=`grep -nw "# <<< finish CRYSTAL job submitter settings <<<" ${HOME}/.bashrc`
+
+    if [[ ! -z ${bgline} && ! -z ${edline} ]]; then
+        bgline=${bgline%%:*}
+        edline=${edline%%:*}
+        sed -i "${bgline},${edline}d" ${HOME}/.bashrc
+    fi
 
     echo "# >>> CRYSTAL job submitter settings >>>" >> ${HOME}/.bashrc
-    echo "alias crystal='${SCRIPTDIR}/runcrys'" >> ${HOME}/.bashrc
-    echo "alias property='${SCRIPTDIR}/runprop'" >> ${HOME}/.bashrc
-    echo "alias setcrys='cat ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
+    echo "alias crys=\"${SCRIPTDIR}/runcrys --np 1\"" >> ${HOME}/.bashrc
+    echo "alias prop=\"${SCRIPTDIR}/runprop --np 1\"" >> ${HOME}/.bashrc
+    echo "alias Pcrys=\"${SCRIPTDIR}/runcrys\"" >> ${HOME}/.bashrc
+    echo "alias Pprop=\"${SCRIPTDIR}/runprop\"" >> ${HOME}/.bashrc
+    echo "alias setcrys=\"cat ${SCRIPTDIR}/settings\"" >> ${HOME}/.bashrc
     echo "chmod 777 ${SCRIPTDIR}/runcrys" >> ${HOME}/.bashrc
     echo "chmod 777 ${SCRIPTDIR}/runprop" >> ${HOME}/.bashrc 
     echo "# <<< finish CRYSTAL job submitter settings <<<" >> ${HOME}/.bashrc
@@ -149,19 +157,35 @@ function set_commands {
 ================================================================================
     User defined commands set, including: 
 
-    crystal - executing crystal calculations
+    crystal - executing serial crystal calculations
 
-        crystal jobname [refname]
+        crys --in jobname [--ref refname]
 
-        jobname:  str, name of input .d12 file
-        refname:  str, optional, name of the previous job
+        jobname:  str, name of input .d12 file, basename recommanded
+        refname:  str, optional, name of the previous job, basename recommanded
 
-    property - executing properties calculations
+    Pcrys - executing parallel crystal calculations
 
-        property jobname SCFname
+        Pcrys --in jobname [--ref refname] --np NCPU
 
-        jobname:  str, name of input .d3 file
-        SCFname:  str, name of the previous 'crystal' job
+        NCPU:  int, number of CPUs
+        jobname:  str, name of input .d12 file, basename recommanded
+        refname:  str, optional, name of the previous job, basename recommanded
+
+    prop - executing serial properties calculations
+
+        prop --in jobname --ref SCFname
+
+        jobname:  str, name of input .d3 file, basename recommanded
+        SCFname:  str, name of the previous 'crystal' job, basename recommanded
+
+    Pprop - executing parallel properties calculations
+
+        Pprop --in jobname --ref refname --np NCPU
+
+        NCPU:  int, number of CPUs
+        jobname:  str, name of input .d12 file, basename recommanded
+        refname:  str, name of the previous job, basename recommanded
 
     setcrys - print the file 'settings'
     
