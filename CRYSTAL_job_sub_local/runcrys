@@ -21,11 +21,11 @@ EOF
     while [[ true ]]; do
         case $1 in
         --in ) 
-            shift; JOBNAME=${1%.*}; JOBNAME=${JOBNAME##*/}; check_JOBNAME_ ;;
+            shift; JOBNAME=${1%.*}; JOBNAME=${JOBNAME##*/} ;;
         --ref ) 
-            shift; REFNAME=${1%.*}; REFNAME=${REFNAME##*/}; check_REFNAME_ ;;
+            shift; REFNAME=${1%.*}; REFNAME=${REFNAME##*/} ;;
         --np ) 
-            shift; NCPU=$1; check_NCPU_ ;;
+            shift; NCPU=$1 ;;
         -- ) 
             break;;
         * ) 
@@ -35,6 +35,10 @@ EOF
         esac
         shift
     done
+
+    check_JOBNAME_
+    check_REFNAME_
+    check_NCPU_
 }
 
 function check_JOBNAME_ {

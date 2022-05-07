@@ -16,11 +16,11 @@ function get_input_ {
     while [[ true ]]; do
         case $1 in
         --in ) 
-            shift; JOBNAME=${1%.*}; JOBNAME=${JOBNAME##*/}; check_JOBNAME_ ;;
+            shift; JOBNAME=${1%.*}; JOBNAME=${JOBNAME##*/} ;;
         --ref ) 
-            shift; REFNAME=${1%.*}; REFNAME=${REFNAME##*/}; check_REFNAME_ ;;
+            shift; REFNAME=${1%.*}; REFNAME=${REFNAME##*/} ;;
         --np ) 
-            shift; NCPU=$1; check_NCPU_ ;;
+            shift; NCPU=$1 ;;
         -- ) 
             break;;
         * ) 
@@ -30,6 +30,10 @@ function get_input_ {
         esac
         shift
     done
+
+    check_JOBNAME_
+    check_REFNAME_
+    check_NCPU_
 }
 
 function check_JOBNAME_ {
@@ -139,6 +143,8 @@ get_input_
 # Check temporary directory
 
 JOBTMPDIR=`pwd`
+OUTDIR=`pwd`
+INPDIR=`pwd`
 
 # Set executing command
 
@@ -326,25 +332,23 @@ fi
 
 # Read Properties list
 
-if [[ ${JOBTYPE} == 'prop' ]]; then
-    LINE_POSTPROP=`grep -nw 'POST_PROP' ${SETFILE}`
-    LINE_POSTPROP=`echo "scale=0;${LINE_POSTPROP%%:*}+4" | bc`
+LINE_POSTPROP=`grep -nw 'POST_PROP' ${SETFILE}`
+LINE_POSTPROP=`echo "scale=0;${LINE_POSTPROP%%:*}+4" | bc`
 
+SAVED_NAME=`awk 'NR=="'${LINE_POSTPROP}'"{printf("%s", $1)}' ${SETFILE} | sed 's/.\{7\}//'`
+TMP_NAME=`awk 'NR=="'${LINE_POSTPROP}'"{printf("%s", $2)}' ${SETFILE}`
+
+while [[ ! -z ${TMP_NAME} ]]; do
+    if [[ -e ${JOBTMPDIR}/${TMP_NAME} && -s ${JOBTMPDIR}/${TMP_NAME} ]]; then
+        cp ${JOBTMPDIR}/${TMP_NAME} ${OUTDIR}/${JOBNAME}${SAVED_NAME}
+        echo ${TMP_NAME} ${JOBNAME}${SAVED_NAME} | awk '{printf("%-18s %-18s"),$1,$2}' >> ${OUTDIR}/${OUTPUT} 2>&1
+        ls -l ${OUTDIR}/${JOBNAME}${SAVED_NAME} | awk '{printf("%-8s %s %s %s\n"),$5,$6,$7,$8}'>> ${OUTDIR}/${OUTPUT} 2>&1
+        echo "File saved: ${JOBTMPDIR}/${TMP_NAME} as ${OUTDIR}/${JOBNAME}${SAVED_NAME}"
+    fi
+    LINE_POSTPROP=`echo "scale=0;${LINE_POSTPROP}+1" | bc`
     SAVED_NAME=`awk 'NR=="'${LINE_POSTPROP}'"{printf("%s", $1)}' ${SETFILE} | sed 's/.\{7\}//'`
     TMP_NAME=`awk 'NR=="'${LINE_POSTPROP}'"{printf("%s", $2)}' ${SETFILE}`
-
-    while [[ ! -z ${TMP_NAME} ]]; do
-        if [[ -e ${JOBTMPDIR}/${TMP_NAME} && -s ${JOBTMPDIR}/${TMP_NAME} ]]; then
-            cp ${JOBTMPDIR}/${TMP_NAME} ${OUTDIR}/${JOBNAME}${SAVED_NAME}
-            echo ${TMP_NAME} ${JOBNAME}${SAVED_NAME} | awk '{printf("%-18s %-18s"),$1,$2}' >> ${OUTDIR}/${OUTPUT} 2>&1
-            ls -l ${OUTDIR}/${JOBNAME}${SAVED_NAME} | awk '{printf("%-8s %s %s %s\n"),$5,$6,$7,$8}'>> ${OUTDIR}/${OUTPUT} 2>&1
-            echo "File saved: ${JOBTMPDIR}/${TMP_NAME} as ${OUTDIR}/${JOBNAME}${SAVED_NAME}"
-        fi
-        LINE_POSTPROP=`echo "scale=0;${LINE_POSTPROP}+1" | bc`
-        SAVED_NAME=`awk 'NR=="'${LINE_POSTPROP}'"{printf("%s", $1)}' ${SETFILE} | sed 's/.\{7\}//'`
-        TMP_NAME=`awk 'NR=="'${LINE_POSTPROP}'"{printf("%s", $2)}' ${SETFILE}`
-    done
-fi
+done
 
 # Calculation summary
 
