@@ -13,7 +13,7 @@
 
 1. All the scripts should be placed in the same directory.  
 2. By default, job submitter scripts will be stored in `${HOME}/runCRYSTAL/`.  
-3. By default, CRYSTAL17v2.2gnu will be set as the executable.  
+3. By default, CRYSTAL17v2.2gnu in Dr. G Mallia's directory will be set as the executable. 
 
 ## Usage & command list
 
@@ -31,10 +31,12 @@ By default, the temporary directory is set as `/rds/general/ephemeral/user/${USE
 
 Here are user defined commands: 
 
-1. `Pcry` - executing parallel crystal calculations (Pcrystal and MPP)  
+**NB: v1.0 update** - The 'Command-line option' fashion is implemented for input parameters. The sequence of parameters is flexible for v1.0. Only 'long options' are recognized.
+
+1. `Pcrys` - executing parallel crystal calculations (Pcrystal and MPP)  
 
 ``` bash
-Pcry ND WT jobname [refname]
+$~ Pcrys --nd ND --wt WT --in jobname [--ref refname]
 ```
 
 `ND`      - int, number of nodes  
@@ -45,21 +47,20 @@ Pcry ND WT jobname [refname]
 Equivalent examples:
 
 ``` bash
-> Pcry np=2 wt=02:00 jobname.d12 previous_job
-> Pcry 2 02:00 jobname previous_job
-> ~/job/submitter/dir/gen_sub crys 2 02:00 jobname previous_job
+$~ Pcrys --nd 2 --wt 02:00 --in jobname.d12 --ref previous_job
+$~ ${SCRIPTDIR}/gen_sub --type crys --wt 02:00 --in jobname --ref previous_job --nd 2
 ```
 
 Submit files:
 
 ``` bash
-> qsub jobname.qsub
+$~ qsub jobname.qsub
 ```
 
 2. `Pprop` - executing parallel properties calculations (Pproperties)
 
 ``` bash
-Pprop ND WT jobname SCFname
+$~ Pprop --nd ND --wt WT --in jobname --ref SCFname
 ``` 
 
 `ND`      - int, number of nodes  
@@ -70,9 +71,8 @@ Pprop ND WT jobname SCFname
 Equivalent examples:
 
 ``` bash
-> Pprop np=1 wt=00:30 prop_job.d3 previous_job.d12
-> Pprop 1 00:30 prop_job previous_job
-> ~/job/submitter/dir/gen_sub prop 1 00:30 prop_job previous_job
+$~ Pprop --in prop_job.d3 --ref previous_job.d12 --nd 1 --wt 00:30 
+$~ ${SCRIPTDIR}/gen_sub --type prop --nd 1 --wt 00:30 --in prop_job --ref previous_job
 ```
 
 Then submit files. 

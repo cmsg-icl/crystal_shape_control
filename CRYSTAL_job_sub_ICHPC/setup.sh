@@ -211,7 +211,7 @@ function set_commands {
 ================================================================================
     User defined commands set, including: 
 
-    Pcry - executing parallel crystal calculations (Pcrystal and MPP)
+    Pcrys - executing parallel crystal calculations (Pcrystal and MPP)
 
         Pcrys --nd ND --wt WT --in jobname --ref [refname]
 
