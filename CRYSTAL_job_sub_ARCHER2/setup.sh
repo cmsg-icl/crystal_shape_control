@@ -18,10 +18,10 @@ function welcome_msg {
 CRYSTAL17 job submitter for ARCHER2 - Setting up
 
 Job submitter installed at: `date`
-Job submitter edition:      v0.3
+Job submitter edition:      v1.0
 Supported job scheduler:    SLURM
 
-By Spica-Vir, Mar. 18-22, ICL, spica.h.zhou@gmail.com
+By Spica-Vir, May 31, 22, ICL, spica.h.zhou@gmail.com
 
 Developed based on Dr G.Mallia's scripts on Imperial cluster
 Special thanks to G.Mallia & N.M.Harrison
@@ -30,10 +30,12 @@ EOF
 }
 
 function get_scriptdir {
+    TMPSCRIPTDIR=${HOME#*/}
+    TMPSCRIPTDIR="/work/${TMPSCRIPTDIR#*/}/runCRYSTAL"
     cat << EOF
 ================================================================================
     Note: all scripts should be placed into the same directory!
-    Please specify your installation path (by default ${HOME}/runCRYSTAL/):
+    Please specify your installation path (by default ${TMPSCRIPTDIR}):
 
 EOF
 
@@ -41,7 +43,7 @@ EOF
     SCRIPTDIR=`echo ${SCRIPTDIR}`
 
     if [[ -z ${SCRIPTDIR} ]]; then
-        SCRIPTDIR=${HOME}/runCRYSTAL/
+        SCRIPTDIR=${TMPSCRIPTDIR}
     fi
 
     if [[ ${SCRIPTDIR: -1} == '/' ]]; then
@@ -93,7 +95,7 @@ function copy_scripts {
 
     if [[ ${SCRIPTDIR} != ${curr_dir} ]]; then
         mkdir -p             ${SCRIPTDIR}
-        cp gen_sub_Scrys     ${SCRIPTDIR}/gen_sub_Scrys
+        cp gen_sub           ${SCRIPTDIR}/gen_sub
         cp Pcry_slurm        ${SCRIPTDIR}/Pcry_slurm
         cp Pprop_slurm       ${SCRIPTDIR}/Pprop_slurm
         cp settings_template ${SCRIPTDIR}/settings
@@ -110,17 +112,17 @@ EOF
 
 function set_settings {
     SETFILE=${SCRIPTDIR}/settings
-    sed -i "/SUBMISSION_EXT/a .slurm" ${SETFILE}
-    sed -i "/NCPU_PER_NODE/a 128" ${SETFILE}
-    sed -i "/BUDGET_CODE/a ${BUDGET_CODE}" ${SETFILE}
-    sed -i "/QOS/a standard" ${SETFILE}
-    sed -i "/PARTITION/a standard" ${SETFILE}
-    sed -i "/TIME_OUT/a 3" ${SETFILE}
-    sed -i "/CRYSTAL_SCRIPT/a Pcry_slurm" ${SETFILE}
-    sed -i "/PROPERTIES_SCRIPT/a Pprop_slurm" ${SETFILE}
-    sed -i "/POST_PROCESSING_SCRIPT/a post_proc_slurm" ${SETFILE}
+    sed -i "/SUBMISSION_EXT/a\.slurm" ${SETFILE}
+    sed -i "/NCPU_PER_NODE/a\128" ${SETFILE}
+    sed -i "/BUDGET_CODE/a\ ${BUDGET_CODE}" ${SETFILE}
+    sed -i "/QOS/a\standard" ${SETFILE}
+    sed -i "/PARTITION/a\standard" ${SETFILE}
+    sed -i "/TIME_OUT/a\3" ${SETFILE}
+    sed -i "/CRYSTAL_SCRIPT/a\Pcry_slurm" ${SETFILE}
+    sed -i "/PROPERTIES_SCRIPT/a\Pprop_slurm" ${SETFILE}
+    sed -i "/POST_PROCESSING_SCRIPT/a\post_proc_slurm" ${SETFILE}
     JOBTMPDIR=/work${HOME:5}
-    sed -i "/JOB_TMPDIR/a "${JOBTMPDIR}"" ${SETFILE}
+    sed -i "/JOB_TMPDIR/a\ "${JOBTMPDIR}"" ${SETFILE}
 
 # Job submission file template - should be placed at the end of file
     cat << EOF >> ${SETFILE}
@@ -159,18 +161,20 @@ EOF
 }
 
 function set_commands {
-    sed -i '/CRYSTAL job submitter settings/d' ${HOME}/.bashrc
-    sed -i '/setcrys=/d' ${HOME}/.bashrc
-    sed -i '/gen_sub_Scrys/d' ${HOME}/.bashrc
-    sed -i '/Pcry_slurm/d' ${HOME}/.bashrc
-    sed -i '/Pprop_slurm/d' ${HOME}/.bashrc
-    sed -i '/post_proc_slurm/d' ${HOME}/.bashrc
+    bgline=`grep -nw "# >>> CRYSTAL job submitter settings >>>" ${HOME}/.bashrc`
+    edline=`grep -nw "# <<< finish CRYSTAL job submitter settings <<<" ${HOME}/.bashrc`
+
+    if [[ ! -z ${bgline} && ! -z ${edline} ]]; then
+        bgline=${bgline%%:*}
+        edline=${edline%%:*}
+        sed -i "${bgline},${edline}d" ${HOME}/.bashrc
+    fi
 
     echo "# >>> CRYSTAL job submitter settings >>>" >> ${HOME}/.bashrc
-    echo "alias Pcry='${SCRIPTDIR}/gen_sub_Scrys crys'" >> ${HOME}/.bashrc
-    echo "alias Pprop='${SCRIPTDIR}/gen_sub_Scrys prop'" >> ${HOME}/.bashrc
+    echo "alias Pcrys='${SCRIPTDIR}/gen_sub --type crys'" >> ${HOME}/.bashrc
+    echo "alias Pprop='${SCRIPTDIR}/gen_sub --type prop'" >> ${HOME}/.bashrc
     echo "alias setcrys='cat ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "chmod 777 ${SCRIPTDIR}/gen_sub_Scrys" >> ${HOME}/.bashrc
+    echo "chmod 777 ${SCRIPTDIR}/gen_sub" >> ${HOME}/.bashrc
     echo "chmod 777 ${SCRIPTDIR}/Pcry_slurm" >> ${HOME}/.bashrc
     echo "chmod 777 ${SCRIPTDIR}/Pprop_slurm" >> ${HOME}/.bashrc 
     echo "chmod 777 ${SCRIPTDIR}/post_proc_slurm" >> ${HOME}/.bashrc 
@@ -182,9 +186,9 @@ function set_commands {
 ================================================================================
     User defined commands set, including: 
 
-    Pcry - executing parallel crystal calculations (Pcrystal and MPP)
+    Pcrys - executing parallel crystal calculations (Pcrystal and MPP)
 
-        Pcry ND WT jobname [refname]
+        Pcrys --nd ND --wt WT --in jobname --ref [refname]
 
         ND:       int, number of nodes
         WT:       str, walltime, hh:mm format
@@ -193,12 +197,14 @@ function set_commands {
 
     Pprop - executing parallel properties calculations (Pproperties)
 
-        Pprop ND WT jobname SCFname
+        Pprop --nd ND --wt WT --in jobname --ref SCFname
 
         ND:       int, number of nodes
         WT:       str, walltime, hh:mm format
         jobname:  str, name of input .d3 file
-        SCFname:  str, optional, name of the previous 'crystal' job
+        SCFname:  str, name of the previous 'crystal' job
+
+    The sequence of parameters can be changed.
 
     setcrys - print the file 'settings'
     
@@ -210,6 +216,6 @@ EOF
 welcome_msg
 get_scriptdir
 copy_scripts
-get_exedir
+get_budget_code
 set_settings
 set_commands
