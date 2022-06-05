@@ -18,10 +18,10 @@ function welcome_msg {
 CRYSTAL17 job submitter for Imperial HPC - Setting up
 
 Job submitter installed at: `date`
-Job submitter edition:      v0.3
+Job submitter edition:      v1.0
 Supported job scheduler:    PBS
 
-By Spica-Vir, Mar. 18-22, ICL, spica.h.zhou@gmail.com
+By Spica-Vir, May. 31, 22, ICL, spica.h.zhou@gmail.com
 
 Developed based on Dr G.Mallia's scripts on Imperial cluster
 Special thanks to G.Mallia & N.M.Harrison
@@ -97,7 +97,7 @@ function copy_scripts {
 
     if [[ ${SCRIPTDIR} != ${curr_dir} ]]; then
         mkdir -p             ${SCRIPTDIR}
-        cp gen_sub_crys      ${SCRIPTDIR}/gen_sub_crys
+        cp gen_sub           ${SCRIPTDIR}/gen_sub
         cp runcryP           ${SCRIPTDIR}/runcryP
         cp runpropP          ${SCRIPTDIR}/runpropP
         cp settings_template ${SCRIPTDIR}/settings
@@ -114,18 +114,18 @@ EOF
 
 function set_settings {
     SETFILE=${SCRIPTDIR}/settings
-    sed -i "/SUBMISSION_EXT/a .qsub" ${SETFILE}
-    sed -i "/NCPU_PER_NODE/a 48" ${SETFILE}
-    sed -i "/MEM_PER_NODE/a 50" ${SETFILE}
-    sed -i "/TIME_OUT/a 3" ${SETFILE}
-    sed -i "/CRYSTAL_SCRIPT/a runcryP" ${SETFILE}
-    sed -i "/PROPERTIES_SCRIPT/a runpropP" ${SETFILE}
-    sed -i "/POST_PROCESSING_SCRIPT/a post_processing" ${SETFILE}
-    sed -i "/JOB_TMPDIR/a \/rds\/general\/ephemeral\/user\/${USER}\/ephemeral" ${SETFILE}
-    sed -i "/EXEDIR/a ${EXEDIR}" ${SETFILE}
-    sed -i "/EXE_PCRYSTAL/a Pcrystal" ${SETFILE}
-    sed -i "/EXE_MPP/a MPPcrystal" ${SETFILE}
-    sed -i "/EXE_PPROPERTIES/a Pproperties" ${SETFILE}
+    sed -i "/SUBMISSION_EXT/a\ .qsub" ${SETFILE}
+    sed -i "/NCPU_PER_NODE/a\ 48" ${SETFILE}
+    sed -i "/MEM_PER_NODE/a\ 50" ${SETFILE}
+    sed -i "/TIME_OUT/a\ 3" ${SETFILE}
+    sed -i "/CRYSTAL_SCRIPT/a\ runcryP" ${SETFILE}
+    sed -i "/PROPERTIES_SCRIPT/a\ runpropP" ${SETFILE}
+    sed -i "/POST_PROCESSING_SCRIPT/a\ post_processing" ${SETFILE}
+    sed -i "/JOB_TMPDIR/a\ \/rds\/general\/ephemeral\/user\/${USER}\/ephemeral" ${SETFILE}
+    sed -i "/EXEDIR/a\ ${EXEDIR}" ${SETFILE}
+    sed -i "/EXE_PCRYSTAL/a\ Pcrystal" ${SETFILE}
+    sed -i "/EXE_MPP/a\ MPPcrystal" ${SETFILE}
+    sed -i "/EXE_PPROPERTIES/a\ Pproperties" ${SETFILE}
 
 # Job submission file template - should be placed at the end of file
     cat << EOF >> ${SETFILE}
@@ -186,18 +186,20 @@ EOF
 }
 
 function set_commands {
-    sed -i '/CRYSTAL job submitter settings/d' ${HOME}/.bashrc
-    sed -i '/setcrys=/d' ${HOME}/.bashrc
-    sed -i '/gen_sub_crys/d' ${HOME}/.bashrc
-    sed -i '/runcryP/d' ${HOME}/.bashrc
-    sed -i '/runpropP/d' ${HOME}/.bashrc
-    sed -i '/post_processing/d' ${HOME}/.bashrc
+    bgline=`grep -nw "# >>> CRYSTAL job submitter settings >>>" ${HOME}/.bashrc`
+    edline=`grep -nw "# <<< finish CRYSTAL job submitter settings <<<" ${HOME}/.bashrc`
+
+    if [[ ! -z ${bgline} && ! -z ${edline} ]]; then
+        bgline=${bgline%%:*}
+        edline=${edline%%:*}
+        sed -i "${bgline},${edline}d" ${HOME}/.bashrc
+    fi
 
     echo "# >>> CRYSTAL job submitter settings >>>" >> ${HOME}/.bashrc
-    echo "alias Pcry='${SCRIPTDIR}/gen_sub_crys crys'" >> ${HOME}/.bashrc
-    echo "alias Pprop='${SCRIPTDIR}/gen_sub_crys prop'" >> ${HOME}/.bashrc
+    echo "alias Pcrys='${SCRIPTDIR}/gen_sub --type crys'" >> ${HOME}/.bashrc
+    echo "alias Pprop='${SCRIPTDIR}/gen_sub --type prop'" >> ${HOME}/.bashrc
     echo "alias setcrys='cat ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "chmod 777 ${SCRIPTDIR}/gen_sub_crys" >> ${HOME}/.bashrc
+    echo "chmod 777 ${SCRIPTDIR}/gen_sub" >> ${HOME}/.bashrc
     echo "chmod 777 ${SCRIPTDIR}/runcryP" >> ${HOME}/.bashrc
     echo "chmod 777 ${SCRIPTDIR}/runpropP" >> ${HOME}/.bashrc 
     echo "chmod 777 ${SCRIPTDIR}/post_processing" >> ${HOME}/.bashrc 
@@ -209,9 +211,9 @@ function set_commands {
 ================================================================================
     User defined commands set, including: 
 
-    Pcry - executing parallel crystal calculations (Pcrystal and MPP)
+    Pcrys - executing parallel crystal calculations (Pcrystal and MPP)
 
-        Pcry ND WT jobname [refname]
+        Pcrys --nd ND --wt WT --in jobname --ref [refname]
 
         ND:       int, number of nodes
         WT:       str, walltime, hh:mm format
@@ -220,7 +222,7 @@ function set_commands {
 
     Pprop - executing parallel properties calculations (Pproperties)
 
-        Pprop ND WT jobname SCFname
+        Pprop --nd ND --wt WT --in jobname --ref SCFname
 
         ND:       int, number of nodes
         WT:       str, walltime, hh:mm format

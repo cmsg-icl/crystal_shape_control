@@ -1,16 +1,70 @@
 #!/bin/bash
 
 # General input format
-# gen_sub_Scrys jobtype ND WT jobname (refname)
-# jobtype: str, crys / prop
+# gen_sub --type jobtype --in input --ref refname --nd ND --wt WT
+# jobtype: str, crys / prop (usually included in user defined commands)
 # ND:      int, number of nodes
 # WT:      str, walltime, hh:mm time format
 # jobname: str, input .d12 or .d3 file, with or without extension
 # refname: str, optional, name of the previous run
+# The sequence of input parameters can be changed
+
+function get_input_ {
+
+    ## Useful variables: JOBTYPE, WT, ND, JOBNAME, REFNAME
+
+    param_list=$(getopt -a -l type:,nd:,wt:,in:,ref: -n "$0" -- ${in_var} 2> /dev/null) 
+    cat << EOF
+    INPUT parameters:
+        ${param_list}
+
+EOF
+
+    eval set -- "${param_list}"
+    while [[ true ]]; do
+        case $1 in
+        --type ) 
+            shift; JOBTYPE=$1 ;;
+        --in ) 
+            shift; JOBNAME=${1%.*}; JOBNAME=${JOBNAME##*/} ;;
+        --ref ) 
+            shift; REFNAME=${1%.*}; REFNAME=${REFNAME##*/} ;;
+        --nd ) 
+            shift; ND=$1 ;;
+        --wt ) 
+            shift; WT=$1 ;;
+        -- ) 
+            break;;
+        * ) 
+            print_HOWTO_
+            exit;;
+        esac
+        shift
+    done
+
+    check_JOBTYPE_
+    check_JOBNAME_
+    check_REFNAME_
+    check_WT_
+    check_ND_
+}
+
+# Get jobtype from input & define the script
+
+function check_JOBTYPE_ {
+    if [[ ${JOBTYPE} == 'crys' || ${JOBTYPE} == 'CRYS' ]]; then
+        JOBTYPE=crys
+    elif [[ ${JOBTYPE} == 'prop' || ${JOBTYPE} == 'PROP' ]]; then
+        JOBTYPE=prop
+    else
+        print_HOWTO_JOBTYPE_
+        exit
+    fi
+}
 
 # Instruction for jobtype
 
-function print_HOWTO_jobtype_ {
+function print_HOWTO_JOBTYPE_ {
     cat << EOF
     -------------------------------------------
     To avoid ambiguity, the job type can be set
@@ -22,112 +76,106 @@ function print_HOWTO_jobtype_ {
     PROP
 
     Examples:
-    `basename $0` CRYS 16 wt=30:00 mgo.d12 
-    `basename $0` prop 16 WT=30:00 mgo.d12 
+    `basename $0` --type CRYS --nd 4 --wt 02:00  --in mgo.d12 
+    `basename $0` --type prop --nd 1 --wt 00:30  --in mgo.d3 --ref mgo-scf.
 
 EOF
 }
 
-# Instruction for ND
+# Check jobname
 
-function print_HOWTO_ND_ {
-    cat << EOF
-    -------------------------------------------
-    To avoid ambiguity, the number of nodes can be set 
-    by using the following options:
-
-    nd=
-    ND=
-        
-    Examples:
-    `basename $0` crys nd=16 30:00 mgo.d12 
-    `basename $0` crys ND=16 30:00 mgo.d12 
-
-EOF
-}
-
-# Instruction for WT
-
-function print_HOWTO_WT_ {
-    cat << EOF
-    -------------------------------------------
-    To avoid ambiguity, the walltime can be set
-    by using the following options:
-
-    wt=
-    WT=
-
-    Examples:
-    `basename $0` crys 16 wt=30:00 mgo.d12 
-    `basename $0` crys 16 WT=30:00 mgo.d12 
-
-EOF
-}
-
-# General instruction
-
-function print_HOWTO_ {
-    cat << EOF
-    ERROR:
-        number of input parameters does not meet the requirements or is ambiguous. 
-        please check your command. 
-
-    HOWTO: 
-        `basename $0` jobtype ND WT jobname (refname)
-        jobtype --> str, crys / prop
-        ND      --> int, number of nodes
-        WT      --> str, walltime, hh:mm time format
-        jobname --> str, input .d12 or .d3 file, with or without extension
-        refname --> optional, name of the previous run, with or without extension
-
-    Examples:
-        `basename $0` 16 30:00 mgo-opt2.d12 mgo-opt1
-
-EOF
-    print_HOWTO_jobtype_
-    print_HOWTO_ND_
-    print_HOWTO_WT_
-}
-
-# Get jobtype from input & define the script
-
-function get_jobtype_ {
-    SETFILE=${SCRIPTDIR}/settings
-
-    if [[ ${JOBTYPE} == 'crys' || ${JOBTYPE} == 'CRYS' ]]; then
-        JOBTYPE=crys
-        SCRIPT=`echo $(grep -w -A 1 'CRYSTAL_SCRIPT' ${SETFILE} | tail -1)`
-    elif [[ ${JOBTYPE} == 'prop' || ${JOBTYPE} == 'PROP' ]]; then
-        JOBTYPE=prop
-        SCRIPT=`echo $(grep -w -A 1 'PROPERTIES_SCRIPT' ${SETFILE} | tail -1)`
-    else
-        cat << EOF
-    ERROR: 
-        the jobtype has to be either 'crys' or 'prop', 
-        please check the value: ${JOBTYPE}
-
-EOF
-        print_HOWTO_jobtype_
+function check_JOBNAME_ {
+## Whether JOBNAME is specified
+    if [[ -z ${JOBNAME} ]]; then
+        print_HOWTO_JOBNAME_
         exit
     fi
-
-    POSCRIPT=`echo $(grep -w -A 1 'POST_PROCESSING_SCRIPT' ${SETFILE} | tail -1)`
-}
-
-# Get ND from input
-
-function get_ND_ {
-    ND=${ND##*=}
-
-    if [[ ${ND} -eq 0 ]]; then
+## input not exist
+    if [[ ${JOBTYPE} == 'crys' ]]; then
+        jobfile=${INPDIR}/${JOBNAME}.d12
+    else
+        jobfile=${INPDIR}/${JOBNAME}.d3
+    fi
+    ls ${jobfile} > /dev/null 2>&1
+    if [[ $? == 1 ]]; then
         cat << EOF
-    ERROR:
-        number of nodes has to be specified
-        no queue system file has been generated
+    ERROR: 
+        input file does not exist. please check: ${JOBNAME}
 
 EOF
-        print_HOWTO_ND_
         exit
+    fi
+## wrong extension
+    if [[ ! -e ${jobfile} || ! -s ${jobfile} ]]; then
+        cat << EOF
+    ERROR:
+        input file extension is not consistent with the jobtype specified. 
+        please check the jobtype: ${JOBTYPE} or the jobname: ${JOBNAME}
+
+        .d12 ---> CRYSTAL calculations
+        .d3  ---> PROPERTIES calculations
+
+EOF
+        exit
+    fi
+### output exists
+    if [[ -e ${INPDIR}/${JOBNAME}.out && -s ${INPDIR}/${JOBNAME}.out ]]; then
+        cat << EOF
+    ERROR:
+        output file ${JOBNAME}.out already exists in ${INPDIR}/. 
+        Please consider to move it to a safe place. 
+
+        Exit without performing calculations. 
+
+EOF
+        exit
+    fi
+    echo "printed output filename ${OUTPUT}"
+}
+
+# Instruction for --in
+
+function print_HOWTO_JOBNAME_ {
+    cat << EOF
+    -------------------------------------------
+    To avoid ambiguity, the name of input files can be set 
+    by using the following options (with or without extensions):
+
+    --in
+        
+    Example:
+    `basename $0` --type CRYS --nd 4 --wt 02:00  --in mgo.d12 
+
+EOF
+}
+
+# Check reference file name
+
+function check_REFNAME_ {
+    if [[ ! -z ${REFNAME} ]]; then
+## Wheter any file contains the string ${REFNAME} exists
+        ls -l ${REFNAME}* > /dev/null 2>&1 
+        if [[ $? > 0 ]]; then
+            cat << EOF
+    ERROR:
+        ${REFNAME}* not found.
+
+EOF
+            exit
+        fi
+    fi
+}
+
+# Check number of nodes
+
+function check_ND_ {
+    if [[ -z ${ND} || ${ND} -eq 0 ]]; then
+        cat << EOF
+    WARNING:
+        Number of nodes MUST BE specified. Set to default value ND=1
+
+EOF
+        ND=1
     fi
 
     CHECK_IF_ND_IS_AN_INTEGER=`echo $ND | awk 'BEGIN{S="YES"};{
@@ -146,15 +194,30 @@ EOF
         please check the value: ${ND}
 
 EOF
+        print_HOWTO_ND_
         exit
     fi
 }
 
-# Get MT from input
+# Instruction for ND
 
-function get_WT_ {
-    WT=${WT##*=}
+function print_HOWTO_ND_ {
+    cat << EOF
+    -------------------------------------------
+    To avoid ambiguity, the number of nodes can be set 
+    by using the following options:
 
+    --nd number of nodes
+        
+    Example:
+    `basename $0` --type CRYS --nd 4 --wt 02:00  --in mgo.d12 
+
+EOF
+}
+
+# Check walltime
+
+function check_WT_ {
     separator=`echo ${WT} | grep ':'`
 
     if [[ -z ${separator} ]]; then
@@ -198,75 +261,61 @@ EOF
     fi
 }
 
-# Get jobname and refname from input
+# Instruction for WT
 
-function get_jobname_ {
-    INPDIR=`pwd`
-    if [[ $# -eq 4 ]]; then
-        JOBNAME=${JOBNAME%.*}
-    else
-        JOBNAME=${JOBNAME%.*}
-        REFNAME=${REFNAME%.*}
-    fi
-## check input
-    if [[ ${JOBTYPE} == 'crys' ]]; then
-        jobfile=${INPDIR}/${JOBNAME}.d12
-    else
-        jobfile=${INPDIR}/${JOBNAME}.d3
-    fi
-### input not exist
-    ls ${jobfile} > /dev/null 2>&1
-    if [[ $? == 1 ]]; then
-        cat << EOF
-    ERROR: 
-        input file does not exist. please check: ${JOBNAME}
+function print_HOWTO_WT_ {
+    cat << EOF
+    -------------------------------------------
+    To avoid ambiguity, the walltime can be set
+    by using the following options:
+
+    --wt walltime
+
+    Examples:
+    `basename $0` --type CRYS --nd 4 --wt 02:00  --in mgo.d12 
 
 EOF
-        exit
-    fi
-### wrong extension
-    if [[ ! -e ${jobfile} || ! -s ${jobfile} ]]; then
-        cat << EOF
+}
+
+# General instruction
+
+function print_HOWTO_ {
+    cat << EOF
     ERROR:
-        input file extension is not consistent with the jobtype specified. 
-        please check the jobtype: ${JOBTYPE} or the jobname: ${JOBNAME}
+        Input parameters does not meet the requirements or are ambiguous. 
+        please check your command. 
 
-        .d12 ---> CRYSTAL calculations
-        .d3  ---> PROPERTIES calculations
+    HOWTO: 
+        `basename $0` --type jobtype --in input --ref refname --nd ND --wt WT
+        jobtype --> str, crys / prop / CRYS / PROP
+        ND      --> int, number of nodes
+        WT      --> str, walltime, hh:mm time format
+        jobname --> str, input .d12 or .d3 file, with or without extension
+        refname --> optional, name of the previous run, with or without extension
 
-EOF
-        exit
-    fi
-### output exists
-    if [[ -e ${INPDIR}/${JOBNAME}.out && -s ${INPDIR}/${JOBNAME}.out ]]; then
-        cat << EOF
-    ERROR:
-        output file ${JOBNAME}.out already exists in ${INPDIR}/. 
-        Please consider to move it to a safe place. 
+        The sequence of input parameters is flexible
 
-        Exit without performing calculations. 
+    Examples:
+        `basename $0` --type CRYS --nd 4 --wt 02:00  --in mgo.d12 --ref mgo-opt.
 
 EOF
-        exit
-    fi
-## check reference data
-    if [[ ! -z ${REFNAME} ]]; then
-        ls "${INPDIR}/${REFNAME}*" > /dev/null 2>&1
-        if [[ $? == 1 ]]; then
-            cat << EOF
-    ERROR:
-        reference data not found in ${INPDIR}, 
-        please check: ${REFNAME}
-
-EOF
-        exit
-        fi
-    fi
+    print_HOWTO_JOBTYPE_
+    print_HOWTO_JOBNAME_
+    print_HOWTO_ND_
+    print_HOWTO_WT_
 }
 
 # check job execution scripts
 
 function check_scripts_ {
+    if [[ ${JOBTYPE} == 'crys' ]]; then
+        SCRIPT=`echo $(grep -w -A 1 'CRYSTAL_SCRIPT' ${SETFILE} | tail -1)`
+    else
+        SCRIPT=`echo $(grep -w -A 1 'PROPERTIES_SCRIPT' ${SETFILE} | tail -1)`
+    fi
+
+    POSCRIPT=`echo $(grep -w -A 1 'POST_PROCESSING_SCRIPT' ${SETFILE} | tail -1)`
+
     ls ${SCRIPTDIR}/${SCRIPT} > /dev/null 2>&1
     if [[ $? == 1 ]]; then
         cat << EOF
@@ -384,27 +433,14 @@ EOF
 }
 
 # Main I/O function
-
-if [[ $# > 5 || $# < 4 ]]; then
-    print_HOWTO_
-    exit
-fi
-
+INPDIR=`pwd`
 SCRIPTDIR=`echo ${0%/*}`
-JOBTYPE=$1
-ND=$2
-WT=$3
-JOBNAME=$4
-if [[ $# -eq 5 ]]; then
-    REFNAME=$5
-else
-    REFNAME=""
-fi
+SETFILE=${SCRIPTDIR}/settings
 
-get_jobtype_
-get_ND_
-get_WT_
-get_jobname_
+# Get input parameters
+in_var="header "$@""
+get_input_
+
 check_scripts_
 
 echo "jobtype                       = " ${JOBTYPE}
