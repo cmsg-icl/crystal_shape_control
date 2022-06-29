@@ -1,0 +1,118 @@
+# Job submission scripts
+SUBMISSION_EXT
+.qsub
+
+NCPU_PER_NODE
+24
+
+MEM_PER_NODE
+50
+
+N_THREAD
+1
+
+NGPU_PER_NODE
+0
+
+GPU_TYPE
+RTX6000
+
+BUDGET_CODE
+
+QOS
+
+PARTITION
+
+TIME_OUT
+3
+
+# Job execution scripts. 
+# NB: Should be kept at the same directory as 'settings' and 'gen_sub'!
+EXE_SCRIPT
+run_exec
+
+POST_PROCESSING_SCRIPT
+post_proc
+
+JOB_TMPDIR
+/rds/general/ephemeral/user/hz1420/ephemeral
+
+
+# Executables
+EXEDIR
+module load  gromacs/2021.3-mpi
+
+EXE_PARALLEL
+gmx_mpi
+
+EXE_OPTIONS
+mdrun -s
+
+
+# file formats table
+PRE_CALC
+-----------------------------------------------------------------------------------
+SAVED                TEMPORARY            DEFINITION
+-----------------------------------------------------------------------------------
+jobname.tpr          jobname.tpr          GROMACS portable binary run input file
+-----------------------------------------------------------------------------------
+
+FILE_EXT
+-----------------------------------------------------------------------------------
+SAVED                TEMPORARY            DEFINITION
+-----------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
+
+POST_CALC
+-----------------------------------------------------------------------------------
+SAVED                TEMPORARY            DEFINITION
+-----------------------------------------------------------------------------------
+jobname.CheckPoint/  *.cpt                Checkpoint files
+jobname.gro          *.gro                Gromacs geometry file
+jobname.trj          *.trj                Trajectory file
+-----------------------------------------------------------------------------------
+                         
+
+JOB_SUBMISSION_TEMPLATE
+-----------------------------------------------------------------------------------
+#!/bin/bash  --login
+#PBS -N ${V_PBSJOBNAME}
+#PBS -l select=${V_ND}:ncpus=${V_NCPU}:mem=${V_MEM}
+#PBS -l mpiprocs=${V_PROC}:ompthreads=${V_TRED}
+#PBS -l ngpus=${V_NGPU}:gpu_type=${V_TGPU}
+#PBS -l walltime=${V_WT}
+#PBS -l avx2=true
+
+echo "<qsub_standard_output>"
+date
+echo "<qstat -f ${PBS_JOBID}>"
+qstat -f ${PBS_JOBID}
+echo "</qstat -f ${PBS_JOBID}>"
+
+# number of cores per node used
+export NCORES=${V_NCPU}
+# number of processes
+export NPROCESSES=${V_NP}
+
+# Make sure any symbolic links are resolved to absolute path
+export PBS_O_WORKDIR=$(readlink -f ${PBS_O_WORKDIR})
+
+# Set the number of threads to 1
+export OMP_NUM_THREADS=${V_TRED}
+# env (Uncomment this line to get all environmental variables)
+echo "</qsub_standard_output>"
+
+# to sync nodes
+cd ${PBS_O_WORKDIR}
+
+# start calculation
+timeout ${V_TOUT} ${V_SCRIPTDIR}/${V_SCRIPT} -in ${V_JOBNAME} -- ${V_OTHER}
+${V_SCRIPTDIR}/${V_POSCRIPT} -in ${V_JOBNAME_IN}
+
+###
+if [[ -f ./${V_JOBNAME}.run ]];then
+chmod 755 ./${V_JOBNAME}.run
+./${V_JOBNAME}.run
+fi
+-----------------------------------------------------------------------------------
+

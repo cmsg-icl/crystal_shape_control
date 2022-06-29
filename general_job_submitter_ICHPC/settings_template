@@ -1,0 +1,59 @@
+# Job submission scripts
+SUBMISSION_EXT
+
+NCPU_PER_NODE
+
+MEM_PER_NODE
+
+N_THREAD
+
+NGPU_PER_NODE
+
+GPU_TYPE
+
+BUDGET_CODE
+
+QOS
+
+PARTITION
+
+TIME_OUT
+
+# Job execution scripts. 
+# NB: Should be kept at the same directory as 'settings' and 'gen_sub'!
+EXE_SCRIPT
+
+POST_PROCESSING_SCRIPT
+
+JOB_TMPDIR
+
+
+# Executables
+EXEDIR
+
+EXE_PARALLEL
+
+EXE_OPTIONS
+
+
+# file formats table
+PRE_CALC
+-----------------------------------------------------------------------------------
+SAVED                TEMPORARY            DEFINITION
+-----------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
+
+FILE_EXT
+-----------------------------------------------------------------------------------
+KEYWORD                                   DEFINITION
+-----------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
+
+POST_CALC
+-----------------------------------------------------------------------------------
+SAVED                TEMPORARY            DEFINITION
+-----------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
+                         
+
+JOB_SUBMISSION_TEMPLATE
