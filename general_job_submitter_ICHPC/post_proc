@@ -51,7 +51,7 @@ echo "TEMPORARY          SAVED" | tee -a ${OUTDIR}/${OUTPUT}
 #tag_start_for_checkfile
 # Remove external files
 
-if [[ -z ${REFNAME} ]]; then
+if [[ ! -z ${REFNAME} ]]; then
     rm -r ${REFNAME}.*
 fi
 
@@ -69,48 +69,56 @@ while [[ ! -z ${TMP_NAME} ]]; do
 
 ### Substitute variable flags
 
-    if [[ SAVED_NAME_FLAG == '[jobname]' ]]; then
+    if [[ ${SAVED_NAME_FLAG} == '[jobname]' ]]; then
         SAVED_NAME=${JOBNAME}${SAVED_NAME}
     fi
 
 ### Substitute variable flags
 
-    if [[ TMP_NAME_FLAG == '[jobname]' ]]; then
+    if [[ ${TMP_NAME_FLAG} == '[jobname]' ]]; then
         TMP_NAME=${JOBNAME}${TMP_NAME}
     fi
 
-## Normal files
+## List files, to get all files with '*' in 'TMP_NAME' settings
 
-    if [[ ${SAVED_NAME: -1} != '/' && -e ${JOBTMPDIR}/${TMP_NAME} && -s ${JOBTMPDIR}/${TMP_NAME} ]]; then
-        echo "${TMP_NAME} ${SAVED_NAME}" | awk '{printf("%-18s %-18s"),$1,$2}' 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
-        ls -l ${TMP_NAME} | awk '{printf("%-8s %s %s %s\n"),$5,$6,$7,$8}' 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
-        cp ${JOBTMPDIR}/${TMP_NAME} ${OUTDIR}/${SAVED_NAME}
-        echo "output ${TMP_NAME} copied as ${SAVED_NAME}."
+    filelist=`find ${JOBTMPDIR} -name "${TMP_NAME}"`
+    filelist=(${filelist//${JOBTMPDIR}\//})
 
-## Files stored in sub-folders 
+### Make subdir for files stored in sub-folders 
 
-    elif [[ ${SAVED_NAME: -1} = '/' ]]; then
-        filelist=`find ${JOBTMPDIR} -name "${TMP_NAME}"`
-        filelist=(${filelist//${JOBTMPDIR}\//})
-        if [[ ${#filelist[@]} > 1 ]]; then
-            mkdir "${OUTDIR}/${SAVED_NAME}"
-            for file in ${filelist[@]}; do
-                echo "${file} ${SAVED_NAME}" | awk '{printf("%-18s %-18s"),$1,$2}' 2>&1 | tee -a ${OUTDIR}/${OUTPUT} 
-                ls -l ${file} | awk '{printf("%-8s %s %s %s\n"),$5,$6,$7,$8}' 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
-                cp ${JOBTMPDIR}/${file} ${OUTDIR}/${SAVED_NAME}
-                echo "output ${file} copied into ${SAVED_NAME}."
-            done
-        elif [[ ${#filelist[@]} -eq 1 ]]; then
-            echo "${filelist[0]} ${filelist[0]}" | awk '{printf("%-18s %-18s"),$1,$2}' 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
-            ls -l ${filelist[0]} | awk '{printf("%-8s %s %s %s\n"),$5,$6,$7,$8}' 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
-            cp ${JOBTMPDIR}/${filelist[0]} ${OUTDIR}/${filelist[0]}
-            echo "output ${filelist[0]} copied as its original name."
-        fi
+    if [[ ${SAVED_NAME: -1} = '/' ]]; then
+        mkdir "${OUTDIR}/${SAVED_NAME}"
     fi
 
+    for file in ${filelist[@]}; do
+
+### Make sure the file is not empty
+
+        if [[ ! -s ${JOBTMPDIR}/${file} ]]; then
+            continue
+        fi
+
+        echo "${file} ${SAVED_NAME}" | awk '{printf("%-18s %-18s"),$1,$2}' 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+        ls -l ${file} | awk '{printf("%-8s %s %s %s\n"),$5,$6,$7,$8}' 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+        cp ${JOBTMPDIR}/${file} ${OUTDIR}/${SAVED_NAME}
+
+### Normal files
+
+        if [[ ${SAVED_NAME: -1} != '/' ]]; then
+            echo "output ${file} copied as ${SAVED_NAME}."
+
+### Files stored in sub-folders
+
+        else
+            echo "output ${file} copied into ${SAVED_NAME}."
+        fi
+    done
+
     LINE_POSTCALC=`echo "scale=0;${LINE_POSTCALC%%:*}+1" | bc`
-    SAVED_NAME=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", $1)}' ${SETFILE}`
+    SAVED_NAME=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", $1)}' ${SETFILE} | sed -r 's/^.{9}//'`
+    SAVED_NAME_FLAG=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", $1)}' ${SETFILE} | cut -c 1-9`
     TMP_NAME=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", $2)}' ${SETFILE}`
+    TMP_NAME_FLAG=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", $2)}' ${SETFILE} | cut -c 1-9`
 done
 
 # Calculation summary

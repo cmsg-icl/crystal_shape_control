@@ -1,21 +1,15 @@
 # Job submission scripts
 SUBMISSION_EXT
-.qsub
 
 NCPU_PER_NODE
-24
 
 MEM_PER_NODE
-50
 
 N_THREAD
-1
 
 NGPU_PER_NODE
-0
 
 GPU_TYPE
-RTX6000
 
 BUDGET_CODE
 
@@ -24,29 +18,22 @@ QOS
 PARTITION
 
 TIME_OUT
-3
 
 # Job execution scripts. 
 # NB: Should be kept at the same directory as 'settings' and 'gen_sub'!
 EXE_SCRIPT
-run_exec
 
 POST_PROCESSING_SCRIPT
-post_proc
 
 JOB_TMPDIR
-/rds/general/ephemeral/user/hz1420/ephemeral
 
 
 # Executables
 EXEDIR
-/rds/general/user/hz1420/home/lammps2109/bin
 
 EXE_PARALLEL
-lmp_mpi
 
 EXE_OPTIONS
--in
 
 
 # file formats table
@@ -82,9 +69,7 @@ JOB_SUBMISSION_TEMPLATE
 -----------------------------------------------------------------------------------
 #!/bin/bash  --login
 #PBS -N ${V_PBSJOBNAME}
-#PBS -l select=${V_ND}:ncpus=${V_NCPU}:mem=${V_MEM}
-#PBS -l mpiprocs=${V_PROC}:ompthreads=${V_TRED}
-#PBS -l ngpus=${V_NGPU}:gpu_type=${V_TGPU}
+#PBS -l select=${V_ND}:ncpus=${V_NCPU}:mem=${V_MEM}:mpiprocs=${V_PROC}:ompthreads=${V_TRED}${V_NGPU}${V_TGPU}
 #PBS -l walltime=${V_WT}
 
 echo "<qsub_standard_output>"
@@ -112,5 +97,7 @@ cd ${PBS_O_WORKDIR}
 # commend these 2 lines to avoid confliction of MPI when loading other versions 
 module load  intel-suite/2019.4
 module load  mpi/intel-2019
+
+# start calculation: command added below by gen_sub
 -----------------------------------------------------------------------------------
 

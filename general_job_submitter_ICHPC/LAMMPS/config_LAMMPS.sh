@@ -102,7 +102,6 @@ EOF
             exit
         fi
     fi
-}
 
     cat << EOF
 ================================================================================
@@ -153,7 +152,7 @@ function copy_scripts {
         mkdir -p             ${SCRIPTDIR}
         cp gen_sub           ${SCRIPTDIR}/gen_sub
         cp run_exec          ${SCRIPTDIR}/run_exec
-        cp settings_LAMMPS   ${SCRIPTDIR}/settings
+        cp settings_template ${SCRIPTDIR}/settings
         cp post_proc         ${SCRIPTDIR}/post_proc
     else
         cp settings_LAMMPS settings
@@ -186,7 +185,7 @@ function set_settings {
 -----------------------------------------------------------------------------------
 #!/bin/bash  --login
 #PBS -N \${V_JOBNAME}
-#PBS -l select=\${V_ND}:ncpus=\${V_NCPU}:mpiprocs=\${V_NCPU}:ompthreads=1:mem=\${V_MEM}
+#PBS -l select=\${V_ND}:ncpus=\${V_NCPU}:mem=\${V_MEM}:mpiprocs=\${V_PROC}:ompthreads=\${V_TRED}\${V_NGPU}\${V_TGPU}
 #PBS -l walltime=\${V_WT}
 
 echo "<qsub_standard_output>"
@@ -203,10 +202,8 @@ export NPROCESSES=\${V_NP}
 # Make sure any symbolic links are resolved to absolute path
 export PBS_O_WORKDIR=\$(readlink -f \${PBS_O_WORKDIR})
 
-# Set the number of threads to 1
-#   This prevents any system libraries from automatically
-#   using threading.
-export OMP_NUM_THREADS=1
+# Set the number of threads
+export OMP_NUM_THREADS=\${V_TRED}
 # env (Uncomment this line to get all environmental variables)
 echo "</qsub_standard_output>"
 
@@ -218,14 +215,6 @@ module load  intel-suite/2019.4
 module load  mpi/intel-2019
 
 # start calculation
-timeout \${V_TOUT} \${V_SCRIPTDIR}/\${V_SCRIPT} -in \${V_JOBNAME} -- \${V_OTHER}
-\${V_SCRIPTDIR}/\${V_POSCRIPT} -in \${V_JOBNAME_IN}
-
-###
-if [[ -f ./\${V_JOBNAME}.run ]];then
-chmod 755 ./\${V_JOBNAME}.run
-./\${V_JOBNAME}.run
-fi
 -----------------------------------------------------------------------------------
 
 EOF

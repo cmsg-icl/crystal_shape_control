@@ -23,7 +23,7 @@ Supported job scheduler:    PBS
 
 By Spica-Vir, Jun.28, 22, ICL, spica.h.zhou@gmail.com
 
-Special thanks to G.Mallia, N.M.Harrison, A. Arber, K. Tallat Kelpsa
+Special thanks to G.Mallia, N.M.Harrison, K. Tallat Kelpsa
 
 EOF
 }
@@ -102,7 +102,6 @@ EOF
             exit
         fi
     fi
-}
 
     cat << EOF
 ================================================================================
@@ -153,7 +152,7 @@ function copy_scripts {
         mkdir -p             ${SCRIPTDIR}
         cp gen_sub           ${SCRIPTDIR}/gen_sub
         cp run_exec          ${SCRIPTDIR}/run_exec
-        cp settings_GROMACS  ${SCRIPTDIR}/settings
+        cp settings_template ${SCRIPTDIR}/settings
         cp post_proc         ${SCRIPTDIR}/post_proc
     else
         cp settings_GROMACS settings
@@ -166,6 +165,8 @@ EOF
 }
 
 function set_settings {
+
+# Setup default parameters
     SETFILE=${SCRIPTDIR}/settings
     sed -i "/SUBMISSION_EXT/a .qsub" ${SETFILE}
     sed -i "/NCPU_PER_NODE/a 24" ${SETFILE}
@@ -181,15 +182,28 @@ function set_settings {
     sed -i "/EXE_PARALLEL/a ${EXENAME}" ${SETFILE}
     sed -i "/EXE_OPTIONS/a ${EXEOPT}" ${SETFILE}
 
+# Setup default file format tables
+	LINE_PRE=`grep -nw 'PRE_CALC' ${SETFILE}`
+    LINE_PRE=`echo "scale=0;${LINE_PRE%:*}+4" | bc`
+    sed -i "${LINE_PRE}i[jobname].tpr          [jobname].tpr          GROMACS portable binary run input file" ${SETFILE}
+
+	LINE_EXT=`grep -nw 'FILE_EXT' ${SETFILE}`
+    LINE_EXT=`echo "scale=0;${LINE_EXT%:*}+4" | bc`
+
+    LINE_POST=`grep -nw 'POST_CALC' ${SETFILE}`
+    LINE_POST=`echo "scale=0;${LINE_POST%:*}+4" | bc`
+    sed -i "${LINE_POST}i[jobname].CheckPoint\/  *.cpt                Checkpoint files" ${SETFILE}
+    sed -i "${LINE_POST}i[jobname].gro          *.gro                Gromacs geometry file" ${SETFILE}
+    sed -i "${LINE_POST}i[jobname].trr          *.trr                Trajectory file" ${SETFILE}
+    sed -i "${LINE_POST}i[jobname].trj          *.trj                Trajectory file" ${SETFILE}
+    sed -i "${LINE_POST}i[jobname].log          *.log                MD output file" ${SETFILE}
 # Job submission file template - should be placed at the end of file
     cat << EOF >> ${SETFILE}
 -----------------------------------------------------------------------------------
 #!/bin/bash  --login
-#PBS -N \${V_JOBNAME}
-#PBS -l select=\${V_ND}:ncpus=\${V_NCPU}:mpiprocs=\${V_NCPU}:ompthreads=1
-#PBS -l mem=\${V_MEM}
+#PBS -N \${V_PBSJOBNAME}
+#PBS -l select=\${V_ND}:ncpus=\${V_NCPU}:mem=\${V_MEM}:mpiprocs=\${V_PROC}:ompthreads=\${V_TRED}\${V_NGPU}\${V_TGPU}:avx2=true
 #PBS -l walltime=\${V_WT}
-#PBS -l avx2=true
 
 echo "<qsub_standard_output>"
 date
@@ -205,25 +219,15 @@ export NPROCESSES=\${V_NP}
 # Make sure any symbolic links are resolved to absolute path
 export PBS_O_WORKDIR=\$(readlink -f \${PBS_O_WORKDIR})
 
-# Set the number of threads to 1
-#   This prevents any system libraries from automatically
-#   using threading.
-export OMP_NUM_THREADS=1
+# Set the number of threads
+export OMP_NUM_THREADS=\${V_TRED}
 # env (Uncomment this line to get all environmental variables)
 echo "</qsub_standard_output>"
 
 # to sync nodes
 cd \${PBS_O_WORKDIR}
 
-# start calculation
-timeout \${V_TOUT} \${V_SCRIPTDIR}/\${V_SCRIPT} -in \${V_JOBNAME} -- \${V_OTHER}
-\${V_SCRIPTDIR}/\${V_POSCRIPT} -in \${V_JOBNAME_IN}
-
-###
-if [[ -f ./\${V_JOBNAME}.run ]];then
-chmod 755 ./\${V_JOBNAME}.run
-./\${V_JOBNAME}.run
-fi
+# start calculation: command added below by gen_sub
 -----------------------------------------------------------------------------------
 
 EOF

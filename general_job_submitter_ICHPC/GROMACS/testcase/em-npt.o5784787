@@ -1,0 +1,963 @@
+<qsub_standard_output>
+Thu 30 Jun 22:53:27 BST 2022
+<qstat -f 5784787.pbs>
+</qstat -f 5784787.pbs>
+</qsub_standard_output>
+--in 'em' --
+printed output filename em.out
+mpi command: mpiexec 
+gromacs/2021.3-mpi: requires AVX2. Add avx2=true to #PBS resource selections
+
+Loading gromacs/2021.3-mpi
+  Loading requirement: gcc/9.3.0 mpi/intel-2019
+creating temporary directory /rds/general/ephemeral/user/hz1420/ephemeral/em_5784787
+<script>
+# Synchronise nodes
+
+if [[ ! -z ${PBS_NODEFILE} ]]; then
+    if [[ -e ${PBS_NODEFILE} ]]; then
+        echo '${PBS_NODEFILE}' found: ${PBS_NODEFILE}
+        cat ${PBS_NODEFILE}
+        PCLIST=`awk '{if ($I != old){printf("%s ",$I);old=$I}}' ${PBS_NODEFILE}`
+    else
+        echo '${PBS_NODEFILE} not found'
+        exit
+    fi
+
+    for PC in ${PCLIST[@]}; do
+        ssh ${PC} "if [[ ! -d ${JOBTMPDIR} ]]; then mkdir -p ${JOBTMPDIR} ;fi; echo 'temporary directory on '${PC}"
+    done
+fi
+
+# Generate basic information of output file
+
+OUTDIR=`pwd`
+INPDIR=`pwd`
+
+echo "output file: ${OUTDIR}/${OUTPUT}"
+cat << EOF | tee -a ${OUTDIR}/${OUTPUT}
+date:                `date`
+hostname:            `hostname`
+system:              `uname -a`
+user:                `whoami`
+input:               ${OUTDIR}/${JOBNAME}.in
+output:              ${OUTDIR}/${OUTPUT}
+executable script:   $0
+executable dir:      ${XDIR}
+executable:          ${PEXE}
+EOF
+
+if [[ ! -z ${PBS_JOBID} ]]; then
+    echo "<qstat -f ${PBS_JOBID}>"  | tee -a ${OUTDIR}/${OUTPUT}
+    qstat -f ${PBS_JOBID}      2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+    echo "</qstat -f ${PBS_JOBID}>" | tee -a ${OUTDIR}/${OUTPUT}
+fi
+
+echo "temporary directory: ${JOBTMPDIR}"
+
+# Prepare input file
+
+## Read list
+
+LINE_PRECALC=`grep -nw 'PRE_CALC' ${SETFILE}`
+LINE_PRECALC=`echo "scale=0;${LINE_PRECALC%%:*}+4" | bc`
+
+SAVED_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $1)}' ${SETFILE}`
+TMP_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $2)}' ${SETFILE}`
+
+## Mandatory files: jobname.in etc
+
+while [[ ${SAVED_NAME} != *'------------'* ]]; do
+    SAVED_NAME="${JOBNAME}.${SAVED_NAME#*.}"
+    TMP_NAME="${JOBNAME}.${TMP_NAME#*.}"
+
+    if [[ -e ${INPDIR}/${SAVED_NAME} && -s ${INPDIR}/${SAVED_NAME} ]]; then
+
+### Copy files to the main temporary directory
+
+        echo "Found input data: ${INPDIR}/${SAVED_NAME}" 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+        cp ${INPDIR}/${SAVED_NAME} ${JOBTMPDIR}/${TMP_NAME}
+        echo "input ${SAVED_NAME} copied."
+
+### Synchonise files on all nodes
+
+        if [[ ! -z ${PCLIST} ]]; then
+            for PC in ${PCLIST[@]}; do
+                ssh ${PC} "cp ${INPDIR}/${SAVED_NAME} ${JOBTMPDIR}/${TMP_NAME}"
+                echo "File synchonised on ${PC} : ${JOBTMPDIR}/${TMP_NAME}"
+            done
+        fi
+    else
+        echo "ERROR: Mandatory input ${INPDIR}/${SAVED_NAME} not found or empty."
+        exit
+    fi
+
+    LINE_PRECALC=`echo "scale=0;${LINE_PRECALC}+1" | bc`
+    SAVED_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $1)}' ${SETFILE}`
+    TMP_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $2)}' ${SETFILE}`
+done
+
+## External files
+
+LINE_EXT=`grep -nw 'FILE_EXT' ${SETFILE}`
+LINE_EXT=`echo "scale=0;${LINE_EXT%%:*}+4" | bc`
+
+SAVED_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $1)}' ${SETFILE} | sed -r 's/^.{9}//'`
+SAVED_NAME_FLAG=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $1)}' ${SETFILE} | cut -c 1-9`
+TMP_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $2)}' ${SETFILE}`
+TMP_NAME_FLAG=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $2)}' ${SETFILE} | cut -c 1-9`
+
+while [[ ! -z ${TMP_NAME} ]]; do
+
+### Substitute variable flags
+
+    if [[ SAVED_NAME_FLAG == '[jobname]' ]]; then
+        SAVED_NAME=${JOBNAME}${SAVED_NAME}
+    elif [[ SAVED_NAME_FLAG == '[pre_job]' && ! -z ${REFNAME} ]]; then
+        SAVED_NAME=${REFNAME}${SAVED_NAME}
+    fi
+
+### Substitute variable flags
+
+    if [[ TMP_NAME_FLAG == '[jobname]' ]]; then
+        TMP_NAME=${JOBNAME}${TMP_NAME}
+    elif [[ TMP_NAME_FLAG == '[pre_job]' && ! -z ${REFNAME} ]]; then
+        TMP_NAME=${REFNAME}${TMP_NAME}
+    fi
+
+### Find files in home directory
+
+    if [[ -e ${INPDIR}/${SAVED_NAME} && -s ${INPDIR}/${SAVED_NAME} ]]; then
+
+### Copy files to the main temporary directory
+
+        echo "Found input data: ${INPDIR}/${SAVED_NAME}" 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+        cp ${INPDIR}/${SAVED_NAME} ${JOBTMPDIR}/${TMP_NAME}
+        echo "input ${SAVED_NAME} copied as ${TMP_NAME}."
+
+### Synchonise files on all nodes
+
+        if [[ ! -z ${PCLIST} ]]; then
+            for PC in ${PCLIST[@]}; do
+                ssh ${PC} "cp ${INPDIR}/${SAVED_NAME} ${JOBTMPDIR}/${TMP_NAME}"
+                echo "File synchonised on ${PC} : ${JOBTMPDIR}/${TMP_NAME}"
+            done
+        fi
+
+### File not found
+
+    else
+        echo "The optional input data ${INPDIR}/${SAVED_NAME} not found or empty."
+    fi
+
+    LINE_EXT=`echo "scale=0;${LINE_EXT}+1" | bc`
+    SAVED_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $1)}' ${SETFILE} | sed -r 's/^.{9}//'`
+    SAVED_NAME_FLAG=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $1)}' ${SETFILE} | cut -c 1-9`
+    TMP_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $2)}' ${SETFILE}`
+    TMP_NAME_FLAG=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $2)}' ${SETFILE} | cut -c 1-9`
+done
+
+echo "All files are synchonised." | tee -a ${OUTDIR}/${OUTPUT}
+
+# Launch calculations
+
+echo "" | tee -a ${OUTDIR}/${OUTPUT}
+echo "Start the job" | tee -a ${OUTDIR}/${OUTPUT}
+echo "Job name: ${JOBNAME} ID: ${PBS_JOBID}" | tee -a ${OUTDIR}/${OUTPUT}
+echo "" | tee -a ${OUTDIR}/${OUTPUT}
+
+cd ${JOBTMPDIR}
+echo "Entering temporary directory ${JOBTMPDIR}"
+echo "Job execution command to be used:"
+echo "${EXECOMMAND}"
+echo "Job started..."
+
+${EXECOMMAND} 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+
+exit
+</script>
+DATE START: Thu 30 Jun 22:55:37 BST 2022
+${PBS_NODEFILE} found: /var/spool/PBS/aux/5784787.pbs
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+temporary directory on cx3-12-8.cx3.hpc.ic.ac.uk
+output file: /rds/general/user/hz1420/home/test/em.out
+date:                Thu 30 Jun 22:55:52 BST 2022
+hostname:            cx3-12-8.cx3.hpc.ic.ac.uk
+system:              Linux cx3-12-8.cx3.hpc.ic.ac.uk 4.18.0-348.20.1.el8_5.x86_64 #1 SMP Tue Mar 8 12:56:54 EST 2022 x86_64 x86_64 x86_64 GNU/Linux
+user:                hz1420
+input:               /rds/general/user/hz1420/home/test/em.in
+output:              /rds/general/user/hz1420/home/test/em.out
+executable script:   /rds/general/user/hz1420/home/etc/runGROMACS/run_exec
+executable dir:      module load gromacs/2021.3-mpi
+executable:          gmx_mpi
+<qstat -f 5784787.pbs>
+Connection timed out
+qstat: cannot connect to server pbs (errno=110)
+</qstat -f 5784787.pbs>
+temporary directory: /rds/general/ephemeral/user/hz1420/ephemeral/em_5784787
+Found input data: /rds/general/user/hz1420/home/test/em.tpr
+input em.tpr copied.
+File synchonised on cx3-12-8.cx3.hpc.ic.ac.uk : /rds/general/ephemeral/user/hz1420/ephemeral/em_5784787/em.tpr
+All files are synchonised.
+
+Start the job
+Job name: em ID: 5784787.pbs
+
+Entering temporary directory /rds/general/ephemeral/user/hz1420/ephemeral/em_5784787
+Job execution command to be used:
+mpiexec  gmx_mpi mdrun -s em 
+Job started...
+
+# mpiexec: MPI Program startup
+
+
+# mpiexec: Running in job 5784787.pbs at Thu 30 Jun 22:58:03 BST 2022
+# mpiexec: Fabric configuration:
+# mpiexec: node class CX3
+# mpiexec: libfabric provider verbs
+# mpiexec: libfabric inferface eth0
+# mpiexec: MPI-IO configuration on / gpfs
+# mpiexec: full path to program is /apps/gromacs/2021.3-mpi/bin/gmx_mpi
+# mpiexec: program arguments are: mdrun -s em
+# mpiexec: 24 ranks allocated via PBS select
+# mpiexec: 1 OpenMP threads / rank allocated by PBS select
+# mpiexec: 24 ranks per node
+# mpiexec: There are 256 cores/node. 24 will be used for this job
+# mpiexec: Job has shared use of the allocated nodes. Disabling process-pinning
+# mpiexec: Node is shared. Disabling process pinning
+# mpiexec: machinefile configured as:
+cx3-12-8.cx3.hpc.ic.ac.uk:24
+#
+# mpiexec: Checking all nodes are ONLINE using ping:
+# mpiexec: All nodes appear ONLINE
+# mpiexec: Checking all nodes are ONLINE using ssh:
+# cx3-12-8.cx3.hpc.ic.ac.uk : # mpiexec: Dynamic linking for /apps/gromacs/2021.3-mpi/bin/gmx_mpi:
+	linux-vdso.so.1 (0x00007ffc9d4c5000)
+	libgromacs_mpi.so.6 => /apps/gromacs/2021.3-mpi/lib64/libgromacs_mpi.so.6 (0x0000147262dba000)
+	libmpi.so.12 => /apps/mpi/intel/2019.6.166/lib/release/libmpi.so.12 (0x0000147261d20000)
+	librt.so.1 => /lib64/librt.so.1 (0x0000147261b18000)
+	libpthread.so.0 => /lib64/libpthread.so.0 (0x00001472618f8000)
+	libdl.so.2 => /lib64/libdl.so.2 (0x00001472616f4000)
+	libgomp.so.1 => /apps/gcc/9.3.0/lib64/libgomp.so.1 (0x00001472614be000)
+	libstdc++.so.6 => /apps/gcc/9.3.0/lib64/libstdc++.so.6 (0x00001472610e4000)
+	libm.so.6 => /lib64/libm.so.6 (0x0000147260d62000)
+	libgcc_s.so.1 => /apps/gcc/9.3.0/lib64/libgcc_s.so.1 (0x0000147260b4a000)
+	libc.so.6 => /lib64/libc.so.6 (0x0000147260785000)
+	libblas.so.3 => /lib64/libblas.so.3 (0x0000147260531000)
+	liblapack.so.3 => /lib64/liblapack.so.3 (0x000014725fc90000)
+	libfabric.so.1 => /apps/mpi/intel/2019.6.166/libfabric/lib/libfabric.so.1 (0x000014725fa4b000)
+	/lib64/ld-linux-x86-64.so.2 (0x000014726436f000)
+	libgfortran.so.5 => /apps/gcc/9.3.0/lib64/libgfortran.so.5 (0x000014725f5bd000)
+	libquadmath.so.0 => /apps/gcc/9.3.0/lib/../lib64/libquadmath.so.0 (0x000014725f377000)
+# mpiexec: launch started at Thu 30 Jun 22:58:04 BST 2022
+# mpiexec: launching program...
+# mpiexec: /apps/gromacs/2021.3-mpi/bin/gmx_mpi mdrun -s em
+# mpiexec: PROGRAM OUTPUT FOLLOWS
+(cx3-12-8.cx3.hpc.ic.ac.uk:0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23)
+
+                 :-) GROMACS - gmx mdrun, 2021.3-UNCHECKED (-:
+
+                            GROMACS is written by:
+     Andrey Alekseenko              Emile Apol              Rossen Apostolov     
+         Paul Bauer           Herman J.C. Berendsen           Par Bjelkmar       
+       Christian Blau           Viacheslav Bolnykh             Kevin Boyd        
+     Aldert van Buuren           Rudi van Drunen             Anton Feenstra      
+    Gilles Gouaillardet             Alan Gray               Gerrit Groenhof      
+       Anca Hamuraru            Vincent Hindriksen          M. Eric Irrgang      
+      Aleksei Iupinov           Christoph Junghans             Joe Jordan        
+    Dimitrios Karkoulis            Peter Kasson                Jiri Kraus        
+      Carsten Kutzner              Per Larsson              Justin A. Lemkul     
+       Viveca Lindahl            Magnus Lundborg             Erik Marklund       
+        Pascal Merz             Pieter Meulenhoff            Teemu Murtola       
+        Szilard Pall               Sander Pronk              Roland Schulz       
+       Michael Shirts            Alexey Shvetsov             Alfons Sijbers      
+       Peter Tieleman              Jon Vincent              Teemu Virolainen     
+     Christian Wennberg            Maarten Wolf              Artem Zhmurov       
+                           and the project leaders:
+        Mark Abraham, Berk Hess, Erik Lindahl, and David van der Spoel
+
+Copyright (c) 1991-2000, University of Groningen, The Netherlands.
+Copyright (c) 2001-2019, The GROMACS development team at
+Uppsala University, Stockholm University and
+the Royal Institute of Technology, Sweden.
+check out http://www.gromacs.org for more information.
+
+GROMACS is free software; you can redistribute it and/or modify it
+under the terms of the GNU Lesser General Public License
+as published by the Free Software Foundation; either version 2.1
+of the License, or (at your option) any later version.
+
+GROMACS:      gmx mdrun, version 2021.3-UNCHECKED
+Executable:   /apps/gromacs/2021.3-mpi/bin/gmx_mpi
+Data prefix:  /apps/gromacs/2021.3-mpi
+Working dir:  /rds/general/ephemeral/user/hz1420/ephemeral/em_5784787
+Command line:
+  gmx_mpi mdrun -s em
+
+Compiled SIMD: AVX_256, but for this host/run AVX2_256 might be better (see
+log).
+Reading file em.tpr, VERSION 2021.3-UNCHECKED (single precision)
+Using 24 MPI processes
+Using 1 OpenMP thread per MPI process
+
+
+NOTE: The number of threads is not equal to the number of (logical) cores
+      and the -pin option is set to auto: will not pin threads to cores.
+      This can lead to significant performance degradation.
+      Consider using -pin on (and -pinoffset in case you run multiple jobs).
+
+Steepest Descents:
+   Tolerance (Fmax)   =  1.00000e+03
+   Number of steps    =        50000
+
+writing lowest energy coordinates.
+
+Steepest Descents converged to Fmax < 1000 in 231 steps
+Potential Energy  = -5.1705747e+05
+Maximum force     =  8.5046045e+02 on atom 790
+Norm of force     =  4.9598763e+01
+
+GROMACS reminds you: "It Wouldn't Hurt to Wipe Once In a While" (Beavis and Butthead)
+
+# mpiexec: finished at Thu 30 Jun 22:58:10 BST 2022
+--in 'em' --
+Start post-processing...
+
+List of saved files
+TEMPORARY          SAVED
+md.log             em.log            98596    Jun 30 22:58
+output md.log copied as em.log.
+traj.trr           em.trr            398604   Jun 30 22:58
+output traj.trr copied as em.trr.
+confout.gro        em.gro            1494429  Jun 30 22:58
+output confout.gro copied as em.gro.
+ 
+Disk usage:
+<df -h .>
+Filesystem      Size  Used Avail Use% Mounted on
+rds              14P   11P  3.1P  78% /rds
+</df -h .>
+By folders:
+<du -m .>
+2	/rds/general/ephemeral/user/hz1420/ephemeral/em_5784787
+</du -m .>
+Detailed file list:
+<ls -l .>
+total 1152
+-rw-------. 1 hz1420 hpc-nmh 1494429 Jun 30 22:58 confout.gro
+-rw-------. 1 hz1420 hpc-nmh 1003244 Jun 30 22:58 em.tpr
+-rw-------. 1 hz1420 hpc-nmh   36616 Jun 30 22:58 ener.edr
+-rw-------. 1 hz1420 hpc-nmh    5262 Jun 30 22:55 Job_script
+-rw-------. 1 hz1420 hpc-nmh   98596 Jun 30 22:58 md.log
+-rw-------. 1 hz1420 hpc-nmh  398604 Jun 30 22:58 traj.trr
+</ls -l .>
+cx3-12-8.cx3.hpc.ic.ac.uk
+<checkfile0>
+#!/bin/bash
+JOBNAME=em
+OUTDIR=/rds/general/user/hz1420/home/test
+OUTPUT=em.out
+JOBTMPDIR=/rds/general/ephemeral/user/hz1420/ephemeral/em_5784787
+cd  /rds/general/ephemeral/user/hz1420/ephemeral/em_5784787
+# Remove external files
+
+if [[ ! -z ${REFNAME} ]]; then
+    rm -r ${REFNAME}.*
+fi
+
+# Read POST_CALC list
+
+LINE_POSTCALC=`grep -nw 'POST_CALC' ${SETFILE}`
+LINE_POSTCALC=`echo "scale=0;${LINE_POSTCALC%%:*}+4" | bc`
+
+SAVED_NAME=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", $1)}' ${SETFILE} | sed -r 's/^.{9}//'`
+SAVED_NAME_FLAG=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", $1)}' ${SETFILE} | cut -c 1-9`
+TMP_NAME=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", $2)}' ${SETFILE}`
+TMP_NAME_FLAG=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", $2)}' ${SETFILE} | cut -c 1-9`
+
+while [[ ! -z ${TMP_NAME} ]]; do
+
+### Substitute variable flags
+
+    if [[ ${SAVED_NAME_FLAG} == '[jobname]' ]]; then
+        SAVED_NAME=${JOBNAME}${SAVED_NAME}
+    fi
+
+### Substitute variable flags
+
+    if [[ ${TMP_NAME_FLAG} == '[jobname]' ]]; then
+        TMP_NAME=${JOBNAME}${TMP_NAME}
+    fi
+
+## List files, to get all files with '*' in 'TMP_NAME' settings
+
+    filelist=`find ${JOBTMPDIR} -name "${TMP_NAME}"`
+    filelist=(${filelist//${JOBTMPDIR}\//})
+
+### Make subdir for files stored in sub-folders
+
+	if [[ ${SAVED_NAME: -1} = '/' && ! -z ${filelist} ]]; then
+        mkdir "${OUTDIR}/${SAVED_NAME}"
+    fi
+
+    for file in ${filelist[@]}; do
+
+### Make sure the file is not empty
+
+		if [[ ! -s ${JOBTMPDIR}/${file} ]]; then
+			continue
+		fi
+
+		echo "${file} ${SAVED_NAME}" | awk '{printf("%-18s %-18s"),$1,$2}' 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+		ls -l ${file} | awk '{printf("%-8s %s %s %s\n"),$5,$6,$7,$8}' 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+		cp ${JOBTMPDIR}/${file} ${OUTDIR}/${SAVED_NAME}
+
+### Normal files
+
+		if [[ ${SAVED_NAME: -1} != '/' ]]; then
+			echo "output ${file} copied as ${SAVED_NAME}."
+
+### Files stored in sub-folders 
+
+		else
+			echo "output ${file} copied into ${SAVED_NAME}."
+		fi
+	done
+
+    LINE_POSTCALC=`echo "scale=0;${LINE_POSTCALC%%:*}+1" | bc`
+    SAVED_NAME=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", $1)}' ${SETFILE} | sed -r 's/^.{9}//'`
+    SAVED_NAME_FLAG=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", $1)}' ${SETFILE} | cut -c 1-9`
+    TMP_NAME=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", $2)}' ${SETFILE}`
+    TMP_NAME_FLAG=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", $2)}' ${SETFILE} | cut -c 1-9`
+done
+
+# Calculation summary
+
+echo " "                | tee -a ${OUTDIR}/${OUTPUT}
+echo "Disk usage:"      | tee -a ${OUTDIR}/${OUTPUT}
+echo "<df -h .>"        | tee -a ${OUTDIR}/${OUTPUT}
+df -h ${JOBTMPDIR} 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+echo "</df -h .>"       | tee -a ${OUTDIR}/${OUTPUT}
+echo "By folders:"      | tee -a ${OUTDIR}/${OUTPUT}
+echo "<du -m .>"        | tee -a ${OUTDIR}/${OUTPUT}
+du -m ${JOBTMPDIR} 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+echo "</du -m .>"       | tee -a ${OUTDIR}/${OUTPUT}
+echo "Detailed file list:"
+echo "<ls -l .>"
+ls -l ${JOBTMPDIR} 2>&1
+echo "</ls -l .>"
+</checkfile0>
+--in 'npt' --
+printed output filename npt.out
+mpi command: mpiexec 
+gromacs/2021.3-mpi: requires AVX2. Add avx2=true to #PBS resource selections
+
+Loading gromacs/2021.3-mpi
+  Loading requirement: gcc/9.3.0 mpi/intel-2019
+creating temporary directory /rds/general/ephemeral/user/hz1420/ephemeral/npt_5784787
+<script>
+# Synchronise nodes
+
+if [[ ! -z ${PBS_NODEFILE} ]]; then
+    if [[ -e ${PBS_NODEFILE} ]]; then
+        echo '${PBS_NODEFILE}' found: ${PBS_NODEFILE}
+        cat ${PBS_NODEFILE}
+        PCLIST=`awk '{if ($I != old){printf("%s ",$I);old=$I}}' ${PBS_NODEFILE}`
+    else
+        echo '${PBS_NODEFILE} not found'
+        exit
+    fi
+
+    for PC in ${PCLIST[@]}; do
+        ssh ${PC} "if [[ ! -d ${JOBTMPDIR} ]]; then mkdir -p ${JOBTMPDIR} ;fi; echo 'temporary directory on '${PC}"
+    done
+fi
+
+# Generate basic information of output file
+
+OUTDIR=`pwd`
+INPDIR=`pwd`
+
+echo "output file: ${OUTDIR}/${OUTPUT}"
+cat << EOF | tee -a ${OUTDIR}/${OUTPUT}
+date:                `date`
+hostname:            `hostname`
+system:              `uname -a`
+user:                `whoami`
+input:               ${OUTDIR}/${JOBNAME}.in
+output:              ${OUTDIR}/${OUTPUT}
+executable script:   $0
+executable dir:      ${XDIR}
+executable:          ${PEXE}
+EOF
+
+if [[ ! -z ${PBS_JOBID} ]]; then
+    echo "<qstat -f ${PBS_JOBID}>"  | tee -a ${OUTDIR}/${OUTPUT}
+    qstat -f ${PBS_JOBID}      2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+    echo "</qstat -f ${PBS_JOBID}>" | tee -a ${OUTDIR}/${OUTPUT}
+fi
+
+echo "temporary directory: ${JOBTMPDIR}"
+
+# Prepare input file
+
+## Read list
+
+LINE_PRECALC=`grep -nw 'PRE_CALC' ${SETFILE}`
+LINE_PRECALC=`echo "scale=0;${LINE_PRECALC%%:*}+4" | bc`
+
+SAVED_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $1)}' ${SETFILE}`
+TMP_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $2)}' ${SETFILE}`
+
+## Mandatory files: jobname.in etc
+
+while [[ ${SAVED_NAME} != *'------------'* ]]; do
+    SAVED_NAME="${JOBNAME}.${SAVED_NAME#*.}"
+    TMP_NAME="${JOBNAME}.${TMP_NAME#*.}"
+
+    if [[ -e ${INPDIR}/${SAVED_NAME} && -s ${INPDIR}/${SAVED_NAME} ]]; then
+
+### Copy files to the main temporary directory
+
+        echo "Found input data: ${INPDIR}/${SAVED_NAME}" 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+        cp ${INPDIR}/${SAVED_NAME} ${JOBTMPDIR}/${TMP_NAME}
+        echo "input ${SAVED_NAME} copied."
+
+### Synchonise files on all nodes
+
+        if [[ ! -z ${PCLIST} ]]; then
+            for PC in ${PCLIST[@]}; do
+                ssh ${PC} "cp ${INPDIR}/${SAVED_NAME} ${JOBTMPDIR}/${TMP_NAME}"
+                echo "File synchonised on ${PC} : ${JOBTMPDIR}/${TMP_NAME}"
+            done
+        fi
+    else
+        echo "ERROR: Mandatory input ${INPDIR}/${SAVED_NAME} not found or empty."
+        exit
+    fi
+
+    LINE_PRECALC=`echo "scale=0;${LINE_PRECALC}+1" | bc`
+    SAVED_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $1)}' ${SETFILE}`
+    TMP_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $2)}' ${SETFILE}`
+done
+
+## External files
+
+LINE_EXT=`grep -nw 'FILE_EXT' ${SETFILE}`
+LINE_EXT=`echo "scale=0;${LINE_EXT%%:*}+4" | bc`
+
+SAVED_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $1)}' ${SETFILE} | sed -r 's/^.{9}//'`
+SAVED_NAME_FLAG=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $1)}' ${SETFILE} | cut -c 1-9`
+TMP_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $2)}' ${SETFILE}`
+TMP_NAME_FLAG=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $2)}' ${SETFILE} | cut -c 1-9`
+
+while [[ ! -z ${TMP_NAME} ]]; do
+
+### Substitute variable flags
+
+    if [[ SAVED_NAME_FLAG == '[jobname]' ]]; then
+        SAVED_NAME=${JOBNAME}${SAVED_NAME}
+    elif [[ SAVED_NAME_FLAG == '[pre_job]' && ! -z ${REFNAME} ]]; then
+        SAVED_NAME=${REFNAME}${SAVED_NAME}
+    fi
+
+### Substitute variable flags
+
+    if [[ TMP_NAME_FLAG == '[jobname]' ]]; then
+        TMP_NAME=${JOBNAME}${TMP_NAME}
+    elif [[ TMP_NAME_FLAG == '[pre_job]' && ! -z ${REFNAME} ]]; then
+        TMP_NAME=${REFNAME}${TMP_NAME}
+    fi
+
+### Find files in home directory
+
+    if [[ -e ${INPDIR}/${SAVED_NAME} && -s ${INPDIR}/${SAVED_NAME} ]]; then
+
+### Copy files to the main temporary directory
+
+        echo "Found input data: ${INPDIR}/${SAVED_NAME}" 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+        cp ${INPDIR}/${SAVED_NAME} ${JOBTMPDIR}/${TMP_NAME}
+        echo "input ${SAVED_NAME} copied as ${TMP_NAME}."
+
+### Synchonise files on all nodes
+
+        if [[ ! -z ${PCLIST} ]]; then
+            for PC in ${PCLIST[@]}; do
+                ssh ${PC} "cp ${INPDIR}/${SAVED_NAME} ${JOBTMPDIR}/${TMP_NAME}"
+                echo "File synchonised on ${PC} : ${JOBTMPDIR}/${TMP_NAME}"
+            done
+        fi
+
+### File not found
+
+    else
+        echo "The optional input data ${INPDIR}/${SAVED_NAME} not found or empty."
+    fi
+
+    LINE_EXT=`echo "scale=0;${LINE_EXT}+1" | bc`
+    SAVED_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $1)}' ${SETFILE} | sed -r 's/^.{9}//'`
+    SAVED_NAME_FLAG=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $1)}' ${SETFILE} | cut -c 1-9`
+    TMP_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $2)}' ${SETFILE}`
+    TMP_NAME_FLAG=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $2)}' ${SETFILE} | cut -c 1-9`
+done
+
+echo "All files are synchonised." | tee -a ${OUTDIR}/${OUTPUT}
+
+# Launch calculations
+
+echo "" | tee -a ${OUTDIR}/${OUTPUT}
+echo "Start the job" | tee -a ${OUTDIR}/${OUTPUT}
+echo "Job name: ${JOBNAME} ID: ${PBS_JOBID}" | tee -a ${OUTDIR}/${OUTPUT}
+echo "" | tee -a ${OUTDIR}/${OUTPUT}
+
+cd ${JOBTMPDIR}
+echo "Entering temporary directory ${JOBTMPDIR}"
+echo "Job execution command to be used:"
+echo "${EXECOMMAND}"
+echo "Job started..."
+
+${EXECOMMAND} 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+
+exit
+</script>
+DATE START: Thu 30 Jun 22:58:10 BST 2022
+${PBS_NODEFILE} found: /var/spool/PBS/aux/5784787.pbs
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+cx3-12-8.cx3.hpc.ic.ac.uk
+temporary directory on cx3-12-8.cx3.hpc.ic.ac.uk
+output file: /rds/general/user/hz1420/home/test/npt.out
+date:                Thu 30 Jun 22:58:18 BST 2022
+hostname:            cx3-12-8.cx3.hpc.ic.ac.uk
+system:              Linux cx3-12-8.cx3.hpc.ic.ac.uk 4.18.0-348.20.1.el8_5.x86_64 #1 SMP Tue Mar 8 12:56:54 EST 2022 x86_64 x86_64 x86_64 GNU/Linux
+user:                hz1420
+input:               /rds/general/user/hz1420/home/test/npt.in
+output:              /rds/general/user/hz1420/home/test/npt.out
+executable script:   /rds/general/user/hz1420/home/etc/runGROMACS/run_exec
+executable dir:      module load gromacs/2021.3-mpi
+executable:          gmx_mpi
+<qstat -f 5784787.pbs>
+Connection timed out
+qstat: cannot connect to server pbs (errno=110)
+</qstat -f 5784787.pbs>
+temporary directory: /rds/general/ephemeral/user/hz1420/ephemeral/npt_5784787
+Found input data: /rds/general/user/hz1420/home/test/npt.tpr
+input npt.tpr copied.
+File synchonised on cx3-12-8.cx3.hpc.ic.ac.uk : /rds/general/ephemeral/user/hz1420/ephemeral/npt_5784787/npt.tpr
+All files are synchonised.
+
+Start the job
+Job name: npt ID: 5784787.pbs
+
+Entering temporary directory /rds/general/ephemeral/user/hz1420/ephemeral/npt_5784787
+Job execution command to be used:
+mpiexec  gmx_mpi mdrun -s npt 
+Job started...
+
+# mpiexec: MPI Program startup
+
+
+# mpiexec: Running in job 5784787.pbs at Thu 30 Jun 23:00:40 BST 2022
+# mpiexec: Fabric configuration:
+# mpiexec: node class CX3
+# mpiexec: libfabric provider verbs
+# mpiexec: libfabric inferface eth0
+# mpiexec: MPI-IO configuration on / gpfs
+# mpiexec: full path to program is /apps/gromacs/2021.3-mpi/bin/gmx_mpi
+# mpiexec: program arguments are: mdrun -s npt
+# mpiexec: 24 ranks allocated via PBS select
+# mpiexec: 1 OpenMP threads / rank allocated by PBS select
+# mpiexec: 24 ranks per node
+# mpiexec: There are 256 cores/node. 24 will be used for this job
+# mpiexec: Job has shared use of the allocated nodes. Disabling process-pinning
+# mpiexec: Node is shared. Disabling process pinning
+# mpiexec: machinefile configured as:
+cx3-12-8.cx3.hpc.ic.ac.uk:24
+#
+# mpiexec: Checking all nodes are ONLINE using ping:
+# mpiexec: All nodes appear ONLINE
+# mpiexec: Checking all nodes are ONLINE using ssh:
+# cx3-12-8.cx3.hpc.ic.ac.uk : # mpiexec: Dynamic linking for /apps/gromacs/2021.3-mpi/bin/gmx_mpi:
+	linux-vdso.so.1 (0x00007ffcc419d000)
+	libgromacs_mpi.so.6 => /apps/gromacs/2021.3-mpi/lib64/libgromacs_mpi.so.6 (0x0000153f193f1000)
+	libmpi.so.12 => /apps/mpi/intel/2019.6.166/lib/release/libmpi.so.12 (0x0000153f18357000)
+	librt.so.1 => /lib64/librt.so.1 (0x0000153f1814f000)
+	libpthread.so.0 => /lib64/libpthread.so.0 (0x0000153f17f2f000)
+	libdl.so.2 => /lib64/libdl.so.2 (0x0000153f17d2b000)
+	libgomp.so.1 => /apps/gcc/9.3.0/lib64/libgomp.so.1 (0x0000153f17af5000)
+	libstdc++.so.6 => /apps/gcc/9.3.0/lib64/libstdc++.so.6 (0x0000153f1771b000)
+	libm.so.6 => /lib64/libm.so.6 (0x0000153f17399000)
+	libgcc_s.so.1 => /apps/gcc/9.3.0/lib64/libgcc_s.so.1 (0x0000153f17181000)
+	libc.so.6 => /lib64/libc.so.6 (0x0000153f16dbc000)
+	libblas.so.3 => /lib64/libblas.so.3 (0x0000153f16b68000)
+	liblapack.so.3 => /lib64/liblapack.so.3 (0x0000153f162c7000)
+	libfabric.so.1 => /apps/mpi/intel/2019.6.166/libfabric/lib/libfabric.so.1 (0x0000153f16082000)
+	/lib64/ld-linux-x86-64.so.2 (0x0000153f1a9a6000)
+	libgfortran.so.5 => /apps/gcc/9.3.0/lib64/libgfortran.so.5 (0x0000153f15bf4000)
+	libquadmath.so.0 => /apps/gcc/9.3.0/lib/../lib64/libquadmath.so.0 (0x0000153f159ae000)
+# mpiexec: launch started at Thu 30 Jun 23:00:42 BST 2022
+# mpiexec: launching program...
+# mpiexec: /apps/gromacs/2021.3-mpi/bin/gmx_mpi mdrun -s npt
+# mpiexec: PROGRAM OUTPUT FOLLOWS
+(cx3-12-8.cx3.hpc.ic.ac.uk:0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23)
+
+                 :-) GROMACS - gmx mdrun, 2021.3-UNCHECKED (-:
+
+                            GROMACS is written by:
+     Andrey Alekseenko              Emile Apol              Rossen Apostolov     
+         Paul Bauer           Herman J.C. Berendsen           Par Bjelkmar       
+       Christian Blau           Viacheslav Bolnykh             Kevin Boyd        
+     Aldert van Buuren           Rudi van Drunen             Anton Feenstra      
+    Gilles Gouaillardet             Alan Gray               Gerrit Groenhof      
+       Anca Hamuraru            Vincent Hindriksen          M. Eric Irrgang      
+      Aleksei Iupinov           Christoph Junghans             Joe Jordan        
+    Dimitrios Karkoulis            Peter Kasson                Jiri Kraus        
+      Carsten Kutzner              Per Larsson              Justin A. Lemkul     
+       Viveca Lindahl            Magnus Lundborg             Erik Marklund       
+        Pascal Merz             Pieter Meulenhoff            Teemu Murtola       
+        Szilard Pall               Sander Pronk              Roland Schulz       
+       Michael Shirts            Alexey Shvetsov             Alfons Sijbers      
+       Peter Tieleman              Jon Vincent              Teemu Virolainen     
+     Christian Wennberg            Maarten Wolf              Artem Zhmurov       
+                           and the project leaders:
+        Mark Abraham, Berk Hess, Erik Lindahl, and David van der Spoel
+
+Copyright (c) 1991-2000, University of Groningen, The Netherlands.
+Copyright (c) 2001-2019, The GROMACS development team at
+Uppsala University, Stockholm University and
+the Royal Institute of Technology, Sweden.
+check out http://www.gromacs.org for more information.
+
+GROMACS is free software; you can redistribute it and/or modify it
+under the terms of the GNU Lesser General Public License
+as published by the Free Software Foundation; either version 2.1
+of the License, or (at your option) any later version.
+
+GROMACS:      gmx mdrun, version 2021.3-UNCHECKED
+Executable:   /apps/gromacs/2021.3-mpi/bin/gmx_mpi
+Data prefix:  /apps/gromacs/2021.3-mpi
+Working dir:  /rds/general/ephemeral/user/hz1420/ephemeral/npt_5784787
+Command line:
+  gmx_mpi mdrun -s npt
+
+Compiled SIMD: AVX_256, but for this host/run AVX2_256 might be better (see
+log).
+Reading file npt.tpr, VERSION 2021.3-UNCHECKED (single precision)
+Changing nstlist from 5 to 100, rlist from 1.4 to 1.537
+
+Using 24 MPI processes
+Using 1 OpenMP thread per MPI process
+
+
+NOTE: The number of threads is not equal to the number of (logical) cores
+      and the -pin option is set to auto: will not pin threads to cores.
+      This can lead to significant performance degradation.
+      Consider using -pin on (and -pinoffset in case you run multiple jobs).
+starting mdrun 'Gallium Rubidium Oxygen Manganese Argon Carbon Silicon t=   0.00000 in water'
+50000 steps,    100.0 ps.
+
+Writing final coordinates.
+
+
+Dynamic load balancing report:
+ DLB was turned on during the run due to measured imbalance.
+ Average load imbalance: 10.6%.
+ The balanceable part of the MD step is 77%, load imbalance is computed from this.
+ Part of the total run time spent waiting due to load imbalance: 8.2%.
+ Steps where the load balancing was limited by -rdd, -rcon and/or -dds: X 0 % Z 0 %
+ Average PME mesh/force load: 0.434
+ Part of the total run time spent waiting due to PP/PME imbalance: 8.4 %
+
+NOTE: 8.2 % of the available CPU time was lost due to load imbalance
+      in the domain decomposition.
+      You can consider manually changing the decomposition (option -dd);
+      e.g. by using fewer domains along the box dimension in which there is
+      considerable inhomogeneity in the simulated system.
+NOTE: 8.4 % performance was lost because the PME ranks
+      had less work to do than the PP ranks.
+      You might want to decrease the number of PME ranks
+      or decrease the cut-off and the grid spacing.
+
+
+               Core t (s)   Wall t (s)        (%)
+       Time:     5625.588      234.400     2400.0
+                 (ns/day)    (hour/ns)
+Performance:       36.861        0.651
+
+GROMACS reminds you: "I have no responsibility to live up to what others expect of me. That's their mistake, not my failing." (Richard Feynman)
+
+# mpiexec: finished at Thu 30 Jun 23:04:39 BST 2022
+--in 'npt' --
+Start post-processing...
+
+List of saved files
+TEMPORARY          SAVED
+md.log             npt.log           65262    Jun 30 23:04
+output md.log copied as npt.log.
+traj.trr           npt.trr           40651488 Jun 30 23:04
+output traj.trr copied as npt.trr.
+confout.gro        npt.gro           2291397  Jun 30 23:04
+output confout.gro copied as npt.gro.
+state.cpt          npt.CheckPoint/   798860   Jun 30 23:04
+output state.cpt copied into npt.CheckPoint/.
+ 
+Disk usage:
+<df -h .>
+Filesystem      Size  Used Avail Use% Mounted on
+rds              14P   11P  3.1P  78% /rds
+</df -h .>
+By folders:
+<du -m .>
+41	/rds/general/ephemeral/user/hz1420/ephemeral/npt_5784787
+</du -m .>
+Detailed file list:
+<ls -l .>
+total 41024
+-rw-------. 1 hz1420 hpc-nmh  2291397 Jun 30 23:04 confout.gro
+-rw-------. 1 hz1420 hpc-nmh    33828 Jun 30 23:04 ener.edr
+-rw-------. 1 hz1420 hpc-nmh     5262 Jun 30 22:58 Job_script
+-rw-------. 1 hz1420 hpc-nmh    65262 Jun 30 23:04 md.log
+-rw-------. 1 hz1420 hpc-nmh  1118160 Jun 30 23:00 npt.tpr
+-rw-------. 1 hz1420 hpc-nmh   798860 Jun 30 23:04 state.cpt
+-rw-------. 1 hz1420 hpc-nmh 40651488 Jun 30 23:04 traj.trr
+</ls -l .>
+cx3-12-8.cx3.hpc.ic.ac.uk
+<checkfile0>
+#!/bin/bash
+JOBNAME=npt
+OUTDIR=/rds/general/user/hz1420/home/test
+OUTPUT=npt.out
+JOBTMPDIR=/rds/general/ephemeral/user/hz1420/ephemeral/npt_5784787
+cd  /rds/general/ephemeral/user/hz1420/ephemeral/npt_5784787
+# Remove external files
+
+if [[ ! -z ${REFNAME} ]]; then
+    rm -r ${REFNAME}.*
+fi
+
+# Read POST_CALC list
+
+LINE_POSTCALC=`grep -nw 'POST_CALC' ${SETFILE}`
+LINE_POSTCALC=`echo "scale=0;${LINE_POSTCALC%%:*}+4" | bc`
+
+SAVED_NAME=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", $1)}' ${SETFILE} | sed -r 's/^.{9}//'`
+SAVED_NAME_FLAG=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", $1)}' ${SETFILE} | cut -c 1-9`
+TMP_NAME=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", $2)}' ${SETFILE}`
+TMP_NAME_FLAG=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", $2)}' ${SETFILE} | cut -c 1-9`
+
+while [[ ! -z ${TMP_NAME} ]]; do
+
+### Substitute variable flags
+
+    if [[ ${SAVED_NAME_FLAG} == '[jobname]' ]]; then
+        SAVED_NAME=${JOBNAME}${SAVED_NAME}
+    fi
+
+### Substitute variable flags
+
+    if [[ ${TMP_NAME_FLAG} == '[jobname]' ]]; then
+        TMP_NAME=${JOBNAME}${TMP_NAME}
+    fi
+
+## List files, to get all files with '*' in 'TMP_NAME' settings
+
+    filelist=`find ${JOBTMPDIR} -name "${TMP_NAME}"`
+    filelist=(${filelist//${JOBTMPDIR}\//})
+
+### Make subdir for files stored in sub-folders
+
+	if [[ ${SAVED_NAME: -1} = '/' && ! -z ${filelist} ]]; then
+        mkdir "${OUTDIR}/${SAVED_NAME}"
+    fi
+
+    for file in ${filelist[@]}; do
+
+### Make sure the file is not empty
+
+		if [[ ! -s ${JOBTMPDIR}/${file} ]]; then
+			continue
+		fi
+
+		echo "${file} ${SAVED_NAME}" | awk '{printf("%-18s %-18s"),$1,$2}' 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+		ls -l ${file} | awk '{printf("%-8s %s %s %s\n"),$5,$6,$7,$8}' 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+		cp ${JOBTMPDIR}/${file} ${OUTDIR}/${SAVED_NAME}
+
+### Normal files
+
+		if [[ ${SAVED_NAME: -1} != '/' ]]; then
+			echo "output ${file} copied as ${SAVED_NAME}."
+
+### Files stored in sub-folders 
+
+		else
+			echo "output ${file} copied into ${SAVED_NAME}."
+		fi
+	done
+
+    LINE_POSTCALC=`echo "scale=0;${LINE_POSTCALC%%:*}+1" | bc`
+    SAVED_NAME=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", $1)}' ${SETFILE} | sed -r 's/^.{9}//'`
+    SAVED_NAME_FLAG=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", $1)}' ${SETFILE} | cut -c 1-9`
+    TMP_NAME=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", $2)}' ${SETFILE}`
+    TMP_NAME_FLAG=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", $2)}' ${SETFILE} | cut -c 1-9`
+done
+
+# Calculation summary
+
+echo " "                | tee -a ${OUTDIR}/${OUTPUT}
+echo "Disk usage:"      | tee -a ${OUTDIR}/${OUTPUT}
+echo "<df -h .>"        | tee -a ${OUTDIR}/${OUTPUT}
+df -h ${JOBTMPDIR} 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+echo "</df -h .>"       | tee -a ${OUTDIR}/${OUTPUT}
+echo "By folders:"      | tee -a ${OUTDIR}/${OUTPUT}
+echo "<du -m .>"        | tee -a ${OUTDIR}/${OUTPUT}
+du -m ${JOBTMPDIR} 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+echo "</du -m .>"       | tee -a ${OUTDIR}/${OUTPUT}
+echo "Detailed file list:"
+echo "<ls -l .>"
+ls -l ${JOBTMPDIR} 2>&1
+echo "</ls -l .>"
+</checkfile0>

@@ -118,8 +118,8 @@ EOF
 # Check input file, jobname.<ext>
 
 function check_files_ {
-    JOBFILE=(${JOBFILE// \//})
-    if [[ ${#JOBFILE[@]} >= 1 ]]; then
+
+    if [[ ${#JOBFILE[@]} -ge 1 ]]; then
         for (( i = 0; i < ${#JOBFILE[@]}; i++ )); do
             file=${JOBFILE[${i}]}
             check_a_file_
@@ -165,8 +165,6 @@ EOF
 # Check reference file
 
 function check_ref_ {
-
-    REFFILE=(${REFFILE// \//})
 
     if [[ ${#REFFILE[@]} != ${#JOBFILE[@]} ]]; then
         cat << EOF
@@ -308,13 +306,13 @@ EOF
     while [[ true ]]; do
         case $1 in
         --in ) 
-            shift; JOBFILE=$1; check_files_ ;;
+            shift; JOBFILE+=($1); check_files_ ;;
         --nd ) 
             shift; ND=$1; check_ND_ ;;
         --wt ) 
             shift; WT=$1; check_WT_ ;;
         --ref )
-            shift; REFFILE=$1; check_ref_ ;;
+            shift; REFFILE+=($1); check_ref_ ;;
         -- ) 
             shift;
             while [[ ! -z $1 ]]; do
@@ -337,8 +335,8 @@ EOF
     cat << EOF
     Formatted INPUT parameters:
 --------------------------------------
-    input file(s)    = ${JOBFILE}
-    reference job(s) = ${REFNAME}
+    input file(s)    = ${JOBFILE[@]}
+    reference job(s) = ${REFNAME[@]}
     nodes            = ${ND}
     walltime         = ${WT}
     other options    = ${OTHER_INPT}
@@ -484,10 +482,17 @@ EOF
     PROC=`echo "scale=0;${NCPU}/${TRED}" | bc`
 ## number of GPUs per node
     NGPU=`echo $(grep -w -A 1 'NGPU_PER_NODE' ${SETFILE} | tail -1)`
+    if [[ ${NGPU} -eq 0 ]]; then
+        NGPU=""
+        TGPU=""
+    else
+        NGPU=`echo ":ngpus=${NGPU}"`
 ## type of GPUs per node
-    TGPU=`echo $(grep -w -A 1 'GPU_TYPE' ${SETFILE} | tail -1)`
+        TGPU=`echo $(grep -w -A 1 'GPU_TYPE' ${SETFILE} | tail -1)`
+        TGPU=`echo ":gpu_type=${TGPU}"`
+    fi
 ## Time spared for post processing
-    TOUT=`echo $(grep -w -A 1 'TIME_OUT' ${SETFILE} | tail -1)`
+    tout_per_job=`echo $(grep -w -A 1 'TIME_OUT' ${SETFILE} | tail -1)`
 }
 
 # generate submission file
@@ -502,7 +507,9 @@ EOF
 ## Calculate the timeout for runnning calculations
     thr=${WT%:*}
     tmn=${WT#*:}
-    TOUT=`echo "scale=0;${thr}*60+${tmn}-${TOUT}" | bc`
+    njob=${#JOBNAME[@]}
+    TOUT=`echo "scale=0;${thr}*60+${tmn}" | bc`
+    TOUT=`echo "scale=0;${TOUT}/${njob}-${tout_per_job}" | bc`
     TOUT=`echo ${TOUT}m`
 ## Add seconds for WT
     WT="${WT}:00"
