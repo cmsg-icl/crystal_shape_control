@@ -59,23 +59,28 @@ fi
 LINE_POSTCALC=`grep -nw 'POST_CALC' ${SETFILE}`
 LINE_POSTCALC=`echo "scale=0;${LINE_POSTCALC%%:*}+4" | bc`
 
-SAVED_NAME=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", $1)}' ${SETFILE} | sed -r 's/^.{9}//'`
-SAVED_NAME_FLAG=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", $1)}' ${SETFILE} | cut -c 1-9`
+SAVED_NAME=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", $1)}' ${SETFILE}`
+SAVED_NAME_FLAG=`echo ${SAVED_NAME} | cut -c 1-9`
 TMP_NAME=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", $2)}' ${SETFILE}`
-TMP_NAME_FLAG=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", $2)}' ${SETFILE} | cut -c 1-9`
+TMP_NAME_FLAG=`echo ${TMP_NAME} | cut -c 1-9`
 
 while [[ ! -z ${TMP_NAME} ]]; do
 
 ### Substitute variable flags
 
     if [[ ${SAVED_NAME_FLAG} == '[jobname]' ]]; then
-        SAVED_NAME=${JOBNAME}${SAVED_NAME}
+        SAVED_NAME=${JOBNAME}$(echo ${SAVED_NAME} | sed -r 's/^.{9}//')
+
+### If SAVED_NAME begins with '*', keep the original name
+
+	elif [[ $(echo "${SAVED_NAME_FLAG}" | cut -c 1) == '*' ]]; then
+		SAVED_NAME=''
     fi
 
 ### Substitute variable flags
 
     if [[ ${TMP_NAME_FLAG} == '[jobname]' ]]; then
-        TMP_NAME=${JOBNAME}${TMP_NAME}
+        TMP_NAME=${JOBNAME}$(echo ${TMP_NAME} | sed -r 's/^.{9}//')
     fi
 
 ## List files, to get all files with '*' in 'TMP_NAME' settings
@@ -85,7 +90,7 @@ while [[ ! -z ${TMP_NAME} ]]; do
 
 ### Make subdir for files stored in sub-folders 
 
-    if [[ ${SAVED_NAME: -1} = '/' ]]; then
+    if [[ ${SAVED_NAME: -1} == '/' && ${#filelist[@]} -ge 1 ]]; then
         mkdir "${OUTDIR}/${SAVED_NAME}"
     fi
 
@@ -114,7 +119,7 @@ while [[ ! -z ${TMP_NAME} ]]; do
     done
 
     LINE_POSTCALC=`echo "scale=0;${LINE_POSTCALC%%:*}+1" | bc`
-    SAVED_NAME=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", $1)}' ${SETFILE} | sed -r 's/^.{9}//'`
+    SAVED_NAME=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", $1)}' ${SETFILE}`
     SAVED_NAME_FLAG=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", $1)}' ${SETFILE} | cut -c 1-9`
     TMP_NAME=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", $2)}' ${SETFILE}`
     TMP_NAME_FLAG=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", $2)}' ${SETFILE} | cut -c 1-9`

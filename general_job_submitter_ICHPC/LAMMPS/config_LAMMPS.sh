@@ -194,8 +194,8 @@ function set_settings {
 
     LINE_POST=`grep -nw 'POST_CALC' ${SETFILE}`
     LINE_POST=`echo "scale=0;${LINE_POST%:*}+4" | bc`
-    sed -i "${LINE_POST}i[jobname].lammpstrj    *.lammpstrj          lammps trajectory file" ${SETFILE}
-    sed -i "${LINE_POST}i[jobname].data/        *.data*              data files" ${SETFILE}
+    sed -i "${LINE_POST}i*                      *.lammpstrj          lammps trajectory file" ${SETFILE}
+    sed -i "${LINE_POST}i*                      *.data*              data files" ${SETFILE}
     sed -i "${LINE_POST}i[jobname].dump/        *.dump*              dump files" ${SETFILE}
     sed -i "${LINE_POST}i[jobname].restart/     *.restart*           restart files" ${SETFILE}
     sed -i "${LINE_POST}i[jobname].log          log.lammps           lammps output - no diagnosis information" ${SETFILE}

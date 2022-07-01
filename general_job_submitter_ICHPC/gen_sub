@@ -301,7 +301,6 @@ function get_input_ {
 EOF
 
     eval set -- "${param_list}"
-    REFFILE=""
     OTHER_INPT=""
     while [[ true ]]; do
         case $1 in

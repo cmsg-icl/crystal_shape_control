@@ -1,15 +1,21 @@
 # Job submission scripts
 SUBMISSION_EXT
+.qsub
 
 NCPU_PER_NODE
+24
 
 MEM_PER_NODE
+50
 
 N_THREAD
+1
 
 NGPU_PER_NODE
+0
 
 GPU_TYPE
+RTX6000
 
 BUDGET_CODE
 
@@ -18,50 +24,50 @@ QOS
 PARTITION
 
 TIME_OUT
-
-# Job execution scripts. 
-# NB: Should be kept at the same directory as 'settings' and 'gen_sub'!
-EXE_SCRIPT
-
-POST_PROCESSING_SCRIPT
+3
 
 JOB_TMPDIR
+/rds/general/ephemeral/user/hz1420/ephemeral
 
 
 # Executables
 EXEDIR
+/rds/general/user/hz1420/home/apps/lammps2206/bin
 
 EXE_PARALLEL
+lmp_mpi
 
 EXE_OPTIONS
+-in
 
 
 # file formats table
 PRE_CALC
 -----------------------------------------------------------------------------------
-SAVED                  TEMPORARY              DEFINITION
+SAVED                TEMPORARY            DEFINITION
 -----------------------------------------------------------------------------------
 [jobname].in           [jobname].in           LAMMPS main input file
 -----------------------------------------------------------------------------------
 
 FILE_EXT
 -----------------------------------------------------------------------------------
-SAVED                  TEMPORARY              DEFINITION
+KEYWORD                                   DEFINITION
 -----------------------------------------------------------------------------------
 [jobname].in.init      [jobname].in.init      General setup file, for moltemplate
-[jobname].in.settings  [jobname].in.settings  Atom, bond, angle... parameters file 
+[jobname].in.settings  [jobname].in.settings  Atom, bond, angle... parameters file
 [jobname].data         [jobname].data         Geometry data file
 [pre_job].restart      [pre_job].restart      Checkpoints to restart calculations
 -----------------------------------------------------------------------------------
 
 POST_CALC
 -----------------------------------------------------------------------------------
-SAVED                  TEMPORARY            DEFINITION
+SAVED                TEMPORARY            DEFINITION
 -----------------------------------------------------------------------------------
 [jobname].log          log.lammps           lammps output - no diagnosis information
 [jobname].restart/     *.restart*           restart files
 [jobname].dump/        *.dump*              dump files
-[jobname].data/        *.data*              data files
+*                      *.data*              data files
+*                      *.lammpstrj          lammps trajectory file
 -----------------------------------------------------------------------------------
                          
 
@@ -86,18 +92,18 @@ export NPROCESSES=${V_NP}
 # Make sure any symbolic links are resolved to absolute path
 export PBS_O_WORKDIR=$(readlink -f ${PBS_O_WORKDIR})
 
-# Set the number of threads to set number
+# Set the number of threads
 export OMP_NUM_THREADS=${V_TRED}
 # env (Uncomment this line to get all environmental variables)
 echo "</qsub_standard_output>"
 
 # to sync nodes
 cd ${PBS_O_WORKDIR}
-# MPI dependends on modules - for lammps/19Mar2020
-# commend these 2 lines to avoid confliction of MPI when loading other versions 
+
+# Specify any other important dependencies below
 module load  intel-suite/2019.4
 module load  mpi/intel-2019
-
-# start calculation: command added below by gen_sub
+module load  fftw/3.3.8
+# start calculation
 -----------------------------------------------------------------------------------
 
