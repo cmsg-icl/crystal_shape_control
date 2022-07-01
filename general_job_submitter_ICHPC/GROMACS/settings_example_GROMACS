@@ -26,13 +26,6 @@ PARTITION
 TIME_OUT
 3
 
-# Job execution scripts. 
-# NB: Should be kept at the same directory as 'settings' and 'gen_sub'!
-EXE_SCRIPT
-run_exec
-
-POST_PROCESSING_SCRIPT
-post_proc
 
 JOB_TMPDIR
 /rds/general/ephemeral/user/hz1420/ephemeral

@@ -18,10 +18,10 @@ function welcome_msg {
 General job submitter, LAMMPS version, for Imperial HPC - Setting up
 
 Job submitter installed at: `date`
-Job submitter edition:      v2.0
+Job submitter edition:      v0.1
 Supported job scheduler:    PBS
 
-By Spica-Vir, Jun.28, 22, ICL, spica.h.zhou@gmail.com
+By Spica-Vir, Jul.01, 22, ICL, spica.h.zhou@gmail.com
 
 Special thanks to G.Mallia, N.M.Harrison, A. Arber, K. Tallat Kelpsa
 
@@ -155,7 +155,7 @@ function copy_scripts {
         cp settings_template ${SCRIPTDIR}/settings
         cp post_proc         ${SCRIPTDIR}/post_proc
     else
-        cp settings_LAMMPS settings
+        cp settings_template settings
     fi
 
     cat << EOF
@@ -165,6 +165,8 @@ EOF
 }
 
 function set_settings {
+
+# Setup default parameters
     SETFILE=${SCRIPTDIR}/settings
     sed -i "/SUBMISSION_EXT/a .qsub" ${SETFILE}
     sed -i "/NCPU_PER_NODE/a 24" ${SETFILE}
@@ -173,18 +175,36 @@ function set_settings {
     sed -i "/NGPU_PER_NODE/a 0" ${SETFILE}
     sed -i "/GPU_TYPE/a RTX6000" ${SETFILE}
     sed -i "/TIME_OUT/a 3" ${SETFILE}
-    sed -i "/EXE_SCRIPT/a run_exec" ${SETFILE}
-    sed -i "/POST_PROCESSING_SCRIPT/a post_proc" ${SETFILE}
     sed -i "/JOB_TMPDIR/a \/rds\/general\/ephemeral\/user\/${USER}\/ephemeral" ${SETFILE}
     sed -i "/EXEDIR/a ${EXEDIR}" ${SETFILE}
     sed -i "/EXE_PARALLEL/a ${EXENAME}" ${SETFILE}
     sed -i "/EXE_OPTIONS/a ${EXEOPT}" ${SETFILE}
 
+# Setup default file format tables
+    LINE_PRE=`grep -nw 'PRE_CALC' ${SETFILE}`
+    LINE_PRE=`echo "scale=0;${LINE_PRE%:*}+4" | bc`
+    sed -i "${LINE_PRE}i[jobname].in           [jobname].in           LAMMPS main input file" ${SETFILE}
+
+    LINE_EXT=`grep -nw 'FILE_EXT' ${SETFILE}`
+    LINE_EXT=`echo "scale=0;${LINE_EXT%:*}+4" | bc`
+    sed -i "${LINE_EXT}i[pre_job].restart      [pre_job].restart      Checkpoints to restart calculations" ${SETFILE}
+    sed -i "${LINE_EXT}i[jobname].data         [jobname].data         Geometry data file" ${SETFILE}
+    sed -i "${LINE_EXT}i[jobname].in.settings  [jobname].in.settings  Atom, bond, angle... parameters file" ${SETFILE}
+    sed -i "${LINE_EXT}i[jobname].in.init      [jobname].in.init      General setup file, for moltemplate" ${SETFILE}
+
+    LINE_POST=`grep -nw 'POST_CALC' ${SETFILE}`
+    LINE_POST=`echo "scale=0;${LINE_POST%:*}+4" | bc`
+    sed -i "${LINE_POST}i[jobname].lammpstrj    *.lammpstrj          lammps trajectory file" ${SETFILE}
+    sed -i "${LINE_POST}i[jobname].data/        *.data*              data files" ${SETFILE}
+    sed -i "${LINE_POST}i[jobname].dump/        *.dump*              dump files" ${SETFILE}
+    sed -i "${LINE_POST}i[jobname].restart/     *.restart*           restart files" ${SETFILE}
+    sed -i "${LINE_POST}i[jobname].log          log.lammps           lammps output - no diagnosis information" ${SETFILE}
+
 # Job submission file template - should be placed at the end of file
     cat << EOF >> ${SETFILE}
 -----------------------------------------------------------------------------------
 #!/bin/bash  --login
-#PBS -N \${V_JOBNAME}
+#PBS -N \${V_PBSJOBNAME}
 #PBS -l select=\${V_ND}:ncpus=\${V_NCPU}:mem=\${V_MEM}:mpiprocs=\${V_PROC}:ompthreads=\${V_TRED}\${V_NGPU}\${V_TGPU}
 #PBS -l walltime=\${V_WT}
 
@@ -209,11 +229,8 @@ echo "</qsub_standard_output>"
 
 # to sync nodes
 cd \${PBS_O_WORKDIR}
-# MPI dependends on modules - for lammps/19Mar2020
-# can be commended - dependents will be loaded when loading lammps/19Mar2020
-module load  intel-suite/2019.4
-module load  mpi/intel-2019
 
+# Specify any other important dependencies below
 # start calculation
 -----------------------------------------------------------------------------------
 

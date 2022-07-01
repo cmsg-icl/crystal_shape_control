@@ -19,12 +19,6 @@ PARTITION
 
 TIME_OUT
 
-# Job execution scripts. 
-# NB: Should be kept at the same directory as 'settings' and 'gen_sub'!
-EXE_SCRIPT
-
-POST_PROCESSING_SCRIPT
-
 JOB_TMPDIR
 
 

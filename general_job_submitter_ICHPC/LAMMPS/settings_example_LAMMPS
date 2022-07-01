@@ -56,12 +56,12 @@ SAVED                  TEMPORARY              DEFINITION
 
 POST_CALC
 -----------------------------------------------------------------------------------
-SAVED                TEMPORARY            DEFINITION
+SAVED                  TEMPORARY            DEFINITION
 -----------------------------------------------------------------------------------
-[jobname].log        log.lammps           lammps output - no diagnosis information
-[jobname].restart/   *.restart*           restart files
-[jobname].dump/      *.dump*              dump files
-[jobname].data/      *.data*              data files
+[jobname].log          log.lammps           lammps output - no diagnosis information
+[jobname].restart/     *.restart*           restart files
+[jobname].dump/        *.dump*              dump files
+[jobname].data/        *.data*              data files
 -----------------------------------------------------------------------------------
                          
 

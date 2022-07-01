@@ -11,11 +11,10 @@ function get_input_ {
 
     eval set -- "${param_list}"
     OPTIONS=""
-    REFNAME=""
     while [[ true ]]; do
         case $1 in
         --in ) 
-            shift; JOBNAME=$1 ;;
+            shift; JOBNAME=${1%%.*} ;;
         --ref )
             shift; REFNAME=${1%%.*} ;;
         -- ) 

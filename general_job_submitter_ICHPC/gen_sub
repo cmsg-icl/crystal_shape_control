@@ -445,9 +445,9 @@ function get_subinfo_ {
 ## generate jobname for a PBS job, substitute space with hyphen, max length 20 characters
     PBSJOBNAME=`echo "${JOBNAME[@]}" | sed -r 's/ /-/g' | cut -c 1-20`
 ## get job executation script
-    SCRIPT=`echo $(grep -w -A 1 'EXE_SCRIPT' ${SETFILE} | tail -1)`
+    SCRIPT='run_exec'
 ## get post processing script
-    POSCRIPT=`echo $(grep -w -A 1 'POST_PROCESSING_SCRIPT' ${SETFILE} | tail -1)`
+    POSCRIPT='post_proc'
 ## extension for submission file
     SUB_EXT=`echo $(grep -w -A 1 'SUBMISSION_EXT' ${SETFILE} | tail -1)`
     SUB_EXT=${SUB_EXT#*.}
@@ -539,14 +539,14 @@ EOF
 # fi
 ################################################
 ## Generate job executation and post processing commands
-    for (( i = 0; i < ${#JOBNAME[@]}; i++ )); do
+    for (( i = 0; i < ${#JOBFILE[@]}; i++ )); do
         if [[ ! -z ${REFNAME} ]]; then
             REFCOMMAND=`echo "-ref ${REFNAME[${i}]}"`
         else
             REFCOMMAND=''
         fi
-        echo "timeout ${TOUT} ${SCRIPTDIR}/${SCRIPT} -in ${JOBNAME[${i}]} ${REFCOMMAND} -- ${OTHER_INPT}" >> ${PBSJOBNAME}.${SUB_EXT}
-        echo "${SCRIPTDIR}/${POSCRIPT} -in ${JOBNAME[${i}]} ${REFCOMMAND}"                                >> ${PBSJOBNAME}.${SUB_EXT}
+        echo "timeout ${TOUT} ${SCRIPTDIR}/${SCRIPT} -in ${JOBFILE[${i}]} ${REFCOMMAND} -- ${OTHER_INPT}" >> ${PBSJOBNAME}.${SUB_EXT}
+        echo "${SCRIPTDIR}/${POSCRIPT} -in ${JOBFILE[${i}]} ${REFCOMMAND}"                                >> ${PBSJOBNAME}.${SUB_EXT}
         echo -e "\n"                                                                                      >> ${PBSJOBNAME}.${SUB_EXT}
     done
     echo '###'                                  >> ${PBSJOBNAME}.${SUB_EXT}

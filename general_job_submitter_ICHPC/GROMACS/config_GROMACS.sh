@@ -155,7 +155,7 @@ function copy_scripts {
         cp settings_template ${SCRIPTDIR}/settings
         cp post_proc         ${SCRIPTDIR}/post_proc
     else
-        cp settings_GROMACS settings
+        cp settings_template settings
     fi
 
     cat << EOF
@@ -175,8 +175,6 @@ function set_settings {
     sed -i "/NGPU_PER_NODE/a 0" ${SETFILE}
     sed -i "/GPU_TYPE/a RTX6000" ${SETFILE}
     sed -i "/TIME_OUT/a 3" ${SETFILE}
-    sed -i "/EXE_SCRIPT/a run_exec" ${SETFILE}
-    sed -i "/POST_PROCESSING_SCRIPT/a post_proc" ${SETFILE}
     sed -i "/JOB_TMPDIR/a \/rds\/general\/ephemeral\/user\/${USER}\/ephemeral" ${SETFILE}
     sed -i "/EXEDIR/a ${EXEDIR}" ${SETFILE}
     sed -i "/EXE_PARALLEL/a ${EXENAME}" ${SETFILE}
