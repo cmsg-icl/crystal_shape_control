@@ -1,6 +1,6 @@
 #!/bin/bash  --login
-#PBS -N em-npt
-#PBS -l select=1:ncpus=24:mem=50GB:mpiprocs=24:ompthreads=1:avx2=true
+#PBS -N f2_nvt
+#PBS -l select=1:ncpus=24:mem=50GB:mpiprocs=24:ompthreads=1
 #PBS -l walltime=00:20:00
 
 echo "<qsub_standard_output>"
@@ -25,17 +25,15 @@ echo "</qsub_standard_output>"
 # to sync nodes
 cd ${PBS_O_WORKDIR}
 
-# start calculation: command added below by gen_sub
-timeout 7m /rds/general/user/hz1420/home/etc/runGROMACS/run_exec -in em  -- 
-/rds/general/user/hz1420/home/etc/runGROMACS/post_proc -in em 
-
-
-timeout 7m /rds/general/user/hz1420/home/etc/runGROMACS/run_exec -in npt  -- 
-/rds/general/user/hz1420/home/etc/runGROMACS/post_proc -in npt 
+# Specify any other important dependencies below
+module load  /rds/general/user/hz1420/home/apps/IntelOneAPI_v2022.1.2/modulefiles/module_tot
+# start calculation
+timeout 17m /rds/general/user/hz1420/home/etc/runLAMMPS/run_exec -in f2_nvt.in  --  -sf intel -pk omp 4
+/rds/general/user/hz1420/home/etc/runLAMMPS/post_proc -in f2_nvt.in 
 
 
 ###
-if [[ -f ./em-npt.run ]];then
-chmod 755 ./em-npt.run
-./em-npt.run
+if [[ -f ./f2_nvt.run ]];then
+chmod 755 ./f2_nvt.run
+./f2_nvt.run
 fi

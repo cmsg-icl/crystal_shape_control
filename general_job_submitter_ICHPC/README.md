@@ -1,147 +1,107 @@
-# LAMMPS job submitter - Imperial cluster version
+# General job submitter for Imperial CX1
 
-[LAMMPS](https://www.lammps.org/) job submitter for [Imperial Cluster](https://www.imperial.ac.uk/admin-services/ict/self-service/research-support/rcs/), PBS job scheduler. 
+A general job submitter for parallel programs on [Imperial CX1](https://www.imperial.ac.uk/admin-services/ict/self-service/research-support/rcs/), PBS job scheduler. Based on Linux Bash Shell.
+
+## Structure of the repository
+
+Scripts in the main folder, i.e., `gen_sub`, `settings_template`, `run_exec`, and `post_proc` are shared scripts for job submission and post processing, which will be configured and placed in the directory specified during installation. `settings_template` will be named as `settings` after being configured.
+
+* `gen_sub` - Process the options specified in command line, execute necessary checks (file existence, walltime and node format), and generate the '.qsub' file.  
+* `run_exec` - Process the options for parallel programs, move and rename input files from the home directory to the ephemeral directory, sync nodes, execute the mpi command to launch parallel jobs.  
+* `post_proc` - Save output files from the ephemeral directory to the home directory and remove the ephemeral directory to save disk space.  
+* `settings_template` - An empty list of keywords, which sets values of program-dependent parameters. It will be referred by other scripts after being initialized.
+
+In the sub-folders with specific names of simulation codes, there are configuration files named as `config_CODE.sh`, which is the script for installation. The `settings_example_CODE` gives a example of setups.
+
+The structure of this general job submitter is illustrated in the figure below:
+
+![The Structure of Job Submitter](structure.svg)
 
 ## Install
 
-1. Use `scp -r` to upload this folder to any sub-directory of `${HOME}` on the cluster.  
-2. Enter the folder and execute the script `setup.sh`.  
-3. Following the instructions, specify the directory of job submitter and the directory of executables, or module loading command. 
+1. Use `scp` to upload 4 general scripts and a specific configuration script `config_CODE.sh` to `${HOME}` on the cluster.  
+2. Execute the script: `bash config_CODE.sh`.  
+3. Following the instructions, specify the directory of the job submitter and the directory of executables, or module loading command.  
 4. Type `source ~/.bashrc` to implement user-defined commands. 
 
 **Note**
 
 1. All the scripts should be placed in the same directory.  
-2. By default, job submitter scripts will be stored in `${HOME}/runLAMMPS/`.  
-3. By default, module 'lammps/19Mar2020' will be set as the executable. MPI: 'mpi/intel-2019' and 'intel-suite/2019.4'  
+2. By default, job submitter scripts will be stored in `${HOME}/runCODE/`.  
 
-## Command list & Usage
+## General instructions
 
-### Commands and options
+This job submitter is useful for jobs launched by a constant parallel executable, i.e., multiple jobs with the same command is supported, but any job involving multiple commands is not. Besides, it is only useful for jobs launched by a 'main' input file. Other file inputs is allowed either as mandatory or optional files, but only one file can be used to define the `-in` flag (see below).
 
-The script adopts the command-line options to launch parallel jobs, which are in the similar fashion to the native LAMMPS. 
+### Command line flags
 
-Here are the user defined commands: 
+The script adopts the command-line options to launch jobs. The general flags include:
 
-1. `Plmp` - executing parallel LAMMPS calculations  
+| FLAG | FORMAT | DEFINITION                                                               |
+|:-----|:------:| :------------------------------------------------------------------------|
+| -in  | string | The main input file                                                      |
+| -ref | string | Optional, the common basename of reference files                         |
+| -nd  | int    | The number of nodes requested for the job                                |
+| -wt  | hh:mm  | The walltime requested for the job                                       |
+| --   | (NA)   | The separator, followed by other command line options for the executable |
 
-``` bash
-Plmp -in <input> -wt <walltime> -nd <node> -- <opts>
-```
+### Keyword list
 
-`-in`       : str, main input file, must include '.in'  
-`-wt`       : str, walltime, hh:mm format  
-`-nd`       : int, number of nodes  
-`-- <opts>` : str, optional, other LAMMPS options, in `-opt value` pairs  
-
-The sequence of `-in` `-wt` `-nd` is arbitrary, but `-- <opts>` should always be placed at the end. The sequence within `<opts>` is arbitrary. 
-
-**NOTE**: DO NOT set walltime less than the value of the keyword `TIME_OUT` in 'settings' file. `TIME_OUT` defines the time spared for post processing script in minutes, so the actual time for setting up and calculating is *walltime - TIME_OUT*. As a rule of thumb, it takes the script and the cluster ~ 6 minutes to coordinate a 48-CPU node, so the actual time for LAMMPS on it is approximately *walltime - TIME_OUT - 6*. 
-
-Examples:
-
-``` bash
-> Plmp -in input.in -wt 12:00 -nd 2
-> Plmp -in=input.in -wt=12:00 -nd=2 
-> Plmp -in input.in -wt 12:00 -nd 2 -- -screen screen.dump
-```
-
-Submit files:
-
-``` bash
-> qsub input.qsub
-```
-
-2. `setlmp` - print the file `settings`. No input required.
-
-### Input file and external commands
-
-1. **\<jobname\>.in**  
-The main input file used for `-in` option, containing computation setups and necessary files. Recognized extension of main input file can be changed in `PRE_CALC` table of 'settings' file. All the files included in this table MUST present when submitting the job, otherwise the program will exit without calculation. 
-
-2. **`FILE_EXT` table**  
-This table contains keywords calling external files in '.in' file. By default, `include` `read_data` `read_restart` are included. The program will read the '.in' file for the included keywords. If a given keyword is identified, the file it specified will be transferred to temporary directory. 
-
-### Output and job executing information
-
-**NOTE**: DO NOT set the output file name the same as names of external files. After finishing calculations, the post processing script will firstly clear the called external files in case that they are recognized as output files and saved multiple times. 
-
-1. **\<jobname\>.o\<jobid\>**  
-Information of file transferring and node synchronizing before the job is actually launched is printed out in this file. Scripts executed in the temporary directory are listed here. Check this file if computation / post-processing is not executed. 
-
-2. **\<jobname\>.log**  
-Message on screen, including basic information of the current job (header), mpi message (comments), LAMMPS output (body), and post-processing message (ending). Check this file for the progress of current job, or problems with post-processing.   
-
-3. **\<jobname\>.out**  
-LAMMPS output file, originally named as 'log.lammps'. Same as the 'body' section of '\<jobname\>.log'. 
-
-If a '.out' or a '.log' file with the same name as the job to be submitted exists in the same directory, that job won't be executed before output is either transferred to another folder or removed. An error message will be given when generating the '.qsub' file. 
-
-4. **\<jobname\>.restart/**  
-A folder including all restart files. Restart information generated by LAMMPS using command `restart`. According to the manual, the name of restart file is arbitrary. To normalize the naming scheme, by default, names of restart files should include '\*.restart\*', i.e., at least named as '.restart'. The keyword identifying restart files can be changed in 'settings' file. 
-
-If only one '\*.restart\*' file is identified, it will be saved as its original name in output directory. 
-
-5. **\<jobname\>.dump/**   
-A folder including all dump files. Dump files are generated by LAMMPS using command `dump`. Their naming scheme is also arbitrary. By default, names of dump files should include '\*.dump\*'. The keyword identifying dump files can be changed in 'settings' file.
-
-If only one '\*.dump\*' file is identified, it will be saved as its original name in output directory. 
-
-6. **\<jobname\>.data/**  
-Output in LAMMPS 'data' format. Corresponding command not found in current version of LAMMPS documentation. 
-
-If only one '\*.data\*' file is identified, it will be saved as its original name in output directory.
-
-### Temporary directory
-
-By default, the temporary directory is set as '/rds/general/ephemeral/user/${USER}/ephemeral', where the contents will be automatically removed after 30 days. The folder for current job is named as '\<jobname\>\_\<jobid\>'. 
-
-* If the job is terminated due to exceeding walltime, temporary files will be saved in the output directory. The temporary directory will be removed.
-
-* If the job is terminated due to improper settings of calculation parameters, temporary files will be saved in the output directory. The temporary directory will be removed.
-
-* If the job is killed before 'timeout' (usually by user), temporary will be saved in the temporary directory with temporary names. The temporary directory will not be removed. Refer to '.log' file or '.o\<jobid\>' file for the path. 
-
-## Script list
-
-**setup.sh**          : set up the 'settings' file and create job submission commands  
-**settings**          : store all parameters needed for LAMMPS jobs. see the 'Keyword list' below.  
-**settings_template** : empty 'settings' file, will be used to cover 'settings' file when installing/re-installing the job submitter  
-**gen_sub**           : generate submission file ('.qsub')  
-**runPlmp**           : execute LAMMPS calculations in parallel   
-**postlmp**           : Copy & save files from temporary directory to the output directory.  
-
-**NOTE**
-
-1. The name of file 'settings', 'gen_sub', 'settings_template' shouldn't be changed.  
-2. Names of 'runPlmp', 'postlmp' can be changed, but should corresponds to the values in 'settings' - not recommended.  
-
-## Keyword list
-Keywords used for the script 'settings' are listed in the table below. Modify the values in the same file to change the parameters used during computation.
+Keywords used for `settings_template` are listed in the table below. Modify the values in the same file to change the parameters used during computation.
 
 | KEYWORD                 | DEFAULT VALUE   | DEFINITION |
 |:------------------------|:---------------:|:-----------|
-| SUBMISSION_EXT          | .qsub           | extension of job submission script |
+| SUBMISSION_EXT          | .qsub           | The extension of job submission script |
 | NCPU_PER_NODE           | 24              | Number of processors per node |
-| MEM_PER_NODE            | 50              | Unit: GB. Allocated memory per node |
-| BUDGET_CODE             | -               | Budget code of a research project, for ARCHER2|
-| QOS                     | -               | Quality of service, for ARCHER2 |
-| PARTITION               | -               | Partition of jobs, for ARCHER2 |
+| MEM_PER_NODE            | 50              | Unit: GB. Requested memory per node |
+| N_THREAD                | 1               | The default number of threading |
+| NGPU_PER_NODE           | 0               | Number of GPUs per node |
+| GPU_TYPE                | RTX6000         | The default type of GPU |
+| BUDGET_CODE             | -               | For ARCHER2. Budget code of a research project |
+| QOS                     | -               | For ARCHER2. Quality of service |
+| PARTITION               | -               | For ARCHER2. Partition of jobs |
 | TIME_OUT                | 3               | Unit: min. Time spared for post processing |
-| LMP_SCRIPT              | runPlmp         | Script for parallel LAMMPS |
-| POST_PROCESSING_SCRIPT  | postlmp         | Post processing script |
-| JOB_TMPDIR              | /rds/general/ephemeral/user/${USER}/ephemeral | Temporary directory for calculations |
-| EXEDIR                  | module load  lammps/19Mar2020 | Directory of executables / Available module |
-| EXE_PLMP                | lmp_mpi         | Executable for parallel LAMMPS |
-| EXE_LMP                 | -               | Executable for serial LAMMPS, for workstation |
-| PRE_CALC                | \[Table\]       | Saved names, temporary names, and definitions of input files |
+| JOB_TMPDIR              | ${EPHEMERAL}    | The temporary directory for calculations |
+| EXEDIR                  | \[depends\]     | Directory of executable / Available module load command |
+| EXE_PARALLEL            | \[depends\]     | The parallel executable |
+| EXE_OPTIONS             | \[depends\]     | Default command line options for the executable specified |
+| PRE_CALC                | \[Table\]       | Saved names, temporary names, and definitions of mandatory input files |
+| FILE_EXT                | \[Table\]       | Saved names, temporary names, and definitions of optional input files |
 | POST_CALC               | \[Table\]       | Saved names, temporary names, and definitions of output files |
-| JOB_SUBMISSION_TEMPLATE | \[script\]      | Template for job submission files |
+| JOB_SUBMISSION_TEMPLATE | \[script\]      | Template for job submission scripts |
 
 **NOTE**
 
 1. Keyword `JOB_SUBMISSION_TEMPLATE` should be the last keyword, but the sequences of other keywords are allowed to change.  
 2. Empty lines between keywords and their values are forbidden.  
 3. All listed keywords have been included in the scripts. Undefined keywords are left blank.  
-3. Multiple-line input for keywords other than `PRE_CALC`, `POST_CALC`, and `JOB_SUBMISSION_TEMPLATE` is forbidden.  
-4. Dashed lines for `PRE_CALC`, `POST_CALC`, and `JOB_SUBMISSION_TEMPLATE` are used to define input blocks and are not allowed to be modified. Minimum length: '------------------'
+4. Multiple-line input for keywords other than `PRE_CALC`, `FILE_EXT`, `POST_CALC` and `JOB_SUBMISSION_TEMPLATE` is forbidden, otherwise the code will only read the top line.  
+5. Requesting any GPU will lead the job to the queue for GPU node. For CPU only jobs, 'NGPU' should always be 0, in which case 'GPU_TYPE' will never be visited.  
+6. By default, 'JOB_TMPDIR' is set as `${EPHEMERAL}`. The folder for the current job is named as '\[jobname\]\_\[jobID\]'.  
+7. Dashed lines and titles for `PRE_CALC`, `POST_CALC`, and `JOB_SUBMISSION_TEMPLATE` are used as separators and are not allowed to be removed.
+8. The qsub template attached during initialization is only compatible with the default settings. For user-defined executables / commands, changes might be made accordingly in the 'JOB_SUBMISSION_TEMPLATE' block (see the LAMMPS test case).
+
+### 'PRE_CALC', 'FILE_EXT' and 'POST_CALC' tables
+
+
+### Normal termination vs Abruption
+
+* If the job is terminated due to exceeding walltime, temporary files will be saved in the output directory. The temporary directory will be removed.
+
+* If the job is terminated due to improper settings of calculation parameters, temporary files will be saved in the output directory. The temporary directory will be removed.
+
+* If the job is killed before 'timeout' (usually by user), temporary will be saved in the temporary directory with temporary names. The temporary directory will not be removed. Refer to '.out' file or '.o\[jobid\]' file for the path. 
+
+### General outputs
+
+**\[jobname\].out**  
+Output file in home directory, used to record information and monitor the progress of parallel jobs.
+
+**\[jobname\].o\[jobid\]**  
+A verbose version of .out file, for debugging. Besides the information of .out file, it includes the scripts , the list of files in the ephemeral directory, and the screen outputs of `run_exec` and `post_proc` scripts.
+
+**\[jobname\].e\[jobid\]**   
+For debugging. Records the screen outputs when PBS system executes the .qsub file (usually error messages).
+
+## Program specific instructions
+

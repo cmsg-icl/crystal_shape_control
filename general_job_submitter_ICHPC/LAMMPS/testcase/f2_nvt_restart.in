@@ -1,0 +1,53 @@
+# PREREQUISITES:
+#
+#     You must use moltemplate.sh to create 3 files:
+#        system.data  system.in.init  system.in.settings
+#
+# ------------------------------- Initialization Section --------------------
+
+# include         "f2_nvt_restart.in.init"
+
+# ------------------------------- Atom Definition Section -------------------
+
+# read_data       "f2_nvt.data"
+# change_box all boundary p p p
+
+# ------------------------------- Settings Section --------------------------
+
+# include         "f2_nvt_restart.in.settings"
+
+# ------------------------------- Run Section -------------------------------
+
+
+# -- minimization protocol --
+
+# Note: The minimization step is not necessary in this example.  However
+#       in general, it's always a good idea to minimize the system beforehand.
+#       (The "fShakeSPCE" fix was defined in system.in.settings. 
+#        It is incompatible with "minimize", so we disable it first.)
+
+# thermo          50
+# thermo_style    custom step temp etotal epair emol press vol enthalpy
+# dump            1 all custom 50 f2_min.lammpstrj id mol type x y z ix iy iz
+# kspace_modify   gewald 1.0e-6
+# minimize        1.0e-5 1.0e-7 1000 10000
+# write_data      f2_min_opt.data
+
+read_restart    f2_nvt-step4000.restart
+include         "f2_nvt_restart.in.settings"
+kspace_style    ewald 0.000001
+thermo          100
+thermo_style    custom step temp etotal epair emol press vol enthalpy
+dump            2 all custom 100 f2_nvt_restart.lammpstrj id mol type x y z ix iy iz
+# restart         500 f2_nvt-step*.restart
+velocity        all create 100 1000 dist gaussian rot yes mom yes
+fix             1 all nvt temp 100 100 100
+# timestep        1
+run             5000
+
+# (The "write_restart" and "read_restart" commands were buggy in 2012, 
+#  but they should work also.  I prefer "write_data" and "read_data".)
+
+#write_data      f1_nvt.data
+
+

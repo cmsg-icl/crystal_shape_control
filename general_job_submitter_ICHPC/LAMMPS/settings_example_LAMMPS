@@ -32,10 +32,10 @@ JOB_TMPDIR
 
 # Executables
 EXEDIR
-/rds/general/user/hz1420/home/apps/lammps2206/bin
+/rds/general/user/hz1420/home/apps/lammps_2109/bin
 
 EXE_PARALLEL
-lmp_mpi
+lmp_omp
 
 EXE_OPTIONS
 -in
@@ -51,7 +51,7 @@ SAVED                TEMPORARY            DEFINITION
 
 FILE_EXT
 -----------------------------------------------------------------------------------
-KEYWORD                                   DEFINITION
+KEYWORD              TEMPORATY            DEFINITION
 -----------------------------------------------------------------------------------
 [jobname].in.init      [jobname].in.init      General setup file, for moltemplate
 [jobname].in.settings  [jobname].in.settings  Atom, bond, angle... parameters file
@@ -101,9 +101,7 @@ echo "</qsub_standard_output>"
 cd ${PBS_O_WORKDIR}
 
 # Specify any other important dependencies below
-module load  intel-suite/2019.4
-module load  mpi/intel-2019
-module load  fftw/3.3.8
+module load  /rds/general/user/hz1420/home/apps/IntelOneAPI_v2022.1.2/modulefiles/module_tot
 # start calculation
 -----------------------------------------------------------------------------------
 
