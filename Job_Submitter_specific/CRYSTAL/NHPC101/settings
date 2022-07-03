@@ -1,36 +1,35 @@
 # Job submission scripts
 SUBMISSION_EXT
-.qsub
 
 NCPU_PER_NODE
-48
 
 MEM_PER_NODE
-50
 
 BUDGET_CODE
 
+QOS
+
+PARTITION
+
 TIME_OUT
-3
+
 
 # Job execution scripts. 
 # NB: Should be kept at the same directory as 'settings' and 'gen_sub'!
 CRYSTAL_SCRIPT
-runcryP
+runcrys
 
 PROPERTIES_SCRIPT
-runpropP
+runprop
 
 POST_PROCESSING_SCRIPT
-post_processing
 
 JOB_TMPDIR
-/rds/general/ephemeral/user/hz1420/ephemeral
 
 
 # Executables
 EXEDIR
-/rds/general/user/gmallia/home/CRYSTAL17_cx1/v2.2gnu/bin/Linux-mpigfortran_MPP/Xeon___mpich__3.2.1
+CRYSTAL/17v2-gnu
 
 EXE_PCRYSTAL
 Pcrystal
@@ -42,8 +41,10 @@ EXE_PPROPERTIES
 Pproperties
 
 EXE_CRYSTAL
+crystal
 
 EXE_PROPERTIES
+properties
 
 # file formats table
 PRE_CALC
@@ -108,65 +109,17 @@ SAVED                TEMPORARY        DEFINITION
 -------------------------------------------------------------------------------------
 jobname.ERROR        fort.87          error report
 jobname.GRED         GRED.DAT         real space information for cryapi_inp
-jobname.KRED         KRED.DAT         k spack information for cryapi_inp
+jobname.KRED         KRED.DAT         k space information for cryapi_inp
 jobname.DIEL         DIEL.DAT         dielectric constants
 jobname.f25          fort.25          all Crgra2006 format data 
 jobname.BAND         BAND.DAT         band xmgrace format 
-jobname.DOSS         BAND.DOSS        dos xmgrace format
+jobname.DOSS         DOSS.DAT         dos xmgrace format
 jobname.prop3d       fort.31          all 3D grid data
 jobname_CHG.CUBE     DENS_CUBE.DAT    3D charge density Gaussian CUBE format
 jobname.RHOLINE      RHOLINE.DAT      1D charge density and gradient 
 jobname_SPIN.CUBE    SPIN_CUBE.DAT    3D spin density CUBE format
 jobname_POT.CUBE     POT_CUBE.DAT     3D electrostatic potential CUBE format  
 jobname.POTC         POTC.DAT         electrostatic potential and derivatives
-jobname.DIEL         DIEL.DAT         dielectric constant   
 -------------------------------------------------------------------------------------
 
 JOB_SUBMISSION_TEMPLATE
-----------------------------------------------------------------------------------------
-#!/bin/bash  --login
-#PBS -N ${V_JOBNAME}
-#PBS -l select=${V_ND}:ncpus=${V_NCPU}:mpiprocs=${V_NCPU}:ompthreads=1:mem=${V_MEM}
-#PBS -l walltime=${V_WT}
-
-echo "<qsub_standard_output>"
-date
-echo "<qstat -f ${PBS_JOBID}>"
-qstat -f ${PBS_JOBID}
-echo "</qstat -f ${PBS_JOBID}>"
-
-# number of cores per node used
-export NCORES=${V_NCPU}
-# number of processes
-export NPROCESSES=${V_NP}
-
-# Make sure any symbolic links are resolved to absolute path
-export PBS_O_WORKDIR=$(readlink -f ${PBS_O_WORKDIR})
-
-# Set the number of threads to 1
-#   This prevents any system libraries from automatically
-#   using threading.
-export OMP_NUM_THREADS=1
-env
-echo "</qsub_standard_output>"
-
-#to sync nodes
-cd ${PBS_O_WORKDIR}
-touch wood
-export MODULEPATH=$MODULEPATH:${HOME}/../../gmallia/home/CRYSTAL17_cx1/v2.2gnu/modules
-echo "MODULEPATH= "${MODULEPATH}
-echo Initial list of module loaded
-module list -l
-module load  mpich/3.2.1
-
-# start calculation
-timeout ${V_TOUT} ${V_SCRIPTDIR}/${V_SCRIPT} ${V_JOBNAME} ${V_REFNAME}
-${V_SCRIPTDIR}/${V_POSCRIPT} ${V_JOBTYPE} ${V_JOBNAME}
-
-###
-if [[ -f ./${V_JOBNAME}.run ]];then
-chmod 755 ./${V_JOBNAME}.run
-./${V_JOBNAME}.run
-fi
-----------------------------------------------------------------------------------------
-

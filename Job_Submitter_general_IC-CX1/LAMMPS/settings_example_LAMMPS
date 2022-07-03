@@ -1,0 +1,107 @@
+# Job submission scripts
+SUBMISSION_EXT
+.qsub
+
+NCPU_PER_NODE
+24
+
+MEM_PER_NODE
+50
+
+N_THREAD
+1
+
+NGPU_PER_NODE
+0
+
+GPU_TYPE
+RTX6000
+
+BUDGET_CODE
+
+QOS
+
+PARTITION
+
+TIME_OUT
+3
+
+JOB_TMPDIR
+/rds/general/ephemeral/user/hz1420/ephemeral
+
+
+# Executables
+EXEDIR
+/rds/general/user/hz1420/home/apps/lammps_2109/bin
+
+EXE_PARALLEL
+lmp_omp
+
+EXE_OPTIONS
+-in
+
+
+# file formats table
+PRE_CALC
+-----------------------------------------------------------------------------------
+SAVED                TEMPORARY            DEFINITION
+-----------------------------------------------------------------------------------
+[jobname].in           [jobname].in           LAMMPS main input file
+-----------------------------------------------------------------------------------
+
+FILE_EXT
+-----------------------------------------------------------------------------------
+KEYWORD              TEMPORATY            DEFINITION
+-----------------------------------------------------------------------------------
+[jobname].in.init      [jobname].in.init      General setup file, for moltemplate
+[jobname].in.settings  [jobname].in.settings  Atom, bond, angle... parameters file
+[jobname].data         [jobname].data         Geometry data file
+[pre_job].restart      [pre_job].restart      Checkpoints to restart calculations
+-----------------------------------------------------------------------------------
+
+POST_CALC
+-----------------------------------------------------------------------------------
+SAVED                TEMPORARY            DEFINITION
+-----------------------------------------------------------------------------------
+[jobname].log          log.lammps           lammps output - no diagnosis information
+[jobname].restart/     *.restart*           restart files
+[jobname].dump/        *.dump*              dump files
+*                      *.data*              data files
+*                      *.lammpstrj          lammps trajectory file
+-----------------------------------------------------------------------------------
+                         
+
+JOB_SUBMISSION_TEMPLATE
+-----------------------------------------------------------------------------------
+#!/bin/bash  --login
+#PBS -N ${V_PBSJOBNAME}
+#PBS -l select=${V_ND}:ncpus=${V_NCPU}:mem=${V_MEM}:mpiprocs=${V_PROC}:ompthreads=${V_TRED}${V_NGPU}${V_TGPU}
+#PBS -l walltime=${V_WT}
+
+echo "<qsub_standard_output>"
+date
+echo "<qstat -f ${PBS_JOBID}>"
+qstat -f ${PBS_JOBID}
+echo "</qstat -f ${PBS_JOBID}>"
+
+# number of cores per node used
+export NCORES=${V_NCPU}
+# number of processes
+export NPROCESSES=${V_NP}
+
+# Make sure any symbolic links are resolved to absolute path
+export PBS_O_WORKDIR=$(readlink -f ${PBS_O_WORKDIR})
+
+# Set the number of threads
+export OMP_NUM_THREADS=${V_TRED}
+# env (Uncomment this line to get all environmental variables)
+echo "</qsub_standard_output>"
+
+# to sync nodes
+cd ${PBS_O_WORKDIR}
+
+# Specify any other important dependencies below
+module load  /rds/general/user/hz1420/home/apps/IntelOneAPI_v2022.1.2/modulefiles/module_tot
+# start calculation
+-----------------------------------------------------------------------------------
+

@@ -1,0 +1,265 @@
+date:                Sat  2 Jul 17:35:16 BST 2022
+hostname:            cx3-12-7.cx3.hpc.ic.ac.uk
+system:              Linux cx3-12-7.cx3.hpc.ic.ac.uk 4.18.0-348.20.1.el8_5.x86_64 #1 SMP Tue Mar 8 12:56:54 EST 2022 x86_64 x86_64 x86_64 GNU/Linux
+user:                hz1420
+input:               /rds/general/user/hz1420/home/lammps-case/f2_nvt.in
+output:              /rds/general/user/hz1420/home/lammps-case/f2_nvt.out
+executable script:   /rds/general/user/hz1420/home/etc/runLAMMPS/run_exec
+executable dir:      /rds/general/user/hz1420/home/apps/lammps_2109/bin
+executable:          /rds/general/user/hz1420/home/apps/lammps_2109/bin/lmp_omp
+<qstat -f 5788971.pbs>
+Connection timed out
+qstat: cannot connect to server pbs (errno=110)
+</qstat -f 5788971.pbs>
+Found input data: /rds/general/user/hz1420/home/lammps-case/f2_nvt.in
+Found input data: /rds/general/user/hz1420/home/lammps-case/f2_nvt.in.init
+Found input data: /rds/general/user/hz1420/home/lammps-case/f2_nvt.in.settings
+Found input data: /rds/general/user/hz1420/home/lammps-case/f2_nvt.data
+All files are synchonised.
+
+Start the job
+Job name: f2_nvt ID: 5788971.pbs
+
+LAMMPS (29 Sep 2021 - Update 3)
+  using 1 OpenMP thread(s) per MPI task
+set 4 OpenMP thread(s) per MPI task
+using multi-threaded neighbor list subroutines
+Reading data file ...
+  orthogonal box = (0.0000000 0.0000000 0.0000000) to (35.265600 21.418230 51.514200)
+  3 by 2 by 4 MPI processor grid
+  reading atoms ...
+  4320 atoms
+  scanning bonds ...
+  4 = max bonds/atom
+  scanning angles ...
+  6 = max angles/atom
+  scanning dihedrals ...
+  9 = max dihedrals/atom
+  scanning impropers ...
+  2 = max impropers/atom
+  reading bonds ...
+  4320 bonds
+  reading angles ...
+  6696 angles
+  reading dihedrals ...
+  8640 dihedrals
+  reading impropers ...
+  1296 impropers
+Finding 1-2 1-3 1-4 neighbors ...
+  special bond factors lj:    0        0        0.5     
+  special bond factors coul:  0        0        0.8333333333333334
+     4 = max # of 1-2 neighbors
+     6 = max # of 1-3 neighbors
+    12 = max # of 1-4 neighbors
+    14 = max # of special neighbors
+  special bonds CPU = 0.003 seconds
+  read_data CPU = 0.044 seconds
+Changing box ...
+WARNING: Using 'neigh_modify every 1 delay 0 check yes' setting during minimization (src/min.cpp:188)
+Ewald initialization ...
+  using 12-bit tables for long-range coulomb (src/kspace.cpp:340)
+  G vector (1/distance) = 1e-06
+  estimated absolute RMS force accuracy = 6.1916773
+  estimated relative force accuracy = 0.018646052
+  KSpace vectors: actual max1d max3d = 5 1 13
+                  kxmax kymax kzmax  = 1 1 1
+----------------------------------------------------------
+Using Intel Package without Coprocessor.
+Precision: mixed
+----------------------------------------------------------
+No /omp style for force computation currently active
+Neighbor list info ...
+  update every 1 steps, delay 0 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 12
+  ghost atom cutoff = 12
+  binsize = 6, bins = 6 4 9
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair lj/charmm/coul/long, perpetual
+      attributes: half, newton on, intel
+      pair build: half/bin/newton/intel
+      stencil: half/bin/3d
+      bin: intel
+Setting up cg style minimization ...
+  Unit style    : real
+  Current step  : 0
+WARNING: Inconsistent image flags (src/domain.cpp:814)
+Per MPI rank memory allocation (min/avg/max) = 22.72 | 22.73 | 22.73 Mbytes
+Step Temp TotEng E_pair E_mol Press Volume Enthalpy 
+       0            0   -11775.498    -24295.24    12519.743    85352.602    38910.052    36658.963 
+      11            0   -38949.034   -40552.221    1603.1868   -24784.568    38910.052   -53013.365 
+Loop time of 0.15312 on 96 procs for 11 steps with 4320 atoms
+
+253.0% CPU use with 24 MPI tasks x 4 OpenMP threads
+
+Minimization stats:
+  Stopping criterion = energy tolerance
+  Energy initial, next-to-last, final = 
+      -11775.497923118  -38949.0344559919  -38949.0344658372
+  Force two-norm initial, final = 5680.5260 349.12375
+  Force max component initial, final = 111.59485 7.4048989
+  Final line search alpha, max atom move = 8.3063809e-11 6.1507911e-10
+  Iterations, force evaluations = 11 75
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.081897   | 0.094062   | 0.10686    |   1.7 | 61.43
+Bond    | 0.0054554  | 0.0071433  | 0.0084068  |   1.0 |  4.67
+Kspace  | 0.0088489  | 0.022078   | 0.036963   |   3.9 | 14.42
+Neigh   | 0          | 0          | 0          |   0.0 |  0.00
+Comm    | 0.014873   | 0.01707    | 0.019368   |   0.8 | 11.15
+Output  | 0          | 0          | 0          |   0.0 |  0.00
+Modify  | 0.007466   | 0.0093658  | 0.011268   |   1.1 |  6.12
+Other   |            | 0.0034     |            |       |  2.22
+
+Nlocal:        180.000 ave         180 max         180 min
+Histogram: 24 0 0 0 0 0 0 0 0 0
+Nghost:        4751.50 ave        4752 max        4751 min
+Histogram: 12 0 0 0 0 0 0 0 0 12
+Neighs:        72117.0 ave       74334 max       69900 min
+Histogram: 4 6 2 0 0 0 0 2 6 4
+
+Total # of neighbors = 1730808
+Ave neighs/atom = 400.65000
+Ave special neighs/atom = 8.8000000
+Neighbor list builds = 0
+Dangerous builds = 0
+System init for write_data ...
+Ewald initialization ...
+  using 12-bit tables for long-range coulomb (src/kspace.cpp:340)
+  G vector (1/distance) = 1e-06
+  estimated absolute RMS force accuracy = 6.1916773
+  estimated relative force accuracy = 0.018646052
+  KSpace vectors: actual max1d max3d = 5 1 13
+                  kxmax kymax kzmax  = 1 1 1
+----------------------------------------------------------
+Using Intel Package without Coprocessor.
+Precision: mixed
+----------------------------------------------------------
+No /omp style for force computation currently active
+Ewald initialization ...
+  using 12-bit tables for long-range coulomb (src/kspace.cpp:340)
+  G vector (1/distance) = 1e-06
+  estimated absolute RMS force accuracy = 6.1916773
+  estimated relative force accuracy = 0.018646052
+  KSpace vectors: actual max1d max3d = 5 1 13
+                  kxmax kymax kzmax  = 1 1 1
+No /omp style for force computation currently active
+Setting up Verlet run ...
+  Unit style    : real
+  Current step  : 11
+  Time step     : 1
+WARNING: Inconsistent image flags (src/domain.cpp:814)
+Per MPI rank memory allocation (min/avg/max) = 21.61 | 21.61 | 21.61 Mbytes
+Step Temp TotEng E_pair E_mol Press Volume Enthalpy 
+      11          100   -37661.623   -40552.221    1603.1868   -23272.092    38910.052   -50867.678 
+     100    73.399669   -36810.658   -39841.748    2086.1338   -13436.368    38910.052   -44435.303 
+     200    87.166244   -32472.018   -35698.678    2104.4715   -12759.339    38910.052   -39712.473 
+     300     75.77423   -27197.163   -30479.799    2307.1092    5348.2189    38910.052   -24162.245 
+     400    77.394232   -27676.402   -31100.505      2427.72   -14094.055    38910.052    -35674.26 
+     500    91.120791   -29350.477   -32923.465    2399.8888    5864.8812    38910.052   -26022.372 
+     600    104.20307   -31773.185   -35477.234    2362.5264   -11351.979    38910.052   -38215.015 
+     700    101.70222   -28279.369    -31824.43     2235.735   -2967.8877    38910.052   -29963.536 
+     800    102.62573   -28649.082   -32308.392    2338.0936   -2612.6574    38910.052   -30131.669 
+     900    106.21133   -29362.711   -33148.875    2418.7861   -10572.058    38910.052   -35361.965 
+    1000     96.47595   -29118.335   -32767.947      2407.57    3404.6469    38910.052   -27186.323 
+    1100    93.394001   -28620.973   -32283.741    2460.4029   -14126.819    38910.052   -36637.423 
+    1200    98.330843    -28992.35   -32670.052    2411.7785    6500.6124    38910.052   -25303.492 
+    1300    100.50917   -31532.452   -35241.169    2414.7502   -12585.143    38910.052   -38674.057 
+    1400    100.93521   -31374.625   -34993.945    2319.8672   -4139.7088    38910.052   -33723.758 
+    1500     101.4707   -29689.681   -33403.606    2407.5797   -2642.5447    38910.052   -31189.228 
+    1600    100.68061   -30702.754   -34390.359    2391.4305   -11803.637    38910.052   -37400.884 
+    1700    99.261035   -30134.282   -33823.823    2411.6429    292.88855    38910.052   -29968.079 
+    1800    97.239763   -29579.262   -33250.517    2419.3784   -12687.037    38910.052   -36778.689 
+    1900    98.077102   -29882.164   -33534.887    2390.0675    2777.2021    38910.052   -28306.204 
+    2000     100.8068    -30190.89   -33897.706    2409.0173   -10193.158    38910.052   -35975.132 
+    2100    102.69822   -31140.613   -34863.313    2400.5513    -3331.812    38910.052   -33031.294 
+    2200    101.44357   -30017.012   -33726.881    2403.8734   -3141.1877    38910.052    -31799.52 
+    2300    99.743412   -30112.213   -33791.369    2395.0476   -10157.333    38910.052   -35876.125 
+    2400    98.363336   -29955.692   -33627.916    2405.8835   -497.35503    38910.052   -30237.922 
+    2500    98.079378   -29321.115   -33021.011    2437.2102   -10898.113    38910.052   -35505.393 
+    2600    96.952382    -30136.35   -33821.323    2436.7963   -1044.9989    38910.052   -30729.349 
+    2700    99.522041   -29529.081   -33264.756    2454.4163   -10697.965    38910.052   -35599.782 
+    2800    102.35421   -29995.204   -33732.863    2419.9391   -2867.1295    38910.052   -31622.194 
+    2900    102.72646    -30264.88   -34015.543    2428.1502   -6347.9931    38910.052   -33867.132 
+    3000    99.548883   -30056.726   -33762.802    2424.4712    -8070.625    38910.052   -34636.509 
+    3100    98.120192   -30635.715   -34319.835    2420.9089   -973.38866    38910.052   -31188.077 
+    3200    100.55243   -29559.722   -33273.033    2418.7869   -10866.233    38910.052   -35725.909 
+    3300    98.825611   -28971.051   -32689.408    2446.0641   -1003.4219    38910.052   -29540.456 
+    3400    101.90175    -29603.74    -33334.93    2419.2953   -9115.9924    38910.052    -34776.73 
+    3500    99.078998    -28971.91   -32688.208    2440.7436   -1618.8164    38910.052   -29890.529 
+    3600    99.717011   -29502.345   -33189.881    2403.7672    -6677.816    38910.052    -33291.76 
+    3700    100.51615   -29873.979   -33574.706    2406.6701    -6196.227    38910.052    -33390.11 
+    3800    100.05529   -29957.776   -33667.396    2421.4962   -1663.6007    38910.052   -30901.808 
+    3900    99.592934   -29807.787   -33525.723    2435.7646   -10525.448    38910.052   -35780.591 
+    4000    100.83967   -29838.531   -33558.284    2421.5315   -1255.9761    38910.052   -30551.251 
+    4100    101.44375   -29170.079   -32958.561    2482.4837   -9334.9019    38910.052   -34467.292 
+    4200    100.34472   -29519.036   -33246.004     2435.118   -2216.9966    38910.052     -30777.1 
+    4300    99.321355   -29511.117   -33197.883    2408.0911   -6315.0088    38910.052   -33094.652 
+    4400    99.428377   -29464.621   -33182.966    2438.2924   -5921.3689    38910.052    -32824.78 
+    4500    100.57756   -29343.272   -33069.397    2431.2776   -3418.8707    38910.052   -31283.355 
+    4600    101.78638    -29871.36   -33624.227    2442.4572   -9751.4307    38910.052   -35404.938 
+    4700    102.55292   -31028.474   -34797.485    2448.7317   -2859.4732    38910.052    -32651.12 
+    4800    99.103974   -30840.648   -34600.728    2484.2041   -9902.7941    38910.052   -36460.119 
+    4900    99.625331   -29687.171   -33409.776    2440.0168   -3559.0422    38910.052   -31706.797 
+    5000    99.585397   -29758.499   -33488.162    2447.5885   -7061.9754    38910.052    -33765.91 
+    5011    98.158145   -30392.906   -34107.333    2450.7269    -3333.569    38910.052   -32284.584 
+Loop time of 9.20844 on 96 procs for 5000 steps with 4320 atoms
+
+Performance: 46.913 ns/day, 0.512 hours/ns, 542.980 timesteps/s
+258.4% CPU use with 24 MPI tasks x 4 OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 4.801      | 5.4267     | 5.7477     |  10.4 | 58.93
+Bond    | 0.35614    | 0.45351    | 0.5422     |   7.6 |  4.92
+Kspace  | 0.69625    | 1.0186     | 1.5857     |  25.3 | 11.06
+Neigh   | 0.22188    | 0.22691    | 0.23187    |   0.6 |  2.46
+Comm    | 1.0742     | 1.2022     | 1.3776     |   7.5 | 13.06
+Output  | 0.144      | 0.15476    | 0.16542    |   1.5 |  1.68
+Modify  | 0.54069    | 0.68218    | 0.79893    |   8.6 |  7.41
+Other   |            | 0.04358    |            |       |  0.47
+
+Nlocal:        180.000 ave         185 max         174 min
+Histogram: 2 0 4 1 3 5 2 2 1 4
+Nghost:        4737.25 ave        4751 max        4715 min
+Histogram: 1 0 1 1 4 5 3 3 2 4
+Neighs:        72236.0 ave       76056 max       69026 min
+Histogram: 4 3 1 3 2 3 2 2 2 2
+
+Total # of neighbors = 1733664
+Ave neighs/atom = 401.31111
+Ave special neighs/atom = 8.8000000
+Neighbor list builds = 93
+Dangerous builds = 0
+Total wall time: 0:00:09
+
+List of saved files
+TEMPORARY          SAVED
+log.lammps         f2_nvt.log        372571   Jul 2 17:37
+f2_nvt-step4000.restart f2_nvt.restart/   1270264  Jul 2 17:37
+f2_nvt-step1500.restart f2_nvt.restart/   1270264  Jul 2 17:37
+f2_nvt-step3500.restart f2_nvt.restart/   1270264  Jul 2 17:37
+f2_nvt-step500.restart f2_nvt.restart/   1270264  Jul 2 17:37
+f2_nvt-step2000.restart f2_nvt.restart/   1270264  Jul 2 17:37
+f2_nvt-step2500.restart f2_nvt.restart/   1270264  Jul 2 17:37
+f2_nvt-step5000.restart f2_nvt.restart/   1270264  Jul 2 17:37
+f2_nvt-step3000.restart f2_nvt.restart/   1270264  Jul 2 17:37
+f2_nvt-step1000.restart f2_nvt.restart/   1270264  Jul 2 17:37
+f2_nvt-step4500.restart f2_nvt.restart/   1270264  Jul 2 17:37
+f2_min_opt.data                      892761   Jul 2 17:37
+f2_nvt.data                          854399   Jul 2 17:37
+f2_min.lammpstrj                     17548745 Jul 2 17:37
+f2_nvt.lammpstrj                     8602473  Jul 2 17:37
+ 
+Disk usage:
+<df -h .>
+Filesystem      Size  Used Avail Use% Mounted on
+rds              14P   11P  3.3P  77% /rds
+</df -h .>
+By folders:
+<du -m .>
+49	/rds/general/ephemeral/user/hz1420/ephemeral/f2_nvt_5788971
+</du -m .>

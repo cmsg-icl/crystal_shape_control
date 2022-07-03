@@ -1,0 +1,526 @@
+<qsub_standard_output>
+Sat  2 Jul 18:30:57 BST 2022
+<qstat -f 5789026.pbs>
+</qstat -f 5789026.pbs>
+</qsub_standard_output>
+--in 'f2_nvt_restart.in' --ref 'f2_nvt-step4000' -- '-sf' 'intel' '-pk' 'omp' '4'
+printed output filename f2_nvt_restart.out
+mpi command: mpiexec 
+creating temporary directory /rds/general/ephemeral/user/hz1420/ephemeral/f2_nvt_restart_5789026
+<script>
+# Synchronise nodes
+
+if [[ ! -z ${PBS_NODEFILE} ]]; then
+    if [[ -e ${PBS_NODEFILE} ]]; then
+        echo '${PBS_NODEFILE}' found: ${PBS_NODEFILE}
+        cat ${PBS_NODEFILE}
+        PCLIST=`awk '{if ($I != old){printf("%s ",$I);old=$I}}' ${PBS_NODEFILE}`
+    else
+        echo '${PBS_NODEFILE} not found'
+        exit
+    fi
+
+    for PC in ${PCLIST[@]}; do
+        ssh ${PC} "if [[ ! -d ${JOBTMPDIR} ]]; then mkdir -p ${JOBTMPDIR} ;fi; echo 'temporary directory on '${PC}"
+    done
+fi
+
+# Generate basic information of output file
+
+OUTDIR=`pwd`
+INPDIR=`pwd`
+
+echo "output file: ${OUTDIR}/${OUTPUT}"
+cat << EOF | tee -a ${OUTDIR}/${OUTPUT}
+date:                `date`
+hostname:            `hostname`
+system:              `uname -a`
+user:                `whoami`
+input:               ${OUTDIR}/${JOBNAME}.in
+output:              ${OUTDIR}/${OUTPUT}
+executable script:   $0
+executable dir:      ${XDIR}
+executable:          ${PEXE}
+EOF
+
+if [[ ! -z ${PBS_JOBID} ]]; then
+    echo "<qstat -f ${PBS_JOBID}>"  | tee -a ${OUTDIR}/${OUTPUT}
+    qstat -f ${PBS_JOBID}      2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+    echo "</qstat -f ${PBS_JOBID}>" | tee -a ${OUTDIR}/${OUTPUT}
+fi
+
+echo "temporary directory: ${JOBTMPDIR}"
+
+# Prepare input file
+
+## Read list
+
+LINE_PRECALC=`grep -nw 'PRE_CALC' ${SETFILE}`
+LINE_PRECALC=`echo "scale=0;${LINE_PRECALC%%:*}+4" | bc`
+
+SAVED_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $1)}' ${SETFILE}`
+SAVED_NAME_FLAG=`echo "${SAVED_NAME}" | cut -c 1-9`
+TMP_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $2)}' ${SETFILE}`
+TMP_NAME_FLAG=`echo "${TMP_NAME}" | cut -c 1-9`
+
+## Mandatory files: jobname.in etc
+
+while [[ ! -z ${TMP_NAME} ]]; do
+
+### Substitute variable flags
+
+	if [[ ${SAVED_NAME_FLAG} == '[jobname]' ]]; then
+		SAVED_NAME=${JOBNAME}$(echo ${SAVED_NAME} | sed -r 's/^.{9}//')
+	elif [[ ${SAVED_NAME_FLAG} == '[pre_job]' && ! -z ${REFNAME} ]]; then
+		SAVED_NAME=${REFNAME}$(echo ${SAVED_NAME} | sed -r 's/^.{9}//')
+	fi
+
+### Substitute variable flags
+	
+	if [[ ${TMP_NAME_FLAG} == '[jobname]' ]]; then
+		TMP_NAME=${JOBNAME}$(echo ${TMP_NAME} | sed -r 's/^.{9}//')
+	elif [[ ${TMP_NAME_FLAG} == '[pre_job]' && ! -z ${REFNAME} ]]; then
+		TMP_NAME=${REFNAME}$(echo ${TMP_NAME} | sed -r 's/^.{9}//')
+	fi
+
+    if [[ -e ${INPDIR}/${SAVED_NAME} && -s ${INPDIR}/${SAVED_NAME} ]]; then
+
+### Copy files to the main temporary directory
+
+        echo "Found input data: ${INPDIR}/${SAVED_NAME}" 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+        cp ${INPDIR}/${SAVED_NAME} ${JOBTMPDIR}/${TMP_NAME}
+        echo "input ${SAVED_NAME} copied."
+
+### Synchonise files on all nodes
+
+        if [[ ! -z ${PCLIST} ]]; then
+            for PC in ${PCLIST[@]}; do
+                ssh ${PC} "cp ${INPDIR}/${SAVED_NAME} ${JOBTMPDIR}/${TMP_NAME}"
+                echo "File synchonised on ${PC} : ${JOBTMPDIR}/${TMP_NAME}"
+            done
+        fi
+    else
+        echo "ERROR: Mandatory input ${INPDIR}/${SAVED_NAME} not found or empty."
+        exit
+    fi
+
+    LINE_PRECALC=`echo "scale=0;${LINE_PRECALC}+1" | bc`
+    SAVED_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $1)}' ${SETFILE}`
+	SAVED_NAME_FLAG=`echo "${SAVED_NAME}" | cut -c 1-9`
+    TMP_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $2)}' ${SETFILE}`
+	TMP_NAME_FLAG=`echo "${TMP_NAME}" | cut -c 1-9`
+done
+
+## External files
+
+LINE_EXT=`grep -nw 'FILE_EXT' ${SETFILE}`
+LINE_EXT=`echo "scale=0;${LINE_EXT%%:*}+4" | bc`
+
+SAVED_NAME=`awk 'NR=="'${LINE_EXT}'"{printf("%s", $1)}' ${SETFILE}`
+SAVED_NAME_FLAG=`echo "${SAVED_NAME}" | cut -c 1-9`
+TMP_NAME=`awk 'NR=="'${LINE_EXT}'"{printf("%s", $2)}' ${SETFILE}`
+TMP_NAME_FLAG=`echo "${TMP_NAME}" | cut -c 1-9`
+
+while [[ ! -z ${TMP_NAME} ]]; do
+
+### Substitute variable flags
+
+	if [[ ${SAVED_NAME_FLAG} == '[jobname]' ]]; then
+		SAVED_NAME=${JOBNAME}$(echo ${SAVED_NAME} | sed -r 's/^.{9}//')
+	elif [[ ${SAVED_NAME_FLAG} == '[pre_job]' && ! -z ${REFNAME} ]]; then
+		SAVED_NAME=${REFNAME}$(echo ${SAVED_NAME} | sed -r 's/^.{9}//')
+	fi
+
+### Substitute variable flags
+	
+	if [[ ${TMP_NAME_FLAG} == '[jobname]' ]]; then
+		TMP_NAME=${JOBNAME}$(echo ${TMP_NAME} | sed -r 's/^.{9}//')
+	elif [[ ${TMP_NAME_FLAG} == '[pre_job]' && ! -z ${REFNAME} ]]; then
+		TMP_NAME=${REFNAME}$(echo ${TMP_NAME} | sed -r 's/^.{9}//')
+	fi
+
+### Find files in home directory
+
+    if [[ -e ${INPDIR}/${SAVED_NAME} && -s ${INPDIR}/${SAVED_NAME} ]]; then
+
+### Copy files to the main temporary directory
+
+        echo "Found input data: ${INPDIR}/${SAVED_NAME}" 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+        cp ${INPDIR}/${SAVED_NAME} ${JOBTMPDIR}/${TMP_NAME}
+        echo "input ${SAVED_NAME} copied as ${TMP_NAME}."
+
+### Synchonise files on all nodes
+
+        if [[ ! -z ${PCLIST} ]]; then
+            for PC in ${PCLIST[@]}; do
+                ssh ${PC} "cp ${INPDIR}/${SAVED_NAME} ${JOBTMPDIR}/${TMP_NAME}"
+                echo "File synchonised on ${PC} : ${JOBTMPDIR}/${TMP_NAME}"
+            done
+        fi
+
+### File not found
+
+    else
+        echo "The optional input data ${INPDIR}/${SAVED_NAME} not found or empty."
+    fi
+
+    LINE_EXT=`echo "scale=0;${LINE_EXT}+1" | bc`
+    SAVED_NAME=`awk 'NR=="'${LINE_EXT}'"{printf("%s", $1)}' ${SETFILE}`
+    SAVED_NAME_FLAG=`echo "${SAVED_NAME}" | cut -c 1-9`
+    TMP_NAME=`awk 'NR=="'${LINE_EXT}'"{printf("%s", $2)}' ${SETFILE}`
+    TMP_NAME_FLAG=`echo "${TMP_NAME}" | cut -c 1-9`
+done
+
+echo "All files are synchonised." | tee -a ${OUTDIR}/${OUTPUT}
+
+# Launch calculations
+
+echo "" | tee -a ${OUTDIR}/${OUTPUT}
+echo "Start the job" | tee -a ${OUTDIR}/${OUTPUT}
+echo "Job name: ${JOBNAME} ID: ${PBS_JOBID}" | tee -a ${OUTDIR}/${OUTPUT}
+echo "" | tee -a ${OUTDIR}/${OUTPUT}
+
+cd ${JOBTMPDIR}
+echo "Entering temporary directory ${JOBTMPDIR}"
+echo "Job execution command to be used:"
+echo "${EXECOMMAND}"
+echo "Job started..."
+
+${EXECOMMAND} 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+
+exit
+</script>
+DATE START: Sat  2 Jul 18:33:06 BST 2022
+${PBS_NODEFILE} found: /var/spool/PBS/aux/5789026.pbs
+cx3-12-5.cx3.hpc.ic.ac.uk
+cx3-12-5.cx3.hpc.ic.ac.uk
+cx3-12-5.cx3.hpc.ic.ac.uk
+cx3-12-5.cx3.hpc.ic.ac.uk
+cx3-12-5.cx3.hpc.ic.ac.uk
+cx3-12-5.cx3.hpc.ic.ac.uk
+cx3-12-5.cx3.hpc.ic.ac.uk
+cx3-12-5.cx3.hpc.ic.ac.uk
+cx3-12-5.cx3.hpc.ic.ac.uk
+cx3-12-5.cx3.hpc.ic.ac.uk
+cx3-12-5.cx3.hpc.ic.ac.uk
+cx3-12-5.cx3.hpc.ic.ac.uk
+cx3-12-5.cx3.hpc.ic.ac.uk
+cx3-12-5.cx3.hpc.ic.ac.uk
+cx3-12-5.cx3.hpc.ic.ac.uk
+cx3-12-5.cx3.hpc.ic.ac.uk
+cx3-12-5.cx3.hpc.ic.ac.uk
+cx3-12-5.cx3.hpc.ic.ac.uk
+cx3-12-5.cx3.hpc.ic.ac.uk
+cx3-12-5.cx3.hpc.ic.ac.uk
+cx3-12-5.cx3.hpc.ic.ac.uk
+cx3-12-5.cx3.hpc.ic.ac.uk
+cx3-12-5.cx3.hpc.ic.ac.uk
+cx3-12-5.cx3.hpc.ic.ac.uk
+temporary directory on cx3-12-5.cx3.hpc.ic.ac.uk
+output file: /rds/general/user/hz1420/home/lammps-case/f2_nvt_restart.out
+date:                Sat  2 Jul 18:33:08 BST 2022
+hostname:            cx3-12-5.cx3.hpc.ic.ac.uk
+system:              Linux cx3-12-5.cx3.hpc.ic.ac.uk 4.18.0-348.20.1.el8_5.x86_64 #1 SMP Tue Mar 8 12:56:54 EST 2022 x86_64 x86_64 x86_64 GNU/Linux
+user:                hz1420
+input:               /rds/general/user/hz1420/home/lammps-case/f2_nvt_restart.in
+output:              /rds/general/user/hz1420/home/lammps-case/f2_nvt_restart.out
+executable script:   /rds/general/user/hz1420/home/etc/runLAMMPS/run_exec
+executable dir:      /rds/general/user/hz1420/home/apps/lammps_2109/bin
+executable:          /rds/general/user/hz1420/home/apps/lammps_2109/bin/lmp_omp
+<qstat -f 5789026.pbs>
+Connection timed out
+qstat: cannot connect to server pbs (errno=110)
+</qstat -f 5789026.pbs>
+temporary directory: /rds/general/ephemeral/user/hz1420/ephemeral/f2_nvt_restart_5789026
+Found input data: /rds/general/user/hz1420/home/lammps-case/f2_nvt_restart.in
+input f2_nvt_restart.in copied.
+File synchonised on cx3-12-5.cx3.hpc.ic.ac.uk : /rds/general/ephemeral/user/hz1420/ephemeral/f2_nvt_restart_5789026/f2_nvt_restart.in
+The optional input data /rds/general/user/hz1420/home/lammps-case/f2_nvt_restart.in.init not found or empty.
+Found input data: /rds/general/user/hz1420/home/lammps-case/f2_nvt_restart.in.settings
+input f2_nvt_restart.in.settings copied as f2_nvt_restart.in.settings.
+File synchonised on cx3-12-5.cx3.hpc.ic.ac.uk : /rds/general/ephemeral/user/hz1420/ephemeral/f2_nvt_restart_5789026/f2_nvt_restart.in.settings
+The optional input data /rds/general/user/hz1420/home/lammps-case/f2_nvt_restart.data not found or empty.
+Found input data: /rds/general/user/hz1420/home/lammps-case/f2_nvt-step4000.restart
+input f2_nvt-step4000.restart copied as f2_nvt-step4000.restart.
+File synchonised on cx3-12-5.cx3.hpc.ic.ac.uk : /rds/general/ephemeral/user/hz1420/ephemeral/f2_nvt_restart_5789026/f2_nvt-step4000.restart
+All files are synchonised.
+
+Start the job
+Job name: f2_nvt_restart ID: 5789026.pbs
+
+Entering temporary directory /rds/general/ephemeral/user/hz1420/ephemeral/f2_nvt_restart_5789026
+Job execution command to be used:
+mpiexec  /rds/general/user/hz1420/home/apps/lammps_2109/bin/lmp_omp -in f2_nvt_restart.in  -sf intel -pk omp 4
+Job started...
+LAMMPS (29 Sep 2021 - Update 3)
+  using 1 OpenMP thread(s) per MPI task
+set 4 OpenMP thread(s) per MPI task
+using multi-threaded neighbor list subroutines
+Reading restart file ...
+  restart file = 29 Sep 2021, LAMMPS = 29 Sep 2021
+  restoring atom style full from restart
+  orthogonal box = (0.0000000 0.0000000 0.0000000) to (35.265600 21.418230 51.514200)
+  3 by 2 by 4 MPI processor grid
+  restoring pair style hybrid from restart
+  restoring bond style hybrid from restart
+  restoring angle style hybrid from restart
+  restoring dihedral style hybrid from restart
+  restoring improper style hybrid from restart
+  4320 atoms
+  4320 bonds
+  6696 angles
+  8640 dihedrals
+  1296 impropers
+Finding 1-2 1-3 1-4 neighbors ...
+  special bond factors lj:    0        0        0.5     
+  special bond factors coul:  0        0        0.8333333333333334
+     4 = max # of 1-2 neighbors
+     6 = max # of 1-3 neighbors
+    12 = max # of 1-4 neighbors
+    14 = max # of special neighbors
+  special bonds CPU = 0.002 seconds
+  read_restart CPU = 0.010 seconds
+Resetting global fix info from restart file:
+  fix style: nvt/intel, fix ID: 1
+Ewald initialization ...
+  using 12-bit tables for long-range coulomb (src/kspace.cpp:340)
+  G vector (1/distance) = 0.31358236
+  estimated absolute RMS force accuracy = 0.00038604192
+  estimated relative force accuracy = 1.1625538e-06
+  KSpace vectors: actual max1d max3d = 3181 16 17968
+                  kxmax kymax kzmax  = 12 7 16
+----------------------------------------------------------
+Using Intel Package without Coprocessor.
+Precision: mixed
+----------------------------------------------------------
+All restart file global fix info was re-assigned
+No /omp style for force computation currently active
+Neighbor list info ...
+  update every 1 steps, delay 10 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 12
+  ghost atom cutoff = 12
+  binsize = 6, bins = 6 4 9
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair lj/charmm/coul/long, perpetual
+      attributes: half, newton on, intel
+      pair build: half/bin/newton/intel
+      stencil: half/bin/3d
+      bin: intel
+Setting up Verlet run ...
+  Unit style    : real
+  Current step  : 4000
+  Time step     : 1
+WARNING: Inconsistent image flags (src/domain.cpp:814)
+Per MPI rank memory allocation (min/avg/max) = 46.14 | 46.22 | 46.27 Mbytes
+Step Temp TotEng E_pair E_mol Press Volume Enthalpy 
+    4000          100   -15830.247   -19539.192    2421.5326    6965.1464    38910.052   -11877.783 
+    4100    104.85558   -15842.382    -19642.09    2449.7847   -3415.2086    38910.052   -17780.387 
+    4200    107.18745   -15913.923   -19707.859    2413.9922    4361.1651    38910.052   -13439.122 
+    4300    102.86787   -15981.354   -19620.053    2314.3656   -64.798546    38910.052   -16018.125 
+    4400    99.100479   -16021.089   -19614.449    2317.5282    829.78027    38910.052   -15550.219 
+    4500    95.727751   -16036.264   -19693.974    2425.2993    2215.3835    38910.052   -14779.116 
+    4600    96.980762   -16029.795   -19645.641    2367.3043   -3128.9483    38910.052   -17805.358 
+    4700    96.938423    -15977.95   -19653.502    2427.5547    4405.2379    38910.052    -13478.14 
+    4800     102.6752   -15958.704   -19697.355     2416.799   -3166.5863    38910.052   -17755.625 
+    4900    102.27345   -15989.827   -19684.641    2378.1333    3811.8919    38910.052   -13826.719 
+    5000    99.182259   -16019.074   -19659.232    2363.2744   -812.65144    38910.052   -16480.224 
+    5100    101.04482   -16014.322    -19705.21    2390.0254    1038.4082    38910.052   -15425.063 
+    5200    101.59675   -15979.155   -19663.986    2376.8626    2113.1177    38910.052   -14780.039 
+    5300    98.109692   -15960.641    -19650.63    2426.9132   -1287.0602    38910.052       -16691 
+    5400    102.10312    -15967.78   -19684.328    2402.0606    4659.2262    38910.052    -13323.84 
+    5500    97.715225    -16004.85   -19681.011    2418.1638     -2259.55    38910.052   -17287.061 
+    5600    97.866525   -16008.831   -19621.106    2352.3296    5257.5573    38910.052   -13025.361 
+    5700    100.85442   -15990.916   -19659.863     2370.535   -96.179663    38910.052   -16045.495 
+    5800    99.678425   -15977.473   -19691.731    2430.9861    1785.9301    38910.052   -14964.024 
+    5900    99.664236   -15952.391   -19668.299     2432.819    1676.9192    38910.052   -15000.801 
+    6000    103.93984   -15926.431   -19652.244    2387.6801    249.43095    38910.052   -15784.888 
+    6100    100.59829   -15965.974   -19678.024     2416.936    3998.8394    38910.052   -13696.779 
+    6200     99.43488   -15987.109   -19648.216    2380.9706   -1449.1815    38910.052   -16809.466 
+    6300    98.276775   -15992.945   -19660.923     2402.751    3887.6393    38910.052   -13786.853 
+    6400    100.10287    -15985.99   -19692.819    2418.0933   -1141.5942    38910.052   -16633.803 
+    6500    99.286956   -15982.012   -19663.448    2403.2036    1457.2597    38910.052   -15155.071 
+    6600    101.40344   -15990.138   -19667.033     2371.415    58.879592    38910.052   -15956.726 
+    6700    97.733223   -16016.492    -19677.99    2403.2688   0.16646808    38910.052   -16016.398 
+    6800    99.527233   -16026.521   -19669.973     2362.127    2062.1658    38910.052   -14856.318 
+    6900    101.53249   -15993.891   -19673.714     2372.682   -2480.4848    38910.052   -17401.474 
+    7000    99.814453   -15972.307    -19683.86    2426.5293    3501.2328    38910.052   -13985.487 
+    7100    99.569238   -15975.513   -19697.825     2440.446   -1298.5718    38910.052   -16712.405 
+    7200    99.301909   -15989.637   -19650.715    2382.6535    2774.3709    38910.052   -14415.284 
+    7300    98.604724   -16009.385    -19675.69    2396.8561    1038.2144    38910.052   -15420.237 
+    7400    98.714815   -16031.613   -19685.295    2382.8154    606.78476    38910.052   -15687.285 
+    7500    96.839775   -16050.569   -19662.348    2365.0527    1617.7537    38910.052   -15132.553 
+    7600    98.018929   -16023.807   -19697.987    2412.2723   -1736.3915    38910.052   -17009.145 
+    7700    99.195832   -15988.821   -19685.338    2419.4573    3201.6679    38910.052   -14171.993 
+    7800    99.212276   -15973.358   -19651.708    2401.0793   -1452.9523    38910.052   -16797.855 
+    7900    100.12682   -15974.528   -19691.021    2427.4484    2501.5631    38910.052   -14554.983 
+    8000    100.28225   -16005.543    -19689.91    2393.3211   -21.250482    38910.052   -16017.602 
+    8100    99.236266   -16030.181    -19673.51    2365.7495    1249.3764    38910.052   -15321.206 
+    8200    101.03748   -16019.354   -19704.455     2384.332    2212.6067    38910.052   -14763.782 
+    8300     99.56471    -16004.96   -19699.135    2412.3674    139.12572    38910.052   -15926.011 
+    8400    95.547068   -15994.268   -19656.156    2431.8038    3563.9665    38910.052   -13971.848 
+    8500    100.58286   -15977.625   -19669.151    2396.6105    -216.5851    38910.052   -16100.529 
+    8600    99.944138    -15967.81   -19678.523    2424.0197    2430.4333    38910.052   -14588.629 
+    8700    100.60351   -15982.264   -19672.979     2395.533   -180.83807    38910.052   -16084.883 
+    8800    99.817524   -16018.661   -19673.532    2369.8085    362.11042    38910.052   -15813.176 
+    8900    98.750823   -16028.719   -19706.276    2406.2268    1248.5344    38910.052   -15320.222 
+    9000    99.152907   -16002.631   -19679.127    2399.9901   -456.67541    38910.052   -16261.777 
+Loop time of 69.5056 on 96 procs for 5000 steps with 4320 atoms
+
+Performance: 6.215 ns/day, 3.861 hours/ns, 71.937 timesteps/s
+121.3% CPU use with 24 MPI tasks x 4 OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 5.7284     | 6.1187     | 6.4716     |   8.2 |  8.80
+Bond    | 0.32102    | 0.34806    | 0.43224    |   3.5 |  0.50
+Kspace  | 43.19      | 44.562     | 60.277     |  49.4 | 64.11
+Neigh   | 0.18844    | 0.19912    | 0.20329    |   1.0 |  0.29
+Comm    | 1.5077     | 17.128     | 18.297     |  79.0 | 24.64
+Output  | 0.06493    | 0.065044   | 0.065809   |   0.1 |  0.09
+Modify  | 0.91583    | 1.0277     | 1.1507     |   5.6 |  1.48
+Other   |            | 0.05672    |            |       |  0.08
+
+Nlocal:        180.000 ave         183 max         176 min
+Histogram: 1 2 4 0 2 4 0 4 5 2
+Nghost:        4715.25 ave        4732 max        4708 min
+Histogram: 6 3 5 3 1 4 1 0 0 1
+Neighs:        72193.3 ave       75332 max       68674 min
+Histogram: 1 3 3 3 2 0 4 3 1 4
+
+Total # of neighbors = 1732640
+Ave neighs/atom = 401.07407
+Ave special neighs/atom = 8.8000000
+Neighbor list builds = 82
+Dangerous builds = 0
+Total wall time: 0:01:09
+--in 'f2_nvt_restart.in' --ref 'f2_nvt-step4000' --
+Start post-processing...
+
+List of saved files
+TEMPORARY          SAVED
+log.lammps         f2_nvt_restart.log369348   Jul 2 18:36
+output log.lammps copied as f2_nvt_restart.log.
+f2_nvt_restart.lammpstrj                   8773780  Jul 2 18:36
+output f2_nvt_restart.lammpstrj copied as .
+ 
+Disk usage:
+<df -h .>
+Filesystem      Size  Used Avail Use% Mounted on
+rds              14P   11P  3.3P  77% /rds
+</df -h .>
+By folders:
+<du -m .>
+17	/rds/general/ephemeral/user/hz1420/ephemeral/f2_nvt_restart_5789026
+</du -m .>
+Detailed file list:
+<ls -l .>
+total 16769
+-rwx------. 1 hz1420 hpc-nmh    1866 Jul  2 18:35 f2_nvt_restart.in
+-rw-------. 1 hz1420 hpc-nmh  359267 Jul  2 18:35 f2_nvt_restart.in.settings
+-rw-------. 1 hz1420 hpc-nmh 8773780 Jul  2 18:36 f2_nvt_restart.lammpstrj
+-rw-------. 1 hz1420 hpc-nmh    5801 Jul  2 18:33 Job_script
+-rw-------. 1 hz1420 hpc-nmh  369348 Jul  2 18:36 log.lammps
+</ls -l .>
+cx3-12-5.cx3.hpc.ic.ac.uk
+<checkfile0>
+#!/bin/bash
+JOBNAME=f2_nvt_restart
+OUTDIR=/rds/general/user/hz1420/home/lammps-case
+OUTPUT=f2_nvt_restart.out
+JOBTMPDIR=/rds/general/ephemeral/user/hz1420/ephemeral/f2_nvt_restart_5789026
+cd  /rds/general/ephemeral/user/hz1420/ephemeral/f2_nvt_restart_5789026
+# Remove external files
+
+if [[ ! -z ${REFNAME} ]]; then
+    rm -r ${REFNAME}.*
+fi
+
+# Read POST_CALC list
+
+LINE_POSTCALC=`grep -nw 'POST_CALC' ${SETFILE}`
+LINE_POSTCALC=`echo "scale=0;${LINE_POSTCALC%%:*}+4" | bc`
+
+SAVED_NAME=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", $1)}' ${SETFILE}`
+SAVED_NAME_FLAG=`echo ${SAVED_NAME} | cut -c 1-9`
+TMP_NAME=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", $2)}' ${SETFILE}`
+TMP_NAME_FLAG=`echo ${TMP_NAME} | cut -c 1-9`
+
+while [[ ! -z ${TMP_NAME} ]]; do
+
+### Substitute variable flags
+
+    if [[ ${SAVED_NAME_FLAG} == '[jobname]' ]]; then
+        SAVED_NAME=${JOBNAME}$(echo ${SAVED_NAME} | sed -r 's/^.{9}//')
+
+### If SAVED_NAME begins with '*', keep the original name
+
+	elif [[ $(echo "${SAVED_NAME_FLAG}" | cut -c 1) == '*' ]]; then
+		SAVED_NAME=''
+    fi
+
+### Substitute variable flags
+
+    if [[ ${TMP_NAME_FLAG} == '[jobname]' ]]; then
+        TMP_NAME=${JOBNAME}$(echo ${TMP_NAME} | sed -r 's/^.{9}//')
+    fi
+
+## List files, to get all files with '*' in 'TMP_NAME' settings
+
+    filelist=`find ${JOBTMPDIR} -name "${TMP_NAME}"`
+    filelist=(${filelist//${JOBTMPDIR}\//})
+
+### Make subdir for files stored in sub-folders 
+
+    if [[ ${SAVED_NAME: -1} == '/' && ${#filelist[@]} -ge 1 ]]; then
+        mkdir "${OUTDIR}/${SAVED_NAME}"
+    fi
+
+    for file in ${filelist[@]}; do
+
+### Make sure the file is not empty
+
+        if [[ ! -s ${JOBTMPDIR}/${file} ]]; then
+            continue
+        fi
+
+        echo "${file} ${SAVED_NAME}" | awk '{printf("%-18s %-18s"),$1,$2}' 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+        ls -l ${file} | awk '{printf("%-8s %s %s %s\n"),$5,$6,$7,$8}' 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+        cp ${JOBTMPDIR}/${file} ${OUTDIR}/${SAVED_NAME}
+
+### Normal files
+
+        if [[ ${SAVED_NAME: -1} != '/' ]]; then
+            echo "output ${file} copied as ${SAVED_NAME}."
+
+### Files stored in sub-folders
+
+        else
+            echo "output ${file} copied into ${SAVED_NAME}."
+        fi
+    done
+
+    LINE_POSTCALC=`echo "scale=0;${LINE_POSTCALC%%:*}+1" | bc`
+    SAVED_NAME=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", $1)}' ${SETFILE}`
+    SAVED_NAME_FLAG=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", $1)}' ${SETFILE} | cut -c 1-9`
+    TMP_NAME=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", $2)}' ${SETFILE}`
+    TMP_NAME_FLAG=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", $2)}' ${SETFILE} | cut -c 1-9`
+done
+
+# Calculation summary
+
+echo " "                | tee -a ${OUTDIR}/${OUTPUT}
+echo "Disk usage:"      | tee -a ${OUTDIR}/${OUTPUT}
+echo "<df -h .>"        | tee -a ${OUTDIR}/${OUTPUT}
+df -h ${JOBTMPDIR} 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+echo "</df -h .>"       | tee -a ${OUTDIR}/${OUTPUT}
+echo "By folders:"      | tee -a ${OUTDIR}/${OUTPUT}
+echo "<du -m .>"        | tee -a ${OUTDIR}/${OUTPUT}
+du -m ${JOBTMPDIR} 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+echo "</du -m .>"       | tee -a ${OUTDIR}/${OUTPUT}
+echo "Detailed file list:"
+echo "<ls -l .>"
+ls -l ${JOBTMPDIR} 2>&1
+echo "</ls -l .>"
+</checkfile0>
