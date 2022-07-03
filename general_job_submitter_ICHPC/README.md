@@ -148,9 +148,6 @@ For debugging. Records the screen outputs when PBS system executes the .qsub fil
 
 *Author: Spica. Vir., Contributors: A. Arber & K. Tallat-Kelpsa*
 
-*Notice*  
-A more specific version with more flexible input/output format requirements is available [here](https://github.com/cmsg-icl/crystal_shape_control/tree/main/LAMMPS_job_sub_ICHPC).
-
 **Mandatory input**  
 \[jobname\].in
 
@@ -173,6 +170,9 @@ The unite cell of Form II paracetamol crystal (CCDC: [HXACAN37](https://www.ccdc
 ```
 
 **Extra notes**  
+1. The self-compiled LAMMPS Sept. 2021 version is used, which is based on Intel OneAPI v2022.1.2, so in 'JOB_SUBMISSION_TEMPLATE' block, an extra line is inserted to load Intel MPI, OpenMP and FFTW3.  
+2. The definition of LAMMPS inputs is too flexible that specific rules are set to regularize the naming schemes. A more specific version with more flexible input/output format requirements is available [here](https://github.com/cmsg-icl/crystal_shape_control/tree/main/LAMMPS_job_sub_ICHPC). 
+
 
 ### [GROMACS](https://www.gromacs.org/)
 
