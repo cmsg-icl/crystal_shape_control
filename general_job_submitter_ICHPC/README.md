@@ -37,6 +37,12 @@ This job submitter is useful for jobs launched by a constant parallel executable
 
 ### User defined commands
 
+The `config_CODE.sh` code sets user defined commands (command aliases) in file `~/.bashrc` during initialization. Commands include a `Pcode` command to generate .qsub files for the specific code and a `setcode` command to print out the `settings` file. The block configuring command aliases begins with `# >>> CODE job submitter settings >>>` and ends with `# <<< finish GROMACS job submitter settings <<<`, which function as separators and should not be removed. To activate command aliases, use this command every time when logging in:
+
+``` console
+~$ source ~/.bashrc
+```
+
 ### Command line flags
 
 The script adopts the command-line options to launch jobs. The general flags include:
@@ -50,6 +56,16 @@ The script adopts the command-line options to launch jobs. The general flags inc
 | --   | (NA)   | The separator, followed by other command line options for the executable |
 
 ### Multiple jobs
+
+This job submitter supports multiple jobs, as long as they uses the same 'mpi + executable + options' pair. To achieve this, all the main inputs and reference files should be put into the same directory - sub-directory is not permitted. Multiple jobs should be launched with the following command:
+
+``` console
+~$ Pcode -in jobA.input -ref jobA_prejob -in jobB.input -ref jobB_prejob -nd 1 -wt 01:00
+```
+
+The sequence of flags is arbitrary. Note that the length of flag `-ref` should be either 0 or the same length as `-in` to avoid ambiguity, which means the multiple job option is more suitable for 'parallel' jobs rather than 'sequential' jobs, e.g., SCF jobs for different systems, rather than 1 geometry optimization + 1 SCF. The latter one, of course, is possible. In .qsub file, an extra line can be added between 2 jobs to copy and rename the output of a previous job as an optional input of the next job. 
+
+The generated .qsub file is named as `jobA-jobB.qsub`. The maximum length of its basename is 20 characters. All the outputs defined in 'POST_CALC' table and the .out file (see below) will be stored separately, e.g., as `jobA.out` and `jobB.out`. The .o\[pbsjobid\] and .e\[pbsjobid\] files (see below) are shared by both jobs, named as `jobA-jobB.o\[pbsjobid\]` and `jobA-jobB.e\[pbsjobid\]`.
 
 ### Keyword list
 
@@ -83,7 +99,7 @@ Keywords used for `settings_template` are listed in the table below. Modify the 
 3. All listed keywords have been included in the scripts. Undefined keywords are left blank.  
 4. Multiple-line input for keywords other than 'PRE_CALC', 'FILE_EXT', 'POST_CALC' and 'JOB_SUBMISSION_TEMPLATE' is forbidden, otherwise the code will only read the top line.  
 5. Requesting any GPU will lead the job to the queue for GPU node. For CPU only jobs, 'NGPU' should always be 0, in which case 'GPU_TYPE' will never be visited.  
-6. By default, 'JOB_TMPDIR' is set as `${EPHEMERAL}`. The folder for the current job is named as '\[jobname\]\_\[jobID\]'.  
+6. By default, 'JOB_TMPDIR' is set as `${EPHEMERAL}`. The folder for the current job is named as '\[jobname\]\_\[pbsjobid\]'.  
 7. Dashed lines and titles for 'PRE_CALC', 'POST_CALC', and 'JOB_SUBMISSION_TEMPLATE' are used as separators and are not allowed to be removed.  
 8. The qsub template attached during initialization is only compatible with the default settings. For user-defined executables / commands, changes might be made accordingly in the 'JOB_SUBMISSION_TEMPLATE' block (see the LAMMPS test case).
 
@@ -91,7 +107,7 @@ Keywords used for `settings_template` are listed in the table below. Modify the 
 
 These 3 keywords require 3 separate tables of mandatory input files, optional input files and output files. 'SAVED' specifies the desired name in `${HOME}` directory, while 'TEMPORARY' specifies the desired name in `${EPHEMERAL}` directory. 'DEFINITION' will not be scanned, which is used as a comment / reminder.
 
-In practice, `run_exec` and `post_proc` scan all the formats listed and moves all the matching files forward and backward. Missing any file in 'PRE_CALC' table immediately leads to the interruption of calculation, while missing files listed in 'FILE_EXT' does not stop the job. The result of every scan is printed in '.o\[jobid\]' file. 
+In practice, `run_exec` and `post_proc` scan all the formats listed and moves all the matching files forward and backward. Missing any file in 'PRE_CALC' table immediately leads to the interruption of calculation, while missing files listed in 'FILE_EXT' does not stop the job. The result of every scan is printed in '.o\[pbsjobid\]' file. 
 
 The naming scheme of input files are recommended to follow certain rules. Meanwhile, to ensure the generality, some extra rules have to be set for codes extremely flexible to input formats when performing simulations (usually MD codes, especially LAMMPS, which might be a tradition different from the DFT community). To achieve this, a 'pseudo' regular expression is used. Keywords are listed below:
 
@@ -109,17 +125,17 @@ The naming scheme of input files are recommended to follow certain rules. Meanwh
 
 * If the job is terminated due to improper settings of calculation parameters, temporary files will be saved in the output directory. The temporary directory will be removed.
 
-* If the job is killed before 'timeout' (usually by user), temporary will be saved in the temporary directory with temporary names. The temporary directory will not be removed. Refer to '.out' file or '.o\[jobid\]' file for the path. 
+* If the job is killed before 'timeout' (usually by user), temporary will be saved in the temporary directory with temporary names. The temporary directory will not be removed. Refer to '.out' file or '.o\[pbsjobid\]' file for the path. 
 
 ### General outputs
 
 **\[jobname\].out**  
 Output file in home directory, used to record information and monitor the progress of parallel jobs.
 
-**\[jobname\].o\[jobid\]**  
+**\[jobname\].o\[pbsjobid\]**  
 A verbose version of .out file, for debugging. Besides the information of .out file, it includes the scripts , the list of files in the ephemeral directory, and the screen outputs of `run_exec` and `post_proc` scripts.
 
-**\[jobname\].e\[jobid\]**   
+**\[jobname\].e\[pbsjobid\]**   
 For debugging. Records the screen outputs when PBS system executes the .qsub file (usually error messages).
 
 ## Program specific instructions
@@ -131,6 +147,32 @@ For debugging. Records the screen outputs when PBS system executes the .qsub fil
 ### [LAMMPS](https://www.lammps.org/)
 
 *Author: Spica. Vir., Contributors: A. Arber & K. Tallat-Kelpsa*
+
+*Notice*  
+A more specific version with more flexible input/output format requirements is available [here](https://github.com/cmsg-icl/crystal_shape_control/tree/main/LAMMPS_job_sub_ICHPC).
+
+**Mandatory input**  
+\[jobname\].in
+
+**Defaults**  
+EXEDIR - module load  lammps/19Mar2020  
+EXE_PARALLEL - lmp_mpi  
+EXE_OPTIONS - -in
+
+**Commands**  
+`Plmp` - Generate qsub files for LAMMPS MD jobs.  
+`setlmp` - Check the `settings` file of runLAMMPS.
+
+**Explanations of test cases**
+
+The unite cell of Form II paracetamol crystal (CCDC: [HXACAN37](https://www.ccdc.cam.ac.uk/structures/Search?Ccdcid=HXACAN37&DatabaseToSearch=Published)) generated by [MOLTEMPLATE](http://moltemplate.org/) is used as the test case. In **Step 1**, an energy minimization followed by 5000 steps (5 ps) under the NVT ensemble (T=100 K) is performed. In **Step 2**, the job is restarted from the 4000th step and runs for another 5000 steps under the same conditions. Both jobs use the intel acceleration package and run on 4 threads (see extra notes below). Following commands are used:
+
+``` console
+~$ Plmp -in f2_nvt.in -wt 00:20 -nd 1 -- -sf intel -pk omp 4
+~$ Plmp -in f2_nvt_restart.in -ref f2_nvt-wt 00:20 -nd 1 -- -sf intel -pk omp 4
+```
+
+**Extra notes**  
 
 ### [GROMACS](https://www.gromacs.org/)
 
@@ -150,7 +192,7 @@ EXE_OPTIONS - mdrun -s
 
 **Explanations of test cases**
 
-The energy minimization steps in [Tutorial 1: Lysozyme in Water](http://www.mdtutorials.com/gmx/lysozyme/index.html) and [Tutorial 3: Umbrella Sampling](http://www.mdtutorials.com/gmx/umbrella/index.html) are used as testing cases. The interactive generation of '.tpr' file is obtained in serial on login nodes. Only 'mdrun' is allowed to run in parallel. To illustrate that the job submitter can combine different mpi jobs into the same qsub file, the following command is used:
+The energy minimization steps in [Tutorial 1: Lysozyme in Water](http://www.mdtutorials.com/gmx/lysozyme/index.html) and [Tutorial 3: Umbrella Sampling](http://www.mdtutorials.com/gmx/umbrella/index.html) are used as testing cases. The interactive generation of '.tpr' file is obtained in serial on login nodes. Only 'mdrun' is allowed to run in parallel. To illustrate that the job submitter can combine different mpi jobs into the same qsub file, the following commands are used:
 
 ``` console
 ~$ Pgmx -in em-1AKI.tpr -in em-2BEG.tpr -wt 00:20 -nd 1
