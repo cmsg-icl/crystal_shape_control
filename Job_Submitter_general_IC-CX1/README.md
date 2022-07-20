@@ -103,6 +103,18 @@ Keywords used for `settings_template` are listed in the table below. Modify the 
 7. Dashed lines and titles for 'PRE_CALC', 'POST_CALC', and 'JOB_SUBMISSION_TEMPLATE' are used as separators and are not allowed to be removed.  
 8. The qsub template attached during initialization is only compatible with the default settings. For user-defined executables / commands, changes might be made accordingly in the 'JOB_SUBMISSION_TEMPLATE' block (see the LAMMPS test case).
 
+**Explanations of mpi commands**
+
+The definition of keywords 'EXEDIR', 'EXE_PARALLEL' and 'EXE_OPTIONS' seems confusing and verbose. It is indeed a compromise to ensure the generality. 'EXEDIR' was generated to deal with multiple executables in the same directory and share the same job submission scripts - which is already banned in this general job submitter, so 'EXEDIR' will probably disappear in the stable release. 
+
+'EXE_OPTIONS' is to deal with the command line options needed for the main input file. For example, LAMMPS requires a `-in` flag, GULP requires `<`, and CRYSTAL needs nothing. 
+
+The mpi command that is actually used on PBS nodes is:
+
+```console
+~$ mpiexec ${EXEDIR}/${EXE_PARALLEL} ${EXE_OPTIONS} main.input
+```
+
 ### 'PRE_CALC', 'FILE_EXT' and 'POST_CALC' tables
 
 These 3 keywords require 3 separate tables of mandatory input files, optional input files and output files. 'SAVED' specifies the desired name in `${HOME}` directory, while 'TEMPORARY' specifies the desired name in `${EPHEMERAL}` directory. 'DEFINITION' will not be scanned, which is used as a comment / reminder.
@@ -137,6 +149,23 @@ A verbose version of .out file, for debugging. Besides the information of .out f
 
 **\[jobname\].e\[pbsjobid\]**   
 For debugging. Records the screen outputs when PBS system executes the .qsub file (usually error messages).
+
+## How to generate a configuration file
+
+4 scripts included in the main directory are for general proposes, which need configuration before being used. Configurations are automatically executed using `config_CODE.sh` scripts stored separately in sub-folders with code names. An example (GROMACS_v0.1) is placed in the main directory for illustrating proposes.
+
+To generate a configuration file for a new code, several modification should be made. Lines need modification are marked with comment lines `#--# BEGIN_USER`, `#--# END_USER` and instructions. Several considerations suggested:
+
+1. Title line: Who is responsible for this file?  
+2. Title line: The date and version of the file? A new `config_CODE.sh` file changes the version number after the decimal point, i.e. v0.1 --> v0.2, while a change in general-propose scripts changes the major version number and resets the minor version number i.e., v0.1 --> v1.0  
+3. Script directory: The default directory  
+4. Executable directory: The default directory or `module load` command  
+5. Executable name: The default executable name and command-line options - does the code require any general in-line commands? Of course users can also define them in command lines, except the mandatory input.   
+6. Default parameters for parallel jobs: Depends on your habit. Do you prefer 24 cores per node or 32 cores? Do you need GPUs?  
+7. PRE_CALC: What is the general format of mandatory inputs? (Maybe I'll directly use regular expressions for the next version...)  
+8. FILE_EXT: What is the general format of optional inputs?  
+9. POST_CALC: What is the general format of outputs?  
+10. JOB_SUBMISSION_TEMPLATE: Any specific environmental setups for the code? e.g., Do you need a dynamically linked lib? Do you need export some environmental variables?  
 
 ## Program specific instructions
 

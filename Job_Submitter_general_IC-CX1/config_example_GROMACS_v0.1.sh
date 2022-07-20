@@ -1,6 +1,11 @@
 #!/bin/bash
 
 function welcome_msg {
+#--# BEGIN_USER
+#--# Code name
+#--# Version number: update config file: change the minor version number; 
+#--#                 update general files: change the major version number and reset minor version number
+#--# Author, date, contact
     cat << EOF
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
@@ -15,33 +20,38 @@ function welcome_msg {
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
-General job submitter, GULP version, for Imperial HPC - Setting up
+General job submitter, GROMACS version, for Imperial HPC - Setting up
 
 Job submitter installed at: `date`
 Job submitter edition:      v0.1
 Supported job scheduler:    PBS
 
-By Spica-Vir, Jul.03, 22, ICL, spica.h.zhou@gmail.com
+By Spica-Vir, Jun.28, 22, ICL, spica.h.zhou@gmail.com
 
-Special thanks to G.Mallia and N.M.Harrison
+Special thanks to G.Mallia, N.M.Harrison, K. Tallat Kelpsa
 
 EOF
 }
+#--# END_USER
 
 function get_scriptdir {
+#--# BEGIN_USER: Default path to script directory
     cat << EOF
 ================================================================================
     Note: all scripts should be placed into the same directory!
-    Please specify your installation path (by default ${HOME}/runGULP/):
+    Please specify your installation path (by default ${HOME}/runGROMACS/):
 
 EOF
+#--# END_USER
 
     read -p " " SCRIPTDIR
     SCRIPTDIR=`echo ${SCRIPTDIR}`
 
+#--# BEGIN_USER: Default path to script directory
     if [[ -z ${SCRIPTDIR} ]]; then
-        SCRIPTDIR=${HOME}/runGULP/
+        SCRIPTDIR=${HOME}/runGROMACS/
     fi
+#--# END_USER
 
     if [[ ${SCRIPTDIR: -1} == '/' ]]; then
         SCRIPTDIR=${SCRIPTDIR%/*}
@@ -68,20 +78,23 @@ EOF
 }
 
 function set_exe {
+#--# BEGIN_USER: Default path to exe directory / module load command
     cat << EOF
 ================================================================================
-    Please specify the directory of GULP exectuables, 
-    or the command to load gulp modules
-    (by default module load /rds/general/user/hz1420/home/apps/gulp-6.1/module_gulp):
+    Please specify the directory of GROMACS exectuables, 
+    or the command to load GROMACS modules (by default module load  gromacs/2021.3-mpi):
 
 EOF
+#--# END_USER
     
     read -p " " EXEDIR
     EXEDIR=`echo ${EXEDIR}`
 
+#--# BEGIN_USER: Default path to exe directory / module load command
     if [[ -z ${EXEDIR} ]]; then
-        EXEDIR='module load  module load /rds/general/user/hz1420/home/apps/gulp-6.1/module_gulp'
+        EXEDIR='module load  gromacs/2021.3-mpi'
     fi
+#--# END_USER
 
     if [[ (! -s ${EXEDIR} || ! -e ${EXEDIR}) && (${EXEDIR} != *'module load'*) ]]; then
         cat << EOF
@@ -104,18 +117,22 @@ EOF
         fi
     fi
 
+#--# BEGIN_USER: Default exe name (+ options)
     cat << EOF
 ================================================================================
-    Please specify the GULP exectuable name and options (by default name: gulp-fftw option: <):
+    Please specify the GROMACS exectuable name and options (by default name: gmx_mpi, option: mdrun -s):
 
 EOF
+#--# END_USER
     
     read -p "    Exectuable name:    " EXENAME
     EXENAME=`echo ${EXENAME}`
 
+#--# BEGIN_USER: Default exe name
     if [[ -z ${EXENAME} ]]; then
-        EXENAME='gulp-fftw'
+        EXENAME='gmx_mpi'
     fi
+#--# END_USER
 
     if [[ (! -s ${EXEDIR}/${EXENAME} || ! -e ${EXEDIR}/${EXENAME}) && (${EXEDIR} != *'module load'*) ]]; then
         cat << EOF
@@ -141,9 +158,12 @@ EOF
 
     read -p "    Exectuable options:    " EXEOPT
     EXEOPT=`echo ${EXEOPT}`
+
+#--# BEGIN_USER: Default option. If no option is needed, EXEOPT=''
     if [[ -z ${EXEOPT} ]]; then
-        EXEOPT='<'
+        EXEOPT='mdrun -s'
     fi
+#--# END_USER
 }
 
 function copy_scripts {
@@ -170,43 +190,54 @@ function set_settings {
 # Setup default parameters
     SETFILE=${SCRIPTDIR}/settings
     sed -i "/SUBMISSION_EXT/a .qsub" ${SETFILE}
+#--# BEGIN_USER: Depends on user's habit. Can be modified later in settings file.
     sed -i "/NCPU_PER_NODE/a 24" ${SETFILE}
     sed -i "/MEM_PER_NODE/a 50" ${SETFILE}
     sed -i "/N_THREAD/a 1" ${SETFILE}
     sed -i "/NGPU_PER_NODE/a 0" ${SETFILE}
     sed -i "/GPU_TYPE/a RTX6000" ${SETFILE}
     sed -i "/TIME_OUT/a 3" ${SETFILE}
+#--# END_USER
     sed -i "/JOB_TMPDIR/a \/rds\/general\/ephemeral\/user\/${USER}\/ephemeral" ${SETFILE}
     sed -i "/EXEDIR/a ${EXEDIR}" ${SETFILE}
     sed -i "/EXE_PARALLEL/a ${EXENAME}" ${SETFILE}
     sed -i "/EXE_OPTIONS/a ${EXEOPT}" ${SETFILE}
 
 # Setup default file format tables
-    LINE_PRE=`grep -nw 'PRE_CALC' ${SETFILE}`
+	LINE_PRE=`grep -nw 'PRE_CALC' ${SETFILE}`
     LINE_PRE=`echo "scale=0;${LINE_PRE%:*}+4" | bc`
-    sed -i "${LINE_PRE}i[jobname].gin          [jobname].gin           GULP main input file" ${SETFILE}
 
-    LINE_EXT=`grep -nw 'FILE_EXT' ${SETFILE}`
+#--# BEGIN_USER: Definition of mandatory input files
+    sed -i "${LINE_PRE}i[jobname].tpr          [jobname].tpr          GROMACS portable binary run input file" ${SETFILE}
+#--# END_USER
+
+	LINE_EXT=`grep -nw 'FILE_EXT' ${SETFILE}`
     LINE_EXT=`echo "scale=0;${LINE_EXT%:*}+4" | bc`
-    # sed -i "${LINE_EXT}i[pre_job].restart      [pre_job].restart      Checkpoints to restart calculations" ${SETFILE}
-    # sed -i "${LINE_EXT}i[jobname].data         [jobname].data         Geometry data file" ${SETFILE}
-    # sed -i "${LINE_EXT}i[jobname].in.settings  [jobname].in.settings  Atom, bond, angle... parameters file" ${SETFILE}
-    # sed -i "${LINE_EXT}i[jobname].in.init      [jobname].in.init      General setup file, for moltemplate" ${SETFILE}
+
+#--# BEGIN_USER: Definition of optional input files
+    # sed -i "${LINE_EXT}i[jobname].anything   [jobname].anything     Anything you like" ${SETFILE}
+#--# END_USER
 
     LINE_POST=`grep -nw 'POST_CALC' ${SETFILE}`
     LINE_POST=`echo "scale=0;${LINE_POST%:*}+4" | bc`
-    # sed -i "${LINE_POST}i*                      *.lammpstrj          lammps trajectory file" ${SETFILE}
-    # sed -i "${LINE_POST}i*                      *.data*              data files" ${SETFILE}
-    # sed -i "${LINE_POST}i[jobname].dump/        *.dump*              dump files" ${SETFILE}
-    # sed -i "${LINE_POST}i[jobname].restart/     *.restart*           restart files" ${SETFILE}
-    # sed -i "${LINE_POST}i[jobname].log          log.lammps           lammps output - no diagnosis information" ${SETFILE}
+
+#--# BEGIN_USER: Definition of output files
+    sed -i "${LINE_POST}i[jobname].CheckPoint\/  *.cpt                Checkpoint files" ${SETFILE}
+    sed -i "${LINE_POST}i[jobname].gro          *.gro                Gromacs geometry file" ${SETFILE}
+    sed -i "${LINE_POST}i[jobname].trr          *.trr                Trajectory file" ${SETFILE}
+    sed -i "${LINE_POST}i[jobname].trj          *.trj                Trajectory file" ${SETFILE}
+    sed -i "${LINE_POST}i[jobname].log          *.log                MD output file" ${SETFILE}
+#--# END_USER
 
 # Job submission file template - should be placed at the end of file
+
+#--# BEGIN_USER: Definition of output files
+#--# Code-specific settings. Should be especially careful when using self-compiled codes. e.g., Environmental variables, modules
     cat << EOF >> ${SETFILE}
 -----------------------------------------------------------------------------------
 #!/bin/bash  --login
 #PBS -N \${V_PBSJOBNAME}
-#PBS -l select=\${V_ND}:ncpus=\${V_NCPU}:mem=\${V_MEM}:mpiprocs=\${V_PROC}:ompthreads=\${V_TRED}\${V_NGPU}\${V_TGPU}
+#PBS -l select=\${V_ND}:ncpus=\${V_NCPU}:mem=\${V_MEM}:mpiprocs=\${V_PROC}:ompthreads=\${V_TRED}\${V_NGPU}\${V_TGPU}:avx2=true
 #PBS -l walltime=\${V_WT}
 
 echo "<qsub_standard_output>"
@@ -231,11 +262,11 @@ echo "</qsub_standard_output>"
 # to sync nodes
 cd \${PBS_O_WORKDIR}
 
-# Specify any other important dependencies below
-# start calculation
+# start calculation: command added below by gen_sub
 -----------------------------------------------------------------------------------
 
 EOF
+#--# END_USER
     cat << EOF
 ================================================================================
     Paramters specified in ${SETFILE}. 
@@ -245,32 +276,36 @@ EOF
 }
 
 function set_commands {
-    bgline=`grep -nw "# >>> GULP job submitter settings >>>" ${HOME}/.bashrc`
-    edline=`grep -nw "# <<< finish GULP job submitter settings <<<" ${HOME}/.bashrc`
+#--# BEGIN_USER: Config ~/.bashrc change the code name
+    bgline=`grep -nw "# >>> GROMACS job submitter settings >>>" ${HOME}/.bashrc`
+    edline=`grep -nw "# <<< finish GROMACS job submitter settings <<<" ${HOME}/.bashrc`
+#--# END_USER
 
     if [[ ! -z ${bgline} && ! -z ${edline} ]]; then
         bgline=${bgline%%:*}
         edline=${edline%%:*}
         sed -i "${bgline},${edline}d" ${HOME}/.bashrc
     fi
-
-    echo "# >>> GULP job submitter settings >>>" >> ${HOME}/.bashrc
-    echo "alias Pgulp='${SCRIPTDIR}/gen_sub'" >> ${HOME}/.bashrc
-    echo "alias setgulp='cat ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
+#--# BEGIN_USER: change the code name and define a good name for alias. 'Pgmx' and 'setgmx' in this example
+    echo "# >>> GROMACS job submitter settings >>>" >> ${HOME}/.bashrc
+    echo "alias Pgmx='${SCRIPTDIR}/gen_sub'" >> ${HOME}/.bashrc
+    echo "alias setgmx='cat ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
     echo "chmod 777 ${SCRIPTDIR}/gen_sub" >> ${HOME}/.bashrc
     echo "chmod 777 ${SCRIPTDIR}/run_exec" >> ${HOME}/.bashrc
     echo "chmod 777 ${SCRIPTDIR}/post_proc" >> ${HOME}/.bashrc 
-    echo "# <<< finish GULP job submitter settings <<<" >> ${HOME}/.bashrc
+    echo "# <<< finish GROMACS job submitter settings <<<" >> ${HOME}/.bashrc
+#--# END_USER
 
     source ${HOME}/.bashrc
 
+#--# BEGIN_USER: update the instructions
     cat << EOF
 ================================================================================
     User defined commands set, including: 
 
-    Pgulp - executing parallel GULP calculations
+    Pgmx - executing parallel GROMACS calculations
 
-        Pgulp -in <input> -wt <walltime> -nd <node> -- -<other options>
+        Pgmx -in <input> -wt <walltime> -nd <node> -- -<other options>
 
                  -in:  str, main input file, must have the required extensions
                  -wt:  str, walltime, hh:mm format
@@ -282,10 +317,11 @@ function set_commands {
         the sequence of -in, -wt, -nd can be changed. Other options should
         always be placed at the end. 
 
-    setgulp - print the file 'settings'
+    setgmx - print the file 'settings'
     
 ================================================================================
 EOF
+#--# END_USER
 }
 
 # Main I/O function
