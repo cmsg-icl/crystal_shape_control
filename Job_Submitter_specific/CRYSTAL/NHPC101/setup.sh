@@ -18,7 +18,7 @@ function welcome_msg {
 CRYSTAL17 job submitter for local servers (No job schedular) - Setting up
 
 Job submitter installed at: `date`
-Job submitter edition:      v0.2
+Job submitter edition:      v0.3
 
 By Spica-Vir, May 6, 22, ICL, spica.h.zhou@gmail.com
 

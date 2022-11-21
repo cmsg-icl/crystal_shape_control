@@ -34,7 +34,7 @@ Here are the user defined commands:
 1. `crys` - executing serial crystal calculations
 
 ``` bash
-~$ crys --in jobname [--ref refname]
+~$ crys -in jobname [-ref refname]
 
 ```
 
@@ -46,7 +46,7 @@ The sequence of input parameters does not matter.
 To re-direct the screen print-outs to, for example, 'jobname.log', use the command below: 
 
 ``` bash
-~$ crys --in jobname [--ref refname] > jobname.log 2>&1
+~$ crys -in jobname [-ref refname] > jobname.log 2>&1
 
 ```
 
@@ -54,7 +54,7 @@ Issue with `nohup`
 : `nohup` cannot find alias commands. Full path to the job submission script should be specified. For the default settings, using the following command: 
 
 ``` bash
-~$ nohup ${HOME}/etc/runCRYSTAL/crystal --in jobname [--ref refname] > jobname.log 2>&1 &
+~$ nohup ${HOME}/etc/runCRYSTAL/crystal -in jobname [-ref refname] > jobname.log 2>&1 &
 
 ```
 
@@ -62,7 +62,7 @@ Issue with `nohup`
 2. `Pcrys` - executing parallel crystal calculations (Pcrystal and MPP)
 
 ``` bash
-~$ Pcry --in jobname --np NP [--ref refname] > jobname.log 2>&1
+~$ Pcry -in jobname -np NP [-ref refname] > jobname.log 2>&1
 ```
 
 `jobname` - str, name of the input .d12 file, base name recommended.  
@@ -73,7 +73,7 @@ Issue with `nohup`
 3. `prop` - executing serial properties calculations
 
 ``` bash
-~$ prop --in jobname --ref refname
+~$ prop -in jobname -ref refname
 ``` 
 
 `jobname` - str, name of the input .d12 file, base name recommended.  
@@ -82,7 +82,7 @@ Issue with `nohup`
 4. `Pprop` - executing parallel properties calculations
 
 ``` bash
-~$ Pprop --in jobname --np NP --ref refname
+~$ Pprop -in jobname -np NP -ref refname
 ```
 
 `jobname` - str, name of the input .d12 file, base name recommended.  
@@ -128,3 +128,7 @@ Keywords used for the script `settings` are listed in the table below. Any chang
 2. All listed keywords have been included in the scripts. Undefined keywords are left blank.  
 3. Multiple-line input for keywords other than `PRE_CALC`, `POST_CRYS`, `POST_PROP`, and `JOB_SUBMISSION_TEMPLATE` is forbidden.  
 4. Dashed lines for `PRE_CALC`, `POST_CRYS`, `POST_PROP`, and `JOB_SUBMISSION_TEMPLATE` are used to define input blocks and are not allowed to be modified. Minimum length: '------------------'
+
+## Other comments
+1. File basenames are not recommended to include '.'. If so, the '.d12/.d3' extensions should be included when using the `-in` flag - otherwise the 'file not found error' might be reported because the code obtains the basename by truncating the characters after the last '.'.  
+2. A new value for the same flag covers the previous one. For example, `Pcrys -type prop` is equivalent to `Pprop`. Due to the same reason, the current implementation does not support the 'multiple `-in` / multiple `-ref`' definitions similar to the CX1 general submitter. This feature might be added in future releases.

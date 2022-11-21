@@ -36,7 +36,7 @@ Here are user defined commands:
 1. `Pcrys` - executing parallel crystal calculations (Pcrystal and MPP)  
 
 ``` bash
-$~ Pcrys --nd ND --wt WT --in jobname [--ref refname]
+$~ Pcrys -nd ND -wt WT -in jobname [-ref refname]
 ```
 
 `ND`      - int, number of nodes  
@@ -47,7 +47,7 @@ $~ Pcrys --nd ND --wt WT --in jobname [--ref refname]
 Equivalent examples:
 
 ``` bash
-$~ Pcrys --nd 2 --wt 02:00 --in jobname.d12 --ref previous_job
+$~ Pcrys -nd 2 -wt 02:00 -in jobname.d12 -ref previous_job
 $~ ${SCRIPTDIR}/gen_sub --type crys --wt 02:00 --in jobname --ref previous_job --nd 2
 ```
 
@@ -60,7 +60,7 @@ $~ qsub jobname.qsub
 2. `Pprop` - executing parallel properties calculations (Pproperties)
 
 ``` bash
-$~ Pprop --nd ND --wt WT --in jobname --ref SCFname
+$~ Pprop -nd ND -wt WT -in jobname -ref SCFname
 ``` 
 
 `ND`      - int, number of nodes  
@@ -71,7 +71,7 @@ $~ Pprop --nd ND --wt WT --in jobname --ref SCFname
 Equivalent examples:
 
 ``` bash
-$~ Pprop --in prop_job.d3 --ref previous_job.d12 --nd 1 --wt 00:30 
+$~ Pprop -in prop_job.d3 -ref previous_job.d12 -nd 1 -wt 00:30 
 $~ ${SCRIPTDIR}/gen_sub --type prop --nd 1 --wt 00:30 --in prop_job --ref previous_job
 ```
 
@@ -130,4 +130,6 @@ Keywords used for the script `settings` are listed in the table below. Any chang
 3. Multiple-line input for keywords other than `PRE_CALC`, `POST_CRYS`, `POST_PROP`, and `JOB_SUBMISSION_TEMPLATE` is forbidden.  
 4. Dashed lines for `PRE_CALC`, `POST_CRYS`, `POST_PROP`, and `JOB_SUBMISSION_TEMPLATE` are used to define input blocks and are not allowed to be modified. Minimum length: '------------------'
 
-
+## Other comments
+1. File basenames are not recommended to include '.'. If so, the '.d12/.d3' extensions should be included when using the `-in` flag - otherwise the 'file not found error' might be reported because the code obtains the basename by truncating the characters after the last '.'.  
+2. A new value for the same flag covers the previous one. For example, `Pcrys -type prop` is equivalent to `Pprop`. Due to the same reason, the current implementation does not support the 'multiple `-in` / multiple `-ref`' definitions similar to the CX1 general submitter. This feature might be added in future releases.
