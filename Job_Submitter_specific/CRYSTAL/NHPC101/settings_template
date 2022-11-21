@@ -105,7 +105,7 @@ jobname.KRED         KRED.DAT         k spack information for cryapi_inp
 jobname.DIEL         DIEL.DAT         dielectric constants
 jobname.f25          fort.25          all Crgra2006 format data 
 jobname.BAND         BAND.DAT         band xmgrace format 
-jobname.DOSS         BAND.DOSS        dos xmgrace format
+jobname.DOSS         DOSS.DAT         dos xmgrace format
 jobname.prop3d       fort.31          all 3D grid data
 jobname_CHG.CUBE     DENS_CUBE.DAT    3D charge density Gaussian CUBE format
 jobname.RHOLINE      RHOLINE.DAT      1D charge density and gradient 
