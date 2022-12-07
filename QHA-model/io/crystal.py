@@ -35,7 +35,7 @@ def read_output(output, read_eigenvector=True, read_symmetry=False, unit='HARTRE
             Whether to read symmetry of vibrational mode
         unit (string, see constants.py)
             Unit system used in solvers
-    Output:
+    Outputs:
         dimension (nCalc*1 list of ints)
             Dimension of each calculation
         structure (nCalc*1 list of pymatgen objects)
@@ -65,6 +65,7 @@ def read_output(output, read_eigenvector=True, read_symmetry=False, unit='HARTRE
         output = [output, ]
 
     if unit != 'HARTREE':
+        global cst
         cst.redefine(unit=unit)
 
     dimension = []
