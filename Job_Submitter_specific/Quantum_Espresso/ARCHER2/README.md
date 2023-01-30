@@ -1,6 +1,6 @@
-# Crystal job submitter - ARCHER2 version
+# Quantum Espresso job submitter - ARCHER2 version
 
-[Crystal](https://www.crystal.unito.it/index.php) job submitter for [ARCHER2](https://www.archer2.ac.uk/), Slurm job scheduler. Similar to the PBS version on Imperial HPC.  
+[Quantum Espresso](https://www.quantum-espresso.org/) job submitter for [ARCHER2](https://www.archer2.ac.uk/), Slurm job scheduler. Similar to the PBS version on Imperial HPC.  
 
 ## Install
 
@@ -12,27 +12,43 @@
 **Note**
 
 1. All the scripts should be placed in the same directory.  
-2. By default, job submitter scripts will be stored in `/work/consortium/consortium/user/runCRYSTAL/`.  
-3. Due to the file transfer rule, scripts cannot be placed in `${HOME}` directory. The nodes executing calculations cannot identify directories in `${HOME}`.  
-3. CRYSTAL is loaded as a module, refer to [CRYSTAL page on ARCHER2 documentation](https://docs.archer2.ac.uk/other-software/crystal/) for instructions.  
+2. By default, job submitter scripts will be stored in `${WORK}/runQE/`.  
+3. Due to the file transfer rule, scripts cannot be placed in `${HOME}` directory. The computational nodes cannot identify directories in `${HOME}`.  
+3. By default Quantum Espresso v6.8 is loaded from the shared module, refer to [QE page on ARCHER2 documentation](https://docs.archer2.ac.uk/research-software/qe/) for instructions.  
 
 ## Usage & command list
 
-### Output and job executing information
+### Command line flags
 
-Printed out information can be found in '.out' file and '.log' file. '.log' file is the original `slurm-[jobid].out` file processed by `post_proc_slurm`. If the script is terminated normally, the file will be named as `[jobname].log`. If killed, in its original name.
+The script adopts the command-line options to launch jobs:
 
-If a '.out' file with the same name as the job to be submitted exists in the same directory, that job won't be executed before output is either transferred to another folder or removed. 
+| FLAG | FORMAT | DEFINITION                                                               |
+|:-----|:------:| :------------------------------------------------------------------------|
+| -x   | string | The executable                                                           |
+| -in  | string | The main input file                                                      |
+| -ref | string | Optional, the common basename of reference files                         |
+| -nd  | int    | The number of nodes requested for the job                                |
+| -wt  | hh:mm  | The walltime requested for the job                                       |
+
+### Conventions of input and output file names
+
+QE allows flexible names for the input and output files. To avoid ambiguity, the user should specify the input file extension as 'executable+i'. For example, input for 'pw.x' should be named as `jobname.pwi`. Similarly, `jobname.pwo` stands for output files. 
+
+If the output file with the same name as the job to be submitted exists in the same directory, that job won't be executed before output is either transferred to another folder or removed. 
+
+### Debugging information
+
+Besides the standard output file, '.log' file, which is the original 'slurm-\[jobid\].out', is available for debugging. If the script is terminated normally, the file will be named as '\[jobname\].log'. If killed, in its original name. The '.log' file contains useful information about the pre- and post- processing procedures.
 
 ### Temporary directory
 
 * If the job is terminated due to exceeding wall time, temporary files will be saved in the output directory. The temporary directory will be removed.
 
-* If the job is terminated due to improper settings of calculation parameters, temporary files will be saved in the output directory. The temporary directory will be removed.
+* If the job is terminated due to improper settings of calculation parameters (that leads to errors from the parallel code), temporary files will be saved in the output directory. The temporary directory will be removed.
 
-* If the job is killed before 'timeout', temporary will be saved in the temporary directory with temporary names. The temporary directory will not be removed. Refer to '.out' file or '.o\<jobid\>' file for the path. 
+* If the job is killed before 'timeout', temporary will be saved in the temporary directory with temporary names. The temporary directory will not be removed. Refer to '.out' file or 'slurm-\[jobid\].out' (no '.log' file is produced at this stage) file for the path. 
 
-By default, the temporary directory is set as the sub folder `tmp_[jobname]_[jobid]/`, which is in the same directory as the input/output files. 
+By default, the temporary directory is set as the sub folder '\[jobname\]\_\[jobid\]/', which is in the same directory as the input/output files. 
 
 ### Work directory
 
@@ -42,96 +58,82 @@ Files in work directory are not backed up, and occupy storage quota - so finishe
 
 Here are user defined commands: 
 
-**NB: v1.0 update** - The 'Command-line option' fashion is implemented for input parameters. The sequence of parameters is flexible for v1.0. Only 'long options' are recognized.
-
-1. `Pcrys` - executing parallel crystal calculations (Pcrystal and MPP)  
+1. `Pqe` - executing parallel QE calculations  
 
 ``` bash
-$~ Pcrys -nd ND -wt WT -in jobname [-ref refname]
+~$ Pqe -nd ND -wt WT -x EXE -in jobname [-ref refname]
 ```
 
 `ND`      - int, number of nodes  
 `WT`      - str, walltime, hh:mm format  
-`jobname` - str, name of input .d12 file  
+`EXE`     - str, name of the executable  
+`jobname` - str, full name of input file  
 `refname` - str, optional, name of the previous job  
 
-Equivalent examples:
+Example:
 
 ``` bash
-$~ Pcrys -nd 2 -wt 02:00 -in jobname.d12 -ref previous_job
-$~ ${SCRIPTDIR}/gen_sub --type crys --wt 02:00 --in jobname --ref previous_job --nd 2
+~$ Pqe -nd 2 -wt 02:00 -x pw.x -in jobname.pwi -ref previous_job
 ```
 
 Submit files:
 
 ``` bash
-$~ sbatch jobname.slurm
+~$ sbatch jobname.slurm
 ```
 
-2. `Pprop` - executing parallel properties calculations (Pproperties)
+Note that multiple inputs within a single job submission is allowed, though not recommended. In that case, the numbers of `-x` and `-in` flags should be the same. The number of `-ref` flags, if > 0, should be the same as those of `-x` and `-in`. 
+
+Example:
 
 ``` bash
-$~ Pprop -nd ND -wt WT -in jobname -ref SCFname
-``` 
-
-`ND`      - int, number of nodes  
-`WT`      - str, walltime, hh:mm format  
-`jobname` - str, name of input .d3 file  
-`SCFname` - str, name of the previous 'crystal' job  
-
-Equivalent examples:
-
-``` bash
-$~ Pprop -in prop_job.d3 -ref previous_job.d12 -nd 1 -wt 00:30 
-$~ ${SCRIPTDIR}/gen_sub --type prop --nd 1 --wt 00:30 --in prop_job --ref previous_job
+~$ Pqe -nd 2 -wt 02:00 -x pw.x -in job_1.pwi -x pw.x -in job_2.pwi
 ```
 
-Then submit files. 
+The name of generated submission file is composed of names of both jobs, connected with '\-'. Its maximum length is 20 characters. However, their temporary file directories are the separate with the same jobid, i.e., 'job_1_jobid/' and 'job_2_jobid/'.
 
-3. `setcrys` - print the file `settings`. No input required.
+``` bash
+~$ sbatch job_1-job_2.slurm
+```
+
+3. `setqe` - print the file `settings`. No input required.
 
 ## Script list
 
 `setup.sh` - set up the settings file and create job submission commands.  
-`settings` - store all parameters needed for CRYSTAL/PROPERTIES jobs. see the 'Keyword list' below.  
-`settings_template` - empty `settings` file, will be used to cover `settings` file when installing/re-installing the job submitter.  
+`settings_template` - empty `settings` file with keywords but no values, will be used to cover `settings` file when installing/re-installing the job submitter.  
 `gen_sub` - generate submission file.  
-`Pcry_slurm` - execute 'CRYSTAL' type calculations in parallel (P and MPP).  
-`Pprop_slurm` - execute 'PROPERTIES' type calculations in parallel.  
-`post_processing` - Copy & save files from temporary directory to the output directory.  
+`run_exec` - execute parallel Quantum Espresso calculations.  
+`post_proc` - Post-processing. Copy & save files from temporary directory to the output directory.  
 
 **NOTE**
 
 1. The name of file `settings` `gen_sub` `settings_template` shouldn't be changed.
-2. `settings` `gen_sub` `settings_template` are applicable to Imperial HPC, comment the corresponding `sed` and `grep` sentences in `gen_sub`. 
-2. Names of `Pcry_slurm` `Pprop_slurm` `post_processing` can be changed, but should corresponds to the values in `settings`.  
+2. `settings` `gen_sub` `settings_template` are applicable to Imperial HPC, comment the corresponding `sed` and `grep` sentences in `gen_sub`.  
 
 ## Keyword list
 Keywords used for the script `settings` are listed in the table below. Any change in parameters should be made in that script.
 
-| KEYWORD                 | DEFAULT VALUE   | DEFINITION |
-|:------------------------|:---------------:|:-----------|
-| SUBMISSION_EXT          | .slurm          | extension of job submission script |
-| NCPU_PER_NODE           | 128             | Number of processors per node |
-| MEM_PER_NODE            | -               | Allocated memory per node, for Imperial cluster |
-| BUDGET_CODE             | *user defined*  | Budget code of a research project, see [ARCHER2 manual](https://docs.archer2.ac.uk/user-guide/scheduler/#checking-available-budget)|
-| QOS                     | standard        | Quality of service, see [ARCHER2 manual](https://docs.archer2.ac.uk/user-guide/scheduler/#quality-of-service-qos) |
-| PARTITION               | standard        | Partition of jobs, see [ARCHER2 manual](https://docs.archer2.ac.uk/user-guide/scheduler/#partitions) |
-| TIME_OUT                | 3               | Unit: min. Time spared for post processing |
-| CRYSTAL_SCRIPT          | runcryP         | Script for crystal type calculations |
-| PROPERTIES_SCRIPT       | runpropP        | Script for properties type calculations |
-| POST_PROCESSING_SCRIPT  | post_processing | Post processing script |
-| JOB_TMPDIR              | -               | Temporary directory for calculations |
-| EXEDIR                  | -               | Directory of executables, for Imperial cluster |
-| EXE_PCRYSTAL            | -               | Executable for parallel crystal type calculation, for Imperial cluster |
-| EXE_MPP                 | -               | Executable for massively parallel crystal type calculation, for Imperial cluster |
-| EXE_PPROPERTIES         | -               | Executable for parallel properties type calculation, for Imperial cluster |
-| EXE_CRYSTAL             | -               | Executable for serial crystal type calculation, for workstation |
-| EXE_PROPERTIES          | -               | Executable for serial properties type calculation, for workstation |
-| PRE_CALC                | \[Table\]       | Saved names, temporary names, and definitions of input files |
-| POST_CRYS               | \[Table\]       | Saved names, temporary names, and definitions of output files for crystal type calculation |
-| POST_PROP               | \[Table\]       | Saved names, temporary names, and definitions of output files for properties type calculation |
-| JOB_SUBMISSION_TEMPLATE | \[script\]      | Template for job submission files |
+| KEYWORD                 | DEFAULT VALUE                | DEFINITION |
+|:------------------------|:----------------------------:|:-----------|
+| SUBMISSION_EXT          | .slurm                       | extension of job submission script |
+| NCPU_PER_NODE           | 128                          | Number of processors per node |
+| MEM_PER_NODE            | -                            | Allocated memory per node, for Imperial CX1 |
+| N_THREAD                | 1                            | The default number of threading |
+| NGPU_PER_NODE           | -                            | Number of GPUs per node, for Imperial CX1 |
+| GPU_TYPE                | -                            | The default type of GPU, for Imperial CX1 |
+| BUDGET_CODE             | *user defined*               | Budget code of a research project, see [ARCHER2 manual](https://docs.archer2.ac.uk/user-guide/scheduler/#checking-available-budget)|
+| QOS                     | standard                     | Quality of service, see [ARCHER2 manual](https://docs.archer2.ac.uk/user-guide/scheduler/#quality-of-service-qos) |
+| PARTITION               | standard                     | Partition of jobs, see [ARCHER2 manual](https://docs.archer2.ac.uk/user-guide/scheduler/#partitions) |
+| TIME_OUT                | 3                            | Unit: min. Time spared for post processing |
+| JOB_TMPDIR              | -                            | Temporary directory for calculations |
+| EXEDIR                  | module load quantum_espresso | Directory of executable / Available module load command |
+| EXE_PARALLEL            | -                            | Default parallel executable, Not applicable |
+| EXE_OPTIONS             | -                            | Extra options for parallel executable, Not applicable |
+| PRE_CALC                | \[Table\]                    | Saved names, temporary names, and definitions of mandatory input files |
+| FILE_EXT                | \[Table\]                    | Saved names, temporary names, and definitions of optional input files |
+| POST_CALC               | \[Table\]                    | Saved names, temporary names, and definitions of output files |
+| JOB_SUBMISSION_TEMPLATE | \[script\]                   | Template for job submission scripts |
 
 **NOTE**
 
@@ -140,8 +142,4 @@ Keywords used for the script `settings` are listed in the table below. Any chang
 3. All listed keywords have been included in the scripts. Undefined keywords are left blank.  
 3. Multiple-line input for keywords other than `PRE_CALC`, `POST_CRYS`, `POST_PROP`, and `JOB_SUBMISSION_TEMPLATE` is forbidden.  
 4. Dashed lines for `PRE_CALC`, `POST_CRYS`, `POST_PROP`, and `JOB_SUBMISSION_TEMPLATE` are used to define input blocks and are not allowed to be modified. Minimum length: '------------------'
-
-## Other comments
-1. File basenames are not recommended to include '.'. If so, the '.d12/.d3' extensions should be included when using the `-in` flag - otherwise the 'file not found error' might be reported because the code obtains the basename by truncating the characters after the last '.'.  
-2. A new value for the same flag covers the previous one. For example, `Pcrys -type prop` is equivalent to `Pprop`. Due to the same reason, the current implementation does not support the 'multiple `-in` / multiple `-ref`' definitions similar to the CX1 general submitter. This feature might be added in future releases.
 

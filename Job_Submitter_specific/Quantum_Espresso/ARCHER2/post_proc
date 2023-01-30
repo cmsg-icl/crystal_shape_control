@@ -147,4 +147,5 @@ echo "</ls -l .>"
 
 cd ${OUTDIR}
 rm -fr ${JOBTMPDIR}
+mv slurm-${JOBID}.out ${JOBNAME}.log
 exit
