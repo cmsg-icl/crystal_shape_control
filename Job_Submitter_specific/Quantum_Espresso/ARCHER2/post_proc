@@ -1,0 +1,150 @@
+#!/bin/bash
+
+# get inputs in command line style
+
+function get_input_ {
+
+    ## Useful variables: JOBNAME
+
+    param_list=$(getopt -a -l in:,ref: -n "$0" -- ${in_var} 2> /dev/null) 
+    echo ${param_list}
+
+    eval set -- "${param_list}"
+    OPTIONS=""
+    while [[ true ]]; do
+        case $1 in
+        --in ) 
+            shift; JOBFILE=$1 ; JOBNAME=${1%%.*} ;;
+        --ref )
+            shift; REFNAME=${1%%.*} ;;
+        -- ) 
+            break;;
+        * ) 
+            echo "Error: input and options should be specified, please refer to the manual. ";
+            echo "Job terminated without calculation. ";
+            exit;;
+        esac
+        shift
+    done
+}
+
+# Restore variables - kept same as job submission script
+in_var="header "$@""
+get_input_
+SETFILE=`echo ${0%/*}`/settings
+INPDIR=`pwd`
+OUTDIR=`pwd`
+OUTPUT=$(echo "${JOBFILE%i}o")
+JOBTMPDIR=`echo $(grep -w -A 1 'JOB_TMPDIR' ${SETFILE} | tail -1)`
+if [[ -z ${JOBTMPDIR} ]]; then
+    JOBTMPDIR=`pwd`
+fi
+JOBID=`sacct -u ${USER} -n -X --format jobid --name ${JOBNAME}.slurm --state r`
+JOBID=`echo ${JOBID} | rev | cut -d' ' -f1 | rev`
+JOBTMPDIR=${JOBTMPDIR}/${JOBNAME}_${JOBID}
+
+cd ${JOBTMPDIR}
+echo "Start post-processing..."
+echo ""                         | tee -a ${OUTDIR}/${OUTPUT}
+echo "List of saved files"      | tee -a ${OUTDIR}/${OUTPUT}
+echo "TEMPORARY          SAVED" | tee -a ${OUTDIR}/${OUTPUT}
+#tag_start_for_checkfile
+# Remove external files
+
+if [[ ! -z ${REFNAME} ]]; then
+    rm -r ${REFNAME}.*
+fi
+
+# Read POST_CALC list
+
+LINE_POSTCALC=`grep -nw 'POST_CALC' ${SETFILE}`
+LINE_POSTCALC=`echo "scale=0;${LINE_POSTCALC%%:*}+4" | bc`
+
+SAVED_NAME=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", $1)}' ${SETFILE}`
+SAVED_NAME_FLAG=`echo ${SAVED_NAME} | cut -c 1-9`
+TMP_NAME=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", $2)}' ${SETFILE}`
+TMP_NAME_FLAG=`echo ${TMP_NAME} | cut -c 1-9`
+
+while [[ ! -z ${TMP_NAME} ]]; do
+
+### Substitute variable flags
+
+    if [[ ${SAVED_NAME_FLAG} == '[jobname]' ]]; then
+        SAVED_NAME=${JOBNAME}$(echo ${SAVED_NAME} | sed -r 's/^.{9}//')
+
+### If SAVED_NAME begins with '*', keep the original name
+
+    elif [[ $(echo "${SAVED_NAME_FLAG}" | cut -c 1) == '*' ]]; then
+        SAVED_NAME=''
+    fi
+
+### Substitute variable flags
+
+    if [[ ${TMP_NAME_FLAG} == '[jobname]' ]]; then
+        TMP_NAME=${JOBNAME}$(echo ${TMP_NAME} | sed -r 's/^.{9}//')
+    fi
+
+## List files, to get all files with '*' in 'TMP_NAME' settings
+
+    filelist=`find ${JOBTMPDIR} -name "${TMP_NAME}"`
+    filelist=(${filelist//${JOBTMPDIR}\//})
+
+### Make subdir for files stored in sub-folders 
+
+    if [[ ${SAVED_NAME: -1} == '/' && ${#filelist[@]} -ge 1 ]]; then
+        mkdir "${OUTDIR}/${SAVED_NAME}"
+    fi
+
+    for file in ${filelist[@]}; do
+
+### Make sure the file is not empty
+
+        if [[ ! -s ${JOBTMPDIR}/${file} ]]; then
+            continue
+        fi
+
+        echo "${file} ${SAVED_NAME}" | awk '{printf("%-18s %-18s"),$1,$2}' 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+        ls -l ${file} | awk '{printf("%-8s %s %s %s\n"),$5,$6,$7,$8}' 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+        cp ${JOBTMPDIR}/${file} ${OUTDIR}/${SAVED_NAME}
+
+### Normal files
+
+        if [[ ${SAVED_NAME: -1} != '/' ]]; then
+            echo "output ${file} copied as ${SAVED_NAME}."
+
+### Files stored in sub-folders
+
+        else
+            echo "output ${file} copied into ${SAVED_NAME}."
+        fi
+    done
+
+    LINE_POSTCALC=`echo "scale=0;${LINE_POSTCALC%%:*}+1" | bc`
+    SAVED_NAME=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", $1)}' ${SETFILE}`
+    SAVED_NAME_FLAG=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", $1)}' ${SETFILE} | cut -c 1-9`
+    TMP_NAME=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", $2)}' ${SETFILE}`
+    TMP_NAME_FLAG=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", $2)}' ${SETFILE} | cut -c 1-9`
+done
+
+# Calculation summary
+
+echo " "                | tee -a ${OUTDIR}/${OUTPUT}
+echo "Disk usage:"      | tee -a ${OUTDIR}/${OUTPUT}
+echo "<df -h .>"        | tee -a ${OUTDIR}/${OUTPUT}
+df -h ${JOBTMPDIR} 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+echo "</df -h .>"       | tee -a ${OUTDIR}/${OUTPUT}
+echo "By folders:"      | tee -a ${OUTDIR}/${OUTPUT}
+echo "<du -m .>"        | tee -a ${OUTDIR}/${OUTPUT}
+du -m ${JOBTMPDIR} 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+echo "</du -m .>"       | tee -a ${OUTDIR}/${OUTPUT}
+echo "Detailed file list:"
+echo "<ls -l .>"
+ls -l ${JOBTMPDIR} 2>&1
+echo "</ls -l .>"
+#tag_end_for_checkfile
+
+# Remove temporary directory
+
+cd ${OUTDIR}
+rm -fr ${JOBTMPDIR}
+exit
