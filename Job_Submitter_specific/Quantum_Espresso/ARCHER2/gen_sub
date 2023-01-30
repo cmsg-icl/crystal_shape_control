@@ -2,18 +2,18 @@
 
 # General input format
 # gen_sub --x executable --in input --ref refname --nd ND --wt WT
-# x:       str, QE executable name, with or without x
-# ND:      int, number of nodes
-# WT:      str, walltime, hh:mm time format
-# jobname: str, input files with extensions
-# refname: str, optional, name of the previous run
+# executable: str, QE executable name, with or without x
+# ND:         int, number of nodes
+# WT:         str, walltime, hh:mm time format
+# jobname:    str, input files with extensions
+# refname:    str, optional, name of the previous run
 # The sequence of input parameters can be changed
 
 function get_input_ {
 
-    ## Useful variables: JOBEXE, WT, ND, JOBNAME, REFNAME
+    ## Useful variables: JOBEXE, WT, ND, JOBFILE, REFNAME
 
-    param_list=$(getopt -a -l type:,nd:,wt:,in:,ref: -n "$0" -- ${in_var} 2> /dev/null) 
+    param_list=$(getopt -a -l x:,nd:,wt:,in:,ref: -n "$0" -- ${in_var} 2> /dev/null) 
     cat << EOF
     INPUT parameters:
         ${param_list}
@@ -24,11 +24,11 @@ EOF
     while [[ true ]]; do
         case $1 in
         --x ) 
-            shift; JOBEXE+=($1); check_JOBEXE_ ;;
+            shift; JOBEXE+=($1) ;;
         --in ) 
-            shift; JOBFILE+=($1); check_JOBFILES_ ;;
+            shift; JOBFILE+=($1) ;;
         --ref ) 
-            shift; REFFILE+=($1); check_REFFILES_ ;;
+            shift; REFFILE+=($1) ;;
         --nd ) 
             shift; ND=$1; check_ND_ ;;
         --wt ) 
@@ -47,6 +47,10 @@ EOF
         shift
     done
 
+    check_JOBEXE_
+    check_JOBFILES_ 
+    check_REFFILES_ 
+
     cat << EOF
     Formatted INPUT parameters:
 --------------------------------------
@@ -64,12 +68,12 @@ EOF
 
 function check_JOBEXE_ {
 
-    if [[ ${#JOBEXE[@]} != ${#JOBFILE[@]} ]]; then
+	if [[ ${#JOBEXE[@]} != ${#JOBFILE[@]} ]]; then
         cat << EOF
     ERROR: 
         Lengths of executable list and input file list should be the same.
         Current input file list: '${JOBFILE[@]}', length: '${#JOBFILE[@]}'
-        Current reference file list: '${JOBEXE[@]}', length: '${#JOBEXE[@]}'
+        Current executable list: '${JOBEXE[@]}', length: '${#JOBEXE[@]}'
 
 EOF
         exit
@@ -141,7 +145,7 @@ EOF
 
 function check_JOBFILES_ {
 
-    if [[ ${#JOBFILE[@]} -ge 1 ]]; then
+	if [[ ${#JOBFILE[@]} -ge 1 ]]; then
         for (( i = 0; i < ${#JOBFILE[@]}; i++ )); do
             file=${JOBFILE[${i}]}
 
@@ -180,6 +184,7 @@ EOF
         print_HOWTO_JOBFILES_
         exit
     fi
+}
 
 # Instruction for JOBFILES
 
@@ -201,7 +206,7 @@ EOF
 
 function check_REFFILES_ {
 
-    if [[ ${#REFFILE[@]} != ${#JOBFILE[@]} ]]; then
+    if [[ ! -z ${REFFILE} && ${#REFFILE[@]} != ${#JOBFILE[@]} ]]; then
         cat << EOF
     ERROR: 
         Lengths of reference file list and input file list should be the same.
@@ -395,7 +400,7 @@ function check_out_ {
 
     for job in ${JOBNAME}; do
         ls ${job}.*o > /dev/null 2>&1
-        if [[ $? -ne 0 ]]; then
+        if [[ $? -eq 0 ]]; then
             cat << EOF
     ERROR:
         output file exists: ${job}.*o
@@ -457,6 +462,7 @@ function get_subtemplate_ {
 # get necessary information from settings file
 function get_subinfo_ {
 ## generate a jobname for all jobs included, substitute space with hyphen, max length 20 characters
+	echo "${JOBNAME[@]}"
     TOTJOBNAME=`echo "${JOBNAME[@]}" | sed -r 's/ /-/g' | cut -c 1-20`
 ## get job executation script
     SCRIPT="${SCRIPTDIR}/run_exec"
@@ -501,7 +507,7 @@ EOF
 ## Partition of service
     PARTITION=`echo $(grep -w -A 1 'PARTITION' ${SETFILE} | tail -1)`
 ## Time spared for post processing
-    TOUT=`echo $(grep -w -A 1 'TIME_OUT' ${SETFILE} | tail -1)`
+    tout_per_job=`echo $(grep -w -A 1 'TIME_OUT' ${SETFILE} | tail -1)`
 }
 
 # generate submission file
@@ -515,8 +521,10 @@ EOF
     
 ## Calculate the timeout for runnning calculations
     thr=${WT%:*}
-    tmn=${WT#*:} 
-    TOUT=`echo "scale=0;${thr}*60+${tmn}-${TOUT}" | bc`
+    tmn=${WT#*:}
+	njob=${#JOBNAME[@]}
+    TOUT=`echo "scale=0;${thr}*60+${tmn}" | bc`
+	TOUT=`echo "scale=0;${TOUT}/${njob}-${tout_per_job}" | bc`
     TOUT=`echo ${TOUT}m`
 ## Add seconds for WT
     WT="${WT}:00"
@@ -535,9 +543,9 @@ EOF
         else
             REFCOMMAND=''
         fi
-        echo "timeout ${TOUT} ${SCRIPT} -x ${JOBEXE[${i}]} -in ${JOBFILE[${i}]} ${REFCOMMAND}" >> ${TOTJOBNAME}.${SUB_EXT}
-        echo "${POSCRIPT} -in ${JOBFILE[${i}]} ${REFCOMMAND}"                                  >> ${TOTJOBNAME}.${SUB_EXT}
-        echo -e "\n"                                                                           >> ${TOTJOBNAME}.${SUB_EXT}
+        echo "timeout ${TOUT} ${SCRIPT} -x ${JOBEXE[${i}]} -in ${JOBFILE[${i}]} ${REFCOMMAND}" -- ${TOTJOBNAME} >> ${TOTJOBNAME}.${SUB_EXT}
+        echo "${POSCRIPT} -in ${JOBFILE[${i}]} ${REFCOMMAND}" -- ${TOTJOBNAME}                                  >> ${TOTJOBNAME}.${SUB_EXT}
+        echo -e "\n"                                                                                            >> ${TOTJOBNAME}.${SUB_EXT}
     done
 }
 
@@ -547,11 +555,11 @@ INPDIR=`pwd`
 SCRIPTDIR=`echo ${0%/*}`
 SETFILE=${SCRIPTDIR}/settings
 
-# Get input parameters
+# # Get input parameters
 get_input_
 check_scripts_
-generate_subfile_
 check_out_
+generate_subfile_
 
 echo "Combined submission file      = " ${TOTJOBNAME}
 echo "job submission script         = " ${SCRIPT}
@@ -563,7 +571,7 @@ echo "wall time                     = " ${WT}
 
 cat << EOF
 
- file ${JOBNAME}.${SUB_EXT} has been generated.
+ file ${TOTJOBNAME}.${SUB_EXT} has been generated.
 
 EOF
 exit

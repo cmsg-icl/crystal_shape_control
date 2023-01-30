@@ -160,12 +160,12 @@ function set_settings {
     ## Mandatory input
     LINE_PRE=`grep -nw 'PRE_CALC' ${SETFILE}`
     LINE_PRE=`echo "scale=0;${LINE_PRE%:*}+4" | bc`
-    sed -i "${LINE_EXT}i[jobname].pwi   [jobname].pwi     Input for pw.x  PW-SCF" ${SETFILE}
-    sed -i "${LINE_EXT}i[jobname].cpi   [jobname].cpi     Input for cp.x  CPMD" ${SETFILE}
-    sed -i "${LINE_EXT}i[jobname].phi   [jobname].phi     Input for ph.x  DFPT" ${SETFILE}
-    sed -i "${LINE_EXT}i[jobname].hpi   [jobname].hpi     Input for hp.x  DFT+U" ${SETFILE}
-    sed -i "${LINE_EXT}i[jobname].epwi  [jobname].epwi    Input for epw.x Electron-Phonon Wannier" ${SETFILE}
-    sed -i "${LINE_EXT}i[jobname].kcwi  [jobname].kcwi    Input for kcw.x Spectra" ${SETFILE}
+    sed -i "${LINE_PRE}i[jobname].pwi   [jobname].pwi     Input for pw.x  PW-SCF" ${SETFILE}
+    sed -i "${LINE_PRE}i[jobname].cpi   [jobname].cpi     Input for cp.x  CPMD" ${SETFILE}
+    sed -i "${LINE_PRE}i[jobname].phi   [jobname].phi     Input for ph.x  DFPT" ${SETFILE}
+    sed -i "${LINE_PRE}i[jobname].hpi   [jobname].hpi     Input for hp.x  DFT+U" ${SETFILE}
+    sed -i "${LINE_PRE}i[jobname].epwi  [jobname].epwi    Input for epw.x Electron-Phonon Wannier" ${SETFILE}
+    sed -i "${LINE_PRE}i[jobname].kcwi  [jobname].kcwi    Input for kcw.x Spectra" ${SETFILE}
 
     ## Optional input
     LINE_EXT=`grep -nw 'FILE_EXT' ${SETFILE}`
@@ -228,7 +228,7 @@ function set_commands {
 
     echo "# >>> Quantum Espresso job submitter settings >>>" >> ${HOME}/.bashrc
     echo "alias Pqe='${SCRIPTDIR}/gen_sub'" >> ${HOME}/.bashrc
-    echo "alias setpqe='cat ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
+    echo "alias setqe='cat ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
     echo "chmod 777 ${SCRIPTDIR}/gen_sub" >> ${HOME}/.bashrc
     echo "chmod 777 ${SCRIPTDIR}/run_exec" >> ${HOME}/.bashrc
     echo "chmod 777 ${SCRIPTDIR}/post_proc" >> ${HOME}/.bashrc 
@@ -256,7 +256,7 @@ function set_commands {
 
     The number of -x -in and -ref (if any) flags should be the same.
 
-    setcrys - print the file 'settings'
+    setqe - print the file 'settings'
     
 ================================================================================
 EOF

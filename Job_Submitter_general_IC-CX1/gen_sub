@@ -166,7 +166,7 @@ EOF
 
 function check_ref_ {
 
-    if [[ ${#REFFILE[@]} != ${#JOBFILE[@]} ]]; then
+    if [[ ! -z ${REFFILE} && ${#REFFILE[@]} != ${#JOBFILE[@]} ]]; then
         cat << EOF
     ERROR: 
         Lengths of reference file list and input file list should be the same.
@@ -305,13 +305,13 @@ EOF
     while [[ true ]]; do
         case $1 in
         --in ) 
-            shift; JOBFILE+=($1); check_files_ ;;
+            shift; JOBFILE+=($1) ;;
         --nd ) 
             shift; ND=$1; check_ND_ ;;
         --wt ) 
             shift; WT=$1; check_WT_ ;;
         --ref )
-            shift; REFFILE+=($1); check_ref_ ;;
+            shift; REFFILE+=($1) ;;
         -- ) 
             shift;
             while [[ ! -z $1 ]]; do
@@ -330,6 +330,9 @@ EOF
         esac
         shift
     done
+
+    check_files_
+    check_ref_ 
 
     cat << EOF
     Formatted INPUT parameters:
@@ -564,8 +567,8 @@ SETFILE=${SCRIPTDIR}/settings
 get_input_
 check_scripts_
 check_executable_
-generate_subfile_
 check_out_
+generate_subfile_
 
 echo "PBS qsub file                 = " ${PBSJOBNAME}.${SUB_EXT}
 echo "job submission script         = " ${SCRIPT}

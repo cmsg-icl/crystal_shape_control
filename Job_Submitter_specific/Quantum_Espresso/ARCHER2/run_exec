@@ -9,7 +9,7 @@ function get_input_ {
     ## JOBNAME: Name without extension
     ## REFNAME: Base name of the reference files
 
-    param_list=$(getopt -a -l in:,ref: -n "$0" -- ${in_var} 2> /dev/null) 
+    param_list=$(getopt -a -l x:,in:,ref: -n "$0" -- ${in_var} 2> /dev/null) 
     echo ${param_list}
 
     eval set -- "${param_list}"
@@ -24,7 +24,7 @@ function get_input_ {
         --ref )
             shift; REFNAME=${1%%.*} ;;
         -- ) 
-            break;;
+			shift; TOTJOBNAME=$1; break;;
         * ) 
             echo "Error: input and options should be specified, please refer to the manual. ";
             echo "Job terminated without calculation. ";
@@ -42,7 +42,7 @@ get_input_
 # Input and output file directories
 
 OUTPUT=$(echo "${JOBFILE%i}o")
-ls ${JOBNAME}.*o > /dev/null 2>&1
+ls ${OUTPUT} > /dev/null 2>&1
 
 if [[ $? -eq 0 ]]; then
     echo "Output exists: ${OUTPUT}"
@@ -59,8 +59,8 @@ SETFILE=`echo ${0%/*}`/settings
 # Set executing command
 
 XDIR=`echo $(grep -w -A 1 'EXEDIR' ${SETFILE} | tail -1)`
-MPIRUN='mpiexec'
-MPIRUN_OPTIONS=""
+MPIRUN='srun'
+MPIRUN_OPTIONS="--hint=nomultithread --distribution=block:block"
 
 if [[ ${XDIR} == *'module load'* ]]; then
     ${XDIR} 2>&1 
@@ -68,7 +68,7 @@ else
     PEXE=$(echo "${XDIR}/${PEXE}")
 fi
 
-EXECOMMAND="${MPIRUN} ${MPIRUN_OPTIONS} ${PEXE} ${EXE_OPTIONS} ${JOBFILE} ${OPTIONS}"
+EXECOMMAND="${MPIRUN} ${MPIRUN_OPTIONS} ${PEXE} ${EXE_OPTIONS}"
 echo "mpi command: ${EXECOMMAND}"
 
 # Check temporary directory
@@ -80,7 +80,7 @@ fi
 
 # Temporary directory
 
-JOBID=`sacct -u ${USER} -n -X --format jobid --name ${JOBNAME}.slurm --state r`
+JOBID=`sacct -u ${USER} -n -X --format jobid --name ${TOTJOBNAME}.slurm --state r`
 JOBID=`echo ${JOBID} | rev | cut -d' ' -f1 | rev`
 JOBTMPDIR=${JOBTMPDIR}/${JOBNAME}_${JOBID}
 mkdir -p ${JOBTMPDIR}
@@ -173,6 +173,7 @@ while [[ ! -z ${TMP_NAME} ]]; do
         echo "Found input data: ${INPDIR}/${SAVED_NAME}" 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
         cp ${INPDIR}/${SAVED_NAME} ${JOBTMPDIR}/${TMP_NAME}
         echo "input ${SAVED_NAME} copied."
+	fi
 
     LINE_PRECALC=`echo "scale=0;${LINE_PRECALC}+1" | bc`
     SAVED_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", $1)}' ${SETFILE}`
@@ -244,9 +245,9 @@ echo "" | tee -a ${OUTDIR}/${OUTPUT}
 cd ${JOBTMPDIR}
 echo "Entering temporary directory ${JOBTMPDIR}"
 echo "Job execution command to be used:"
-echo "${EXECOMMAND}"
-echo "Job started..."
+echo "${EXECOMMAND} < ${JOBFILE} > ${OUTDIR}/${OUTPUT}"
+echo "Job starts..."
 
-${EXECOMMAND} 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+${EXECOMMAND} < ${JOBFILE} > ${OUTDIR}/${OUTPUT} 2>&1
 
 exit
