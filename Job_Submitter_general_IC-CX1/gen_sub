@@ -374,7 +374,7 @@ EOF
 
 function check_scripts_ {
     ls ${SCRIPTDIR}/${SCRIPT} > /dev/null 2>&1
-    if [[ $? == 1 ]]; then
+    if [[ $? -ne 0 ]]; then
         cat << EOF
     ERROR:
         cannot find job execution script in ${SCRIPTDIR}/${SCRIPT}.
@@ -385,7 +385,7 @@ EOF
     fi
 
     ls ${SCRIPTDIR}/${POSCRIPT} > /dev/null 2>&1
-    if [[ $? == 1 ]]; then
+    if [[ $? -ne 0 ]]; then
         cat << EOF
     ERROR:
         cannot find post processing script in ${SCRIPTDIR}/${POSCRIPT}.
