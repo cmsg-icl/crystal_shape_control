@@ -7,6 +7,9 @@ data input formats.
 ###################### Change this line before release! #######################
 import constants as cst
 ###############################################################################
+global cst
+
+
 __all__ = [
     "read_output",
 ]
@@ -64,9 +67,7 @@ def read_output(output, read_eigenvector=True, read_symmetry=False, unit='HARTRE
     if isinstance(output, str):
         output = [output, ]
 
-    if unit != 'HARTREE':
-        global cst
-        cst.redefine(unit=unit)
+    cst.redefine(unit=unit)
 
     dimension = []
     structure = []
@@ -142,8 +143,6 @@ class Output_reader:
                 Whether to read eigenvectors from file
             read_symmetry (bool)
                 Whether to read symmetry of vibrational mode
-            unit (string, see constants.py)
-                Unit system used in solvers
         Output:
             self.ncalc (int)
                 Number of calculations
@@ -328,7 +327,8 @@ class Output_reader:
                 symmetry.append(symm_c)
                 eigenvector.append(eigvt_c)
 
-            idx_line += 1
+            # idx_line from other attributes should end at the last line of corresponding output block
+            idx_line += 1 
 
         return dimension, structure, supercell, eint, nqpoint, qpoint, nmode, \
             frequency, symmetry, eigenvector
@@ -486,12 +486,14 @@ class Output_reader:
             idx_bg = int(line_data[0].strip('-'))
             idx_ed = int(line_data[1])
             freq = float(line_data[4]) / cst.thz
+# temporal
             if read_symmetry:
                 symm_symbol = re.findall(
                     r'\([A-Z][0-9a-z]*',
                     data[idx_new]
                 )[0][1:]
                 symm = cst.symmetry_group[symm_symbol]
+#####################
 
             for idx_m in range(idx_bg, idx_ed + 1):
                 frequency = np.append(frequency, freq)
