@@ -248,6 +248,6 @@ echo "Job execution command to be used:"
 echo "${EXECOMMAND} < ${JOBFILE} > ${OUTDIR}/${OUTPUT}"
 echo "Job starts..."
 
-${EXECOMMAND} < ${JOBFILE} > ${OUTDIR}/${OUTPUT} 2>&1
+${EXECOMMAND} < ${JOBFILE} >> ${OUTDIR}/${OUTPUT} 2>&1
 
 exit
