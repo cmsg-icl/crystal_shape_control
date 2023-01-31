@@ -35,6 +35,8 @@ The structure of this general job submitter is illustrated in the figure below:
 
 This job submitter is useful for jobs launched by a constant parallel executable, i.e., multiple jobs with the same command is supported, but any job involving multiple commands is not. Besides, it is only useful for jobs launched by a 'main' input file. Other file inputs is allowed either as mandatory or optional files, but only one file can be used to define an `-in` flag (see below).
 
+For the 'main' input file used for `-in` flag, the convention is that its name should have an extension, while its basename is used to define the jobname. The full name should be the input of `-in`, and the program truncates text on the right side of the last full stop '.'.  
+
 ### User defined commands
 
 The `config_CODE.sh` code sets user defined commands (command aliases) in file `~/.bashrc` during initialization. Commands include a `Pcode` command to generate .qsub files for the specific code and a `setcode` command to print out the `settings` file. The block configuring command aliases begins with `# >>> CODE job submitter settings >>>` and ends with `# <<< finish GROMACS job submitter settings <<<`, which function as separators and should not be removed. To activate command aliases, use this command every time when logging in:
@@ -65,49 +67,49 @@ This job submitter supports multiple jobs, as long as they uses the same 'mpi + 
 
 The sequence of flags is arbitrary. Note that the length of flag `-ref` should be either 0 or the same length as `-in` to avoid ambiguity, which means the multiple job option is more suitable for 'parallel' jobs rather than 'sequential' jobs, e.g., SCF jobs for different systems, rather than 1 geometry optimization + 1 SCF. The latter one, of course, is possible. In .qsub file, an extra line can be added between 2 jobs to copy and rename the output of a previous job as an optional input of the next job. 
 
-The generated .qsub file is named as `jobA-jobB.qsub`. The maximum length of its basename is 20 characters. All the outputs defined in 'POST_CALC' table and the .out file (see below) will be stored separately, e.g., as `jobA.out` and `jobB.out`. The .o\[pbsjobid\] and .e\[pbsjobid\] files (see below) are shared by both jobs, named as `jobA-jobB.o\[pbsjobid\]` and `jobA-jobB.e\[pbsjobid\]`.
+The generated .qsub file is named as `jobA-jobB.qsub`. The maximum length of its basename is 20 characters. All the outputs defined in 'POST\_CALC' table and the .out file (see below) will be stored separately, e.g., as `jobA.out` and `jobB.out`. The .o\[pbsjobid\] and .e\[pbsjobid\] files (see below) are shared by both jobs, named as `jobA-jobB.o\[pbsjobid\]` and `jobA-jobB.e\[pbsjobid\]`.
 
 ### Keyword list
 
 Keywords used for `settings_template` are listed in the table below. Modify the values in the same file to change the parameters used during computation.
 
-| KEYWORD                 | DEFAULT VALUE   | DEFINITION |
-|:------------------------|:---------------:|:-----------|
-| SUBMISSION_EXT          | .qsub           | The extension of job submission script |
-| NCPU_PER_NODE           | 24              | Number of processors per node |
-| MEM_PER_NODE            | 50              | Unit: GB. Requested memory per node |
-| N_THREAD                | 1               | The default number of threading |
-| NGPU_PER_NODE           | 0               | Number of GPUs per node |
-| GPU_TYPE                | RTX6000         | The default type of GPU |
-| BUDGET_CODE             | -               | For ARCHER2. Budget code of a research project |
-| QOS                     | -               | For ARCHER2. Quality of service |
-| PARTITION               | -               | For ARCHER2. Partition of jobs |
-| TIME_OUT                | 3               | Unit: min. Time spared for post processing |
-| JOB_TMPDIR              | ${EPHEMERAL}    | The temporary directory for calculations |
-| EXEDIR                  | \[depends\]     | Directory of executable / Available module load command |
-| EXE_PARALLEL            | \[depends\]     | The parallel executable |
-| EXE_OPTIONS             | \[depends\]     | Default command line options for the executable specified |
-| PRE_CALC                | \[Table\]       | Saved names, temporary names, and definitions of mandatory input files |
-| FILE_EXT                | \[Table\]       | Saved names, temporary names, and definitions of optional input files |
-| POST_CALC               | \[Table\]       | Saved names, temporary names, and definitions of output files |
-| JOB_SUBMISSION_TEMPLATE | \[script\]      | Template for job submission scripts |
+| KEYWORD                   | DEFAULT VALUE   | DEFINITION |
+|:--------------------------|:---------------:|:-----------|
+| SUBMISSION\_EXT           | .qsub           | The extension of job submission script |
+| NCPU\_PER\_NODE           | 24              | Number of processors per node |
+| MEM\_PER\_NODE            | 50              | Unit: GB. Requested memory per node |
+| N\_THREAD                 | 1               | The default number of threading |
+| NGPU\_PER\_NODE           | 0               | Number of GPUs per node |
+| GPU\_TYPE                 | RTX6000         | The default type of GPU |
+| BUDGET\_CODE              | -               | For ARCHER2. Budget code of a research project |
+| QOS                       | -               | For ARCHER2. Quality of service |
+| PARTITION                 | -               | For ARCHER2. Partition of jobs |
+| TIME\_OUT                 | 3               | Unit: min. Time spared for post processing |
+| JOB\_TMPDIR               | ${EPHEMERAL}    | The temporary directory for calculations |
+| EXEDIR                    | \[depends\]     | Directory of executable / Available module load command |
+| EXE\_PARALLEL             | \[depends\]     | The parallel executable |
+| EXE\_OPTIONS              | \[depends\]     | Default command line options for the executable specified |
+| PRE\_CALC                 | \[Table\]       | Saved names, temporary names, and definitions of mandatory input files |
+| FILE\_EXT                 | \[Table\]       | Saved names, temporary names, and definitions of optional input files |
+| POST\_CALC                | \[Table\]       | Saved names, temporary names, and definitions of output files |
+| JOB\_SUBMISSION\_TEMPLATE | \[script\]      | Template for job submission scripts |
 
 **NOTE**
 
-1. Keyword 'JOB_SUBMISSION_TEMPLATE' should be the last keyword, but the sequences of other keywords are allowed to change.  
+1. Keyword 'JOB\_SUBMISSION\_TEMPLATE' should be the last keyword, but the sequences of other keywords are allowed to change.  
 2. Empty lines between keywords and their values are forbidden.  
 3. All listed keywords have been included in the scripts. Undefined keywords are left blank.  
-4. Multiple-line input for keywords other than 'PRE_CALC', 'FILE_EXT', 'POST_CALC' and 'JOB_SUBMISSION_TEMPLATE' is forbidden, otherwise the code will only read the top line.  
-5. Requesting any GPU will lead the job to the queue for GPU node. For CPU only jobs, 'NGPU' should always be 0, in which case 'GPU_TYPE' will never be visited.  
-6. By default, 'JOB_TMPDIR' is set as `${EPHEMERAL}`. The folder for the current job is named as '\[jobname\]\_\[pbsjobid\]'.  
-7. Dashed lines and titles for 'PRE_CALC', 'POST_CALC', and 'JOB_SUBMISSION_TEMPLATE' are used as separators and are not allowed to be removed.  
-8. The qsub template attached during initialization is only compatible with the default settings. For user-defined executables / commands, changes might be made accordingly in the 'JOB_SUBMISSION_TEMPLATE' block (see the LAMMPS test case).
+4. Multiple-line input for keywords other than 'PRE\_CALC', 'FILE\_EXT', 'POST\_CALC' and 'JOB\_SUBMISSION\_TEMPLATE' is forbidden, otherwise the code will only read the top line.  
+5. Requesting any GPU will lead the job to the queue for GPU node. For CPU only jobs, 'NGPU' should always be 0, in which case 'GPU\_TYPE' will never be visited.  
+6. By default, 'JOB\_TMPDIR' is set as `${EPHEMERAL}`. The folder for the current job is named as '\[jobname\]\_\[pbsjobid\]'.  
+7. Dashed lines and titles for 'PRE\_CALC', 'POST\_CALC', and 'JOB\_SUBMISSION\_TEMPLATE' are used as separators and are not allowed to be removed.  
+8. The qsub template attached during initialization is only compatible with the default settings. For user-defined executables / commands, changes might be made accordingly in the 'JOB\_SUBMISSION\_TEMPLATE' block (see the LAMMPS test case).
 
 **Explanations of mpi commands**
 
-The definition of keywords 'EXEDIR', 'EXE_PARALLEL' and 'EXE_OPTIONS' seems confusing and verbose. It is indeed a compromise to ensure the generality. 'EXEDIR' was generated to deal with multiple executables in the same directory and share the same job submission scripts - which is already banned in this general job submitter, so 'EXEDIR' will probably disappear in the stable release. 
+The definition of keywords 'EXEDIR', 'EXE\_PARALLEL' and 'EXE\_OPTIONS' seems confusing and verbose. It is indeed a compromise to ensure the generality. 'EXEDIR' was generated to deal with multiple executables in the same directory and share the same job submission scripts - which is already banned in this general job submitter, so 'EXEDIR' will probably disappear in the stable release. 
 
-'EXE_OPTIONS' is to deal with the command line options needed for the main input file. For example, LAMMPS requires a `-in` flag, GULP requires `<`, and CRYSTAL needs nothing. 
+'EXE\_OPTIONS' is to deal with the command line options needed for the main input file. For example, LAMMPS requires a `-in` flag, GULP requires `<`, and CRYSTAL needs nothing. 
 
 The mpi command that is actually used on PBS nodes is:
 
@@ -115,11 +117,11 @@ The mpi command that is actually used on PBS nodes is:
 ~$ mpiexec ${EXEDIR}/${EXE_PARALLEL} ${EXE_OPTIONS} main.input
 ```
 
-### 'PRE_CALC', 'FILE_EXT' and 'POST_CALC' tables
+### 'PRE\_CALC', 'FILE\_EXT' and 'POST\_CALC' tables
 
 These 3 keywords require 3 separate tables of mandatory input files, optional input files and output files. 'SAVED' specifies the desired name in `${HOME}` directory, while 'TEMPORARY' specifies the desired name in `${EPHEMERAL}` directory. 'DEFINITION' will not be scanned, which is used as a comment / reminder.
 
-In practice, `run_exec` and `post_proc` scan all the formats listed and moves all the matching files forward and backward. Missing any file in 'PRE_CALC' table immediately leads to the interruption of calculation, while missing files listed in 'FILE_EXT' does not stop the job. The result of every scan is printed in '.o\[pbsjobid\]' file. 
+In practice, `run_exec` and `post_proc` scan all the formats listed and moves all the matching files forward and backward. Missing any file in 'PRE\_CALC' table immediately leads to the interruption of calculation, while missing files listed in 'FILE\_EXT' does not stop the job. The result of every scan is printed in '.o\[pbsjobid\]' file. 
 
 The naming scheme of input files are recommended to follow certain rules. Meanwhile, to ensure the generality, some extra rules have to be set for codes extremely flexible to input formats when performing simulations (usually MD codes, especially LAMMPS, which might be a tradition different from the DFT community). To achieve this, a 'pseudo' regular expression is used. Keywords are listed below:
 
@@ -152,7 +154,7 @@ For debugging. Records the screen outputs when PBS system executes the .qsub fil
 
 ## How to generate a configuration file
 
-4 scripts included in the main directory are for general proposes, which need configuration before being used. Configurations are automatically executed using `config_CODE.sh` scripts stored separately in sub-folders with code names. An example (GROMACS_v0.1) is placed in the main directory for illustrating proposes.
+4 scripts included in the main directory are for general proposes, which need configuration before being used. Configurations are automatically executed using `config_CODE.sh` scripts stored separately in sub-folders with code names. An example (GROMACS\_v0.1) is placed in the main directory for illustrating proposes.
 
 To generate a configuration file for a new code, several modification should be made. Lines need modification are marked with comment lines `#--# BEGIN_USER`, `#--# END_USER` and instructions. Several considerations suggested:
 
@@ -162,10 +164,10 @@ To generate a configuration file for a new code, several modification should be 
 4. Executable directory: The default directory or `module load` command  
 5. Executable name: The default executable name and command-line options - does the code require any general in-line commands? Of course users can also define them in command lines, except the mandatory input.   
 6. Default parameters for parallel jobs: Depends on your habit. Do you prefer 24 cores per node or 32 cores? Do you need GPUs?  
-7. PRE_CALC: What is the general format of mandatory inputs? (Maybe I'll directly use regular expressions for the next version...)  
-8. FILE_EXT: What is the general format of optional inputs?  
-9. POST_CALC: What is the general format of outputs?  
-10. JOB_SUBMISSION_TEMPLATE: Any specific environmental setups for the code? e.g., Do you need a dynamically linked lib? Do you need export some environmental variables?  
+7. PRE\_CALC: What is the general format of mandatory inputs? (Maybe I'll directly use regular expressions for the next version...)  
+8. FILE\_EXT: What is the general format of optional inputs?  
+9. POST\_CALC: What is the general format of outputs?  
+10. JOB\_SUBMISSION\_TEMPLATE: Any specific environmental setups for the code? e.g., Do you need a dynamically linked lib? Do you need export some environmental variables?  
 
 ## Program specific instructions
 
@@ -182,8 +184,8 @@ To generate a configuration file for a new code, several modification should be 
 
 **Defaults**  
 EXEDIR - module load  lammps/19Mar2020  
-EXE_PARALLEL - lmp_mpi  
-EXE_OPTIONS - -in
+EXE\_PARALLEL - lmp\_mpi  
+EXE\_OPTIONS - -in
 
 **Commands**  
 `Plmp` - Generate qsub files for LAMMPS MD jobs.  
@@ -212,8 +214,8 @@ The unite cell of Form II paracetamol crystal (CCDC: [HXACAN37](https://www.ccdc
 
 **Defaults**  
 EXEDIR - module load  gromacs/2021.3-mpi  
-EXE_PARALLEL - gmx_mpi  
-EXE_OPTIONS - mdrun -s
+EXE\_PARALLEL - gmx\_mpi  
+EXE\_OPTIONS - mdrun -s
 
 **Commands**  
 `Pgmx` - Generate qsub files for GROMACS MD jobs.  

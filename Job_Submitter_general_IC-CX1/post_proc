@@ -14,9 +14,9 @@ function get_input_ {
     while [[ true ]]; do
         case $1 in
         --in ) 
-            shift; JOBNAME=${1%%.*} ;;
+            shift; JOBNAME=${1%.*} ;;
         --ref )
-            shift; REFNAME=${1%%.*} ;;
+            shift; REFNAME=${1%.*} ;;
         -- ) 
             break;;
         * ) 

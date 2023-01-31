@@ -19,9 +19,9 @@ function get_input_ {
     while [[ true ]]; do
         case $1 in
         --in ) 
-            shift; JOBFILE=$1; JOBNAME=${JOBFILE%%.*} ;;
+            shift; JOBFILE=$1; JOBNAME=${JOBFILE%.*} ;;
         --ref )
-            shift; REFNAME=${1%%.*} ;;
+            shift; REFNAME=${1%.*} ;;
         -- ) 
             shift;
             while [[ ! -z $1 ]]; do

@@ -20,9 +20,9 @@ function get_input_ {
         --x )
             shift; PEXE=$1 ;;
         --in ) 
-            shift; JOBFILE=$1; JOBNAME=${JOBFILE%%.*} ;;
+            shift; JOBFILE=$1; JOBNAME=${JOBFILE%.*i} ;;
         --ref )
-            shift; REFNAME=${1%%.*} ;;
+            shift; REFNAME=${1%.*} ;;
         -- ) 
 			shift; TOTJOBNAME=$1; break;;
         * ) 

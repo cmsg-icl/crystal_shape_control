@@ -123,7 +123,7 @@ function check_files_ {
         for (( i = 0; i < ${#JOBFILE[@]}; i++ )); do
             file=${JOBFILE[${i}]}
             check_a_file_
-            JOBNAME[${i}]=${file%%.*}
+            JOBNAME[${i}]=${file%.*}
         done
     else
         cat << EOF
