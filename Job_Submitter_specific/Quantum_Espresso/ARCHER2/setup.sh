@@ -161,11 +161,11 @@ function set_settings {
     LINE_PRE=`grep -nw 'PRE_CALC' ${SETFILE}`
     LINE_PRE=`echo "scale=0;${LINE_PRE%:*}+4" | bc`
     sed -i "${LINE_PRE}i[jobname].pwi   [jobname].pwi     Input for pw.x  PW-SCF" ${SETFILE}
-    sed -i "${LINE_PRE}i[jobname].cpi   [jobname].cpi     Input for cp.x  CPMD" ${SETFILE}
-    sed -i "${LINE_PRE}i[jobname].phi   [jobname].phi     Input for ph.x  DFPT" ${SETFILE}
-    sed -i "${LINE_PRE}i[jobname].hpi   [jobname].hpi     Input for hp.x  DFT+U" ${SETFILE}
-    sed -i "${LINE_PRE}i[jobname].epwi  [jobname].epwi    Input for epw.x Electron-Phonon Wannier" ${SETFILE}
-    sed -i "${LINE_PRE}i[jobname].kcwi  [jobname].kcwi    Input for kcw.x Spectra" ${SETFILE}
+    sed -i "${LINE_PRE}a[jobname].cpi   [jobname].cpi     Input for cp.x  CPMD" ${SETFILE}
+    sed -i "${LINE_PRE}a[jobname].phi   [jobname].phi     Input for ph.x  DFPT" ${SETFILE}
+    sed -i "${LINE_PRE}a[jobname].hpi   [jobname].hpi     Input for hp.x  DFT+U" ${SETFILE}
+    sed -i "${LINE_PRE}a[jobname].epwi  [jobname].epwi    Input for epw.x Electron-Phonon Wannier" ${SETFILE}
+    sed -i "${LINE_PRE}a[jobname].kcwi  [jobname].kcwi    Input for kcw.x Spectra" ${SETFILE}
 
     ## Optional input
     LINE_EXT=`grep -nw 'FILE_EXT' ${SETFILE}`
@@ -176,11 +176,12 @@ function set_settings {
     LINE_POST=`grep -nw 'POST_CALC' ${SETFILE}`
     LINE_POST=`echo "scale=0;${LINE_POST%:*}+4" | bc`
     sed -i "${LINE_POST}i[jobname].pwo          [jobname].pwo        Output for pw.x  PW-SCF" ${SETFILE}
-    sed -i "${LINE_POST}i[jobname].cpo          [jobname].cpo        Output for cp.x  CPMD" ${SETFILE}
-    sed -i "${LINE_POST}i[jobname].pho          [jobname].pho        Output for ph.x  DFPT" ${SETFILE}
-    sed -i "${LINE_POST}i[jobname].hpo          [jobname].hpo        Output for hp.x  DFT+U" ${SETFILE}
-    sed -i "${LINE_POST}i[jobname].epwo         [jobname].epwo       Output for epw.x Electron-Phonon Wannier" ${SETFILE}
-    sed -i "${LINE_POST}i[jobname].kcwo         [jobname].kcwo       Output for kcw.x Spectra" ${SETFILE}
+    sed -i "${LINE_POST}a[jobname].cpo          [jobname].cpo        Output for cp.x  CPMD" ${SETFILE}
+    sed -i "${LINE_POST}a[jobname].pho          [jobname].pho        Output for ph.x  DFPT" ${SETFILE}
+    sed -i "${LINE_POST}a[jobname].hpo          [jobname].hpo        Output for hp.x  DFT+U" ${SETFILE}
+    sed -i "${LINE_POST}a[jobname].epwo         [jobname].epwo       Output for epw.x Electron-Phonon Wannier" ${SETFILE}
+    sed -i "${LINE_POST}a[jobname].kcwo         [jobname].kcwo       Output for kcw.x Spectra" ${SETFILE}
+    sed -i "${LINE_POST}a[jobname].save         pwscf.save           Saved files for pw.x" ${SETFILE}
 
 # Job submission file template - should be placed at the end of file
     cat << EOF >> ${SETFILE}
