@@ -97,6 +97,7 @@ def cif2qe(cif_file, qe_file):
     output.write('%15s%16.8f\n' % ('cos(bc) =', np.cos(pmg_struc.lattice.alpha / 180 * np.pi)))
     output.write('%15s%16.8f\n' % ('cos(ac) =', np.cos(pmg_struc.lattice.beta / 180 * np.pi)))
     output.write('%15s%16.8f\n' % ('cos(ab) =', np.cos(pmg_struc.lattice.gamma / 180 * np.pi)))
+	output.close()
     
     return
 
@@ -111,4 +112,3 @@ elif option == 'cif2qe' or int(option) == 2:
     cif2qe(cif_file, qe_file)
 else:
     print('ERROR: Available options: 1. qe2cif  2. cif2qe, type either option name or number')
-
