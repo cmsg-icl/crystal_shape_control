@@ -1,21 +1,18 @@
 #!/bin/env python
 """
-Transform geometry from Quantum Espresso pw.x output into a CIF file for 
-visuallisation and further format translations. 
+Inter-transform geometry between Quantum Espresso pw.x output and a CIF file 
+for visuallisation and further format translations. 
 
 By Spical. Vir., ICL, spica.h.zhou@gmail.com
 12:01:50, Feb.02, 23
 """
-import sys
-import re
-import numpy as np
-from pymatgen.core.structure import Structure
-from pymatgen.io.cif import CifWriter
-
 def read_qe_output(qe_file):
     """
     Read Quantum Espresso pw.x output file
     """
+    import re
+    import numpy as np
+
     file = open(qe_file, 'r', errors='ignore')
     data = file.readlines()
     file.close()
@@ -55,9 +52,63 @@ def read_qe_output(qe_file):
     
     return latt, atom_spec, atom_cord, is_cart
 
+def qe2cif(qe_file, cif_file):
+    """
+    Quantum Espresso --> CIF
+    """
+    from pymatgen.io.cif import CifWriter
+    from pymatgen.core.structure import Structure
+    
+    lattice, species, coords, is_cart = read_qe_output(qe_file)
+    pmg_struc = Structure(lattice=lattice, species=species, coords=coords, coords_are_cartesian=is_cart)
+    CifWriter(pmg_struc, symprec=True).write_file(cif_file)
+    
+    return
 
-qe_file = sys.argv[1]
-lattice, species, coords, is_cart = read_qe_output(qe_file)
-pmg_struc = Structure(lattice=lattice, species=species, coords=coords, coords_are_cartesian=is_cart)
-CifWriter(pmg_struc, symprec=True).write_file(sys.argv[2])
+def cif2qe(cif_file, qe_file):
+    """
+    CIF --> Quantum Espresso cards
+    """
+    import numpy as np
+    from pymatgen.io.cif import CifParser
+    
+    print('Notice: CIF files with 1 configuration are permitted.')
+    pmg_struc = CifParser(cif_file).get_structures()[0]
+    latt_mx = np.array(pmg_struc.lattice.as_dict()['matrix'], dtype=float)
+    output = open(qe_file, 'w')
+    output.write('%s\n' % 'CELL_PARAMETERS {angstrom}')
+    output.write('%15.10f%4s%15.10f%4s%15.10f\n' % (latt_mx[0, 0], '', latt_mx[0, 1], '', latt_mx[0, 2]))
+    output.write('%15.10f%4s%15.10f%4s%15.10f\n' % (latt_mx[1, 0], '', latt_mx[1, 1], '', latt_mx[1, 2]))
+    output.write('%15.10f%4s%15.10f%4s%15.10f\n' % (latt_mx[2, 0], '', latt_mx[2, 1], '', latt_mx[2, 2]))
+    output.write('\n')
+    output.write('%s\n' % 'ATOMIC_POSITIONS {angstrom}')
+    cart_coord = pmg_struc.cart_coords.tolist()
+    for i in range(pmg_struc.num_sites):
+        output.write(
+            '%3s%16.8f%16.8f%16.8f\n' % 
+            (str(pmg_struc.species[i]), cart_coord[i][0], cart_coord[i][1], cart_coord[i][2])
+        )
+    
+    output.write('\n')
+    output.write('%15s%4i\n' % ('space_group =', pmg_struc.get_space_group_info()[1]))
+    output.write('%15s%16.8f\n' % ('a =', pmg_struc.lattice.a * 0.529177210903))
+    output.write('%15s%16.8f\n' % ('b/a =', pmg_struc.lattice.b / pmg_struc.lattice.a))
+    output.write('%15s%16.8f\n' % ('c/a =', pmg_struc.lattice.c / pmg_struc.lattice.a))
+    output.write('%15s%16.8f\n' % ('cos(bc) =', np.cos(pmg_struc.lattice.alpha / 180 * np.pi)))
+    output.write('%15s%16.8f\n' % ('cos(ac) =', np.cos(pmg_struc.lattice.beta / 180 * np.pi)))
+    output.write('%15s%16.8f\n' % ('cos(ab) =', np.cos(pmg_struc.lattice.gamma / 180 * np.pi)))
+    
+    return
+
+option = input('Options: 1. qe2cif  2. cif2qe; Type either option name or number: ')
+if option == 'qe2cif' or int(option) == 1:
+    qe_file = input('Enter the Quantum Espresso pw.x output file: ')
+    cif_file = input('Enter the name of CIF file: ')
+    qe2cif(qe_file, cif_file)
+elif option == 'cif2qe' or int(option) == 2:
+    cif_file = input('Enter the name of CIF file: ')
+    qe_file = input('Enter the name of Quantum Espresso keyword / card file: ')
+    cif2qe(cif_file, qe_file)
+else:
+    print('ERROR: Available options: 1. qe2cif  2. cif2qe, type either option name or number')
 
