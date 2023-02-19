@@ -33,7 +33,7 @@ function get_scriptdir {
     cat << EOF
 ================================================================================
     Note: all scripts should be placed into the same directory!
-    Please specify your installation path (by default ${HOME}/runCRYSTAL/):
+    Please specify your installation path (by default ${HOME}/etc/runCRYSTAL/):
 
 EOF
 
@@ -41,7 +41,7 @@ EOF
     SCRIPTDIR=`echo ${SCRIPTDIR}`
 
     if [[ -z ${SCRIPTDIR} ]]; then
-        SCRIPTDIR=${HOME}/runCRYSTAL/
+        SCRIPTDIR=${HOME}/etc/runCRYSTAL/
     fi
 
     if [[ ${SCRIPTDIR: -1} == '/' ]]; then

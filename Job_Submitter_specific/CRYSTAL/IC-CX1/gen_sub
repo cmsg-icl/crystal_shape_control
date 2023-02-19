@@ -165,12 +165,13 @@ EOF
         fi
     fi
 ## Properties calculations
-    if [[ -z ${REFNAME} && ${JOBTYPE}=='prop' ]]; then
+    if [[ -z ${REFNAME} && ${JOBTYPE} == 'prop' ]]; then
         cat << EOF
     ERROR:
         ${REFNAME}* not found - Mandatory for properties calculations.
 
 EOF
+        exit
     fi
 }
 
