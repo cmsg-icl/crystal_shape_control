@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# Instructions of pre-defined commands
+
+function print_ALIAS_HOWTO_ {
+    cat << EOF
+    -------------------------------------------
+    Imperial HPC GULP6 job submitter HOWTO
+    -------------------------------------------
+    Use 'source ~/.bashrc' to activate pre-defined
+    commands
+
+    Pre-defined commands
+        Pglp6    : Run parallel GULP calculations
+        Xglp6    : Run user defined commands (Advanced)
+        SETglp6  : Quick reference of settings file
+        HELPglp6 : Print help file
+
+    Example code:
+        Pglp6 -in mgo.gin -wt 02:00 -nd 1
+        Xglp6 -name free-energy -nd 1 -x pgulp -in 0k0g.gin -wt 00:30 -x pgulp -in 100k0g.gin -wt 00:30
+
+EOF
+}
+
+# Instructions of user-defined commands
+
+function print_GENSUB_HOWTO_ {
+    SOURCE=$(dirname $0)/gen_sub
+    source ${SOURCE} -help
+}
+
+print_ALIAS_HOWTO_
+print_GENSUB_HOWTO_

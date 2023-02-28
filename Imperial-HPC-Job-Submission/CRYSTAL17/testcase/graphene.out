@@ -1,0 +1,1098 @@
+Running Job Report
+--------------------------------------------
+DATE START : Tue 28 Feb 01:35:10 GMT 2023
+
+Pre-Calc Summary
+--------------------------------------------
+  date:                Tue 28 Feb 01:35:15 GMT 2023
+  hostname:            cx3-4-5.cx3.hpc.ic.ac.uk
+  system:              Linux cx3-4-5.cx3.hpc.ic.ac.uk 4.18.0-348.20.1.el8_5.x86_64 #1 SMP Tue Mar 8 12:56:54 EST 2022 x86_64 x86_64 x86_64 GNU/Linux
+  user:                hz1420
+  input:               /rds/general/user/hz1420/home/testcase/graphene.d12
+  output:              /rds/general/user/hz1420/home/testcase/graphene.out
+  temporary directory: /rds/general/user/hz1420/ephemeral/graphene_7106595
+  executable script:   /rds/general/user/hz1420/home/apps/Job_Submission/CRYSTAL17/run_exec
+  executable dir:      /rds/general/user/hz1420/home/apps/CRYSTAL17_v2.2gnu/
+  mpi + exe command:    mpiexec Pcrystal
+-------------------------------------------
+
+PBS Job Status
+-------------------------------------------
+  Connection timed out
+qstat: cannot connect to server pbs (errno=110)
+-------------------------------------------
+
+Find input data: /rds/general/user/hz1420/home/testcase/graphene.d12
+All files are synchonised.
+
+Job Ready to Go
+-------------------------------------------
+  Job name       : graphene
+  ID             : 7106595.pbs
+  Command        : mpiexec Pcrystal >> /rds/general/user/hz1420/home/testcase/graphene.out 2>&1
+  Temporary dir  : /rds/general/user/hz1420/ephemeral/graphene_7106595
+  List of files  : total 33
+-rw-------. 1 hz1420 hpc-nmh  404 Feb 28 01:37 INPUT
+-rw-------. 1 hz1420 hpc-nmh 9681 Feb 28 01:35 Job_script
+  Input script   :
+G Unit
+SLAB
+77
+2.46
+1
+6 0.33333333 0.66666667 0.00000000
+ENDGEOM
+6 4
+0 0 6 2.0 1.0
+ 3048.0 0.001826
+ 456.4 0.01406
+ 103.7 0.06876
+ 29.23 0.2304
+ 9.349 0.4685
+ 3.189 0.3628
+0 1 2 4.0 1.0
+ 3.665 -0.3959 0.2365
+ 0.7705 1.216 0.8606
+0 1 1 0.0 1.0
+ 0.26 1.0 1.0
+0 3 1 0.0 1.0
+ 0.8 1.0
+99 0
+ENDBS
+DFT
+HSE06
+XXLGRID
+ENDDFT
+TOLINTEG
+7 7 7 7 14
+SHRINK
+24 48
+TOLDEE
+8
+MAXCYCLE
+100
+FMIXING
+30
+SMEAR
+0.000100
+ENDSCF
+-------------------------------------------
+
+ PROCESS            1  OF           24  WORKING
+ PROCESS           11  OF           24  WORKING
+ PROCESS           17  OF           24  WORKING
+ PROCESS           20  OF           24  WORKING
+ PROCESS            9  OF           24  WORKING
+ PROCESS           16  OF           24  WORKING
+ PROCESS            6  OF           24  WORKING
+ PROCESS           21  OF           24  WORKING
+ PROCESS            4  OF           24  WORKING
+ PROCESS           22  OF           24  WORKING
+ PROCESS            8  OF           24  WORKING
+ PROCESS            7  OF           24  WORKING
+ PROCESS           14  OF           24  WORKING
+ PROCESS           18  OF           24  WORKING
+ PROCESS           12  OF           24  WORKING
+ PROCESS            2  OF           24  WORKING
+ PROCESS            3  OF           24  WORKING
+ PROCESS            5  OF           24  WORKING
+ PROCESS           23  OF           24  WORKING
+ PROCESS            0  OF           24  WORKING
+ PROCESS           19  OF           24  WORKING
+ PROCESS           10  OF           24  WORKING
+ PROCESS           13  OF           24  WORKING
+ PROCESS           15  OF           24  WORKING
+
+         
+ *******************************************************************************
+ *                                                                             *
+ *                               CRYSTAL17                                     *
+ *                      public : 1.0.2 - March 1st, 2018                       *
+ *                       HTTP://WWW.CRYSTAL.UNITO.IT                           *
+ *                                                                             *
+ *                              MAIN AUTHORS                                   *
+ *                                                                             *
+ *  R. DOVESI(1,11), V.R. SAUNDERS(2), C. ROETTI(1,11), R. ORLANDO(1,11),      *
+ *  C.M. ZICOVICH-WILSON(1,3), F. PASCALE(4), B. CIVALLERI(1,11),              *
+ *  K. DOLL(5), N.M. HARRISON(2,6), I.J. BUSH(7), Ph. D'ARCO(8),               *
+ *  M. LLUNELL(9), M. CAUSA'(10), Y. NOEL(8), L. MASCHIO(1,11), A. ERBA(1,11)  *
+ *  M. RE'RAT(14), S. CASASSA(1,11)                                            *
+ *                                                                             *
+ *        CONTRIBUTIONS TO THE CODE HAVE ALSO BEEN GIVEN BY                    *
+ *                                                                             *
+ *  M. FERRABONE(1,11), M. DE LA PIERRE(1,11), M. FERRERO(1,11),               *
+ *  J. BAIMA(1,11), E. ALBANESE(1,11), M.F. PEINTINGER(12), R. BAST(13),       *
+ *  B. KIRTMAN(15), V. LACIVITA(1,11), R. DEMICHELIS(1,16)                     *
+ *  G. BRANDEBURG(17), S. SALUSTRO(1,11), G. SANSONE(1,11)                     *
+ *  M.T. RUGGIERO(18)                                                          *
+ *                                                                             *
+ * (1) THEORETICAL CHEMISTRY GROUP - UNIVERSITA' DI TORINO - TORINO (ITALY)    *
+ * (2) COMPUTATIONAL SCIENCE & ENGINEERING DEPARTMENT - STFC DARESBURY (UK)    *
+ * (3) UNIVERSIDAD AUTONOMA DEL ESTADO DE MORELOS - CUERNAVACA (MEXICO)        *
+ * (4) UNIVERSITE' DE LORRAINE - NANCY (FRANCE)                                *
+ * (5) UNIVERSITAET STUTTGART- STUTTGART (GERMANY)                             *
+ * (6) IMPERIAL COLLEGE - LONDON (UK)                                          *
+ * (7) OXFORD E-RESEARCH CENTRE - OXFORD (UK)                                  *
+ * (8) UPMC - SORBONNE UNIVERSITES - PARIS (FRANCE)                            *
+ * (9) UNIVERSIDAD DE BARCELONA - BARCELONA (SPAIN)                            *
+ *(10) UNIVERSITA' DI NAPOLI "FEDERICO II" - NAPOLI (ITALY)                    *
+ *(11) NIS - NANOSTRUCTURED INTERFACES AND SURFACES - TORINO (ITALY)           *
+ *(12) MPI FUER CHEMISCHE ENERGIEKONVERSION - MUELHEIM AN DER RUHR (GERMANY)   *
+ *(13) UNIVERSITY OF TROMSO - TROMSO (NORWAY)                                  *
+ *(14) UNIVERSITE' DE PAU ET DES PAYS DE L'ADOUR - PAU (FRANCE)                *
+ *(15) UNIVERSITY OF CALIFORNIA SANTA BARBARA - SANTA BARBARA (USA)            *
+ *(16) CURTIN UNIVERSITY - PERTH (AUSTRALIA)                                   *
+ *(17) UNIVERSITY COLLEGE LONDON - LONDON (UK)                                 *
+ *(18) CAMBRIDGE UNIVERSITY - CAMBRIDGE (UK)                                   *
+ *                                                                             *
+ *******************************************************************************
+ EEEEEEEEEE STARTING  DATE 28 02 2023 TIME 01:37:29.3
+ G Unit                                                                          
+
+ SLAB CALCULATION
+ SYSTEM AND LATTICE                   :  HEXAGONAL   
+ TWO-SIDED PLANE GROUP N. 77          :  P 6 M M         
+ CORRESPONDING SPACE GROUP N. 183
+
+ LATTICE PARAMETERS  (ANGSTROMS AND DEGREES) - CONVENTIONAL CELL
+           A              B            GAMMA
+        2.46000        2.46000      120.00000
+
+
+ NUMBER OF IRREDUCIBLE ATOMS IN THE CONVENTIONAL CELL:    1
+
+ INPUT COORDINATES
+
+ ATOM AT. N.              COORDINATES
+   1   6     3.333333300000E-01  6.666666700000E-01  0.000000000000E+00
+
+ *******************************************************************************
+
+ << INFORMATION >>: FROM NOW ON, ALL COORDINATES REFER TO THE PRIMITIVE CELL
+
+ *******************************************************************************
+
+ LATTICE PARAMETERS  (ANGSTROMS AND DEGREES) - PRIMITIVE CELL
+       A          B          C        ALPHA      BETA     GAMMA        VOLUME
+    2.46000    2.46000  500.00000    90.00000  90.00000 120.00000      5.240839
+
+ COORDINATES OF THE EQUIVALENT ATOMS 
+ (X AND Y IN FRACTIONARY UNITS, Z IN ANGSTROMS)
+
+ N. ATOM EQUIV AT. N.          X                  Y                  Z
+
+   1   1   1    6 C     3.33333330000E-01 -3.33333330000E-01  0.00000000000E+00
+   2   1   2    6 C    -3.33333330000E-01  3.33333330000E-01  0.00000000000E+00
+
+ NUMBER OF SYMMETRY OPERATORS         :   12
+ *******************************************************************************
+ * GEOMETRY EDITING - INPUT COORDINATES ARE GIVEN IN ANGSTROM         
+ *******************************************************************************
+
+ GEOMETRY NOW FULLY CONSISTENT WITH THE GROUP
+
+ GCALCO - MAX INDICES DIRECT LATTICE VECTOR    83    83     0
+ NO.OF VECTORS CREATED 6999 STARS  503 RMAX   204.38542 BOHR
+
+ GEOMETRY FOR WAVE FUNCTION - DIMENSIONALITY OF THE SYSTEM    2
+ (NON PERIODIC DIRECTION: LATTICE PARAMETER FORMALLY SET TO 500)
+ *******************************************************************************
+ LATTICE PARAMETERS (ANGSTROMS AND DEGREES) - BOHR = 0.5291772083 ANGSTROM
+ PRIMITIVE CELL
+         A              B              C           ALPHA      BETA       GAMMA 
+     2.46000000     2.46000000   500.00000000    90.000000  90.000000 120.000000
+ *******************************************************************************
+ ATOMS IN THE ASYMMETRIC UNIT    1 - ATOMS IN THE UNIT CELL:    2
+     ATOM                 X/A                 Y/B             Z(ANGSTROM)
+ *******************************************************************************
+      1 T   6 C     3.333333333333E-01 -3.333333333333E-01  0.000000000000E+00
+      2 F   6 C    -3.333333333333E-01  3.333333333333E-01  0.000000000000E+00
+
+ T = ATOM BELONGING TO THE ASYMMETRIC UNIT
+
+ ****   12 SYMMOPS - TRANSLATORS IN FRACTIONAL UNITS
+ **** MATRICES AND TRANSLATORS IN THE CRYSTALLOGRAPHIC REFERENCE FRAME
+   V INV                    ROTATION MATRICES                   TRANSLATORS
+   1   1  1.00  0.00  0.00  0.00  1.00  0.00  0.00  0.00  1.00  0.00  0.00  0.00
+   2   2 -1.00  0.00  0.00  0.00 -1.00  0.00  0.00  0.00  1.00  0.00  0.00  0.00
+   3   4  0.00 -1.00  0.00  1.00 -1.00  0.00  0.00  0.00  1.00  0.00  0.00  0.00
+   4   3 -1.00  1.00  0.00 -1.00 -0.00  0.00  0.00  0.00  1.00  0.00  0.00  0.00
+   5   6  1.00 -1.00  0.00  1.00  0.00  0.00  0.00  0.00  1.00  0.00  0.00  0.00
+   6   5  0.00  1.00  0.00 -1.00  1.00  0.00  0.00  0.00  1.00  0.00  0.00  0.00
+   7   7 -1.00  1.00  0.00  0.00  1.00  0.00  0.00  0.00  1.00  0.00  0.00  0.00
+   8   8  1.00  0.00  0.00  1.00 -1.00  0.00  0.00  0.00  1.00  0.00  0.00  0.00
+   9   9  0.00 -1.00  0.00 -1.00  0.00  0.00  0.00  0.00  1.00  0.00  0.00  0.00
+  10  10  0.00  1.00  0.00  1.00 -0.00  0.00  0.00  0.00  1.00  0.00  0.00  0.00
+  11  11 -1.00  0.00  0.00 -1.00  1.00  0.00  0.00  0.00  1.00  0.00  0.00  0.00
+  12  12  1.00 -1.00  0.00  0.00 -1.00  0.00  0.00  0.00  1.00  0.00  0.00  0.00
+
+ DIRECT LATTICE VECTORS CARTESIAN COMPONENTS (ANGSTROM)
+          X                    Y                    Z
+   0.213042249331E+01  -0.123000000000E+01   0.000000000000E+00
+   0.000000000000E+00   0.246000000000E+01   0.000000000000E+00
+   0.000000000000E+00   0.000000000000E+00   0.500000000000E+03
+
+
+ CARTESIAN COORDINATES - PRIMITIVE CELL
+ *******************************************************************************
+ *      ATOM          X(ANGSTROM)         Y(ANGSTROM)         Z(ANGSTROM)
+ *******************************************************************************
+    1     6 C    -1.420281662206E+00  0.000000000000E+00  0.000000000000E+00
+    2     6 C    -7.101408311032E-01 -1.230000000000E+00  0.000000000000E+00
+
+ *******************************************************************************
+ LOCAL ATOMIC FUNCTIONS BASIS SET
+ *******************************************************************************
+   ATOM   X(AU)   Y(AU)   Z(AU)  N. TYPE  EXPONENT  S COEF   P COEF   D/F/G COEF
+ *******************************************************************************
+   1 C   -2.684   0.000   0.000
+                                  1 S  
+                                         3.048E+03 1.826E-03 0.000E+00 0.000E+00
+                                         4.564E+02 1.406E-02 0.000E+00 0.000E+00
+                                         1.037E+02 6.876E-02 0.000E+00 0.000E+00
+                                         2.923E+01 2.304E-01 0.000E+00 0.000E+00
+                                         9.349E+00 4.685E-01 0.000E+00 0.000E+00
+                                         3.189E+00 3.628E-01 0.000E+00 0.000E+00
+                           2-     5 SP 
+                                         3.665E+00-3.959E-01 2.365E-01 0.000E+00
+                                         7.705E-01 1.216E+00 8.606E-01 0.000E+00
+                           6-     9 SP 
+                                         2.600E-01 1.000E+00 1.000E+00 0.000E+00
+                          10-    14 D  
+                                         8.000E-01 0.000E+00 0.000E+00 1.000E+00
+   2 C   -1.342  -2.324   0.000
+ INFORMATION **** SET_MPP **** PCRYSTAL CALCULATION
+ INFORMATION **** READM2 **** NEW DEFAULT: FOCK/KS MATRIX MIXING SET TO 30 %
+ INFORMATION **** READM2 **** NEW DEFAULT: FULL DIRECT SCF MODE
+ INFORMATION **** READM2 **** NEW DEFAULT: COULOMB BIPOLAR BUFFER SET TO 32 Mb
+ INFORMATION **** READM2 **** NEW DEFAULT: EXCHANGE BIPOLAR BUFFER SET TO 32 Mb
+
+ *******************************************************************************
+ NEW DEFAULT: DFT INTEGRATION GRID INCREASED TO XLGRID
+ NEW DEFAULT: DIIS ACCELERATOR ACTIVE
+ USE KEYWORD NODIIS TO TURN IT OFF
+ *******************************************************************************
+
+ WARNING **** RDDFTP **** HSE06-HJS ACTIVE
+ RANGE SEPARATION - OMEGA:   0.11000000000000000     
+ INFORMATION **** TOLINTEG **** COULOMB AND EXCHANGE SERIES TOLERANCES MODIFIED
+ INFORMATION **** TOLDEE **** SCF TOL ON TOTAL ENERGY SET TO           8
+ INFORMATION **** MAXCYCLE **** MAX NUMBER OF SCF CYCLES SET TO         100
+ INFORMATION **** SMEAR **** FERMI SMEARING ACTIVE
+ FERMI SMEARING - TEMPERATURE SMEARING OF FERMI SURFACE  0.1000E-03
+ *******************************************************************************
+ N. OF ATOMS PER CELL         2  COULOMB OVERLAP TOL         (T1) 10**   -7
+ NUMBER OF SHELLS             8  COULOMB PENETRATION TOL     (T2) 10**   -7
+ NUMBER OF AO                28  EXCHANGE OVERLAP TOL        (T3) 10**   -7
+ N. OF ELECTRONS PER CELL    12  EXCHANGE PSEUDO OVP (F(G))  (T4) 10**   -7
+ CORE ELECTRONS PER CELL      4  EXCHANGE PSEUDO OVP (P(G))  (T5) 10**  -14
+ N. OF SYMMETRY OPERATORS    12  POLE ORDER IN MONO ZONE                  4
+ *******************************************************************************
+ TYPE OF CALCULATION :  RESTRICTED CLOSED SHELL
+ KOHN-SHAM HAMILTONIAN
+
+ (EXCHANGE)[CORRELATION] FUNCTIONAL:(HSE06 SR/GGA)[PERDEW-BURKE-ERNZERHOF]
+
+ RANGE-SEPARATED HYBRID FUNCTIONAL 
+ OMEGA (SHORT-RANGE)[LONG-RANGE]:(    0.1100)[    0.0000]
+
+ HYBRID EXCHANGE - PERCENTAGE OF FOCK EXCHANGE    25.0000
+
+ CAPPA:IS1 24;IS2 24;IS3  1; K PTS MONK NET  61; SYMMOPS:K SPACE  24;G SPACE  12
+
+ *******************************************************************************
+ MAX NUMBER OF SCF CYCLES     100  CONVERGENCE ON DELTAP        10**-18
+ WEIGHT OF F(I) IN F(I+1)      30% CONVERGENCE ON ENERGY        10**- 8
+ SHRINK. FACT.(MONKH.)   24 24  1  NUMBER OF K POINTS IN THE IBZ     61
+ SHRINKING FACTOR(GILAT NET)   48  NUMBER OF K POINTS(GILAT NET)    217
+ *******************************************************************************
+ *** K POINTS COORDINATES (OBLIQUE COORDINATES IN UNITS OF IS = 24)
+   1-R(  0  0  0)   2-C(  1  0  0)   3-C(  2  0  0)   4-C(  3  0  0)
+   5-C(  4  0  0)   6-C(  5  0  0)   7-C(  6  0  0)   8-C(  7  0  0)
+   9-C(  8  0  0)  10-C(  9  0  0)  11-C( 10  0  0)  12-C( 11  0  0)
+  13-R( 12  0  0)  14-C(  1  1  0)  15-C(  2  1  0)  16-C(  3  1  0)
+  17-C(  4  1  0)  18-C(  5  1  0)  19-C(  6  1  0)  20-C(  7  1  0)
+  21-C(  8  1  0)  22-C(  9  1  0)  23-C( 10  1  0)  24-C( 11  1  0)
+  25-C(  2  2  0)  26-C(  3  2  0)  27-C(  4  2  0)  28-C(  5  2  0)
+  29-C(  6  2  0)  30-C(  7  2  0)  31-C(  8  2  0)  32-C(  9  2  0)
+  33-C( 10  2  0)  34-C( 11  2  0)  35-C(  3  3  0)  36-C(  4  3  0)
+  37-C(  5  3  0)  38-C(  6  3  0)  39-C(  7  3  0)  40-C(  8  3  0)
+  41-C(  9  3  0)  42-C( 10  3  0)  43-C(  4  4  0)  44-C(  5  4  0)
+  45-C(  6  4  0)  46-C(  7  4  0)  47-C(  8  4  0)  48-C(  9  4  0)
+  49-C( 10  4  0)  50-C(  5  5  0)  51-C(  6  5  0)  52-C(  7  5  0)
+  53-C(  8  5  0)  54-C(  9  5  0)  55-C(  6  6  0)  56-C(  7  6  0)
+  57-C(  8  6  0)  58-C(  9  6  0)  59-C(  7  7  0)  60-C(  8  7  0)
+  61-C(  8  8  0)
+
+ DIRECT LATTICE VECTORS COMPON. (A.U.)     RECIP. LATTICE VECTORS COMPON. (A.U.) 
+        X            Y            Z              X            Y            Z
+    4.0259151   -2.3243631    0.0000000      1.5606850    0.0000000    0.0000000
+    0.0000000    4.6487263    0.0000000      0.7803425    1.3515929   -0.0000000
+    0.0000000    0.0000000  944.8630670     -0.0000000    0.0000000    0.0066498
+
+ DISK SPACE FOR EIGENVECTORS (FTN 10)       94080 REALS
+
+ SYMMETRY ADAPTION OF THE BLOCH FUNCTIONS ENABLED
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT gordsh1     TELAPSE        1.38 TCPU        0.10
+
+ MATRIX SIZE: P(G)   16142, F(G)    3969, P(G) IRR    1249, F(G) IRR     705
+ MAX G-VECTOR INDEX FOR 1- AND 2-ELECTRON INTEGRALS  55
+
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT INPUT       TELAPSE        1.39 TCPU        0.11
+
+ NEIGHBORS OF THE NON-EQUIVALENT ATOMS
+
+ N = NUMBER OF NEIGHBORS AT DISTANCE R
+    ATOM  N     R/ANG      R/AU   NEIGHBORS (ATOM LABELS AND CELL INDICES)
+   1 C    3     1.4203     2.6839    2 C    0 0 0    2 C   -1 0 0    2 C    0 1 0
+   1 C    6     2.4600     4.6487    1 C   -1-1 0    1 C    1 1 0    1 C   -1 0 0
+                                     1 C    1 0 0    1 C    0-1 0    1 C    0 1 0
+   1 C    3     2.8406     5.3679    2 C    1 1 0    2 C   -1-1 0    2 C   -1 1 0
+   1 C    6     3.7577     7.1010    2 C    1 0 0    2 C    0-1 0    2 C   -2-1 0
+                                     2 C    1 2 0    2 C   -2 0 0    2 C    0 2 0
+   1 C    6     4.2608     8.0518    1 C   -2-1 0    1 C    2 1 0    1 C   -1-2 0
+                                     1 C    1 2 0    1 C   -1 1 0    1 C    1-1 0
+   1 C    6     4.9200     9.2975    1 C   -2-2 0    1 C    2 2 0    1 C   -2 0 0
+                                     1 C    2 0 0    1 C    0-2 0    1 C    0 2 0
+
+
+ THERE ARE NO SYMMETRY ALLOWED DIRECTIONS
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SYMM        TELAPSE        1.43 TCPU        0.15
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT INT_SCREEN  TELAPSE        1.43 TCPU        0.16
+
+ DFT PARAMETERS
+
+     ATOM       ELECTRONS   NET CHARGE   R(ANGSTROM)
+   1   6  C       6.0000      0.0000     0.77000000
+
+ SIZE OF GRID=      12906
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MAKE_GRID2  TELAPSE        1.54 TCPU        0.26
+ BECKE WEIGHT FUNCTION
+ RADSAFE =     2.00
+ TOLERANCES - DENSITY:10**- 6; POTENTIAL:10**- 9; GRID WGT:10**-14
+
+ RADIAL INTEGRATION  - INTERVALS (POINTS,UPPER LIMIT):            1( 99,  4.0*R)
+
+ ANGULAR INTEGRATION - INTERVALS (ACCURACY LEVEL [N. POINTS] UPPER LIMIT):
+  1(  6[ 146]   0.2)  2( 11[ 302]   0.5)  3( 14[ 590]   0.9)  4( 18[1454]   3.5)
+  5( 14[ 590]9999.0)
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT INT_CALC    TELAPSE        1.55 TCPU        0.26
+ EEEEEEEEEE INT_CALC TERMINATION  DATE 28 02 2023 TIME 01:37:30.7
+
+ *******************************************************************************
+ G Unit                                                                          
+ CRYSTAL - SCF - TYPE OF CALCULATION :  RESTRICTED CLOSED SHELL
+ *******************************************************************************
+
+ CAPPA:IS1 24;IS2 24;IS3  1; K PTS MONK NET  61; SYMMOPS:K SPACE  24;G SPACE  12
+
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SDIK        TELAPSE        1.56 TCPU        0.27
+
+ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+         ATOMIC WAVEFUNCTION(S)
+
+
+ NUCLEAR CHARGE  6.0  SYMMETRY SPECIES            S    P
+ N. ELECTRONS    6.0  NUMBER OF PRIMITIVE GTOS    9    3
+                      NUMBER OF CONTRACTED GTOS   3    2
+                      NUMBER OF CLOSED SHELLS     2    0
+                      OPEN SHELL OCCUPATION       0    2
+
+  ZNUC SCFIT  TOTAL HF ENERGY   KINETIC ENERGY   VIRIAL THEOREM ACCURACY
+   6.0   8   -3.761838750E+01  3.811478523E+01 -1.986976242E+00  2.1E-06
+
+ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+   6.0000000   6.0000000
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE        1.58 TCPU        0.28
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLXN     TELAPSE        1.59 TCPU        0.28
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE        1.75 TCPU        0.44
+ NUMERICALLY INTEGRATED DENSITY     12.0000018201
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE        1.77 TCPU        0.47
+ CYC   0 ETOT(AU) -7.655179176511E+01 DETOT -7.66E+01 tst  0.00E+00 PX  1.00E+00
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT DIIS        TELAPSE        1.78 TCPU        0.47
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE        1.79 TCPU        0.48
+ POSSIBLY CONDUCTING STATE - EFERMI(AU) -1.2523212E-01 (RES. CHARGE  3.55E-15;IT.  0)
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE        1.79 TCPU        0.48
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+   6.0000000   6.0000000
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE        1.79 TCPU        0.48
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLXN     TELAPSE        1.80 TCPU        0.49
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE        1.95 TCPU        0.64
+ NUMERICALLY INTEGRATED DENSITY     12.0000010940
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE        1.99 TCPU        0.68
+ CYC   1 ETOT(AU) -7.608930316756E+01 DETOT  4.62E-01 tst  0.00E+00 PX  1.00E+00
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT DIIS        TELAPSE        1.99 TCPU        0.68
+ DIIS TEST: 0.30460E-02 AT SCF   CYCLE   1 - MIX   30 %
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE        2.00 TCPU        0.68
+ POSSIBLY CONDUCTING STATE - EFERMI(AU) -9.8315163E-02 (RES. CHARGE  2.66E-15;IT.  0)
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE        2.00 TCPU        0.68
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+   6.0000000   6.0000000
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE        2.00 TCPU        0.68
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLXN     TELAPSE        2.00 TCPU        0.69
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE        2.16 TCPU        0.84
+ NUMERICALLY INTEGRATED DENSITY     12.0000011281
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE        2.21 TCPU        0.89
+ CYC   2 ETOT(AU) -7.609117162559E+01 DETOT -1.87E-03 tst  2.43E-04 PX  1.66E-02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT DIIS        TELAPSE        2.21 TCPU        0.89
+ DIIS TEST: 0.82806E-04 AT SCF   CYCLE   2 - DIIS ACTIVE - HISTORY:     2 CYCLES
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE        2.21 TCPU        0.89
+ POSSIBLY CONDUCTING STATE - EFERMI(AU) -9.9131099E-02 (RES. CHARGE  2.85E-13;IT. 10)
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE        2.22 TCPU        0.89
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+   6.0000000   6.0000000
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE        2.22 TCPU        0.89
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLXN     TELAPSE        2.22 TCPU        0.90
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE        2.38 TCPU        1.06
+ NUMERICALLY INTEGRATED DENSITY     12.0000011296
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE        2.42 TCPU        1.10
+ CYC   3 ETOT(AU) -7.609130298838E+01 DETOT -1.31E-04 tst  3.13E-05 PX  8.59E-03
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT DIIS        TELAPSE        2.43 TCPU        1.10
+ DIIS TEST: 0.10601E-05 AT SCF   CYCLE   3 - DIIS ACTIVE - HISTORY:     3 CYCLES
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE        2.43 TCPU        1.10
+ POSSIBLY CONDUCTING STATE - EFERMI(AU) -9.8574266E-02 (RES. CHARGE  2.02E-11;IT. 10)
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE        2.43 TCPU        1.10
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+   6.0000000   6.0000000
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE        2.43 TCPU        1.10
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLXN     TELAPSE        2.44 TCPU        1.11
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE        2.61 TCPU        1.28
+ NUMERICALLY INTEGRATED DENSITY     12.0000011303
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE        2.65 TCPU        1.32
+ CYC   4 ETOT(AU) -7.609130346821E+01 DETOT -4.80E-07 tst  8.29E-08 PX  3.86E-04
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT DIIS        TELAPSE        2.65 TCPU        1.32
+ DIIS TEST: 0.73370E-09 AT SCF   CYCLE   4 - DIIS ACTIVE - HISTORY:     4 CYCLES
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE        2.66 TCPU        1.32
+ POSSIBLY CONDUCTING STATE - EFERMI(AU) -9.8558295E-02 (RES. CHARGE  3.38E-13;IT.  6)
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE        2.66 TCPU        1.32
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+   6.0000000   6.0000000
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE        2.66 TCPU        1.32
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLXN     TELAPSE        2.66 TCPU        1.33
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE        2.82 TCPU        1.48
+ NUMERICALLY INTEGRATED DENSITY     12.0000011303
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE        2.86 TCPU        1.52
+ CYC   5 ETOT(AU) -7.609130346663E+01 DETOT  1.58E-09 tst  7.10E-11 PX  7.69E-06
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT DIIS        TELAPSE        2.86 TCPU        1.52
+ DIIS TEST: 0.92113E-12 AT SCF   CYCLE   5 - DIIS ACTIVE - HISTORY:     5 CYCLES
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE        2.86 TCPU        1.52
+ POSSIBLY CONDUCTING STATE - EFERMI(AU) -9.8558395E-02 (RES. CHARGE  0.00E+00;IT.  4)
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE        2.87 TCPU        1.52
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+   6.0000000   6.0000000
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE        2.87 TCPU        1.52
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLXN     TELAPSE        2.87 TCPU        1.53
+
+ ::: DIPOLE MOMENT ALONG NON PERIODIC DIRECTIONS:
+ ::: A.U.     (Z)  1.36185E-06
+ ::: DEBYE        -3.46147E-06
+
+ +++ ENERGIES IN A.U. +++
+ ::: EXT EL-POLE                                  -1.7254183908873E+02
+ ::: EXT EL-SPHEROPOLE                             0.0000000000000E+00
+ ::: BIELET ZONE E-E                               1.6161590234391E+02
+ ::: TOTAL E-E                                    -1.0925936744824E+01
+ ::: TOTAL E-N + N-E                              -8.8003591643423E+01
+ ::: TOTAL N-N                                    -4.4572020877889E+01
+ ::: KINETIC ENERGY                                7.5823137123164E+01
+ ::: PSEUDO TOTAL   ENERGY                        -6.7678412142972E+01
+ ::: VIRIAL COEFFICIENT                            1.0567570526022E+00
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE        3.03 TCPU        1.68
+ NUMERICALLY INTEGRATED DENSITY     12.0000011303
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE        3.07 TCPU        1.73
+ CYC   6 ETOT(AU) -7.609130346663E+01 DETOT -1.63E-12 tst  3.50E-14 PX  7.69E-06
+
+ == SCF ENDED - CONVERGENCE ON ENERGY      E(AU) -7.6091303466629E+01 CYCLES   6
+
+
+ ENERGY EXPRESSION=HARTREE+FOCK EXCH*0.00000+(HSE06      EXCH)*1.00000+PBE        CORR
+
+ FINITE TEMPERATURE DFT CALCULATION 
+ TEMPERATURE      (T)    1.000000000000E-04 HARTREE 
+ ENERGY           (E)   -7.609130346663E+01
+ FREE ENERGY      (F)   -7.609130370730E+01
+ ELECTRON ENTROPY (S)    2.406761043611E-03
+ (E(T)+F(T))/2    (E0)  -7.609130358697E+01
+
+
+ TOTAL ENERGY(DFT)(AU)(  6) -7.6091303586967E+01 DE-1.6E-12 tester 3.5E-14
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT EDFT        TELAPSE        3.07 TCPU        1.73
+ EIGENVECTORS IN FORTRAN UNIT  8
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT END         TELAPSE        3.09 TCPU        1.74
+ EEEEEEEEEE TERMINATION  DATE 28 02 2023 TIME 01:37:32.3
+NODE    0 CPU TIME =         1.740
+NODE    1 CPU TIME =         1.804
+NODE    2 CPU TIME =         1.739
+NODE    3 CPU TIME =         1.787
+NODE    4 CPU TIME =         1.828
+NODE    5 CPU TIME =         1.861
+NODE    6 CPU TIME =         1.858
+NODE    7 CPU TIME =         1.733
+NODE    8 CPU TIME =         1.789
+NODE    9 CPU TIME =         1.790
+NODE   10 CPU TIME =         1.840
+NODE   11 CPU TIME =         1.764
+NODE   12 CPU TIME =         1.746
+NODE   13 CPU TIME =         1.788
+NODE   14 CPU TIME =         1.713
+NODE   15 CPU TIME =         1.797
+NODE   16 CPU TIME =         1.739
+NODE   17 CPU TIME =         1.932
+NODE   18 CPU TIME =         1.861
+NODE   19 CPU TIME =         1.831
+NODE   20 CPU TIME =         1.715
+NODE   21 CPU TIME =         1.756
+NODE   22 CPU TIME =         1.895
+NODE   23 CPU TIME =         1.745
+    TOTAL CPU TIME =        43.053
+Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+Note: The following floating-point exceptions are signalling:Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+ IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+
+DATE END   : Tue 28 Feb 01:37:32 GMT 2023
+Script run_exec done.
+--------------------------------------------
+
+Post Processing Report
+--------------------------------------------
+Begining of post processing : Tue 28 Feb 01:37:32 GMT 2023
+List of saved files
+  TEMPORARY            SAVED
+  fort.9               graphene.f9   111308   Feb 28 01:37
+  fort.98              graphene.f98  282657   Feb 28 01:37
+--------------------------------------------
+
+Temporary Directory Disk Info
+--------------------------------------------
+  Temporary directory      : /rds/general/user/hz1420/ephemeral/graphene_7106595
+
+  Disk usage (df -h)
+Filesystem      Size  Used Avail Use% Mounted on
+rds              14P   13P  1.8P  88% /rds
+
+  Usage by folders (du -m)
+1	/rds/general/user/hz1420/ephemeral/graphene_7106595
+
+  Detailed file list (ls -l .)
+total 58
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 dffit3.dat
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_err1.pe00
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_err1.pe01
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_err1.pe02
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_err1.pe03
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_err1.pe04
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_err1.pe05
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_err1.pe06
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_err1.pe07
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_err1.pe08
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_err1.pe09
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_err1.pe10
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_err1.pe11
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_err1.pe12
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_err1.pe13
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_err1.pe14
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_err1.pe15
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_err1.pe16
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_err1.pe17
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_err1.pe18
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_err1.pe19
+-rw-------. 1 hz1420 hpc-nmh    544 Feb 28 01:37 diis_err1.pe20
+-rw-------. 1 hz1420 hpc-nmh    544 Feb 28 01:37 diis_err1.pe21
+-rw-------. 1 hz1420 hpc-nmh   1184 Feb 28 01:37 diis_err1.pe22
+-rw-------. 1 hz1420 hpc-nmh   1184 Feb 28 01:37 diis_err1.pe23
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_err2.pe00
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_err2.pe01
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_err2.pe02
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_err2.pe03
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_err2.pe04
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_err2.pe05
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_err2.pe06
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_err2.pe07
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_err2.pe08
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_err2.pe09
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_err2.pe10
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_err2.pe11
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_err2.pe12
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_err2.pe13
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_err2.pe14
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_err2.pe15
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_err2.pe16
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_err2.pe17
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_err2.pe18
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_err2.pe19
+-rw-------. 1 hz1420 hpc-nmh    680 Feb 28 01:37 diis_err2.pe20
+-rw-------. 1 hz1420 hpc-nmh    680 Feb 28 01:37 diis_err2.pe21
+-rw-------. 1 hz1420 hpc-nmh   1480 Feb 28 01:37 diis_err2.pe22
+-rw-------. 1 hz1420 hpc-nmh   1480 Feb 28 01:37 diis_err2.pe23
+-rw-------. 1 hz1420 hpc-nmh  33888 Feb 28 01:37 diis_Fg
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_Sk.pe00
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_Sk.pe01
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_Sk.pe02
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_Sk.pe03
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_Sk.pe04
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_Sk.pe05
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_Sk.pe06
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_Sk.pe07
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_Sk.pe08
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_Sk.pe09
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_Sk.pe10
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_Sk.pe11
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_Sk.pe12
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_Sk.pe13
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_Sk.pe14
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_Sk.pe15
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_Sk.pe16
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_Sk.pe17
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_Sk.pe18
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_Sk.pe19
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_Sk.pe20
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_Sk.pe21
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_Sk.pe22
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 diis_Sk.pe23
+-rw-------. 1 hz1420 hpc-nmh  16728 Feb 28 01:37 fort.10.pe00
+-rw-------. 1 hz1420 hpc-nmh  22104 Feb 28 01:37 fort.10.pe01
+-rw-------. 1 hz1420 hpc-nmh  26136 Feb 28 01:37 fort.10.pe02
+-rw-------. 1 hz1420 hpc-nmh  31512 Feb 28 01:37 fort.10.pe03
+-rw-------. 1 hz1420 hpc-nmh  16728 Feb 28 01:37 fort.10.pe04
+-rw-------. 1 hz1420 hpc-nmh  22104 Feb 28 01:37 fort.10.pe05
+-rw-------. 1 hz1420 hpc-nmh  26400 Feb 28 01:37 fort.10.pe06
+-rw-------. 1 hz1420 hpc-nmh  22368 Feb 28 01:37 fort.10.pe07
+-rw-------. 1 hz1420 hpc-nmh  18336 Feb 28 01:37 fort.10.pe08
+-rw-------. 1 hz1420 hpc-nmh  44064 Feb 28 01:37 fort.10.pe09
+-rw-------. 1 hz1420 hpc-nmh  29280 Feb 28 01:37 fort.10.pe10
+-rw-------. 1 hz1420 hpc-nmh  34656 Feb 28 01:37 fort.10.pe11
+-rw-------. 1 hz1420 hpc-nmh  29280 Feb 28 01:37 fort.10.pe12
+-rw-------. 1 hz1420 hpc-nmh  34656 Feb 28 01:37 fort.10.pe13
+-rw-------. 1 hz1420 hpc-nmh  38688 Feb 28 01:37 fort.10.pe14
+-rw-------. 1 hz1420 hpc-nmh  44064 Feb 28 01:37 fort.10.pe15
+-rw-------. 1 hz1420 hpc-nmh  10464 Feb 28 01:37 fort.10.pe16
+-rw-------. 1 hz1420 hpc-nmh  15840 Feb 28 01:37 fort.10.pe17
+-rw-------. 1 hz1420 hpc-nmh  16864 Feb 28 01:37 fort.10.pe18
+-rw-------. 1 hz1420 hpc-nmh  22240 Feb 28 01:37 fort.10.pe19
+-rw-------. 1 hz1420 hpc-nmh  26048 Feb 28 01:37 fort.10.pe20
+-rw-------. 1 hz1420 hpc-nmh  26048 Feb 28 01:37 fort.10.pe21
+-rw-------. 1 hz1420 hpc-nmh  17024 Feb 28 01:37 fort.10.pe22
+-rw-------. 1 hz1420 hpc-nmh  22400 Feb 28 01:37 fort.10.pe23
+-rw-------. 1 hz1420 hpc-nmh   5648 Feb 28 01:37 fort.11.pe00
+-rw-------. 1 hz1420 hpc-nmh   5648 Feb 28 01:37 fort.11.pe01
+-rw-------. 1 hz1420 hpc-nmh   5648 Feb 28 01:37 fort.11.pe02
+-rw-------. 1 hz1420 hpc-nmh   5648 Feb 28 01:37 fort.11.pe03
+-rw-------. 1 hz1420 hpc-nmh   5648 Feb 28 01:37 fort.11.pe04
+-rw-------. 1 hz1420 hpc-nmh   5648 Feb 28 01:37 fort.11.pe05
+-rw-------. 1 hz1420 hpc-nmh   5648 Feb 28 01:37 fort.11.pe06
+-rw-------. 1 hz1420 hpc-nmh   5648 Feb 28 01:37 fort.11.pe07
+-rw-------. 1 hz1420 hpc-nmh   5648 Feb 28 01:37 fort.11.pe08
+-rw-------. 1 hz1420 hpc-nmh   5648 Feb 28 01:37 fort.11.pe09
+-rw-------. 1 hz1420 hpc-nmh   5648 Feb 28 01:37 fort.11.pe10
+-rw-------. 1 hz1420 hpc-nmh   5648 Feb 28 01:37 fort.11.pe11
+-rw-------. 1 hz1420 hpc-nmh   5648 Feb 28 01:37 fort.11.pe12
+-rw-------. 1 hz1420 hpc-nmh   5648 Feb 28 01:37 fort.11.pe13
+-rw-------. 1 hz1420 hpc-nmh   5648 Feb 28 01:37 fort.11.pe14
+-rw-------. 1 hz1420 hpc-nmh   5648 Feb 28 01:37 fort.11.pe15
+-rw-------. 1 hz1420 hpc-nmh   5648 Feb 28 01:37 fort.11.pe16
+-rw-------. 1 hz1420 hpc-nmh   5648 Feb 28 01:37 fort.11.pe17
+-rw-------. 1 hz1420 hpc-nmh   5648 Feb 28 01:37 fort.11.pe18
+-rw-------. 1 hz1420 hpc-nmh   5648 Feb 28 01:37 fort.11.pe19
+-rw-------. 1 hz1420 hpc-nmh   5648 Feb 28 01:37 fort.11.pe20
+-rw-------. 1 hz1420 hpc-nmh   5648 Feb 28 01:37 fort.11.pe21
+-rw-------. 1 hz1420 hpc-nmh   5648 Feb 28 01:37 fort.11.pe22
+-rw-------. 1 hz1420 hpc-nmh   5648 Feb 28 01:37 fort.11.pe23
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.17.pe01
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.17.pe02
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.17.pe03
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.17.pe04
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.17.pe05
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.17.pe06
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.17.pe07
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.17.pe08
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.17.pe09
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.17.pe10
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.17.pe11
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.17.pe12
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.17.pe13
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.17.pe14
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.17.pe15
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.17.pe16
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.17.pe17
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.17.pe18
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.17.pe19
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.17.pe20
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.17.pe21
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.17.pe22
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.17.pe23
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.18.pe00
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.18.pe01
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.18.pe02
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.18.pe03
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.18.pe04
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.18.pe05
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.18.pe06
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.18.pe07
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.18.pe08
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.18.pe09
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.18.pe10
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.18.pe11
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.18.pe12
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.18.pe13
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.18.pe14
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.18.pe15
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.18.pe16
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.18.pe17
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.18.pe18
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.18.pe19
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.18.pe20
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.18.pe21
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.18.pe22
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.18.pe23
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.19.pe00
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.19.pe01
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.19.pe02
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.19.pe03
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.19.pe04
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.19.pe05
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.19.pe06
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.19.pe07
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.19.pe08
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.19.pe09
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.19.pe10
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.19.pe11
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.19.pe12
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.19.pe13
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.19.pe14
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.19.pe15
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.19.pe16
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.19.pe17
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.19.pe18
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.19.pe19
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.19.pe20
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.19.pe21
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.19.pe22
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.19.pe23
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.1.pe00
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.1.pe01
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.1.pe02
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.1.pe03
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.1.pe04
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.1.pe05
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.1.pe06
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.1.pe07
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.1.pe08
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.1.pe09
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.1.pe10
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.1.pe11
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.1.pe12
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.1.pe13
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.1.pe14
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.1.pe15
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.1.pe16
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.1.pe17
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.1.pe18
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.1.pe19
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.1.pe20
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.1.pe21
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.1.pe22
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.1.pe23
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.28.pe00
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.28.pe01
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.28.pe02
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.28.pe03
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.28.pe04
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.28.pe05
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.28.pe06
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.28.pe07
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.28.pe08
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.28.pe09
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.28.pe10
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.28.pe11
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.28.pe12
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.28.pe13
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.28.pe14
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.28.pe15
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.28.pe16
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.28.pe17
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.28.pe18
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.28.pe19
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.28.pe20
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.28.pe21
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.28.pe22
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.28.pe23
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.29.pe00
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.29.pe01
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.29.pe02
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.29.pe03
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.29.pe04
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.29.pe05
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.29.pe06
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.29.pe07
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.29.pe08
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.29.pe09
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.29.pe10
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.29.pe11
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.29.pe12
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.29.pe13
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.29.pe14
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.29.pe15
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.29.pe16
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.29.pe17
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.29.pe18
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.29.pe19
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.29.pe20
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.29.pe21
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.29.pe22
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.29.pe23
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.38.pe00
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.38.pe01
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.38.pe02
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.38.pe03
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.38.pe04
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.38.pe05
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.38.pe06
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.38.pe07
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.38.pe08
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.38.pe09
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.38.pe10
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.38.pe11
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.38.pe12
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.38.pe13
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.38.pe14
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.38.pe15
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.38.pe16
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.38.pe17
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.38.pe18
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.38.pe19
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.38.pe20
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.38.pe21
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.38.pe22
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.38.pe23
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.3.pe00
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.3.pe01
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.3.pe02
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.3.pe03
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.3.pe04
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.3.pe05
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.3.pe06
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.3.pe07
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.3.pe08
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.3.pe09
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.3.pe10
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.3.pe11
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.3.pe12
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.3.pe13
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.3.pe14
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.3.pe15
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.3.pe16
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.3.pe17
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.3.pe18
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.3.pe19
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.3.pe20
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.3.pe21
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.3.pe22
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.3.pe23
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.40.pe00
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.40.pe01
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.40.pe02
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.40.pe03
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.40.pe04
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.40.pe05
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.40.pe06
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.40.pe07
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.40.pe08
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.40.pe09
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.40.pe10
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.40.pe11
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.40.pe12
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.40.pe13
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.40.pe14
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.40.pe15
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.40.pe16
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.40.pe17
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.40.pe18
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.40.pe19
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.40.pe20
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.40.pe21
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.40.pe22
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.40.pe23
+-rw-------. 1 hz1420 hpc-nmh   1632 Feb 28 01:37 fort.61.pe00
+-rw-------. 1 hz1420 hpc-nmh   1632 Feb 28 01:37 fort.61.pe01
+-rw-------. 1 hz1420 hpc-nmh   1632 Feb 28 01:37 fort.61.pe02
+-rw-------. 1 hz1420 hpc-nmh   1632 Feb 28 01:37 fort.61.pe03
+-rw-------. 1 hz1420 hpc-nmh   1632 Feb 28 01:37 fort.61.pe04
+-rw-------. 1 hz1420 hpc-nmh   2832 Feb 28 01:37 fort.61.pe05
+-rw-------. 1 hz1420 hpc-nmh   1632 Feb 28 01:37 fort.61.pe06
+-rw-------. 1 hz1420 hpc-nmh   1632 Feb 28 01:37 fort.61.pe07
+-rw-------. 1 hz1420 hpc-nmh   1632 Feb 28 01:37 fort.61.pe08
+-rw-------. 1 hz1420 hpc-nmh   1632 Feb 28 01:37 fort.61.pe09
+-rw-------. 1 hz1420 hpc-nmh   2832 Feb 28 01:37 fort.61.pe10
+-rw-------. 1 hz1420 hpc-nmh   4208 Feb 28 01:37 fort.61.pe11
+-rw-------. 1 hz1420 hpc-nmh   2928 Feb 28 01:37 fort.61.pe12
+-rw-------. 1 hz1420 hpc-nmh   5328 Feb 28 01:37 fort.61.pe13
+-rw-------. 1 hz1420 hpc-nmh   5328 Feb 28 01:37 fort.61.pe14
+-rw-------. 1 hz1420 hpc-nmh   2928 Feb 28 01:37 fort.61.pe15
+-rw-------. 1 hz1420 hpc-nmh   2928 Feb 28 01:37 fort.61.pe16
+-rw-------. 1 hz1420 hpc-nmh   4128 Feb 28 01:37 fort.61.pe17
+-rw-------. 1 hz1420 hpc-nmh   2928 Feb 28 01:37 fort.61.pe18
+-rw-------. 1 hz1420 hpc-nmh   2928 Feb 28 01:37 fort.61.pe19
+-rw-------. 1 hz1420 hpc-nmh   2928 Feb 28 01:37 fort.61.pe20
+-rw-------. 1 hz1420 hpc-nmh   2928 Feb 28 01:37 fort.61.pe21
+-rw-------. 1 hz1420 hpc-nmh   4128 Feb 28 01:37 fort.61.pe22
+-rw-------. 1 hz1420 hpc-nmh   5424 Feb 28 01:37 fort.61.pe23
+-rw-------. 1 hz1420 hpc-nmh   1088 Feb 28 01:37 fort.62.pe00
+-rw-------. 1 hz1420 hpc-nmh   1280 Feb 28 01:37 fort.62.pe01
+-rw-------. 1 hz1420 hpc-nmh    256 Feb 28 01:37 fort.62.pe02
+-rw-------. 1 hz1420 hpc-nmh    448 Feb 28 01:37 fort.62.pe03
+-rw-------. 1 hz1420 hpc-nmh   1088 Feb 28 01:37 fort.62.pe04
+-rw-------. 1 hz1420 hpc-nmh   1280 Feb 28 01:37 fort.62.pe05
+-rw-------. 1 hz1420 hpc-nmh    800 Feb 28 01:37 fort.62.pe06
+-rw-------. 1 hz1420 hpc-nmh   1824 Feb 28 01:37 fort.62.pe07
+-rw-------. 1 hz1420 hpc-nmh   1920 Feb 28 01:37 fort.62.pe08
+-rw-------. 1 hz1420 hpc-nmh    448 Feb 28 01:37 fort.62.pe09
+-rw-------. 1 hz1420 hpc-nmh   1088 Feb 28 01:37 fort.62.pe10
+-rw-------. 1 hz1420 hpc-nmh   1280 Feb 28 01:37 fort.62.pe11
+-rw-------. 1 hz1420 hpc-nmh   1088 Feb 28 01:37 fort.62.pe12
+-rw-------. 1 hz1420 hpc-nmh   1280 Feb 28 01:37 fort.62.pe13
+-rw-------. 1 hz1420 hpc-nmh    256 Feb 28 01:37 fort.62.pe14
+-rw-------. 1 hz1420 hpc-nmh    448 Feb 28 01:37 fort.62.pe15
+-rw-------. 1 hz1420 hpc-nmh   2752 Feb 28 01:37 fort.62.pe16
+-rw-------. 1 hz1420 hpc-nmh   2944 Feb 28 01:37 fort.62.pe17
+-rw-------. 1 hz1420 hpc-nmh   1344 Feb 28 01:37 fort.62.pe18
+-rw-------. 1 hz1420 hpc-nmh   1536 Feb 28 01:37 fort.62.pe19
+-rw-------. 1 hz1420 hpc-nmh    896 Feb 28 01:37 fort.62.pe20
+-rw-------. 1 hz1420 hpc-nmh    896 Feb 28 01:37 fort.62.pe21
+-rw-------. 1 hz1420 hpc-nmh   1408 Feb 28 01:37 fort.62.pe22
+-rw-------. 1 hz1420 hpc-nmh   1600 Feb 28 01:37 fort.62.pe23
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.82.pe00
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.82.pe01
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.82.pe02
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.82.pe03
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.82.pe04
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.82.pe05
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.82.pe06
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.82.pe07
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.82.pe08
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.82.pe09
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.82.pe10
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.82.pe11
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.82.pe12
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.82.pe13
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.82.pe14
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.82.pe15
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.82.pe16
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.82.pe17
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.82.pe18
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.82.pe19
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.82.pe20
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.82.pe21
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.82.pe22
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.82.pe23
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.83.pe00
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.83.pe01
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.83.pe02
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.83.pe03
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.83.pe04
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.83.pe05
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.83.pe06
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.83.pe07
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.83.pe08
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.83.pe09
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.83.pe10
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.83.pe11
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.83.pe12
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.83.pe13
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.83.pe14
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.83.pe15
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.83.pe16
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.83.pe17
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.83.pe18
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.83.pe19
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.83.pe20
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.83.pe21
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.83.pe22
+-rw-------. 1 hz1420 hpc-nmh      0 Feb 28 01:37 fort.83.pe23
+-rw-------. 1 hz1420 hpc-nmh  16728 Feb 28 01:37 fort.8.pe00
+-rw-------. 1 hz1420 hpc-nmh  22104 Feb 28 01:37 fort.8.pe01
+-rw-------. 1 hz1420 hpc-nmh  26136 Feb 28 01:37 fort.8.pe02
+-rw-------. 1 hz1420 hpc-nmh  31512 Feb 28 01:37 fort.8.pe03
+-rw-------. 1 hz1420 hpc-nmh  16728 Feb 28 01:37 fort.8.pe04
+-rw-------. 1 hz1420 hpc-nmh  22104 Feb 28 01:37 fort.8.pe05
+-rw-------. 1 hz1420 hpc-nmh  26400 Feb 28 01:37 fort.8.pe06
+-rw-------. 1 hz1420 hpc-nmh  22368 Feb 28 01:37 fort.8.pe07
+-rw-------. 1 hz1420 hpc-nmh  18336 Feb 28 01:37 fort.8.pe08
+-rw-------. 1 hz1420 hpc-nmh  44064 Feb 28 01:37 fort.8.pe09
+-rw-------. 1 hz1420 hpc-nmh  29280 Feb 28 01:37 fort.8.pe10
+-rw-------. 1 hz1420 hpc-nmh  34656 Feb 28 01:37 fort.8.pe11
+-rw-------. 1 hz1420 hpc-nmh  29280 Feb 28 01:37 fort.8.pe12
+-rw-------. 1 hz1420 hpc-nmh  34656 Feb 28 01:37 fort.8.pe13
+-rw-------. 1 hz1420 hpc-nmh  38688 Feb 28 01:37 fort.8.pe14
+-rw-------. 1 hz1420 hpc-nmh  44064 Feb 28 01:37 fort.8.pe15
+-rw-------. 1 hz1420 hpc-nmh  10464 Feb 28 01:37 fort.8.pe16
+-rw-------. 1 hz1420 hpc-nmh  15840 Feb 28 01:37 fort.8.pe17
+-rw-------. 1 hz1420 hpc-nmh  16864 Feb 28 01:37 fort.8.pe18
+-rw-------. 1 hz1420 hpc-nmh  22240 Feb 28 01:37 fort.8.pe19
+-rw-------. 1 hz1420 hpc-nmh  26048 Feb 28 01:37 fort.8.pe20
+-rw-------. 1 hz1420 hpc-nmh  26048 Feb 28 01:37 fort.8.pe21
+-rw-------. 1 hz1420 hpc-nmh  17024 Feb 28 01:37 fort.8.pe22
+-rw-------. 1 hz1420 hpc-nmh  22400 Feb 28 01:37 fort.8.pe23
+-rw-------. 1 hz1420 hpc-nmh 111308 Feb 28 01:37 fort.9
+-rw-------. 1 hz1420 hpc-nmh  12016 Feb 28 01:37 fort.95.pe00
+-rw-------. 1 hz1420 hpc-nmh  12016 Feb 28 01:37 fort.95.pe01
+-rw-------. 1 hz1420 hpc-nmh  12016 Feb 28 01:37 fort.95.pe02
+-rw-------. 1 hz1420 hpc-nmh  12016 Feb 28 01:37 fort.95.pe03
+-rw-------. 1 hz1420 hpc-nmh  12016 Feb 28 01:37 fort.95.pe04
+-rw-------. 1 hz1420 hpc-nmh  12016 Feb 28 01:37 fort.95.pe05
+-rw-------. 1 hz1420 hpc-nmh  12016 Feb 28 01:37 fort.95.pe06
+-rw-------. 1 hz1420 hpc-nmh  12016 Feb 28 01:37 fort.95.pe07
+-rw-------. 1 hz1420 hpc-nmh  12016 Feb 28 01:37 fort.95.pe08
+-rw-------. 1 hz1420 hpc-nmh  12016 Feb 28 01:37 fort.95.pe09
+-rw-------. 1 hz1420 hpc-nmh  12016 Feb 28 01:37 fort.95.pe10
+-rw-------. 1 hz1420 hpc-nmh  12016 Feb 28 01:37 fort.95.pe11
+-rw-------. 1 hz1420 hpc-nmh  12016 Feb 28 01:37 fort.95.pe12
+-rw-------. 1 hz1420 hpc-nmh  12016 Feb 28 01:37 fort.95.pe13
+-rw-------. 1 hz1420 hpc-nmh  12016 Feb 28 01:37 fort.95.pe14
+-rw-------. 1 hz1420 hpc-nmh  12016 Feb 28 01:37 fort.95.pe15
+-rw-------. 1 hz1420 hpc-nmh  12016 Feb 28 01:37 fort.95.pe16
+-rw-------. 1 hz1420 hpc-nmh  12016 Feb 28 01:37 fort.95.pe17
+-rw-------. 1 hz1420 hpc-nmh  12016 Feb 28 01:37 fort.95.pe18
+-rw-------. 1 hz1420 hpc-nmh  12016 Feb 28 01:37 fort.95.pe19
+-rw-------. 1 hz1420 hpc-nmh  12016 Feb 28 01:37 fort.95.pe20
+-rw-------. 1 hz1420 hpc-nmh  12016 Feb 28 01:37 fort.95.pe21
+-rw-------. 1 hz1420 hpc-nmh  12016 Feb 28 01:37 fort.95.pe22
+-rw-------. 1 hz1420 hpc-nmh  12016 Feb 28 01:37 fort.95.pe23
+-rw-------. 1 hz1420 hpc-nmh 282657 Feb 28 01:37 fort.98
+-rw-------. 1 hz1420 hpc-nmh    404 Feb 28 01:37 INPUT
+-rw-------. 1 hz1420 hpc-nmh   9681 Feb 28 01:35 Job_script
+-rw-------. 1 hz1420 hpc-nmh   3918 Feb 28 01:37 Post_script
+--------------------------------------------
+
+End of post processing : Tue 28 Feb 01:37:34 GMT 2023
+Script post_proc done.
+--------------------------------------------
