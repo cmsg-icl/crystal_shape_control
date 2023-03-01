@@ -1,0 +1,41 @@
+#!/bin/bash  --login
+#PBS -N qha0-100k
+#PBS -l select=1:ncpus=24:mem=100GB:mpiprocs=24:ompthreads=1:avx2=true
+#PBS -l walltime=0:60:00
+
+echo "PBS Job Report"
+echo "--------------------------------------------"
+echo "  Start Date : $(date)"
+echo "  PBS Job ID : ${PBS_JOBID}"
+echo "  Status"
+qstat -f ${PBS_JOBID}
+echo "--------------------------------------------"
+echo ""
+
+# number of cores per node used
+export NCORES=24
+# number of processes
+export NPROCESSES=24
+
+# Make sure any symbolic links are resolved to absolute path
+export PBS_O_WORKDIR=$(readlink -f ${PBS_O_WORKDIR})
+
+# Set the number of threads
+export OMP_NUM_THREADS=1
+
+# to sync nodes
+cd ${PBS_O_WORKDIR}
+
+# start calculation: command added below by gen_sub
+timeout 27m /rds/general/user/hz1420/home/apps/Job_Submission/GULP6/run_exec -set /rds/general/user/hz1420/home/etc/runGULP6/settings -in f1-0k.gin -ref  -- 'mpiexec gulp-mpi < [jobname].gin'
+/rds/general/user/hz1420/home/apps/Job_Submission/GULP6/post_proc -in f1-0k.gin -set /rds/general/user/hz1420/home/etc/runGULP6/settings
+
+
+timeout 27m /rds/general/user/hz1420/home/apps/Job_Submission/GULP6/run_exec -set /rds/general/user/hz1420/home/etc/runGULP6/settings -in f1-100k.gin -ref  -- 'mpiexec gulp-mpi < [jobname].gin'
+/rds/general/user/hz1420/home/apps/Job_Submission/GULP6/post_proc -in f1-100k.gin -set /rds/general/user/hz1420/home/etc/runGULP6/settings
+
+
+if [[ -f ./qha0-100k.run ]];then
+chmod 755 ./qha0-100k.run
+./qha0-100k.run
+fi
