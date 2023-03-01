@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# Instructions of pre-defined commands
+
+function print_ALIAS_HOWTO_ {
+    cat << EOF
+    -------------------------------------------
+    Imperial HPC CRYSTAL23 job submitter HOWTO
+    -------------------------------------------
+    Use 'source ~/.bashrc' to activate pre-defined
+    commands
+
+    Pre-defined commands
+        Pcrys23    : Run parallel crystal calculations
+        MPPcrys23  : Run massive parallel crystal calculations
+        Pprop23    : Run parallel properties calculations
+        Scrys23    : Run serial crystal calculations
+        Sprop23    : Run serial properties calculations
+        Xcrys23    : Run user defined commands (Advanced)
+        SETcrys23  : Quick reference of settings file
+        HELPcrys23 : Print help file
+
+    Example code:
+        Pcrys23 -in mgo.d12 -wt 02:00 -nd 2
+        Xcrys23 -name mag-band -nd 1 -x pcrystal -in mgo.d12 -wt 01:00 -ref no -x pproperties -in band.d3 -wt 00:30 -ref mgo
+
+EOF
+}
+
+# Instructions of user-defined commands
+
+function print_GENSUB_HOWTO_ {
+    SOURCE=${CTRLDIR}/gen_sub
+    source ${SOURCE} -help
+}
+CTRLDIR=$(dirname $0)/../
+print_ALIAS_HOWTO_
+print_GENSUB_HOWTO_

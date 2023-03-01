@@ -12,7 +12,7 @@
 **Note**
 
 1. All the scripts should be placed in the same directory.  
-2. By default, job submitter scripts will be stored in `/work/consortium/consortium/user/runCRYSTAL/`.  
+2. By default, job submitter scripts will be stored in `${WORK}/runCRYSTAL/`.  
 3. Due to the file transfer rule, scripts cannot be placed in `${HOME}` directory. The nodes executing calculations cannot identify directories in `${HOME}`.  
 3. CRYSTAL is loaded as a module, refer to [CRYSTAL page on ARCHER2 documentation](https://docs.archer2.ac.uk/other-software/crystal/) for instructions.  
 
@@ -30,7 +30,7 @@ If a '.out' file with the same name as the job to be submitted exists in the sam
 
 * If the job is terminated due to improper settings of calculation parameters, temporary files will be saved in the output directory. The temporary directory will be removed.
 
-* If the job is killed before 'timeout', temporary will be saved in the temporary directory with temporary names. The temporary directory will not be removed. Refer to '.out' file or '.o\<jobid\>' file for the path. 
+* If the job is killed before 'timeout', temporary will be saved in the temporary directory with temporary names. The temporary directory will not be removed. Refer to '.out' file or 'slurm-\[jobid\].out' (no '.log' file is produced at this stage) file for the path. 
 
 By default, the temporary directory is set as the sub folder `tmp_[jobname]_[jobid]/`, which is in the same directory as the input/output files. 
 
@@ -47,7 +47,7 @@ Here are user defined commands:
 1. `Pcrys` - executing parallel crystal calculations (Pcrystal and MPP)  
 
 ``` bash
-$~ Pcrys -nd ND -wt WT -in jobname [-ref refname]
+~$ Pcrys -nd ND -wt WT -in jobname [-ref refname]
 ```
 
 `ND`      - int, number of nodes  
@@ -58,20 +58,20 @@ $~ Pcrys -nd ND -wt WT -in jobname [-ref refname]
 Equivalent examples:
 
 ``` bash
-$~ Pcrys -nd 2 -wt 02:00 -in jobname.d12 -ref previous_job
-$~ ${SCRIPTDIR}/gen_sub --type crys --wt 02:00 --in jobname --ref previous_job --nd 2
+~$ Pcrys -nd 2 -wt 02:00 -in jobname.d12 -ref previous_job
+~$ ${SCRIPTDIR}/gen_sub --type crys --wt 02:00 --in jobname --ref previous_job --nd 2
 ```
 
 Submit files:
 
 ``` bash
-$~ sbatch jobname.slurm
+~$ sbatch jobname.slurm
 ```
 
 2. `Pprop` - executing parallel properties calculations (Pproperties)
 
 ``` bash
-$~ Pprop -nd ND -wt WT -in jobname -ref SCFname
+~$ Pprop -nd ND -wt WT -in jobname -ref SCFname
 ``` 
 
 `ND`      - int, number of nodes  
@@ -82,8 +82,8 @@ $~ Pprop -nd ND -wt WT -in jobname -ref SCFname
 Equivalent examples:
 
 ``` bash
-$~ Pprop -in prop_job.d3 -ref previous_job.d12 -nd 1 -wt 00:30 
-$~ ${SCRIPTDIR}/gen_sub --type prop --nd 1 --wt 00:30 --in prop_job --ref previous_job
+~$ Pprop -in prop_job.d3 -ref previous_job.d12 -nd 1 -wt 00:30 
+~$ ${SCRIPTDIR}/gen_sub --type prop --nd 1 --wt 00:30 --in prop_job --ref previous_job
 ```
 
 Then submit files. 
