@@ -55,7 +55,8 @@ EOF
         esac
         shift
     done
-
+    INPDIR=$(realpath ${INFILE[0]})
+    INPDIR=${INPDIR%/*}
     check_SETFILE_
     check_EXELABEL_
     check_INFILE_
@@ -191,7 +192,8 @@ EOF
 
         # Specified input not found / empty
 
-        file=${INPDIR}/${INFILE[${i}]}
+        file=${INFILE[${i}]}
+        file=${INPDIR}/${file##*/}
         if [[ ! -e ${file} || ! -s ${file} ]]; then
             cat << EOF
     ERROR:
@@ -705,7 +707,6 @@ function get_subtemplate_ {
 
 # Main I/O function
 in_var="header "$@""
-INPDIR=`pwd`
 SCRIPTDIR=`dirname $0`
 
 get_input_
