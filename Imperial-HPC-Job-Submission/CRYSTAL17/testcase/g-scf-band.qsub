@@ -1,0 +1,41 @@
+#!/bin/bash  --login
+#PBS -N g-scf-band
+#PBS -l select=1:ncpus=24:mem=100GB:mpiprocs=24:ompthreads=1:avx2=true
+#PBS -l walltime=0:60:00
+
+echo "PBS Job Report"
+echo "--------------------------------------------"
+echo "  Start Date : $(date)"
+echo "  PBS Job ID : ${PBS_JOBID}"
+echo "  Status"
+qstat -f ${PBS_JOBID}
+echo "--------------------------------------------"
+echo ""
+
+# number of cores per node used
+export NCORES=24
+# number of processes
+export NPROCESSES=24
+
+# Make sure any symbolic links are resolved to absolute path
+export PBS_O_WORKDIR=$(readlink -f ${PBS_O_WORKDIR})
+
+# Set the number of threads
+export OMP_NUM_THREADS=1
+
+# to sync nodes
+cd ${PBS_O_WORKDIR}
+
+# start calculation: command added below by gen_sub
+timeout 37m /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/../run_exec -set /rds/general/user/hz1420/home/etc/runCRYSTAL17/settings -in graphene.d12 -ref no -- 'mpiexec Pcrystal'
+/rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/../post_proc -in graphene.d12 -set /rds/general/user/hz1420/home/etc/runCRYSTAL17/settings
+
+
+timeout 37m /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/../run_exec -set /rds/general/user/hz1420/home/etc/runCRYSTAL17/settings -in graphene.d3 -ref graphene -- 'mpiexec Pproperties'
+/rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/../post_proc -in graphene.d3 -set /rds/general/user/hz1420/home/etc/runCRYSTAL17/settings
+
+
+if [[ -f ./g-scf-band.run ]];then
+chmod 755 ./g-scf-band.run
+./g-scf-band.run
+fi

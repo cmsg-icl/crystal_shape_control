@@ -51,9 +51,8 @@ OUTDIR=${OUTDIR%/*}
 OUTPUT=${JOBNAME}.out
 
 if [[ -e ${OUTDIR}/${OUTPUT} && -s ${OUTDIR}/${OUTPUT} ]]; then
-    echo "Output exists: ${OUTDIR}/${OUTPUT}"
-    echo "Job terminated without calculation."
-    exit
+    echo "Warning! Output exists: ${OUTDIR}/${OUTPUT}" | tee -a ${OUTDIR}/${OUTPUT}
+    echo "New data will be attached to the same file." | tee -a ${OUTDIR}/${OUTPUT}
 fi
 
 echo "Printed output filename ${OUTDIR}/${OUTPUT}"

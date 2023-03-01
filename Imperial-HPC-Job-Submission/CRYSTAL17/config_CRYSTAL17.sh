@@ -184,8 +184,8 @@ function set_settings {
 
     LINE_EXE=`grep -nw 'EXE_TABLE' ${SETFILE}`
     LINE_EXE=`echo "scale=0;${LINE_EXE%:*}+3" | bc`
-    sed -i "${LINE_EXE}a\sprop                           properties < [jobname].d3      Serial properties calculation" ${SETFILE}
-    sed -i "${LINE_EXE}a\scrys                           properties < [jobname].d12     Serial crystal calculation" ${SETFILE}
+    sed -i "${LINE_EXE}a\sprop                           properties < INPUT             Serial properties calculation" ${SETFILE}
+    sed -i "${LINE_EXE}a\scrys                           crystal < INPUT                Serial crystal calculation" ${SETFILE}
     sed -i "${LINE_EXE}a\pprop      mpiexec              Pproperties                    Parallel properties calculation" ${SETFILE}
     sed -i "${LINE_EXE}a\mppcrys    mpiexec              MPPcrystal                     Massive parallel crystal calculation" ${SETFILE}
     sed -i "${LINE_EXE}a\pcrys      mpiexec              Pcrystal                       Parallel crystal calculation" ${SETFILE}

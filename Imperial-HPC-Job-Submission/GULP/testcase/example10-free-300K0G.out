@@ -1,0 +1,2565 @@
+Running Job Report
+--------------------------------------------
+DATE START : Wed  1 Mar 21:47:45 GMT 2023
+
+Pre-Calc Summary
+--------------------------------------------
+  date:                Wed  1 Mar 21:47:59 GMT 2023
+  hostname:            cx3-7-2.cx3.hpc.ic.ac.uk
+  system:              Linux cx3-7-2.cx3.hpc.ic.ac.uk 4.18.0-348.20.1.el8_5.x86_64 #1 SMP Tue Mar 8 12:56:54 EST 2022 x86_64 x86_64 x86_64 GNU/Linux
+  user:                hz1420
+  input:               /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/GULP/testcase/example10-free-300K0G.gin
+  output:              /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/GULP/testcase/example10-free-300K0G.out
+  temporary directory: /rds/general/user/hz1420/ephemeral/example10-free-300K0G_7127847
+  executable script:   /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/GULP/../run_exec
+  executable dir:      module load /rds/general/user/hz1420/home/apps/gulp-6.1.2/module_gulp
+  mpi + exe command:    mpiexec gulp-mpi < [jobname].gin
+-------------------------------------------
+
+PBS Job Status
+-------------------------------------------
+  Connection timed out
+qstat: cannot connect to server pbs (errno=110)
+-------------------------------------------
+
+Find input data: /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/GULP/testcase/example10-free-300K0G.gin
+All files are synchonised.
+
+Job Ready to Go
+-------------------------------------------
+  Job name       : example10-free-300K0G
+  ID             : 7127847.pbs
+  Command        : mpiexec gulp-mpi < example10-free-300K0G.gin >> /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/GULP/testcase/example10-free-300K0G.out 2>&1
+  Temporary dir  : /rds/general/user/hz1420/ephemeral/example10-free-300K0G_7127847
+  List of files  : total 33
+-rw-------. 1 hz1420 hpc-nmh  2596 Mar  1 21:50 example10-free-300K0G.gin
+-rw-------. 1 hz1420 hpc-nmh 11905 Mar  1 21:47 Job_script
+  Input script   :
+opti molecule conp prop c6 free_energy
+title
+example of a molecular crystal - urea
+end
+cell
+   5.550830   5.550830   4.695612  90.000038  89.999963  89.999803 1 1 1 1 1 1
+fractional   16
+C    core  0.00000000   0.50000000   0.32600000    0.380000 0 0 0
+C    core  0.49999920   0.00000080   0.61502595    0.380000 1 1 1
+O    core  0.00000000   0.49999998   0.58816619   -0.380000 1 1 1
+O    core  0.50000040  -0.00000039   0.35285659   -0.380000 1 1 1
+N    core  0.14293176   0.64293184   0.18101006   -0.830000 1 1 1
+N    core  0.85706814   0.35706821   0.18101006   -0.830000 1 1 1
+N    core  0.64293288   0.85706713   0.76001372   -0.830000 1 1 1
+N    core  0.35706811   0.14293188   0.76001345   -0.830000 1 1 1
+H    core  0.26167656   0.76167659   0.27731462    0.415000 1 1 1
+H    core  0.73832344   0.23832347   0.27731458    0.415000 1 1 1
+H    core  0.76167757   0.73832243   0.66370978    0.415000 1 1 1
+H    core  0.23832195   0.26167805   0.66370971    0.415000 1 1 1
+H    core  0.13785881   0.63785890   0.96043229    0.415000 1 1 1
+H    core  0.86214114   0.36214121   0.96043228    0.415000 1 1 1
+H    core  0.63785790   0.86214210  -0.01940859    0.415000 1 1 1
+H    core  0.36214109   0.13785891  -0.01940832    0.415000 1 1 1
+morse intra
+C    core O    core      6.288000   2.060000  1.23000  0.0000  1.600
+morse intra
+C    core N    core      4.206000   2.000000  1.32000  0.0000  1.600
+morse intra
+H    core N    core      3.816000   2.280000  1.02600  0.0000  1.600
+lennard 12  6 inter
+C    core O    core   39031.570000      35.266000  0.000 40.000
+lennard 12  6 inter
+C    core N    core  112494.667000      55.387000  0.000 40.000
+lennard 12  6 inter
+O    core O    core   11833.864000      21.633000  0.000 40.000
+lennard 12  6 inter
+N    core O    core   34106.919000      33.977000  0.000 40.000
+lennard 12  6 inter
+N    core N    core   98301.108000      53.362000  0.000 40.000
+lennard 12  6 inter
+C    core C    core  128737.614000      57.488000  0.000 40.000
+three
+C    core N    core O    core   5.897000 121.000000  1.600  1.600  3.000
+three
+N    core H    core C    core   3.252000 120.000000  1.400  1.600  2.600
+three
+N    core H    core H    core   2.862000 120.000000  1.400  1.400  2.300
+three
+C    core N    core N    core   8.846000 118.000000  1.600  1.600  2.800
+torsion
+O    cor C    cor N    cor H    cor   0.260200  -2  1.40  1.40  1.30  0.00
+torsion
+N    cor C    cor N    cor H    cor   0.002170  -2  1.60  1.60  1.30  0.00
+torsion
+O    cor C    cor N    cor N    cor   0.434000  -2  1.60  1.60  3.00  0.00
+
+temperature    300.0
+pressure       0.0
+-------------------------------------------
+
+
+# mpiexec: MPI Program startup
+
+
+# mpiexec: Running in job 7127847.pbs at Wed  1 Mar 21:50:09 GMT 2023
+# mpiexec: Fabric configuration:
+# mpiexec: node class CX3
+# mpiexec: libfabric provider verbs
+# mpiexec: libfabric inferface eth0
+# mpiexec: MPI-IO configuration on / gpfs
+# mpiexec: full path to program is /rds/general/user/hz1420/home/apps/gulp-6.1.2/bin/gulp-mpi
+# mpiexec: program arguments are: 
+# mpiexec: 24 ranks allocated via PBS select
+# mpiexec: 1 OpenMP threads / rank allocated by PBS select
+# mpiexec: 24 ranks per node
+# mpiexec: There are 128 cores/node. 24 will be used for this job
+# mpiexec: Job has shared use of the allocated nodes. Disabling process-pinning
+# mpiexec: Node is shared. Disabling process pinning
+# mpiexec: machinefile configured as:
+cx3-7-2.cx3.hpc.ic.ac.uk:24
+#
+# mpiexec: Checking all nodes are ONLINE using ping:
+# mpiexec: All nodes appear ONLINE
+# mpiexec: Checking all nodes are ONLINE using ssh:
+# cx3-7-2.cx3.hpc.ic.ac.uk : # mpiexec: Dynamic linking for /rds/general/user/hz1420/home/apps/gulp-6.1.2/bin/gulp-mpi:
+	linux-vdso.so.1 (0x00007ffd64de3000)
+	libmkl_scalapack_lp64.so => /apps/intel/2019.4/compilers_and_libraries_2019.4.243/linux/mkl/lib/libmkl_scalapack_lp64.so (0x000014568b41a000)
+	libmkl_intel_lp64.so => /apps/intel/2019.4/compilers_and_libraries_2019.4.243/linux/mkl/lib/libmkl_intel_lp64.so (0x000014568a8a2000)
+	libmkl_sequential.so => /apps/intel/2019.4/compilers_and_libraries_2019.4.243/linux/mkl/lib/libmkl_sequential.so (0x0000145689309000)
+	libmkl_core.so => /apps/intel/2019.4/compilers_and_libraries_2019.4.243/linux/mkl/lib/libmkl_core.so (0x0000145685034000)
+	libmkl_blacs_intelmpi_lp64.so => /apps/intel/2019.4/compilers_and_libraries_2019.4.243/linux/mkl/lib/libmkl_blacs_intelmpi_lp64.so (0x0000145684df2000)
+	libpthread.so.0 => /lib64/libpthread.so.0 (0x0000145684bd2000)
+	libm.so.6 => /lib64/libm.so.6 (0x0000145684850000)
+	libdl.so.2 => /lib64/libdl.so.2 (0x000014568464c000)
+	libfftw3.so.3 => /apps/fftw/3.3.3/lib/libfftw3.so.3 (0x00001456842bd000)
+	libfftw3_mpi.so.3 => /apps/fftw/3.3.3/lib/libfftw3_mpi.so.3 (0x00001456840a6000)
+	libplumed.so => /rds/general/user/hz1420/home/apps/PLUMPED-2.8.1/lib/libplumed.so (0x0000145683e9e000)
+	libplumedKernel.so => /rds/general/user/hz1420/home/apps/PLUMPED-2.8.1/lib/libplumedKernel.so (0x000014568304b000)
+	libmpifort.so.12 => /apps/mpi/intel/2019.6.166/lib/libmpifort.so.12 (0x0000145682c8d000)
+	libmpi.so.12 => /apps/mpi/intel/2019.6.166/lib/release/libmpi.so.12 (0x0000145681bf3000)
+	librt.so.1 => /lib64/librt.so.1 (0x00001456819eb000)
+	libc.so.6 => /lib64/libc.so.6 (0x0000145681626000)
+	libgcc_s.so.1 => /lib64/libgcc_s.so.1 (0x000014568140e000)
+	/lib64/ld-linux-x86-64.so.2 (0x000014568bd22000)
+	libimf.so => /apps/intel/2019.4/compilers_and_libraries_2019.4.243/linux/compiler/lib/intel64/libimf.so (0x0000145680e6e000)
+	libsvml.so => /apps/intel/2019.4/compilers_and_libraries_2019.4.243/linux/compiler/lib/intel64/libsvml.so (0x000014567f4ca000)
+	libirng.so => /apps/intel/2019.4/compilers_and_libraries_2019.4.243/linux/compiler/lib/intel64/libirng.so (0x000014567f158000)
+	libintlc.so.5 => /apps/intel/2019.4/compilers_and_libraries_2019.4.243/linux/compiler/lib/intel64/libintlc.so.5 (0x000014567eee6000)
+	libstdc++.so.6 => /lib64/libstdc++.so.6 (0x000014567eb51000)
+	libz.so.1 => /lib64/libz.so.1 (0x000014567e93a000)
+	libiomp5.so => /apps/intel/2019.4/compilers_and_libraries_2019.4.243/linux/compiler/lib/intel64/libiomp5.so (0x000014567e550000)
+	libfabric.so.1 => /apps/mpi/intel/2019.6.166/libfabric/lib/libfabric.so.1 (0x000014567e30b000)
+# mpiexec: launch started at Wed  1 Mar 21:50:10 GMT 2023
+# mpiexec: launching program...
+# mpiexec: /rds/general/user/hz1420/home/apps/gulp-6.1.2/bin/gulp-mpi 
+# mpiexec: PROGRAM OUTPUT FOLLOWS
+(cx3-7-2.cx3.hpc.ic.ac.uk:0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23)
+
+********************************************************************************
+*                       GENERAL UTILITY LATTICE PROGRAM                        *
+*                                 Julian Gale                                  *
+*                       Curtin Institute for Computation                       *
+*                    School of Molecular and Life Sciences                     *
+*                    Curtin University, Western Australia                      *
+********************************************************************************
+* Version = 6.1.2 * Last modified =   3rd November 2022                        *
+********************************************************************************
+*  optimise     - perform optimisation run                                     *
+*  free_energy  - use Gibbs free energy instead of internal energy             *
+*  conp         - constant pressure calculation                                *
+*  c6           - use real and reciprocal space sum for C6 terms               *
+*  property     - calculate properties for final geometry                      *
+*  molecule     - molecule option activated, Coulomb subtract within molecule  *
+********************************************************************************
+* example of a molecular crystal - urea                                        *
+********************************************************************************
+
+
+  Job Started  at 21:50.12  1st March      2023                               
+
+  Number of CPUs =    24
+
+  Host name      = cx3-7-2.cx3.hpc.ic.ac.uk                
+
+
+  Total number of configurations input =      1
+
+********************************************************************************
+*  Input for Configuration =   1                                               *
+********************************************************************************
+
+  Formula = C2O2N4H8                                                    
+
+  Number of irreducible atoms/shells =      16
+
+
+  Total number atoms/shells =      16
+
+  Dimensionality = 3               :  Bulk   
+
+
+
+  Cartesian lattice vectors (Angstroms) :
+
+        5.550830    0.000000    0.000000
+        0.000019    5.550830    0.000000
+        0.000003   -0.000003    4.695612
+
+  Cell parameters (Angstroms/Degrees):
+
+  a =       5.5508    alpha =  90.0000
+  b =       5.5508    beta  =  90.0000
+  c =       4.6956    gamma =  89.9998
+
+  Initial cell volume =         144.679853 Angs**3
+
+  Temperature of configuration =   300.     K 
+
+  Pressure of configuration =         0.000 GPa 
+
+  Fractional coordinates of asymmetric unit :
+
+--------------------------------------------------------------------------------
+   No.  Atomic       x           y          z         Charge      Occupancy
+        Label      (Frac)      (Frac)     (Frac)        (e)         (Frac)  
+--------------------------------------------------------------------------------
+      1 C     c    0.000000 *  0.500000 *  0.326000 *   0.38000    1.000000    
+      2 C     c    0.499999 *  0.000001 *  0.615026 *   0.38000    1.000000    
+      3 O     c    0.000000 *  0.500000 *  0.588166 *  -0.38000    1.000000    
+      4 O     c    0.500000 *  1.000000 *  0.352857 *  -0.38000    1.000000    
+      5 N     c    0.142932 *  0.642932 *  0.181010 *  -0.83000    1.000000    
+      6 N     c    0.857068 *  0.357068 *  0.181010 *  -0.83000    1.000000    
+      7 N     c    0.642933 *  0.857067 *  0.760014 *  -0.83000    1.000000    
+      8 N     c    0.357068 *  0.142932 *  0.760013 *  -0.83000    1.000000    
+      9 H     c    0.261677 *  0.761677 *  0.277315 *   0.41500    1.000000    
+     10 H     c    0.738323 *  0.238323 *  0.277315 *   0.41500    1.000000    
+     11 H     c    0.761678 *  0.738322 *  0.663710 *   0.41500    1.000000    
+     12 H     c    0.238322 *  0.261678 *  0.663710 *   0.41500    1.000000    
+     13 H     c    0.137859 *  0.637859 *  0.960432 *   0.41500    1.000000    
+     14 H     c    0.862141 *  0.362141 *  0.960432 *   0.41500    1.000000    
+     15 H     c    0.637858 *  0.862142 *  0.980591 *   0.41500    1.000000    
+     16 H     c    0.362141    0.137859    0.980592     0.41500    1.000000    
+--------------------------------------------------------------------------------
+
+
+
+  Molecule list generated from bond lengths :
+
+  Total number of molecules =     2
+
+--------------------------------------------------------------------------------
+Molecule No./:  Atoms
+Periodicity  :  
+--------------------------------------------------------------------------------
+     1  0    : C    c     1 O    c     3 N    c     5 N    c     6 H    c     9
+             : H    c    10 H    c    13 H    c    14
+     2  0    : C    c     2 O    c     4 N    c     7 N    c     8 H    c    11
+             : H    c    12 H    c    15 H    c    16
+--------------------------------------------------------------------------------
+
+  Brillouin zone sampling points :
+
+--------------------------------------------------------------------------------
+  Point number          x          y          z            Weight
+--------------------------------------------------------------------------------
+        1           0.250000   0.250000   0.250000     1.00000000
+--------------------------------------------------------------------------------
+
+
+********************************************************************************
+*  General input information                                                   *
+********************************************************************************
+
+  Species output for all configurations : 
+
+--------------------------------------------------------------------------------
+  Species    Type    Atomic    Atomic    Charge       Radii (Angs)     Library
+                     Number     Mass       (e)     Cova   Ionic  VDW   Symbol
+--------------------------------------------------------------------------------
+    C        Core        6      12.01   0.380000   0.770  0.000  1.530          
+    O        Core        8      16.00  -0.380000   0.730  0.000  1.360          
+    N        Core        7      14.01  -0.830000   0.750  0.000  1.480          
+    H        Core        1       1.01   0.415000   0.370  0.000  1.080          
+--------------------------------------------------------------------------------
+
+
+  Lattice summation method               =    Ewald          (3-D)
+                                         =    Parry          (2-D)
+                                         =    Saunders et al (1-D)
+  Accuracy factor for lattice sums       =   12.000
+
+
+  Analytic derivatives to be used
+
+  Time limit = Infinity
+
+  Maximum range for interatomic potentials =    100000.000000 Angstroms
+
+  C6 terms to be calculated in real and reciprocal space 
+
+  Intramolecular potentials :
+
+--------------------------------------------------------------------------------
+Atom  Types   Potential      Parameter       Value         Units   Cutoffs(Ang)
+  1     2                                                            Min /  Max 
+--------------------------------------------------------------------------------
+C    c O    c Morse         Morse  De        6.2880000    eV        0.000  1.600
+                            Morse  a0        2.0600000    Ang^-1    
+                            Morse  r0        1.2300000    Ang       
+--------------------------------------------------------------------------------
+C    c N    c Morse         Morse  De        4.2060000    eV        0.000  1.600
+                            Morse  a0        2.0000000    Ang^-1    
+                            Morse  r0        1.3200000    Ang       
+--------------------------------------------------------------------------------
+H    c N    c Morse         Morse  De        3.8160000    eV        0.000  1.600
+                            Morse  a0        2.2800000    Ang^-1    
+                            Morse  r0        1.0260000    Ang       
+--------------------------------------------------------------------------------
+
+  Intermolecular potentials :
+
+--------------------------------------------------------------------------------
+Atom  Types   Potential      Parameter       Value         Units   Cutoffs(Ang)
+  1     2                                                            Min /  Max 
+--------------------------------------------------------------------------------
+C    c O    c Lennard       Lennard-Jones A  39031.570    eV*Ang^m  0.000 40.000
+                            Lennard-Jones B  35.266000    eV*Ang^n  
+                            Exponent m        12          None
+                            Exponent n         6          None
+--------------------------------------------------------------------------------
+C    c N    c Lennard       Lennard-Jones A  112494.67    eV*Ang^m  0.000 40.000
+                            Lennard-Jones B  55.387000    eV*Ang^n  
+                            Exponent m        12          None
+                            Exponent n         6          None
+--------------------------------------------------------------------------------
+O    c O    c Lennard       Lennard-Jones A  11833.864    eV*Ang^m  0.000 40.000
+                            Lennard-Jones B  21.633000    eV*Ang^n  
+                            Exponent m        12          None
+                            Exponent n         6          None
+--------------------------------------------------------------------------------
+N    c O    c Lennard       Lennard-Jones A  34106.919    eV*Ang^m  0.000 40.000
+                            Lennard-Jones B  33.977000    eV*Ang^n  
+                            Exponent m        12          None
+                            Exponent n         6          None
+--------------------------------------------------------------------------------
+N    c N    c Lennard       Lennard-Jones A  98301.108    eV*Ang^m  0.000 40.000
+                            Lennard-Jones B  53.362000    eV*Ang^n  
+                            Exponent m        12          None
+                            Exponent n         6          None
+--------------------------------------------------------------------------------
+C    c C    c Lennard       Lennard-Jones A  128737.61    eV*Ang^m  0.000 40.000
+                            Lennard-Jones B  57.488000    eV*Ang^n  
+                            Exponent m        12          None
+                            Exponent n         6          None
+--------------------------------------------------------------------------------
+
+  General Three-body potentials :
+
+--------------------------------------------------------------------------------
+  Atoms       Potential      Parameter       Value         Units   Cutoffs(Ang)
+  1 / 2 / 3                                                          Min /  Max 
+--------------------------------------------------------------------------------
+C     core    Harmonic      Three-body cnst  5.8970000    eV*rad^-2 0.000  1.600
+N     core                  Three-body angl  121.00000    degrees   0.000  1.600
+O     core                  Three-body k4    0.0000000    eV*rad^-4 0.000  3.000
+                            Three-body k3    0.0000000    eV*rad^-3 
+--------------------------------------------------------------------------------
+N     core    Harmonic      Three-body cnst  3.2520000    eV*rad^-2 0.000  1.400
+H     core                  Three-body angl  120.00000    degrees   0.000  1.600
+C     core                  Three-body k4    0.0000000    eV*rad^-4 0.000  2.600
+                            Three-body k3    0.0000000    eV*rad^-3 
+--------------------------------------------------------------------------------
+N     core    Harmonic      Three-body cnst  2.8620000    eV*rad^-2 0.000  1.400
+H     core                  Three-body angl  120.00000    degrees   0.000  1.400
+H     core                  Three-body k4    0.0000000    eV*rad^-4 0.000  2.300
+                            Three-body k3    0.0000000    eV*rad^-3 
+--------------------------------------------------------------------------------
+C     core    Harmonic      Three-body cnst  8.8460000    eV*rad^-2 0.000  1.600
+N     core                  Three-body angl  118.00000    degrees   0.000  1.600
+N     core                  Three-body k4    0.0000000    eV*rad^-4 0.000  2.800
+                            Three-body k3    0.0000000    eV*rad^-3 
+--------------------------------------------------------------------------------
+
+  General Four-body potentials :
+
+--------------------------------------------------------------------------------
+  Atoms       Potential      Parameter       Value         Units   Cutoffs(Ang)
+  1 - 4                                                             Min /  Max 
+--------------------------------------------------------------------------------
+O     core    Standard      Torsional const 0.26020000    eV        0.000  1.400
+C     core Phase = -  2                                             0.000  1.400
+N     core                                                          0.000  1.300
+H     core                                                          0.000  0.000
+--------------------------------------------------------------------------------
+N     core    Standard      Torsional const 0.21700000E-02eV        0.000  1.600
+C     core Phase = -  2                                             0.000  1.600
+N     core                                                          0.000  1.300
+H     core                                                          0.000  0.000
+--------------------------------------------------------------------------------
+O     core    Standard      Torsional const 0.43400000    eV        0.000  1.600
+C     core Phase = -  2                                             0.000  1.600
+N     core                                                          0.000  3.000
+N     core                                                          0.000  0.000
+--------------------------------------------------------------------------------
+
+********************************************************************************
+*  Output for configuration   1                                                *
+********************************************************************************
+
+
+  Components of free energy : 
+
+--------------------------------------------------------------------------------
+  Interatomic potentials     =         -58.75442794 eV    
+  Three-body potentials      =           0.02546153 eV    
+  Four-body potentials       =           0.00000000 eV    
+  Improper torsions          =           0.00000000 eV    
+  Out of plane potentials    =           0.00000000 eV    
+  Monopole - monopole (real) =          14.57668908 eV    
+  Monopole - monopole (recip)=         -16.23436973 eV    
+  Monopole - monopole (total)=          -1.65768064 eV    
+  Dispersion (real+recip)    =          -1.69282023 eV    
+  Vibrational contribution   =           3.19238564 eV    
+--------------------------------------------------------------------------------
+  Total free energy          =         -58.88708164 eV    
+--------------------------------------------------------------------------------
+  Total free energy          =           -5681.7032 kJ/(mole unit cells)
+--------------------------------------------------------------------------------
+
+
+  Number of variables =       51
+
+  Maximum number of calculations  =          1000
+  Maximum Hessian update interval =            10
+  Maximum step size               =   1.000000000
+  Maximum parameter tolerance     =   0.000010000
+  Maximum function  tolerance     =   0.000010000
+  Maximum gradient  tolerance     =   0.001000000
+  Maximum gradient  component     =   0.010000000
+
+  Symmetry not applied to optimisation
+
+  Cell parameters to be optimised using strains
+
+  Newton-Raphson optimiser to be used
+
+  BFGS hessian update to be used
+
+  General 2-D hessian to be used
+
+  Start of bulk optimisation :
+
+  Cycle:      0 Energy:       -58.887082  Gnorm:      0.132410  CPU:    0.332
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       47 ****
+  Cycle:      1 Energy:       -58.884040  Gnorm:      0.178138  CPU:    0.369
+**** Warning - number of modes has changed to       44 ****
+  Cycle:      2 Energy:       -58.757613  Gnorm:      0.155889  CPU:    0.394
+  Cycle:      3 Energy:       -58.773809  Gnorm:      0.240360  CPU:    0.418
+**** Warning - number of modes has changed to       45 ****
+  Cycle:      4 Energy:       -58.853606  Gnorm:      2.018223  CPU:    0.441
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       43 ****
+  Cycle:      5 Energy:       -58.729856  Gnorm:      0.170676  CPU:    0.490
+**** Warning - number of modes has changed to       42 ****
+  Cycle:      6 Energy:       -58.664498  Gnorm:      0.228854  CPU:    0.513
+**** Warning - number of modes has changed to       43 ****
+  Cycle:      7 Energy:       -58.731044  Gnorm:      0.270285  CPU:    0.535
+  Cycle:      8 Energy:       -58.742408  Gnorm:      0.646708  CPU:    0.558
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:      9 Energy:       -58.655690  Gnorm:      0.209720  CPU:    0.606
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       47 ****
+  Cycle:     10 Energy:       -58.896085  Gnorm:      1.193545  CPU:    0.653
+**** Warning - number of modes has changed to       45 ****
+  Cycle:     11 Energy:       -58.783767  Gnorm:      0.126169  CPU:    0.676
+**** Warning - number of modes has changed to       44 ****
+  Cycle:     12 Energy:       -58.774977  Gnorm:      0.236013  CPU:    0.697
+**** Warning - number of modes has changed to       43 ****
+  Cycle:     13 Energy:       -58.715218  Gnorm:      1.823483  CPU:    0.720
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:     14 Energy:       -58.652564  Gnorm:      0.247006  CPU:    0.766
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       43 ****
+  Cycle:     15 Energy:       -58.723243  Gnorm:      0.507043  CPU:    0.813
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:     16 Energy:       -58.563669  Gnorm:      0.639320  CPU:    0.858
+  Cycle:     17 Energy:       -58.598029  Gnorm:      0.527954  CPU:    0.879
+  Cycle:     18 Energy:       -58.644019  Gnorm:      0.716127  CPU:    0.900
+  Cycle:     19 Energy:       -58.597890  Gnorm:      0.622887  CPU:    0.922
+  Cycle:     20 Energy:       -58.639079  Gnorm:      0.709341  CPU:    0.945
+**** Warning - number of modes has changed to       41 ****
+  Cycle:     21 Energy:       -58.609574  Gnorm:      0.383793  CPU:    0.966
+**** Warning - number of modes has changed to       43 ****
+  Cycle:     22 Energy:       -58.691553  Gnorm:      0.194946  CPU:    0.988
+  Cycle:     23 Energy:       -58.699798  Gnorm:      0.239469  CPU:    1.012
+**** Warning - number of modes has changed to       42 ****
+  Cycle:     24 Energy:       -58.668705  Gnorm:      0.228649  CPU:    1.042
+  Cycle:     25 Energy:       -58.681987  Gnorm:      0.296827  CPU:    1.065
+  ** Hessian calculated **
+  Cycle:     26 Energy:       -58.671370  Gnorm:      0.574888  CPU:    1.119
+**** Warning - number of modes has changed to       41 ****
+  Cycle:     27 Energy:       -58.612620  Gnorm:      0.445663  CPU:    1.140
+**** Warning - number of modes has changed to       42 ****
+  Cycle:     28 Energy:       -58.665009  Gnorm:      0.420806  CPU:    1.161
+  Cycle:     29 Energy:       -58.686125  Gnorm:      0.307102  CPU:    1.181
+**** Warning - number of modes has changed to       44 ****
+  Cycle:     30 Energy:       -58.757853  Gnorm:      3.165375  CPU:    1.203
+**** Warning - number of modes has changed to       43 ****
+  Cycle:     31 Energy:       -58.647797  Gnorm:      0.714154  CPU:    1.223
+  Cycle:     32 Energy:       -58.694089  Gnorm:      1.635550  CPU:    1.245
+**** Warning - number of modes has changed to       42 ****
+  Cycle:     33 Energy:       -58.663487  Gnorm:      0.360884  CPU:    1.266
+**** Warning - number of modes has changed to       43 ****
+  Cycle:     34 Energy:       -58.720431  Gnorm:      0.286132  CPU:    1.287
+  Cycle:     35 Energy:       -58.735873  Gnorm:      0.383685  CPU:    1.307
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:     36 Energy:       -58.688010  Gnorm:      0.113029  CPU:    1.352
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       45 ****
+  Cycle:     37 Energy:       -58.789075  Gnorm:      0.152247  CPU:    1.396
+**** Warning - number of modes has changed to       44 ****
+  Cycle:     38 Energy:       -58.755378  Gnorm:      0.126287  CPU:    1.416
+**** Warning - number of modes has changed to       43 ****
+  Cycle:     39 Energy:       -58.712958  Gnorm:      0.146954  CPU:    1.436
+  Cycle:     40 Energy:       -58.732234  Gnorm:      0.948000  CPU:    1.457
+  Cycle:     41 Energy:       -58.727222  Gnorm:      1.564485  CPU:    1.478
+**** Warning - number of modes has changed to       42 ****
+  Cycle:     42 Energy:       -58.659166  Gnorm:      0.253044  CPU:    1.499
+  Cycle:     43 Energy:       -58.679293  Gnorm:      0.158730  CPU:    1.519
+**** Warning - number of modes has changed to       44 ****
+  Cycle:     44 Energy:       -58.785069  Gnorm:      1.247696  CPU:    1.540
+  Cycle:     45 Energy:       -58.790165  Gnorm:      2.368493  CPU:    1.561
+**** Warning - number of modes has changed to       43 ****
+  Cycle:     46 Energy:       -58.703966  Gnorm:      0.176670  CPU:    1.583
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       45 ****
+  Cycle:     47 Energy:       -58.811353  Gnorm:      0.529265  CPU:    1.625
+  Cycle:     48 Energy:       -58.822537  Gnorm:      2.995952  CPU:    1.646
+**** Warning - number of modes has changed to       44 ****
+  Cycle:     49 Energy:       -58.691993  Gnorm:      0.961868  CPU:    1.667
+**** Warning - number of modes has changed to       43 ****
+  Cycle:     50 Energy:       -58.626860  Gnorm:      0.362614  CPU:    1.689
+**** Warning - number of modes has changed to       44 ****
+  Cycle:     51 Energy:       -58.742192  Gnorm:      0.697276  CPU:    1.710
+  Cycle:     52 Energy:       -58.791832  Gnorm:     12.240923  CPU:    1.730
+  Cycle:     53 Energy:       -58.755291  Gnorm:      0.774685  CPU:    1.751
+**** Warning - number of modes has changed to       43 ****
+  Cycle:     54 Energy:       -58.705985  Gnorm:      0.423087  CPU:    1.771
+**** Warning - number of modes has changed to       42 ****
+  Cycle:     55 Energy:       -58.643029  Gnorm:      0.267747  CPU:    1.792
+**** Warning - number of modes has changed to       43 ****
+  Cycle:     56 Energy:       -58.719403  Gnorm:      0.885285  CPU:    1.813
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:     57 Energy:       -58.653029  Gnorm:      0.218847  CPU:    1.856
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       47 ****
+  Cycle:     58 Energy:       -58.867305  Gnorm:      0.336602  CPU:    1.900
+**** Warning - number of modes has changed to       45 ****
+  Cycle:     59 Energy:       -58.787870  Gnorm:      0.326654  CPU:    1.920
+**** Warning - number of modes has changed to       43 ****
+  Cycle:     60 Energy:       -58.503285  Gnorm:      0.761793  CPU:    1.941
+**** Warning - number of modes has changed to       42 ****
+  Cycle:     61 Energy:       -58.546228  Gnorm:      0.587942  CPU:    1.962
+  Cycle:     62 Energy:       -58.610577  Gnorm:      1.014830  CPU:    1.982
+**** Warning - number of modes has changed to       41 ****
+  Cycle:     63 Energy:       -58.564448  Gnorm:      0.496567  CPU:    2.003
+  Cycle:     64 Energy:       -58.606067  Gnorm:      0.353138  CPU:    2.023
+**** Warning - number of modes has changed to       42 ****
+  Cycle:     65 Energy:       -58.674203  Gnorm:      0.136333  CPU:    2.044
+  Cycle:     66 Energy:       -58.684471  Gnorm:      0.109991  CPU:    2.064
+**** Warning - number of modes has changed to       43 ****
+  Cycle:     67 Energy:       -58.737443  Gnorm:      0.779736  CPU:    2.084
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:     68 Energy:       -58.701732  Gnorm:      0.408403  CPU:    2.127
+**** Warning - number of modes has changed to       41 ****
+  Cycle:     69 Energy:       -58.621256  Gnorm:      0.415371  CPU:    2.148
+  Cycle:     70 Energy:       -58.627610  Gnorm:      0.384189  CPU:    2.168
+**** Warning - number of modes has changed to       42 ****
+  Cycle:     71 Energy:       -58.705157  Gnorm:      1.707003  CPU:    2.188
+  Cycle:     72 Energy:       -58.686241  Gnorm:      0.684028  CPU:    2.209
+  Cycle:     73 Energy:       -58.702210  Gnorm:      0.802474  CPU:    2.230
+**** Warning - number of modes has changed to       41 ****
+  Cycle:     74 Energy:       -58.639729  Gnorm:      0.337598  CPU:    2.251
+  Cycle:     75 Energy:       -58.644724  Gnorm:      0.307140  CPU:    2.270
+  Cycle:     76 Energy:       -58.649827  Gnorm:      0.243797  CPU:    2.290
+**** Warning - number of modes has changed to       42 ****
+  Cycle:     77 Energy:       -58.709196  Gnorm:      0.878732  CPU:    2.311
+  ** Hessian calculated **
+  Cycle:     78 Energy:       -58.727628  Gnorm:      4.395892  CPU:    2.354
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       41 ****
+  Cycle:     79 Energy:       -58.649895  Gnorm:      0.222474  CPU:    2.398
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       44 ****
+  Cycle:     80 Energy:       -58.769093  Gnorm:      0.406140  CPU:    2.441
+  Cycle:     81 Energy:       -58.852243  Gnorm:    140.361261  CPU:    2.461
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:     82 Energy:       -58.673399  Gnorm:      0.200691  CPU:    2.504
+  Cycle:     83 Energy:       -58.669203  Gnorm:      0.316836  CPU:    2.524
+**** Warning - number of modes has changed to       41 ****
+  Cycle:     84 Energy:       -58.619491  Gnorm:      0.449577  CPU:    2.545
+  Cycle:     85 Energy:       -58.634628  Gnorm:      0.380257  CPU:    2.562
+**** Warning - number of modes has changed to       42 ****
+  Cycle:     86 Energy:       -58.695523  Gnorm:      0.718476  CPU:    2.580
+  Cycle:     87 Energy:       -58.713828  Gnorm:      2.577485  CPU:    2.597
+  Cycle:     88 Energy:       -58.708009  Gnorm:      1.090154  CPU:    2.614
+  Cycle:     89 Energy:       -58.708295  Gnorm:      1.054416  CPU:    2.634
+  Cycle:     90 Energy:       -58.708029  Gnorm:      1.072180  CPU:    2.653
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       41 ****
+  Cycle:     91 Energy:       -58.651164  Gnorm:      0.174544  CPU:    2.693
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       44 ****
+  Cycle:     92 Energy:       -58.765071  Gnorm:      0.276710  CPU:    2.733
+**** Warning - number of modes has changed to       43 ****
+  Cycle:     93 Energy:       -58.726697  Gnorm:      0.265133  CPU:    2.753
+**** Warning - number of modes has changed to       42 ****
+  Cycle:     94 Energy:       -58.665638  Gnorm:      0.238928  CPU:    2.772
+  Cycle:     95 Energy:       -58.678095  Gnorm:      0.154587  CPU:    2.792
+**** Warning - number of modes has changed to       43 ****
+  Cycle:     96 Energy:       -58.717596  Gnorm:      0.341109  CPU:    2.812
+  Cycle:     97 Energy:       -58.732114  Gnorm:      1.121504  CPU:    2.831
+**** Warning - number of modes has changed to       42 ****
+  Cycle:     98 Energy:       -58.678727  Gnorm:      0.147737  CPU:    2.852
+**** Warning - number of modes has changed to       43 ****
+  Cycle:     99 Energy:       -58.779060  Gnorm:     17.685057  CPU:    2.872
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    100 Energy:       -58.682544  Gnorm:      0.104460  CPU:    2.914
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    101 Energy:       -58.795431  Gnorm:      0.188399  CPU:    2.958
+  Cycle:    102 Energy:       -58.843085  Gnorm:      3.860021  CPU:    2.978
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    103 Energy:       -58.768244  Gnorm:      0.230328  CPU:    3.020
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    104 Energy:       -58.674762  Gnorm:      0.151340  CPU:    3.067
+  Cycle:    105 Energy:       -58.687592  Gnorm:      0.293120  CPU:    3.089
+  Cycle:    106 Energy:       -58.627496  Gnorm:      0.534856  CPU:    3.112
+  Cycle:    107 Energy:       -58.648089  Gnorm:      0.493017  CPU:    3.132
+  Cycle:    108 Energy:       -58.681222  Gnorm:      0.555265  CPU:    3.153
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    109 Energy:       -58.748887  Gnorm:      0.896297  CPU:    3.173
+  Cycle:    110 Energy:       -58.725625  Gnorm:      1.114456  CPU:    3.194
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    111 Energy:       -58.678319  Gnorm:      0.276437  CPU:    3.215
+  Cycle:    112 Energy:       -58.691538  Gnorm:      0.248215  CPU:    3.236
+  Cycle:    113 Energy:       -58.695061  Gnorm:      0.412251  CPU:    3.257
+  ** Hessian calculated **
+  Cycle:    114 Energy:       -58.708176  Gnorm:      0.998974  CPU:    3.300
+  Cycle:    115 Energy:       -58.706507  Gnorm:      1.001637  CPU:    3.320
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       41 ****
+  Cycle:    116 Energy:       -58.634351  Gnorm:      0.301699  CPU:    3.363
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       48 ****
+  Cycle:    117 Energy:       -58.953428  Gnorm:     14.849414  CPU:    3.406
+**** Warning - number of modes has changed to       46 ****
+  Cycle:    118 Energy:       -58.789903  Gnorm:      1.314132  CPU:    3.426
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    119 Energy:       -58.647957  Gnorm:      0.645789  CPU:    3.446
+  Cycle:    120 Energy:       -58.717648  Gnorm:      0.506512  CPU:    3.467
+  Cycle:    121 Energy:       -58.753469  Gnorm:      0.482061  CPU:    3.487
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    122 Energy:       -58.668430  Gnorm:      0.347411  CPU:    3.508
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    123 Energy:       -58.514385  Gnorm:      0.693566  CPU:    3.528
+  Cycle:    124 Energy:       -58.559198  Gnorm:      0.607080  CPU:    3.548
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    125 Energy:       -58.653880  Gnorm:      0.548336  CPU:    3.568
+  Cycle:    126 Energy:       -58.715601  Gnorm:      1.633794  CPU:    3.589
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    127 Energy:       -58.645867  Gnorm:      0.333942  CPU:    3.632
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       48 ****
+  Cycle:    128 Energy:       -58.894321  Gnorm:      0.487313  CPU:    3.674
+**** Warning - number of modes has changed to       46 ****
+  Cycle:    129 Energy:       -58.806933  Gnorm:      0.254023  CPU:    3.695
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    130 Energy:       -58.828537  Gnorm:      2.881840  CPU:    3.715
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    131 Energy:       -58.698564  Gnorm:      0.251231  CPU:    3.758
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    132 Energy:       -58.603189  Gnorm:      0.487248  CPU:    3.778
+  Cycle:    133 Energy:       -58.627344  Gnorm:      0.385213  CPU:    3.798
+  Cycle:    134 Energy:       -58.636590  Gnorm:      0.403953  CPU:    3.819
+  Cycle:    135 Energy:       -58.661686  Gnorm:      0.236275  CPU:    3.839
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    136 Energy:       -58.710938  Gnorm:      0.304705  CPU:    3.859
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    137 Energy:       -58.666738  Gnorm:      0.260867  CPU:    3.879
+  Cycle:    138 Energy:       -58.683249  Gnorm:      0.418413  CPU:    3.900
+**** Warning - number of modes has changed to       41 ****
+  Cycle:    139 Energy:       -58.632335  Gnorm:      0.228075  CPU:    3.921
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    140 Energy:       -58.690875  Gnorm:      1.357112  CPU:    3.941
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       41 ****
+  Cycle:    141 Energy:       -58.634141  Gnorm:      0.259907  CPU:    3.983
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    142 Energy:       -58.827885  Gnorm:      3.740485  CPU:    4.027
+  Cycle:    143 Energy:       -58.756232  Gnorm:      0.541466  CPU:    4.047
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    144 Energy:       -58.757886  Gnorm:      0.268058  CPU:    4.067
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    145 Energy:       -58.672263  Gnorm:      0.431932  CPU:    4.087
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    146 Energy:       -58.630873  Gnorm:      0.250382  CPU:    4.107
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    147 Energy:       -58.718520  Gnorm:      0.482631  CPU:    4.128
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    148 Energy:       -58.673838  Gnorm:      0.146645  CPU:    4.149
+  Cycle:    149 Energy:       -58.683706  Gnorm:      0.122923  CPU:    4.169
+  Cycle:    150 Energy:       -58.685911  Gnorm:      0.107254  CPU:    4.189
+  Cycle:    151 Energy:       -58.688094  Gnorm:      0.107528  CPU:    4.209
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    152 Energy:       -58.804492  Gnorm:      0.403576  CPU:    4.252
+  Cycle:    153 Energy:       -58.816918  Gnorm:      0.341557  CPU:    4.272
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    154 Energy:       -58.768429  Gnorm:      0.300388  CPU:    4.292
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    155 Energy:       -58.703359  Gnorm:      0.231273  CPU:    4.312
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    156 Energy:       -58.636680  Gnorm:      0.393081  CPU:    4.332
+  Cycle:    157 Energy:       -58.653045  Gnorm:      0.308198  CPU:    4.353
+  Cycle:    158 Energy:       -58.685135  Gnorm:      0.130501  CPU:    4.373
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    159 Energy:       -58.732162  Gnorm:      0.157889  CPU:    4.394
+  Cycle:    160 Energy:       -58.737073  Gnorm:      0.200079  CPU:    4.414
+  Cycle:    161 Energy:       -58.745306  Gnorm:      0.533995  CPU:    4.434
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    162 Energy:       -58.685867  Gnorm:      0.176390  CPU:    4.477
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    163 Energy:       -58.784690  Gnorm:      0.820029  CPU:    4.498
+  Cycle:    164 Energy:       -58.822828  Gnorm:     10.398679  CPU:    4.518
+  Cycle:    165 Energy:       -58.778260  Gnorm:      0.519452  CPU:    4.538
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    166 Energy:       -58.713176  Gnorm:      0.166295  CPU:    4.580
+  Cycle:    167 Energy:       -58.713848  Gnorm:      0.144173  CPU:    4.601
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    168 Energy:       -58.804431  Gnorm:      0.408149  CPU:    4.644
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    169 Energy:       -58.754229  Gnorm:      0.385111  CPU:    4.664
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    170 Energy:       -58.526164  Gnorm:      0.841690  CPU:    4.684
+  Cycle:    171 Energy:       -58.594090  Gnorm:      0.746658  CPU:    4.704
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    172 Energy:       -58.607100  Gnorm:      0.549439  CPU:    4.725
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    173 Energy:       -58.677722  Gnorm:      0.471460  CPU:    4.745
+  Cycle:    174 Energy:       -58.696120  Gnorm:      0.389575  CPU:    4.765
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    175 Energy:       -58.670633  Gnorm:      0.198362  CPU:    4.785
+  Cycle:    176 Energy:       -58.675221  Gnorm:      0.160604  CPU:    4.804
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    177 Energy:       -58.782230  Gnorm:     25.073180  CPU:    4.825
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    178 Energy:       -58.679055  Gnorm:      0.144533  CPU:    4.867
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    179 Energy:       -58.805195  Gnorm:      0.369284  CPU:    4.909
+  Cycle:    180 Energy:       -58.806638  Gnorm:      0.251565  CPU:    4.930
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    181 Energy:       -58.705452  Gnorm:      0.243446  CPU:    4.950
+  Cycle:    182 Energy:       -58.728325  Gnorm:      0.537864  CPU:    4.971
+  Cycle:    183 Energy:       -58.708947  Gnorm:      0.578440  CPU:    4.992
+  Cycle:    184 Energy:       -58.716421  Gnorm:      0.697832  CPU:    5.011
+  Cycle:    185 Energy:       -58.709214  Gnorm:      0.468458  CPU:    5.031
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    186 Energy:       -58.780481  Gnorm:      0.598886  CPU:    5.053
+  Cycle:    187 Energy:       -58.785476  Gnorm:      1.009662  CPU:    5.077
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    188 Energy:       -58.726921  Gnorm:      1.283419  CPU:    5.097
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    189 Energy:       -58.662403  Gnorm:      0.269206  CPU:    5.141
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       47 ****
+  Cycle:    190 Energy:       -58.876939  Gnorm:      0.271116  CPU:    5.184
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    191 Energy:       -58.762626  Gnorm:      0.262803  CPU:    5.205
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    192 Energy:       -58.522235  Gnorm:      0.695021  CPU:    5.225
+  Cycle:    193 Energy:       -58.574486  Gnorm:      0.539587  CPU:    5.245
+  Cycle:    194 Energy:       -58.619638  Gnorm:      0.415953  CPU:    5.266
+  Cycle:    195 Energy:       -58.645923  Gnorm:      0.317251  CPU:    5.286
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    196 Energy:       -58.780862  Gnorm:      3.895913  CPU:    5.306
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    197 Energy:       -58.660052  Gnorm:      0.506682  CPU:    5.327
+  Cycle:    198 Energy:       -58.705461  Gnorm:      0.219257  CPU:    5.347
+  Cycle:    199 Energy:       -58.725491  Gnorm:      0.694400  CPU:    5.367
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    200 Energy:       -58.674989  Gnorm:      0.239751  CPU:    5.411
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       46 ****
+  Cycle:    201 Energy:       -58.824981  Gnorm:      0.288290  CPU:    5.454
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    202 Energy:       -58.757554  Gnorm:      0.279408  CPU:    5.474
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    203 Energy:       -58.646581  Gnorm:      0.474992  CPU:    5.495
+  Cycle:    204 Energy:       -58.681257  Gnorm:      0.352329  CPU:    5.515
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    205 Energy:       -58.626937  Gnorm:      0.267114  CPU:    5.536
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    206 Energy:       -58.773515  Gnorm:      1.710522  CPU:    5.556
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    207 Energy:       -58.670740  Gnorm:      0.166610  CPU:    5.576
+  Cycle:    208 Energy:       -58.682048  Gnorm:      0.094710  CPU:    5.596
+  Cycle:    209 Energy:       -58.686064  Gnorm:      0.103905  CPU:    5.616
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    210 Energy:       -58.749292  Gnorm:      1.473705  CPU:    5.637
+  ** Hessian calculated **
+  Cycle:    211 Energy:       -58.782027  Gnorm:     20.370078  CPU:    5.679
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    212 Energy:       -58.685832  Gnorm:      0.105282  CPU:    5.722
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       46 ****
+  Cycle:    213 Energy:       -58.851292  Gnorm:      0.664974  CPU:    5.765
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    214 Energy:       -58.808653  Gnorm:      0.371493  CPU:    5.786
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    215 Energy:       -58.790200  Gnorm:      0.748829  CPU:    5.806
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    216 Energy:       -58.715915  Gnorm:      0.292355  CPU:    5.826
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    217 Energy:       -58.725566  Gnorm:      0.477764  CPU:    5.846
+  Cycle:    218 Energy:       -58.749816  Gnorm:      1.004699  CPU:    5.866
+  Cycle:    219 Energy:       -58.794650  Gnorm:      5.402859  CPU:    5.886
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    220 Energy:       -58.639615  Gnorm:      0.379376  CPU:    5.930
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    221 Energy:       -58.750314  Gnorm:      0.554003  CPU:    5.950
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    222 Energy:       -58.702623  Gnorm:      0.351910  CPU:    5.970
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    223 Energy:       -58.663340  Gnorm:      0.268200  CPU:    5.990
+  Cycle:    224 Energy:       -58.668391  Gnorm:      0.256534  CPU:    6.010
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    225 Energy:       -58.718370  Gnorm:      0.399240  CPU:    6.031
+  Cycle:    226 Energy:       -58.723764  Gnorm:      0.549469  CPU:    6.052
+  Cycle:    227 Energy:       -58.734002  Gnorm:      1.340685  CPU:    6.071
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    228 Energy:       -58.673619  Gnorm:      0.250164  CPU:    6.092
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    229 Energy:       -58.768758  Gnorm:     21.304368  CPU:    6.112
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    230 Energy:       -58.675609  Gnorm:      0.224321  CPU:    6.156
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    231 Energy:       -58.735213  Gnorm:      0.455121  CPU:    6.198
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    232 Energy:       -58.789452  Gnorm:      0.716158  CPU:    6.218
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    233 Energy:       -58.724575  Gnorm:      0.149399  CPU:    6.239
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    234 Energy:       -58.818595  Gnorm:     14.526365  CPU:    6.259
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    235 Energy:       -58.730593  Gnorm:      0.384219  CPU:    6.279
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    236 Energy:       -58.799014  Gnorm:      2.275315  CPU:    6.299
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    237 Energy:       -58.710159  Gnorm:      0.248371  CPU:    6.319
+  Cycle:    238 Energy:       -58.750295  Gnorm:      2.547281  CPU:    6.340
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    239 Energy:       -58.662892  Gnorm:      0.206815  CPU:    6.384
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       47 ****
+  Cycle:    240 Energy:       -58.858960  Gnorm:      0.259302  CPU:    6.427
+**** Warning - number of modes has changed to       46 ****
+  Cycle:    241 Energy:       -58.848312  Gnorm:      0.649644  CPU:    6.447
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    242 Energy:       -58.805528  Gnorm:      0.556993  CPU:    6.467
+  Cycle:    243 Energy:       -58.809008  Gnorm:      0.576160  CPU:    6.488
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    244 Energy:       -58.737162  Gnorm:      0.347684  CPU:    6.508
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    245 Energy:       -58.838314  Gnorm:     10.505673  CPU:    6.527
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    246 Energy:       -58.752766  Gnorm:      0.243464  CPU:    6.547
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    247 Energy:       -58.843856  Gnorm:      2.675269  CPU:    6.567
+  Cycle:    248 Energy:       -58.805024  Gnorm:      0.541108  CPU:    6.588
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    249 Energy:       -58.752402  Gnorm:      0.233241  CPU:    6.608
+  ** Hessian calculated **
+  Cycle:    250 Energy:       -58.764352  Gnorm:      0.250929  CPU:    6.650
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    251 Energy:       -58.851357  Gnorm:      2.738979  CPU:    6.671
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    252 Energy:       -58.591986  Gnorm:      0.360942  CPU:    6.714
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    253 Energy:       -58.640233  Gnorm:      0.539400  CPU:    6.735
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    254 Energy:       -58.608345  Gnorm:      0.501659  CPU:    6.756
+**** Warning - number of modes has changed to       41 ****
+  Cycle:    255 Energy:       -58.594294  Gnorm:      0.340780  CPU:    6.776
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    256 Energy:       -58.661813  Gnorm:      0.262422  CPU:    6.796
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    257 Energy:       -58.775699  Gnorm:     14.083691  CPU:    6.817
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    258 Energy:       -58.672971  Gnorm:      0.273435  CPU:    6.861
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    259 Energy:       -58.654985  Gnorm:      0.198013  CPU:    6.881
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    260 Energy:       -58.718951  Gnorm:      0.321886  CPU:    6.901
+  Cycle:    261 Energy:       -58.723819  Gnorm:      3.096423  CPU:    6.921
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    262 Energy:       -58.597692  Gnorm:      0.625392  CPU:    6.941
+  Cycle:    263 Energy:       -58.625695  Gnorm:      0.911902  CPU:    6.961
+**** Warning - number of modes has changed to       41 ****
+  Cycle:    264 Energy:       -58.571231  Gnorm:      0.464777  CPU:    6.981
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    265 Energy:       -58.666590  Gnorm:      0.590962  CPU:    7.001
+  Cycle:    266 Energy:       -58.703471  Gnorm:      1.110483  CPU:    7.022
+**** Warning - number of modes has changed to       41 ****
+  Cycle:    267 Energy:       -58.585823  Gnorm:      0.412755  CPU:    7.044
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    268 Energy:       -58.757029  Gnorm:      0.275631  CPU:    7.090
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    269 Energy:       -58.638348  Gnorm:      0.544805  CPU:    7.111
+  Cycle:    270 Energy:       -58.672359  Gnorm:      0.404900  CPU:    7.134
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    271 Energy:       -58.761806  Gnorm:      1.168323  CPU:    7.154
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    272 Energy:       -58.737814  Gnorm:      0.844591  CPU:    7.175
+  Cycle:    273 Energy:       -58.730918  Gnorm:      0.601604  CPU:    7.195
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    274 Energy:       -58.669566  Gnorm:      0.194952  CPU:    7.216
+  Cycle:    275 Energy:       -58.683599  Gnorm:      0.126347  CPU:    7.237
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    276 Energy:       -58.744171  Gnorm:      1.706756  CPU:    7.258
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    277 Energy:       -58.653983  Gnorm:      0.411442  CPU:    7.277
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    278 Energy:       -58.744419  Gnorm:      0.588876  CPU:    7.320
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    279 Energy:       -58.654249  Gnorm:      0.187372  CPU:    7.341
+  Cycle:    280 Energy:       -58.670890  Gnorm:      0.284561  CPU:    7.362
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    281 Energy:       -58.777264  Gnorm:      1.109826  CPU:    7.384
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    282 Energy:       -58.700304  Gnorm:      0.457897  CPU:    7.404
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    283 Energy:       -58.783686  Gnorm:      2.563006  CPU:    7.424
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    284 Energy:       -58.672078  Gnorm:      0.446880  CPU:    7.444
+  Cycle:    285 Energy:       -58.701032  Gnorm:      0.383010  CPU:    7.465
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    286 Energy:       -58.660733  Gnorm:      0.246290  CPU:    7.489
+  Cycle:    287 Energy:       -58.683362  Gnorm:      0.222573  CPU:    7.506
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       41 ****
+  Cycle:    288 Energy:       -58.578175  Gnorm:      0.523497  CPU:    7.542
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    289 Energy:       -58.655586  Gnorm:      0.556189  CPU:    7.560
+  Cycle:    290 Energy:       -58.679565  Gnorm:      0.585632  CPU:    7.579
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    291 Energy:       -58.690645  Gnorm:      1.120370  CPU:    7.599
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    292 Energy:       -58.631663  Gnorm:      0.365042  CPU:    7.618
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    293 Energy:       -58.733794  Gnorm:      0.311105  CPU:    7.637
+  Cycle:    294 Energy:       -58.705996  Gnorm:      0.548570  CPU:    7.656
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    295 Energy:       -58.670780  Gnorm:      0.339468  CPU:    7.675
+  Cycle:    296 Energy:       -58.687405  Gnorm:      0.125023  CPU:    7.694
+  Cycle:    297 Energy:       -58.693959  Gnorm:      0.106351  CPU:    7.713
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    298 Energy:       -58.802418  Gnorm:      0.586355  CPU:    7.752
+  Cycle:    299 Energy:       -58.813715  Gnorm:      1.827534  CPU:    7.771
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    300 Energy:       -58.707663  Gnorm:      0.402443  CPU:    7.789
+  Cycle:    301 Energy:       -58.724169  Gnorm:      0.368715  CPU:    7.808
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    302 Energy:       -58.780231  Gnorm:      1.013108  CPU:    7.827
+  Cycle:    303 Energy:       -58.778969  Gnorm:      1.573643  CPU:    7.846
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    304 Energy:       -58.703975  Gnorm:      0.381553  CPU:    7.866
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    305 Energy:       -58.649221  Gnorm:      0.398126  CPU:    7.886
+  Cycle:    306 Energy:       -58.667795  Gnorm:      0.314203  CPU:    7.907
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    307 Energy:       -58.777761  Gnorm:     10.448251  CPU:    7.927
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    308 Energy:       -58.677457  Gnorm:      0.238873  CPU:    7.965
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    309 Energy:       -58.794009  Gnorm:      1.480541  CPU:    7.982
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    310 Energy:       -58.719679  Gnorm:      0.198219  CPU:    8.000
+  Cycle:    311 Energy:       -58.723971  Gnorm:      0.453138  CPU:    8.017
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    312 Energy:       -58.671996  Gnorm:      0.323290  CPU:    8.035
+  Cycle:    313 Energy:       -58.687682  Gnorm:      0.147391  CPU:    8.052
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    314 Energy:       -58.725081  Gnorm:      0.233632  CPU:    8.070
+  Cycle:    315 Energy:       -58.743099  Gnorm:      0.559979  CPU:    8.087
+  Cycle:    316 Energy:       -58.741540  Gnorm:      0.376821  CPU:    8.104
+  ** Hessian calculated **
+  Cycle:    317 Energy:       -58.751521  Gnorm:      0.707066  CPU:    8.143
+  Cycle:    318 Energy:       -58.752360  Gnorm:      0.646506  CPU:    8.161
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    319 Energy:       -58.692354  Gnorm:      0.114207  CPU:    8.197
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       46 ****
+  Cycle:    320 Energy:       -58.842217  Gnorm:      0.346774  CPU:    8.238
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    321 Energy:       -58.852528  Gnorm:      2.523436  CPU:    8.258
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    322 Energy:       -58.779648  Gnorm:      0.336818  CPU:    8.279
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    323 Energy:       -58.719305  Gnorm:      1.144796  CPU:    8.300
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    324 Energy:       -58.651215  Gnorm:      0.270172  CPU:    8.338
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       46 ****
+  Cycle:    325 Energy:       -58.843407  Gnorm:      0.221201  CPU:    8.375
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    326 Energy:       -58.832028  Gnorm:      0.987047  CPU:    8.393
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    327 Energy:       -58.776591  Gnorm:      0.502433  CPU:    8.430
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    328 Energy:       -58.721359  Gnorm:      0.374114  CPU:    8.466
+**** Warning - number of modes has changed to       41 ****
+  Cycle:    329 Energy:       -58.244838  Gnorm:      1.143037  CPU:    8.484
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    330 Energy:       -58.425588  Gnorm:      0.959622  CPU:    8.502
+**** Warning - number of modes has changed to       41 ****
+  Cycle:    331 Energy:       -58.491409  Gnorm:      0.615555  CPU:    8.520
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    332 Energy:       -58.607062  Gnorm:      0.625328  CPU:    8.538
+**** Warning - number of modes has changed to       41 ****
+  Cycle:    333 Energy:       -58.617193  Gnorm:      0.324227  CPU:    8.555
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    334 Energy:       -58.666092  Gnorm:      0.345039  CPU:    8.574
+  Cycle:    335 Energy:       -58.680575  Gnorm:      0.343887  CPU:    8.592
+**** Warning - number of modes has changed to       41 ****
+  Cycle:    336 Energy:       -58.630640  Gnorm:      0.284110  CPU:    8.610
+  Cycle:    337 Energy:       -58.637522  Gnorm:      0.229434  CPU:    8.628
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    338 Energy:       -58.696732  Gnorm:      0.448694  CPU:    8.665
+  Cycle:    339 Energy:       -58.701128  Gnorm:      0.294741  CPU:    8.682
+  Cycle:    340 Energy:       -58.693351  Gnorm:      0.305722  CPU:    8.700
+**** Warning - number of modes has changed to       41 ****
+  Cycle:    341 Energy:       -58.646754  Gnorm:      0.221316  CPU:    8.718
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    342 Energy:       -58.699745  Gnorm:      0.383052  CPU:    8.736
+  Cycle:    343 Energy:       -58.700457  Gnorm:      0.350646  CPU:    8.754
+  Cycle:    344 Energy:       -58.715607  Gnorm:      0.650079  CPU:    8.772
+  Cycle:    345 Energy:       -58.726920  Gnorm:      2.650077  CPU:    8.789
+  Cycle:    346 Energy:       -58.720904  Gnorm:      9.761094  CPU:    8.807
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       41 ****
+  Cycle:    347 Energy:       -58.626546  Gnorm:      0.355088  CPU:    8.844
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    348 Energy:       -58.711134  Gnorm:      1.112834  CPU:    8.881
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       41 ****
+  Cycle:    349 Energy:       -58.634378  Gnorm:      0.263085  CPU:    8.918
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       47 ****
+  Cycle:    350 Energy:       -58.848685  Gnorm:      0.501375  CPU:    8.954
+**** Warning - number of modes has changed to       46 ****
+  Cycle:    351 Energy:       -58.818274  Gnorm:      0.276211  CPU:    8.972
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    352 Energy:       -58.792549  Gnorm:      0.367593  CPU:    8.990
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    353 Energy:       -58.576520  Gnorm:      0.374315  CPU:    9.008
+  Cycle:    354 Energy:       -58.629547  Gnorm:      0.237062  CPU:    9.026
+  Cycle:    355 Energy:       -58.663228  Gnorm:      0.231087  CPU:    9.044
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    356 Energy:       -58.764470  Gnorm:      0.266481  CPU:    9.061
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    357 Energy:       -58.732574  Gnorm:      0.329737  CPU:    9.079
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    358 Energy:       -58.672433  Gnorm:      0.264152  CPU:    9.097
+  Cycle:    359 Energy:       -58.684587  Gnorm:      0.154622  CPU:    9.115
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    360 Energy:       -58.843239  Gnorm:      1.551063  CPU:    9.152
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    361 Energy:       -58.755120  Gnorm:      0.329207  CPU:    9.170
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    362 Energy:       -58.715545  Gnorm:      0.112385  CPU:    9.188
+  Cycle:    363 Energy:       -58.735060  Gnorm:      0.253974  CPU:    9.206
+  Cycle:    364 Energy:       -58.666456  Gnorm:      0.447016  CPU:    9.224
+  Cycle:    365 Energy:       -58.686958  Gnorm:      0.352759  CPU:    9.241
+  Cycle:    366 Energy:       -58.726458  Gnorm:      0.305806  CPU:    9.259
+  Cycle:    367 Energy:       -58.715498  Gnorm:      0.295685  CPU:    9.276
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    368 Energy:       -58.802767  Gnorm:      2.850072  CPU:    9.294
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    369 Energy:       -58.721631  Gnorm:      0.809840  CPU:    9.312
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    370 Energy:       -58.671419  Gnorm:      0.267625  CPU:    9.350
+  Cycle:    371 Energy:       -58.676458  Gnorm:      0.205300  CPU:    9.368
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       46 ****
+  Cycle:    372 Energy:       -58.852993  Gnorm:      0.410521  CPU:    9.406
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    373 Energy:       -58.824146  Gnorm:      1.783905  CPU:    9.423
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    374 Energy:       -58.756693  Gnorm:      0.274550  CPU:    9.460
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    375 Energy:       -58.687368  Gnorm:      0.214583  CPU:    9.496
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    376 Energy:       -58.780576  Gnorm:      1.680386  CPU:    9.513
+  Cycle:    377 Energy:       -58.781274  Gnorm:      0.796837  CPU:    9.531
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    378 Energy:       -58.718771  Gnorm:      0.210296  CPU:    9.549
+  Cycle:    379 Energy:       -58.725270  Gnorm:      0.072443  CPU:    9.567
+  Cycle:    380 Energy:       -58.733708  Gnorm:      0.251255  CPU:    9.584
+  Cycle:    381 Energy:       -58.709949  Gnorm:      0.752003  CPU:    9.602
+  Cycle:    382 Energy:       -58.740924  Gnorm:      4.975563  CPU:    9.620
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    383 Energy:       -58.662612  Gnorm:      0.205913  CPU:    9.657
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    384 Energy:       -58.788717  Gnorm:      0.610463  CPU:    9.693
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    385 Energy:       -58.859672  Gnorm:      1.850738  CPU:    9.711
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    386 Energy:       -58.785560  Gnorm:      0.240197  CPU:    9.729
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    387 Energy:       -58.731532  Gnorm:      0.371904  CPU:    9.746
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    388 Energy:       -58.631533  Gnorm:      0.438951  CPU:    9.764
+  Cycle:    389 Energy:       -58.648382  Gnorm:      0.368413  CPU:    9.781
+  Cycle:    390 Energy:       -58.682800  Gnorm:      0.226546  CPU:    9.799
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    391 Energy:       -58.760423  Gnorm:      0.665224  CPU:    9.817
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    392 Energy:       -58.811051  Gnorm:      3.444372  CPU:    9.835
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    393 Energy:       -58.735060  Gnorm:      0.419222  CPU:    9.853
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    394 Energy:       -58.663437  Gnorm:      0.349170  CPU:    9.889
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    395 Energy:       -58.786207  Gnorm:      2.464944  CPU:    9.907
+  Cycle:    396 Energy:       -58.736095  Gnorm:      1.124624  CPU:    9.925
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    397 Energy:       -58.614586  Gnorm:      0.550690  CPU:    9.942
+  Cycle:    398 Energy:       -58.654645  Gnorm:      0.393336  CPU:    9.960
+  Cycle:    399 Energy:       -58.689550  Gnorm:      0.297933  CPU:    9.978
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    400 Energy:       -58.660306  Gnorm:      0.209334  CPU:    9.995
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    401 Energy:       -58.728793  Gnorm:      0.575592  CPU:   10.013
+  Cycle:    402 Energy:       -58.740596  Gnorm:      1.210542  CPU:   10.031
+  Cycle:    403 Energy:       -58.753095  Gnorm:      3.010554  CPU:   10.049
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    404 Energy:       -58.640858  Gnorm:      0.394677  CPU:   10.086
+  Cycle:    405 Energy:       -58.663341  Gnorm:      0.506130  CPU:   10.104
+**** Warning - number of modes has changed to       41 ****
+  Cycle:    406 Energy:       -58.593320  Gnorm:      0.277324  CPU:   10.122
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    407 Energy:       -58.622931  Gnorm:      0.385184  CPU:   10.140
+  Cycle:    408 Energy:       -58.644297  Gnorm:      0.547230  CPU:   10.158
+  Cycle:    409 Energy:       -58.653303  Gnorm:      0.507067  CPU:   10.176
+  ** Hessian calculated **
+  Cycle:    410 Energy:       -58.660151  Gnorm:      0.699895  CPU:   10.213
+  Cycle:    411 Energy:       -58.664413  Gnorm:      0.687667  CPU:   10.231
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       41 ****
+  Cycle:    412 Energy:       -58.611972  Gnorm:      0.210638  CPU:   10.279
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    413 Energy:       -58.704043  Gnorm:      3.475468  CPU:   10.303
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       41 ****
+  Cycle:    414 Energy:       -58.612173  Gnorm:      0.237557  CPU:   10.345
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       46 ****
+  Cycle:    415 Energy:       -58.808523  Gnorm:      0.316449  CPU:   10.387
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    416 Energy:       -58.827386  Gnorm:      3.700127  CPU:   10.407
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    417 Energy:       -58.775645  Gnorm:      1.707830  CPU:   10.450
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    418 Energy:       -58.704022  Gnorm:      0.217500  CPU:   10.470
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    419 Energy:       -58.754732  Gnorm:      0.191957  CPU:   10.513
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    420 Energy:       -58.640170  Gnorm:      0.356704  CPU:   10.533
+  Cycle:    421 Energy:       -58.663975  Gnorm:      0.195983  CPU:   10.553
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    422 Energy:       -58.746185  Gnorm:      0.838069  CPU:   10.573
+  Cycle:    423 Energy:       -58.733415  Gnorm:      0.347519  CPU:   10.593
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    424 Energy:       -58.633852  Gnorm:      0.474022  CPU:   10.614
+  Cycle:    425 Energy:       -58.657713  Gnorm:      0.363161  CPU:   10.634
+  Cycle:    426 Energy:       -58.679929  Gnorm:      0.197999  CPU:   10.654
+  Cycle:    427 Energy:       -58.686391  Gnorm:      0.091499  CPU:   10.675
+  Cycle:    428 Energy:       -58.689079  Gnorm:      0.083305  CPU:   10.695
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    429 Energy:       -58.754768  Gnorm:      0.578701  CPU:   10.738
+  Cycle:    430 Energy:       -58.746862  Gnorm:      0.344197  CPU:   10.758
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    431 Energy:       -58.683092  Gnorm:      0.230997  CPU:   10.779
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    432 Energy:       -58.781565  Gnorm:      0.497845  CPU:   10.798
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    433 Energy:       -58.732958  Gnorm:      0.247873  CPU:   10.818
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    434 Energy:       -58.645913  Gnorm:      0.265681  CPU:   10.839
+  Cycle:    435 Energy:       -58.669640  Gnorm:      0.168986  CPU:   10.859
+  Cycle:    436 Energy:       -58.680831  Gnorm:      0.121786  CPU:   10.879
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    437 Energy:       -58.744773  Gnorm:      0.759392  CPU:   10.899
+  Cycle:    438 Energy:       -58.750505  Gnorm:      1.137194  CPU:   10.920
+  ** Hessian calculated **
+  Cycle:    439 Energy:       -58.797315  Gnorm:     47.045332  CPU:   10.963
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    440 Energy:       -58.674934  Gnorm:      0.135706  CPU:   11.006
+  Cycle:    441 Energy:       -58.679931  Gnorm:      0.162005  CPU:   11.027
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    442 Energy:       -58.717597  Gnorm:      0.742416  CPU:   11.047
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    443 Energy:       -58.669141  Gnorm:      0.301783  CPU:   11.090
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    444 Energy:       -58.846897  Gnorm:      3.458930  CPU:   11.134
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    445 Energy:       -58.751200  Gnorm:      0.282220  CPU:   11.154
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    446 Energy:       -58.741512  Gnorm:      1.215020  CPU:   11.175
+  Cycle:    447 Energy:       -58.712314  Gnorm:      0.480587  CPU:   11.194
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    448 Energy:       -58.659878  Gnorm:      0.189582  CPU:   11.215
+  Cycle:    449 Energy:       -58.676171  Gnorm:      0.139735  CPU:   11.235
+  Cycle:    450 Energy:       -58.605589  Gnorm:      0.568643  CPU:   11.255
+  Cycle:    451 Energy:       -58.630788  Gnorm:      0.495217  CPU:   11.275
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    452 Energy:       -58.725923  Gnorm:      3.719246  CPU:   11.296
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    453 Energy:       -58.684018  Gnorm:      0.106834  CPU:   11.315
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    454 Energy:       -58.818168  Gnorm:      0.573207  CPU:   11.358
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    455 Energy:       -58.762619  Gnorm:      0.180456  CPU:   11.379
+  Cycle:    456 Energy:       -58.795886  Gnorm:      0.567998  CPU:   11.399
+  Cycle:    457 Energy:       -58.803296  Gnorm:      1.847758  CPU:   11.419
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    458 Energy:       -58.724446  Gnorm:      0.578756  CPU:   11.439
+  Cycle:    459 Energy:       -58.727717  Gnorm:      0.647352  CPU:   11.459
+  Cycle:    460 Energy:       -58.734012  Gnorm:      0.753522  CPU:   11.480
+  Cycle:    461 Energy:       -58.738667  Gnorm:      1.052660  CPU:   11.499
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    462 Energy:       -58.639720  Gnorm:      0.316953  CPU:   11.520
+  Cycle:    463 Energy:       -58.649711  Gnorm:      0.312884  CPU:   11.540
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    464 Energy:       -58.789416  Gnorm:      2.370058  CPU:   11.582
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    465 Energy:       -58.726395  Gnorm:      0.376753  CPU:   11.602
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    466 Energy:       -58.768402  Gnorm:      0.547971  CPU:   11.622
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    467 Energy:       -58.714144  Gnorm:      0.419290  CPU:   11.643
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    468 Energy:       -58.675213  Gnorm:      0.321814  CPU:   11.663
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    469 Energy:       -58.722316  Gnorm:      0.628648  CPU:   11.683
+  Cycle:    470 Energy:       -58.721504  Gnorm:      0.405245  CPU:   11.703
+  Cycle:    471 Energy:       -58.742896  Gnorm:      0.363871  CPU:   11.724
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    472 Energy:       -58.693072  Gnorm:      0.144377  CPU:   11.744
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    473 Energy:       -58.769756  Gnorm:      1.902142  CPU:   11.765
+  ** Hessian calculated **
+  Cycle:    474 Energy:       -58.778411  Gnorm:      3.547221  CPU:   11.807
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    475 Energy:       -58.694931  Gnorm:      0.118861  CPU:   11.849
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    476 Energy:       -58.815027  Gnorm:      0.425432  CPU:   11.893
+  Cycle:    477 Energy:       -58.833896  Gnorm:      0.990550  CPU:   11.913
+  Cycle:    478 Energy:       -58.840492  Gnorm:      0.841870  CPU:   11.933
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    479 Energy:       -58.749990  Gnorm:      0.406914  CPU:   11.977
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    480 Energy:       -58.686456  Gnorm:      0.170049  CPU:   11.997
+  Cycle:    481 Energy:       -58.685877  Gnorm:      0.132418  CPU:   12.017
+  Cycle:    482 Energy:       -58.689597  Gnorm:      0.103660  CPU:   12.037
+  Cycle:    483 Energy:       -58.693911  Gnorm:      0.096172  CPU:   12.057
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    484 Energy:       -58.767303  Gnorm:      1.171284  CPU:   12.077
+  Cycle:    485 Energy:       -58.766498  Gnorm:      0.868924  CPU:   12.097
+  Cycle:    486 Energy:       -58.799977  Gnorm:     13.662262  CPU:   12.117
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    487 Energy:       -58.690336  Gnorm:      0.162783  CPU:   12.160
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    488 Energy:       -58.767669  Gnorm:      0.416779  CPU:   12.181
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    489 Energy:       -58.719384  Gnorm:      0.135949  CPU:   12.201
+  Cycle:    490 Energy:       -58.749968  Gnorm:      0.551321  CPU:   12.222
+  Cycle:    491 Energy:       -58.740782  Gnorm:      0.617621  CPU:   12.242
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    492 Energy:       -58.672168  Gnorm:      0.362617  CPU:   12.262
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    493 Energy:       -58.757406  Gnorm:      1.290487  CPU:   12.283
+  Cycle:    494 Energy:       -58.760899  Gnorm:      1.361891  CPU:   12.303
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    495 Energy:       -58.688493  Gnorm:      0.104910  CPU:   12.323
+  Cycle:    496 Energy:       -58.691005  Gnorm:      0.091111  CPU:   12.343
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    497 Energy:       -58.915266  Gnorm:     30.329751  CPU:   12.386
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    498 Energy:       -58.766692  Gnorm:      1.390835  CPU:   12.429
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    499 Energy:       -58.691191  Gnorm:      0.102000  CPU:   12.449
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    500 Energy:       -58.741768  Gnorm:      0.616715  CPU:   12.469
+  Cycle:    501 Energy:       -58.754083  Gnorm:      1.191353  CPU:   12.489
+  Cycle:    502 Energy:       -58.750932  Gnorm:      0.813417  CPU:   12.509
+  Cycle:    503 Energy:       -58.752608  Gnorm:      0.705568  CPU:   12.530
+  Cycle:    504 Energy:       -58.756468  Gnorm:      1.089270  CPU:   12.550
+  Cycle:    505 Energy:       -58.763009  Gnorm:      3.264536  CPU:   12.570
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    506 Energy:       -58.653887  Gnorm:      0.275969  CPU:   12.590
+  Cycle:    507 Energy:       -58.664307  Gnorm:      0.234804  CPU:   12.610
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    508 Energy:       -58.734016  Gnorm:      0.271753  CPU:   12.653
+  Cycle:    509 Energy:       -58.755557  Gnorm:      0.611669  CPU:   12.673
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    510 Energy:       -58.691637  Gnorm:      0.150155  CPU:   12.693
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    511 Energy:       -58.852894  Gnorm:      6.573176  CPU:   12.713
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    512 Energy:       -58.752458  Gnorm:      0.580328  CPU:   12.733
+  Cycle:    513 Energy:       -58.779471  Gnorm:      4.026569  CPU:   12.754
+  Cycle:    514 Energy:       -58.738308  Gnorm:      0.917731  CPU:   12.774
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    515 Energy:       -58.674885  Gnorm:      0.226166  CPU:   12.794
+  Cycle:    516 Energy:       -58.691042  Gnorm:      0.131026  CPU:   12.814
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    517 Energy:       -58.769228  Gnorm:      1.473565  CPU:   12.835
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    518 Energy:       -58.691452  Gnorm:      0.168027  CPU:   12.877
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    519 Energy:       -58.764175  Gnorm:      1.177407  CPU:   12.897
+  Cycle:    520 Energy:       -58.759866  Gnorm:      1.321465  CPU:   12.917
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    521 Energy:       -58.683476  Gnorm:      0.136224  CPU:   12.937
+  Cycle:    522 Energy:       -58.691158  Gnorm:      0.209823  CPU:   12.958
+  Cycle:    523 Energy:       -58.694835  Gnorm:      0.122601  CPU:   12.978
+  Cycle:    524 Energy:       -58.696016  Gnorm:      0.087742  CPU:   12.998
+  Cycle:    525 Energy:       -58.696305  Gnorm:      0.086994  CPU:   13.018
+  Cycle:    526 Energy:       -58.696800  Gnorm:      0.088802  CPU:   13.038
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    527 Energy:       -58.762994  Gnorm:      1.893532  CPU:   13.058
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    528 Energy:       -58.695743  Gnorm:      0.102601  CPU:   13.101
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    529 Energy:       -58.876145  Gnorm:      5.567617  CPU:   13.121
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    530 Energy:       -58.780185  Gnorm:      0.358134  CPU:   13.142
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    531 Energy:       -58.754384  Gnorm:      2.943934  CPU:   13.162
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    532 Energy:       -58.642179  Gnorm:      0.472200  CPU:   13.182
+  Cycle:    533 Energy:       -58.667669  Gnorm:      0.344163  CPU:   13.202
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    534 Energy:       -58.807432  Gnorm:      0.749499  CPU:   13.222
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    535 Energy:       -58.750037  Gnorm:      0.474070  CPU:   13.242
+  Cycle:    536 Energy:       -58.739624  Gnorm:      0.663518  CPU:   13.263
+  Cycle:    537 Energy:       -58.776954  Gnorm:      4.445455  CPU:   13.282
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    538 Energy:       -58.692975  Gnorm:      0.096233  CPU:   13.325
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       46 ****
+  Cycle:    539 Energy:       -58.864372  Gnorm:      1.867694  CPU:   13.368
+  Cycle:    540 Energy:       -58.843821  Gnorm:      0.477285  CPU:   13.388
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    541 Energy:       -58.754973  Gnorm:      0.256057  CPU:   13.408
+  Cycle:    542 Energy:       -58.796329  Gnorm:      0.414941  CPU:   13.429
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    543 Energy:       -58.714975  Gnorm:      0.249521  CPU:   13.449
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    544 Energy:       -58.646334  Gnorm:      0.262306  CPU:   13.469
+  Cycle:    545 Energy:       -58.664223  Gnorm:      0.212596  CPU:   13.489
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    546 Energy:       -58.797086  Gnorm:      1.052725  CPU:   13.510
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    547 Energy:       -58.723633  Gnorm:      0.159289  CPU:   13.530
+  Cycle:    548 Energy:       -58.727799  Gnorm:      0.187567  CPU:   13.550
+  ** Hessian calculated **
+  Cycle:    549 Energy:       -58.745402  Gnorm:      0.339599  CPU:   13.593
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    550 Energy:       -58.661024  Gnorm:      0.199306  CPU:   13.614
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    551 Energy:       -58.736290  Gnorm:      1.689247  CPU:   13.634
+  Cycle:    552 Energy:       -58.743265  Gnorm:      1.490906  CPU:   13.654
+  Cycle:    553 Energy:       -58.747314  Gnorm:      2.812408  CPU:   13.675
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    554 Energy:       -58.615273  Gnorm:      0.536438  CPU:   13.718
+  Cycle:    555 Energy:       -58.640317  Gnorm:      0.412506  CPU:   13.738
+  Cycle:    556 Energy:       -58.648074  Gnorm:      0.355954  CPU:   13.758
+  Cycle:    557 Energy:       -58.661201  Gnorm:      0.293834  CPU:   13.778
+  Cycle:    558 Energy:       -58.669540  Gnorm:      0.166114  CPU:   13.798
+  Cycle:    559 Energy:       -58.677516  Gnorm:      0.171524  CPU:   13.818
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    560 Energy:       -58.857662  Gnorm:      2.657828  CPU:   13.839
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    561 Energy:       -58.783781  Gnorm:      1.184045  CPU:   13.859
+  Cycle:    562 Energy:       -58.770480  Gnorm:      0.488612  CPU:   13.879
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    563 Energy:       -58.706083  Gnorm:      0.181749  CPU:   13.899
+  ** Hessian calculated **
+  Cycle:    564 Energy:       -58.724006  Gnorm:      0.235376  CPU:   13.942
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    565 Energy:       -58.847016  Gnorm:      6.264917  CPU:   13.962
+  Cycle:    566 Energy:       -58.818386  Gnorm:      0.754457  CPU:   13.982
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    567 Energy:       -58.775958  Gnorm:      0.270971  CPU:   14.002
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    568 Energy:       -58.669035  Gnorm:      1.904670  CPU:   14.022
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    569 Energy:       -58.447598  Gnorm:      0.704827  CPU:   14.043
+  Cycle:    570 Energy:       -58.481227  Gnorm:      0.639088  CPU:   14.063
+  Cycle:    571 Energy:       -58.530770  Gnorm:      0.561500  CPU:   14.083
+  Cycle:    572 Energy:       -58.588738  Gnorm:      0.485713  CPU:   14.103
+  Cycle:    573 Energy:       -58.648907  Gnorm:      5.101421  CPU:   14.123
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       41 ****
+  Cycle:    574 Energy:       -58.514147  Gnorm:      0.501083  CPU:   14.166
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    575 Energy:       -58.623475  Gnorm:      0.305899  CPU:   14.186
+  Cycle:    576 Energy:       -58.642771  Gnorm:      0.413368  CPU:   14.206
+**** Warning - number of modes has changed to       41 ****
+  Cycle:    577 Energy:       -58.600294  Gnorm:      0.364689  CPU:   14.225
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    578 Energy:       -58.629511  Gnorm:      0.310206  CPU:   14.246
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    579 Energy:       -58.687492  Gnorm:      0.276093  CPU:   14.265
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    580 Energy:       -58.638561  Gnorm:      0.212178  CPU:   14.285
+  Cycle:    581 Energy:       -58.646048  Gnorm:      0.194508  CPU:   14.305
+  Cycle:    582 Energy:       -58.650529  Gnorm:      0.189753  CPU:   14.325
+  Cycle:    583 Energy:       -58.661570  Gnorm:      0.226207  CPU:   14.345
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    584 Energy:       -58.733927  Gnorm:      0.645726  CPU:   14.387
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    585 Energy:       -58.679558  Gnorm:      0.301342  CPU:   14.407
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    586 Energy:       -58.770307  Gnorm:      0.517253  CPU:   14.427
+  Cycle:    587 Energy:       -58.797443  Gnorm:      3.593198  CPU:   14.447
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    588 Energy:       -58.716497  Gnorm:      0.148878  CPU:   14.490
+  ** Hessian calculated **
+  Cycle:    589 Energy:       -58.729463  Gnorm:      0.695514  CPU:   14.533
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    590 Energy:       -58.653178  Gnorm:      0.534927  CPU:   14.553
+**** Warning - number of modes has changed to       41 ****
+  Cycle:    591 Energy:       -58.603814  Gnorm:      0.335852  CPU:   14.573
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    592 Energy:       -58.699359  Gnorm:      0.515483  CPU:   14.594
+  Cycle:    593 Energy:       -58.712572  Gnorm:      0.330701  CPU:   14.614
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    594 Energy:       -58.660939  Gnorm:      0.190197  CPU:   14.634
+  Cycle:    595 Energy:       -58.680295  Gnorm:      0.121847  CPU:   14.654
+  Cycle:    596 Energy:       -58.685061  Gnorm:      0.093341  CPU:   14.674
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    597 Energy:       -58.756504  Gnorm:      1.295830  CPU:   14.703
+  Cycle:    598 Energy:       -58.787077  Gnorm:     14.563568  CPU:   14.727
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    599 Energy:       -58.687099  Gnorm:      0.081679  CPU:   14.774
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    600 Energy:       -58.799557  Gnorm:     75.750314  CPU:   14.795
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    601 Energy:       -58.688127  Gnorm:      0.086739  CPU:   14.815
+  Cycle:    602 Energy:       -58.689360  Gnorm:      0.094300  CPU:   14.835
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    603 Energy:       -58.750319  Gnorm:      0.901849  CPU:   14.855
+  Cycle:    604 Energy:       -58.749370  Gnorm:      0.531510  CPU:   14.875
+  Cycle:    605 Energy:       -58.755082  Gnorm:      0.661088  CPU:   14.895
+  Cycle:    606 Energy:       -58.787063  Gnorm:     12.710432  CPU:   14.914
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    607 Energy:       -58.684961  Gnorm:      0.146156  CPU:   14.956
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       47 ****
+  Cycle:    608 Energy:       -58.879923  Gnorm:      0.580649  CPU:   14.998
+**** Warning - number of modes has changed to       46 ****
+  Cycle:    609 Energy:       -58.849375  Gnorm:      0.335350  CPU:   15.017
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    610 Energy:       -58.768544  Gnorm:      0.217489  CPU:   15.036
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    611 Energy:       -58.622244  Gnorm:      0.489119  CPU:   15.054
+  Cycle:    612 Energy:       -58.646630  Gnorm:      0.379603  CPU:   15.073
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    613 Energy:       -58.730889  Gnorm:      0.271543  CPU:   15.093
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    614 Energy:       -58.787978  Gnorm:      1.256324  CPU:   15.112
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    615 Energy:       -58.719496  Gnorm:      0.132825  CPU:   15.131
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    616 Energy:       -58.797704  Gnorm:      3.021478  CPU:   15.152
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    617 Energy:       -58.727851  Gnorm:      1.027604  CPU:   15.172
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    618 Energy:       -58.674418  Gnorm:      0.176395  CPU:   15.214
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       47 ****
+  Cycle:    619 Energy:       -58.882476  Gnorm:      0.634041  CPU:   15.254
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    620 Energy:       -58.782141  Gnorm:      0.186883  CPU:   15.273
+  Cycle:    621 Energy:       -58.803456  Gnorm:      0.646259  CPU:   15.292
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    622 Energy:       -58.790552  Gnorm:      1.864505  CPU:   15.311
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    623 Energy:       -58.685667  Gnorm:      5.717795  CPU:   15.330
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    624 Energy:       -58.579970  Gnorm:      1.247071  CPU:   15.370
+**** Warning - number of modes has changed to       40 ****
+  Cycle:    625 Energy:       -58.320340  Gnorm:      0.740472  CPU:   15.390
+  Cycle:    626 Energy:       -58.376834  Gnorm:      0.681231  CPU:   15.409
+  Cycle:    627 Energy:       -58.446454  Gnorm:      0.590087  CPU:   15.428
+  Cycle:    628 Energy:       -58.441174  Gnorm:      0.548346  CPU:   15.447
+  Cycle:    629 Energy:       -58.464499  Gnorm:      0.498012  CPU:   15.467
+  Cycle:    630 Energy:       -58.491263  Gnorm:      0.465944  CPU:   15.487
+  Cycle:    631 Energy:       -58.522891  Gnorm:      0.480968  CPU:   15.505
+  Cycle:    632 Energy:       -58.565192  Gnorm:      0.334442  CPU:   15.526
+**** Warning - number of modes has changed to       41 ****
+  Cycle:    633 Energy:       -58.597453  Gnorm:      0.574751  CPU:   15.545
+  ** Hessian calculated **
+  Cycle:    634 Energy:       -58.627172  Gnorm:      6.996424  CPU:   15.584
+  Cycle:    635 Energy:       -58.626158  Gnorm:     11.003528  CPU:   15.602
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       40 ****
+  Cycle:    636 Energy:       -58.530894  Gnorm:      0.439568  CPU:   15.641
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       41 ****
+  Cycle:    637 Energy:       -58.622630  Gnorm:      1.256869  CPU:   15.680
+  Cycle:    638 Energy:       -58.636213  Gnorm:      1.091884  CPU:   15.698
+**** Warning - number of modes has changed to       40 ****
+  Cycle:    639 Energy:       -58.563532  Gnorm:      0.168925  CPU:   15.716
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    640 Energy:       -58.755036  Gnorm:      2.330684  CPU:   15.754
+  Cycle:    641 Energy:       -58.730846  Gnorm:      0.668870  CPU:   15.773
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    642 Energy:       -58.642942  Gnorm:      0.152376  CPU:   15.791
+  Cycle:    643 Energy:       -58.653163  Gnorm:      0.106217  CPU:   15.809
+  Cycle:    644 Energy:       -58.658566  Gnorm:      0.099238  CPU:   15.829
+  Cycle:    645 Energy:       -58.674063  Gnorm:      0.266258  CPU:   15.850
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    646 Energy:       -58.698123  Gnorm:      0.751088  CPU:   15.871
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    647 Energy:       -58.662747  Gnorm:      1.096089  CPU:   15.891
+**** Warning - number of modes has changed to       41 ****
+  Cycle:    648 Energy:       -58.580803  Gnorm:      0.439346  CPU:   15.911
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    649 Energy:       -58.662143  Gnorm:      0.859401  CPU:   15.931
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       41 ****
+  Cycle:    650 Energy:       -58.558108  Gnorm:      0.531496  CPU:   15.974
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    651 Energy:       -58.631036  Gnorm:      0.829315  CPU:   15.995
+  Cycle:    652 Energy:       -58.663987  Gnorm:      2.039586  CPU:   16.016
+  Cycle:    653 Energy:       -58.660016  Gnorm:      0.329259  CPU:   16.036
+  Cycle:    654 Energy:       -58.674345  Gnorm:      1.482343  CPU:   16.056
+  Cycle:    655 Energy:       -58.671171  Gnorm:      0.320254  CPU:   16.077
+**** Warning - number of modes has changed to       41 ****
+  Cycle:    656 Energy:       -58.609619  Gnorm:      0.256539  CPU:   16.097
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    657 Energy:       -58.705653  Gnorm:      4.509994  CPU:   16.117
+  Cycle:    658 Energy:       -58.718587  Gnorm:      9.797848  CPU:   16.137
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       41 ****
+  Cycle:    659 Energy:       -58.623204  Gnorm:      0.272137  CPU:   16.181
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       46 ****
+  Cycle:    660 Energy:       -58.800793  Gnorm:      0.322588  CPU:   16.223
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    661 Energy:       -58.735761  Gnorm:      0.288993  CPU:   16.243
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    662 Energy:       -58.622752  Gnorm:      0.277648  CPU:   16.264
+  Cycle:    663 Energy:       -58.656197  Gnorm:      0.161562  CPU:   16.284
+  Cycle:    664 Energy:       -58.673656  Gnorm:      0.105753  CPU:   16.305
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    665 Energy:       -58.762266  Gnorm:      0.174948  CPU:   16.324
+  Cycle:    666 Energy:       -58.776077  Gnorm:      0.431883  CPU:   16.345
+  Cycle:    667 Energy:       -58.779251  Gnorm:      0.438683  CPU:   16.365
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    668 Energy:       -58.676454  Gnorm:      0.104888  CPU:   16.408
+  Cycle:    669 Energy:       -58.679194  Gnorm:      0.105013  CPU:   16.428
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    670 Energy:       -58.805286  Gnorm:      1.834937  CPU:   16.448
+  Cycle:    671 Energy:       -58.797169  Gnorm:      1.679566  CPU:   16.469
+  Cycle:    672 Energy:       -58.809589  Gnorm:      5.638547  CPU:   16.489
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    673 Energy:       -58.698769  Gnorm:      0.391732  CPU:   16.509
+  Cycle:    674 Energy:       -58.713721  Gnorm:      0.736894  CPU:   16.529
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    675 Energy:       -58.641210  Gnorm:      0.307095  CPU:   16.549
+  Cycle:    676 Energy:       -58.663083  Gnorm:      0.165937  CPU:   16.570
+  Cycle:    677 Energy:       -58.682768  Gnorm:      0.311779  CPU:   16.590
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    678 Energy:       -58.658091  Gnorm:      0.539033  CPU:   16.633
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    679 Energy:       -58.740593  Gnorm:      0.705927  CPU:   16.653
+  Cycle:    680 Energy:       -58.791663  Gnorm:      2.520925  CPU:   16.673
+  Cycle:    681 Energy:       -58.714140  Gnorm:      0.488666  CPU:   16.693
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    682 Energy:       -58.688982  Gnorm:      0.492669  CPU:   16.714
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    683 Energy:       -58.615061  Gnorm:      0.334247  CPU:   16.734
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    684 Energy:       -58.710213  Gnorm:      0.388968  CPU:   16.754
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    685 Energy:       -58.656415  Gnorm:      0.190126  CPU:   16.774
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    686 Energy:       -58.742218  Gnorm:      2.904866  CPU:   16.794
+  Cycle:    687 Energy:       -58.758864  Gnorm:      8.289871  CPU:   16.815
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    688 Energy:       -58.666594  Gnorm:      0.155249  CPU:   16.858
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    689 Energy:       -58.790728  Gnorm:      0.232558  CPU:   16.900
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    690 Energy:       -58.748935  Gnorm:      0.107396  CPU:   16.920
+  Cycle:    691 Energy:       -58.767904  Gnorm:      0.176276  CPU:   16.941
+  Cycle:    692 Energy:       -58.784257  Gnorm:      3.150302  CPU:   16.961
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    693 Energy:       -58.706484  Gnorm:      0.320447  CPU:   17.004
+**** Warning - number of modes has changed to       41 ****
+  Cycle:    694 Energy:       -58.579945  Gnorm:      0.318406  CPU:   17.024
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    695 Energy:       -58.626587  Gnorm:      0.345130  CPU:   17.044
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    696 Energy:       -58.671598  Gnorm:      0.463742  CPU:   17.064
+  Cycle:    697 Energy:       -58.696778  Gnorm:      0.430318  CPU:   17.084
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    698 Energy:       -58.686523  Gnorm:      0.942910  CPU:   17.105
+**** Warning - number of modes has changed to       41 ****
+  Cycle:    699 Energy:       -58.605451  Gnorm:      0.404520  CPU:   17.125
+  Cycle:    700 Energy:       -58.621118  Gnorm:      0.288779  CPU:   17.146
+  Cycle:    701 Energy:       -58.631688  Gnorm:      0.247528  CPU:   17.166
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    702 Energy:       -58.694050  Gnorm:      0.677553  CPU:   17.186
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       41 ****
+  Cycle:    703 Energy:       -58.633418  Gnorm:      0.225562  CPU:   17.230
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    704 Energy:       -58.693890  Gnorm:      0.334044  CPU:   17.250
+  Cycle:    705 Energy:       -58.674895  Gnorm:      0.213744  CPU:   17.270
+  Cycle:    706 Energy:       -58.728772  Gnorm:      5.817767  CPU:   17.291
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       41 ****
+  Cycle:    707 Energy:       -58.640749  Gnorm:      0.219897  CPU:   17.334
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    708 Energy:       -58.756749  Gnorm:      0.115568  CPU:   17.377
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    709 Energy:       -58.716814  Gnorm:      0.215011  CPU:   17.397
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    710 Energy:       -58.649608  Gnorm:      0.199622  CPU:   17.417
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    711 Energy:       -58.729184  Gnorm:      0.507877  CPU:   17.437
+  Cycle:    712 Energy:       -58.741480  Gnorm:      0.936833  CPU:   17.458
+  Cycle:    713 Energy:       -58.763902  Gnorm:      3.938129  CPU:   17.478
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    714 Energy:       -58.676002  Gnorm:      0.118047  CPU:   17.521
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       46 ****
+  Cycle:    715 Energy:       -58.860516  Gnorm:      1.947321  CPU:   17.563
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    716 Energy:       -58.816681  Gnorm:      2.166868  CPU:   17.584
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    717 Energy:       -58.751039  Gnorm:      0.174757  CPU:   17.603
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    718 Energy:       -58.722357  Gnorm:      0.167831  CPU:   17.623
+  Cycle:    719 Energy:       -58.653123  Gnorm:      0.380951  CPU:   17.644
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    720 Energy:       -58.637264  Gnorm:      0.230651  CPU:   17.664
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    721 Energy:       -58.732570  Gnorm:      1.647699  CPU:   17.684
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    722 Energy:       -58.810882  Gnorm:      4.333001  CPU:   17.705
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    723 Energy:       -58.744286  Gnorm:      0.696771  CPU:   17.747
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    724 Energy:       -58.679238  Gnorm:      0.099154  CPU:   17.791
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    725 Energy:       -58.801996  Gnorm:      0.683570  CPU:   17.833
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    726 Energy:       -58.748538  Gnorm:      0.110382  CPU:   17.853
+  Cycle:    727 Energy:       -58.768699  Gnorm:      0.162313  CPU:   17.873
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    728 Energy:       -58.762491  Gnorm:     24.795492  CPU:   17.893
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    729 Energy:       -58.663691  Gnorm:      0.154859  CPU:   17.937
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       46 ****
+  Cycle:    730 Energy:       -58.832063  Gnorm:      0.662215  CPU:   17.980
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    731 Energy:       -58.780745  Gnorm:      0.322520  CPU:   18.000
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    732 Energy:       -58.732896  Gnorm:      0.461495  CPU:   18.020
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    733 Energy:       -58.657043  Gnorm:      0.453677  CPU:   18.040
+  Cycle:    734 Energy:       -58.700152  Gnorm:      0.684578  CPU:   18.060
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    735 Energy:       -58.654454  Gnorm:      0.237413  CPU:   18.080
+  Cycle:    736 Energy:       -58.681205  Gnorm:      0.266434  CPU:   18.100
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    737 Energy:       -58.708969  Gnorm:      0.572237  CPU:   18.120
+  Cycle:    738 Energy:       -58.737614  Gnorm:      0.524849  CPU:   18.141
+  Cycle:    739 Energy:       -58.817199  Gnorm:     17.391241  CPU:   18.161
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       41 ****
+  Cycle:    740 Energy:       -58.620756  Gnorm:      0.414011  CPU:   18.204
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    741 Energy:       -58.676151  Gnorm:      0.287712  CPU:   18.224
+  Cycle:    742 Energy:       -58.672505  Gnorm:      0.358428  CPU:   18.244
+  Cycle:    743 Energy:       -58.697713  Gnorm:      0.503734  CPU:   18.264
+**** Warning - number of modes has changed to       41 ****
+  Cycle:    744 Energy:       -58.635009  Gnorm:      0.211617  CPU:   18.285
+  Cycle:    745 Energy:       -58.647098  Gnorm:      0.212490  CPU:   18.305
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    746 Energy:       -58.714913  Gnorm:      1.335301  CPU:   18.325
+  Cycle:    747 Energy:       -58.717135  Gnorm:      1.487866  CPU:   18.345
+  Cycle:    748 Energy:       -58.737433  Gnorm:      7.794808  CPU:   18.366
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       41 ****
+  Cycle:    749 Energy:       -58.642677  Gnorm:      0.251415  CPU:   18.409
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       46 ****
+  Cycle:    750 Energy:       -58.817595  Gnorm:      0.296500  CPU:   18.451
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    751 Energy:       -58.804804  Gnorm:      0.455737  CPU:   18.471
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    752 Energy:       -58.705545  Gnorm:      0.423486  CPU:   18.491
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    753 Energy:       -58.617628  Gnorm:      0.377887  CPU:   18.512
+  Cycle:    754 Energy:       -58.647499  Gnorm:      0.234656  CPU:   18.532
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    755 Energy:       -58.741346  Gnorm:      2.897591  CPU:   18.553
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    756 Energy:       -58.667699  Gnorm:      0.199265  CPU:   18.573
+  Cycle:    757 Energy:       -58.678908  Gnorm:      0.116969  CPU:   18.593
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    758 Energy:       -58.742914  Gnorm:      0.478522  CPU:   18.613
+  Cycle:    759 Energy:       -58.755402  Gnorm:      1.407177  CPU:   18.634
+  ** Hessian calculated **
+  Cycle:    760 Energy:       -58.771407  Gnorm:      5.157211  CPU:   18.677
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    761 Energy:       -58.686889  Gnorm:      0.097023  CPU:   18.719
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    762 Energy:       -58.798957  Gnorm:      0.342908  CPU:   18.762
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    763 Energy:       -58.783658  Gnorm:      1.067434  CPU:   18.782
+  Cycle:    764 Energy:       -58.738496  Gnorm:      1.051676  CPU:   18.802
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    765 Energy:       -58.679239  Gnorm:      0.314638  CPU:   18.822
+  Cycle:    766 Energy:       -58.765773  Gnorm:      4.377345  CPU:   18.843
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    767 Energy:       -58.664540  Gnorm:      0.286562  CPU:   18.863
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    768 Energy:       -58.794409  Gnorm:      0.718027  CPU:   18.906
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    769 Energy:       -58.742796  Gnorm:      0.411259  CPU:   18.926
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    770 Energy:       -58.814756  Gnorm:      0.503510  CPU:   18.946
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    771 Energy:       -58.786121  Gnorm:      0.630987  CPU:   18.967
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    772 Energy:       -58.684894  Gnorm:      0.133664  CPU:   18.987
+  Cycle:    773 Energy:       -58.690294  Gnorm:      0.205959  CPU:   19.007
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    774 Energy:       -58.739297  Gnorm:      0.211522  CPU:   19.032
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    775 Energy:       -58.695513  Gnorm:      0.116121  CPU:   19.055
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    776 Energy:       -58.765277  Gnorm:      0.957746  CPU:   19.077
+  Cycle:    777 Energy:       -58.775868  Gnorm:      2.896171  CPU:   19.098
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    778 Energy:       -58.694287  Gnorm:      0.136346  CPU:   19.142
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       46 ****
+  Cycle:    779 Energy:       -58.844251  Gnorm:      0.201899  CPU:   19.185
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    780 Energy:       -58.800472  Gnorm:      0.130614  CPU:   19.205
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    781 Energy:       -58.780753  Gnorm:      0.265309  CPU:   19.225
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    782 Energy:       -58.632119  Gnorm:      0.320659  CPU:   19.246
+  Cycle:    783 Energy:       -58.659230  Gnorm:      0.232154  CPU:   19.266
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    784 Energy:       -58.794319  Gnorm:      0.815095  CPU:   19.286
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    785 Energy:       -58.723985  Gnorm:      0.209165  CPU:   19.306
+  Cycle:    786 Energy:       -58.725913  Gnorm:      0.290130  CPU:   19.326
+  Cycle:    787 Energy:       -58.710779  Gnorm:      0.596072  CPU:   19.347
+  Cycle:    788 Energy:       -58.720132  Gnorm:      0.934371  CPU:   19.367
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    789 Energy:       -58.670401  Gnorm:      0.236244  CPU:   19.410
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    790 Energy:       -58.790191  Gnorm:      0.685678  CPU:   19.431
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    791 Energy:       -58.732531  Gnorm:      0.176540  CPU:   19.451
+  Cycle:    792 Energy:       -58.744481  Gnorm:      0.313006  CPU:   19.470
+  Cycle:    793 Energy:       -58.719265  Gnorm:      0.409722  CPU:   19.490
+  Cycle:    794 Energy:       -58.731874  Gnorm:      0.632660  CPU:   19.511
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    795 Energy:       -58.810746  Gnorm:      1.759577  CPU:   19.531
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    796 Energy:       -58.756687  Gnorm:      1.477411  CPU:   19.573
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    797 Energy:       -58.690191  Gnorm:      0.155979  CPU:   19.616
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       46 ****
+  Cycle:    798 Energy:       -58.875809  Gnorm:      1.438877  CPU:   19.659
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    799 Energy:       -58.734908  Gnorm:      0.342939  CPU:   19.679
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    800 Energy:       -58.801568  Gnorm:      0.157279  CPU:   19.700
+  Cycle:    801 Energy:       -58.785148  Gnorm:      0.537932  CPU:   19.720
+  Cycle:    802 Energy:       -58.818900  Gnorm:      4.329764  CPU:   19.740
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    803 Energy:       -58.782548  Gnorm:      2.874247  CPU:   19.783
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    804 Energy:       -58.699510  Gnorm:      0.308330  CPU:   19.803
+  Cycle:    805 Energy:       -58.720650  Gnorm:      1.809525  CPU:   19.824
+**** Warning - number of modes has changed to       41 ****
+  Cycle:    806 Energy:       -58.556722  Gnorm:      0.486605  CPU:   19.844
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    807 Energy:       -58.635037  Gnorm:      0.316260  CPU:   19.865
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    808 Energy:       -58.687483  Gnorm:      0.522822  CPU:   19.885
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    809 Energy:       -58.645186  Gnorm:      0.344214  CPU:   19.905
+  Cycle:    810 Energy:       -58.696015  Gnorm:      0.873732  CPU:   19.926
+**** Warning - number of modes has changed to       41 ****
+  Cycle:    811 Energy:       -58.628012  Gnorm:      0.394228  CPU:   19.945
+  Cycle:    812 Energy:       -58.635876  Gnorm:      0.346170  CPU:   19.966
+  ** Hessian calculated **
+  Cycle:    813 Energy:       -58.644368  Gnorm:      0.254742  CPU:   20.008
+  Cycle:    814 Energy:       -58.646858  Gnorm:      0.211803  CPU:   20.028
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    815 Energy:       -58.685032  Gnorm:      0.565958  CPU:   20.071
+  Cycle:    816 Energy:       -58.706070  Gnorm:      0.550073  CPU:   20.091
+  Cycle:    817 Energy:       -58.727974  Gnorm:      1.546100  CPU:   20.111
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    818 Energy:       -58.666165  Gnorm:      0.327091  CPU:   20.131
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    819 Energy:       -58.788606  Gnorm:      0.222437  CPU:   20.152
+  Cycle:    820 Energy:       -58.826193  Gnorm:      0.703733  CPU:   20.171
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    821 Energy:       -58.765250  Gnorm:      0.234089  CPU:   20.192
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    822 Energy:       -58.728814  Gnorm:      0.370691  CPU:   20.212
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    823 Energy:       -58.603124  Gnorm:      0.512421  CPU:   20.232
+  Cycle:    824 Energy:       -58.622977  Gnorm:      0.440754  CPU:   20.253
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    825 Energy:       -58.732244  Gnorm:      3.254043  CPU:   20.296
+  Cycle:    826 Energy:       -58.731238  Gnorm:      0.782643  CPU:   20.315
+  Cycle:    827 Energy:       -58.709697  Gnorm:      0.222183  CPU:   20.336
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    828 Energy:       -58.667108  Gnorm:      0.150582  CPU:   20.354
+  Cycle:    829 Energy:       -58.674004  Gnorm:      0.171835  CPU:   20.373
+  Cycle:    830 Energy:       -58.678807  Gnorm:      0.118598  CPU:   20.391
+  Cycle:    831 Energy:       -58.680566  Gnorm:      0.108757  CPU:   20.409
+  Cycle:    832 Energy:       -58.682804  Gnorm:      0.114827  CPU:   20.428
+  Cycle:    833 Energy:       -58.684994  Gnorm:      0.111753  CPU:   20.446
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    834 Energy:       -58.724436  Gnorm:      0.221931  CPU:   20.465
+  ** Hessian calculated **
+  Cycle:    835 Energy:       -58.736230  Gnorm:      0.554414  CPU:   20.504
+  ** Hessian calculated **
+  Cycle:    836 Energy:       -58.765873  Gnorm:      4.173981  CPU:   20.541
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    837 Energy:       -58.686499  Gnorm:      0.100177  CPU:   20.583
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    838 Energy:       -58.807527  Gnorm:      0.443082  CPU:   20.627
+  Cycle:    839 Energy:       -58.843710  Gnorm:      2.527000  CPU:   20.648
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    840 Energy:       -58.776175  Gnorm:      0.372804  CPU:   20.691
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    841 Energy:       -58.638991  Gnorm:      0.479766  CPU:   20.733
+  Cycle:    842 Energy:       -58.655556  Gnorm:      0.408813  CPU:   20.754
+  Cycle:    843 Energy:       -58.676518  Gnorm:      0.323316  CPU:   20.774
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    844 Energy:       -58.773737  Gnorm:      0.671079  CPU:   20.794
+  Cycle:    845 Energy:       -58.802109  Gnorm:      1.547040  CPU:   20.814
+  Cycle:    846 Energy:       -58.809939  Gnorm:      1.421761  CPU:   20.835
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    847 Energy:       -58.688833  Gnorm:      0.227004  CPU:   20.878
+  Cycle:    848 Energy:       -58.691131  Gnorm:      0.101120  CPU:   20.898
+  Cycle:    849 Energy:       -58.693053  Gnorm:      0.148041  CPU:   20.918
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    850 Energy:       -58.750074  Gnorm:      0.493289  CPU:   20.937
+  Cycle:    851 Energy:       -58.762935  Gnorm:      1.577505  CPU:   20.958
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    852 Energy:       -58.691954  Gnorm:      0.204638  CPU:   21.001
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    853 Energy:       -58.788750  Gnorm:      0.172527  CPU:   21.044
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    854 Energy:       -58.776337  Gnorm:      0.566296  CPU:   21.066
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    855 Energy:       -58.698503  Gnorm:      0.360096  CPU:   21.087
+  Cycle:    856 Energy:       -58.709406  Gnorm:      0.255485  CPU:   21.107
+  Cycle:    857 Energy:       -58.709005  Gnorm:      0.286448  CPU:   21.128
+  ** Hessian calculated **
+  Cycle:    858 Energy:       -58.728303  Gnorm:      0.098335  CPU:   21.173
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    859 Energy:       -58.683839  Gnorm:      0.186056  CPU:   21.193
+  Cycle:    860 Energy:       -58.674213  Gnorm:      0.289638  CPU:   21.213
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    861 Energy:       -58.744573  Gnorm:      1.273048  CPU:   21.233
+  Cycle:    862 Energy:       -58.779448  Gnorm:      9.975279  CPU:   21.253
+  Cycle:    863 Energy:       -58.760374  Gnorm:      0.877116  CPU:   21.273
+  Cycle:    864 Energy:       -58.760631  Gnorm:      0.813867  CPU:   21.293
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    865 Energy:       -58.695843  Gnorm:      0.110782  CPU:   21.336
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    866 Energy:       -58.760406  Gnorm:      0.287727  CPU:   21.379
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    867 Energy:       -58.810567  Gnorm:      0.316239  CPU:   21.400
+  Cycle:    868 Energy:       -58.854438  Gnorm:      1.669887  CPU:   21.421
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    869 Energy:       -58.751777  Gnorm:      0.275870  CPU:   21.463
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    870 Energy:       -58.687460  Gnorm:      0.110213  CPU:   21.483
+  Cycle:    871 Energy:       -58.690000  Gnorm:      0.165446  CPU:   21.504
+  Cycle:    872 Energy:       -58.694526  Gnorm:      0.134258  CPU:   21.524
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    873 Energy:       -58.746175  Gnorm:      0.408745  CPU:   21.544
+  Cycle:    874 Energy:       -58.751483  Gnorm:      0.326512  CPU:   21.564
+  Cycle:    875 Energy:       -58.735864  Gnorm:      0.251300  CPU:   21.584
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    876 Energy:       -58.689817  Gnorm:      0.223819  CPU:   21.605
+  Cycle:    877 Energy:       -58.696432  Gnorm:      0.144802  CPU:   21.624
+  Cycle:    878 Energy:       -58.700873  Gnorm:      0.106661  CPU:   21.645
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    879 Energy:       -58.861379  Gnorm:      1.557850  CPU:   21.688
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    880 Energy:       -58.807025  Gnorm:      1.062015  CPU:   21.708
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    881 Energy:       -58.752097  Gnorm:      0.328139  CPU:   21.729
+  Cycle:    882 Energy:       -58.720339  Gnorm:      0.354167  CPU:   21.749
+  Cycle:    883 Energy:       -58.740433  Gnorm:      0.309123  CPU:   21.768
+  Cycle:    884 Energy:       -58.748170  Gnorm:      1.074017  CPU:   21.788
+  Cycle:    885 Energy:       -58.763046  Gnorm:      1.475275  CPU:   21.809
+  Cycle:    886 Energy:       -58.778714  Gnorm:      2.962554  CPU:   21.829
+  Cycle:    887 Energy:       -58.769307  Gnorm:      1.777206  CPU:   21.849
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    888 Energy:       -58.679878  Gnorm:      0.249035  CPU:   21.869
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       46 ****
+  Cycle:    889 Energy:       -58.862041  Gnorm:      0.669905  CPU:   21.912
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    890 Energy:       -58.791072  Gnorm:      0.422844  CPU:   21.932
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    891 Energy:       -58.546195  Gnorm:      0.802275  CPU:   21.952
+  Cycle:    892 Energy:       -58.605674  Gnorm:      0.671536  CPU:   21.972
+  Cycle:    893 Energy:       -58.664900  Gnorm:      0.527148  CPU:   21.992
+  Cycle:    894 Energy:       -58.701449  Gnorm:      0.334710  CPU:   22.012
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    895 Energy:       -58.774514  Gnorm:      1.826548  CPU:   22.033
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    896 Energy:       -58.684866  Gnorm:      0.385312  CPU:   22.053
+  Cycle:    897 Energy:       -58.728893  Gnorm:      2.082374  CPU:   22.073
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    898 Energy:       -58.650604  Gnorm:      0.391141  CPU:   22.093
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    899 Energy:       -58.813132  Gnorm:      0.687877  CPU:   22.136
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    900 Energy:       -58.727424  Gnorm:      0.250910  CPU:   22.156
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    901 Energy:       -58.710935  Gnorm:      0.167850  CPU:   22.176
+  Cycle:    902 Energy:       -58.725886  Gnorm:      0.159776  CPU:   22.196
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    903 Energy:       -58.778822  Gnorm:      0.413089  CPU:   22.217
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    904 Energy:       -58.727113  Gnorm:      0.231410  CPU:   22.237
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    905 Energy:       -58.818785  Gnorm:      2.354241  CPU:   22.257
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    906 Energy:       -58.741166  Gnorm:      0.257268  CPU:   22.277
+  Cycle:    907 Energy:       -58.750265  Gnorm:      0.436295  CPU:   22.297
+  Cycle:    908 Energy:       -58.758346  Gnorm:      0.861138  CPU:   22.318
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    909 Energy:       -58.691745  Gnorm:      0.160132  CPU:   22.361
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       47 ****
+  Cycle:    910 Energy:       -58.895883  Gnorm:      1.790973  CPU:   22.404
+  Cycle:    911 Energy:       -58.865916  Gnorm:      0.342919  CPU:   22.424
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    912 Energy:       -58.792571  Gnorm:      0.189298  CPU:   22.444
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    913 Energy:       -58.741980  Gnorm:      3.639037  CPU:   22.465
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    914 Energy:       -58.661378  Gnorm:      0.250067  CPU:   22.507
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       46 ****
+  Cycle:    915 Energy:       -58.873413  Gnorm:      2.572790  CPU:   22.550
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    916 Energy:       -58.709663  Gnorm:      1.094312  CPU:   22.571
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    917 Energy:       -58.572147  Gnorm:      0.941098  CPU:   22.592
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    918 Energy:       -58.607480  Gnorm:      0.689468  CPU:   22.612
+  Cycle:    919 Energy:       -58.525446  Gnorm:      0.926448  CPU:   22.632
+  Cycle:    920 Energy:       -58.616203  Gnorm:      0.902041  CPU:   22.652
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    921 Energy:       -58.577321  Gnorm:      0.554399  CPU:   22.673
+  Cycle:    922 Energy:       -58.624809  Gnorm:      0.442648  CPU:   22.694
+  Cycle:    923 Energy:       -58.654770  Gnorm:      0.240370  CPU:   22.716
+  Cycle:    924 Energy:       -58.688463  Gnorm:      0.462522  CPU:   22.737
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       41 ****
+  Cycle:    925 Energy:       -58.640155  Gnorm:      0.256820  CPU:   22.781
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       46 ****
+  Cycle:    926 Energy:       -58.834798  Gnorm:      0.232493  CPU:   22.824
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    927 Energy:       -58.809740  Gnorm:      0.288211  CPU:   22.844
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    928 Energy:       -58.644503  Gnorm:      0.302866  CPU:   22.864
+  Cycle:    929 Energy:       -58.672059  Gnorm:      0.231964  CPU:   22.885
+  Cycle:    930 Energy:       -58.686199  Gnorm:      0.163910  CPU:   22.905
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    931 Energy:       -58.757691  Gnorm:      0.828794  CPU:   22.926
+  Cycle:    932 Energy:       -58.754403  Gnorm:      0.470641  CPU:   22.946
+  Cycle:    933 Energy:       -58.781400  Gnorm:      3.299573  CPU:   22.966
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    934 Energy:       -58.698270  Gnorm:      0.130067  CPU:   23.009
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    935 Energy:       -58.796662  Gnorm:      0.142905  CPU:   23.052
+  Cycle:    936 Energy:       -58.824840  Gnorm:      0.510519  CPU:   23.072
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    937 Energy:       -58.730983  Gnorm:      0.105539  CPU:   23.115
+  Cycle:    938 Energy:       -58.740247  Gnorm:      0.154511  CPU:   23.135
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    939 Energy:       -58.680400  Gnorm:      0.250078  CPU:   23.155
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    940 Energy:       -58.751633  Gnorm:      0.466323  CPU:   23.176
+  Cycle:    941 Energy:       -58.754403  Gnorm:      0.545934  CPU:   23.197
+  Cycle:    942 Energy:       -58.758596  Gnorm:      0.785397  CPU:   23.218
+  Cycle:    943 Energy:       -58.758055  Gnorm:      0.759428  CPU:   23.239
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    944 Energy:       -58.693586  Gnorm:      0.144141  CPU:   23.282
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    945 Energy:       -58.830573  Gnorm:      1.111055  CPU:   23.325
+  Cycle:    946 Energy:       -58.825432  Gnorm:      8.914079  CPU:   23.345
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    947 Energy:       -58.644297  Gnorm:      0.715106  CPU:   23.366
+  Cycle:    948 Energy:       -58.698175  Gnorm:      0.513976  CPU:   23.387
+  Cycle:    949 Energy:       -58.741720  Gnorm:      0.335404  CPU:   23.407
+  Cycle:    950 Energy:       -58.762841  Gnorm:      0.369839  CPU:   23.427
+  Cycle:    951 Energy:       -58.753436  Gnorm:      1.208892  CPU:   23.447
+  Cycle:    952 Energy:       -58.714876  Gnorm:      0.386032  CPU:   23.468
+  Cycle:    953 Energy:       -58.758572  Gnorm:      0.386516  CPU:   23.488
+  Cycle:    954 Energy:       -58.757348  Gnorm:      0.197580  CPU:   23.509
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    955 Energy:       -58.663595  Gnorm:      0.304480  CPU:   23.552
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    956 Energy:       -58.727688  Gnorm:      0.417920  CPU:   23.573
+  Cycle:    957 Energy:       -58.758316  Gnorm:      1.706819  CPU:   23.593
+  Cycle:    958 Energy:       -58.741621  Gnorm:      0.274783  CPU:   23.613
+**** Warning - number of modes has changed to       45 ****
+  Cycle:    959 Energy:       -58.844737  Gnorm:      1.187489  CPU:   23.633
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    960 Energy:       -58.774156  Gnorm:      0.475698  CPU:   23.653
+  Cycle:    961 Energy:       -58.805336  Gnorm:      0.754999  CPU:   23.674
+  Cycle:    962 Energy:       -58.826088  Gnorm:      6.098060  CPU:   23.694
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    963 Energy:       -58.738676  Gnorm:      0.241582  CPU:   23.737
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    964 Energy:       -58.738036  Gnorm:      1.141477  CPU:   23.779
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    965 Energy:       -58.581060  Gnorm:      1.340201  CPU:   23.800
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    966 Energy:       -58.162620  Gnorm:      1.361527  CPU:   23.820
+  Cycle:    967 Energy:       -58.287798  Gnorm:      1.095887  CPU:   23.841
+  Cycle:    968 Energy:       -58.372371  Gnorm:      0.953170  CPU:   23.862
+  Cycle:    969 Energy:       -58.460345  Gnorm:      0.784235  CPU:   23.882
+  Cycle:    970 Energy:       -58.530744  Gnorm:      0.648299  CPU:   23.902
+  Cycle:    971 Energy:       -58.594584  Gnorm:      0.516630  CPU:   23.923
+  Cycle:    972 Energy:       -58.633950  Gnorm:      0.376570  CPU:   23.943
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    973 Energy:       -58.715285  Gnorm:      0.234633  CPU:   23.964
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    974 Energy:       -58.570177  Gnorm:      1.210391  CPU:   24.007
+**** Warning - number of modes has changed to       41 ****
+  Cycle:    975 Energy:       -58.402789  Gnorm:      0.802977  CPU:   24.027
+  Cycle:    976 Energy:       -58.447590  Gnorm:      0.701929  CPU:   24.047
+  Cycle:    977 Energy:       -58.521528  Gnorm:      0.620436  CPU:   24.068
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    978 Energy:       -58.622335  Gnorm:      0.508050  CPU:   24.088
+  Cycle:    979 Energy:       -58.659747  Gnorm:      0.615594  CPU:   24.108
+  Cycle:    980 Energy:       -58.685174  Gnorm:      1.570067  CPU:   24.128
+**** Warning - number of modes has changed to       41 ****
+  Cycle:    981 Energy:       -58.615607  Gnorm:      0.381142  CPU:   24.149
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    982 Energy:       -58.681031  Gnorm:      0.958338  CPU:   24.169
+  Cycle:    983 Energy:       -58.688888  Gnorm:      0.783798  CPU:   24.190
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       41 ****
+  Cycle:    984 Energy:       -58.614399  Gnorm:      0.307292  CPU:   24.233
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    985 Energy:       -58.691873  Gnorm:      0.213786  CPU:   24.253
+  Cycle:    986 Energy:       -58.747952  Gnorm:      5.318189  CPU:   24.273
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    987 Energy:       -58.650562  Gnorm:      0.198635  CPU:   24.315
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    988 Energy:       -58.728130  Gnorm:      0.451555  CPU:   24.335
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    989 Energy:       -58.681625  Gnorm:      0.300086  CPU:   24.356
+**** Warning - number of modes has changed to       41 ****
+  Cycle:    990 Energy:       -58.584522  Gnorm:      0.517146  CPU:   24.376
+**** Warning - number of modes has changed to       42 ****
+  Cycle:    991 Energy:       -58.656843  Gnorm:      0.418968  CPU:   24.397
+  Cycle:    992 Energy:       -58.690992  Gnorm:      0.673545  CPU:   24.417
+  Cycle:    993 Energy:       -58.693533  Gnorm:      0.457356  CPU:   24.437
+  Cycle:    994 Energy:       -58.697161  Gnorm:      0.445526  CPU:   24.457
+  Cycle:    995 Energy:       -58.721223  Gnorm:      3.911134  CPU:   24.477
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       41 ****
+  Cycle:    996 Energy:       -58.644922  Gnorm:      0.230604  CPU:   24.520
+  ** Hessian calculated **
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    997 Energy:       -58.767326  Gnorm:      0.136131  CPU:   24.563
+**** Warning - number of modes has changed to       43 ****
+  Cycle:    998 Energy:       -58.733976  Gnorm:      0.087110  CPU:   24.583
+**** Warning - number of modes has changed to       44 ****
+  Cycle:    999 Energy:       -58.806995  Gnorm:      1.314187  CPU:   24.603
+**** Warning - number of modes has changed to       43 ****
+  Cycle:   1000 Energy:       -58.733345  Gnorm:      0.287885  CPU:   24.623
+
+
+  **** Maximum number of function calls has been reached ****
+
+
+  Final free energy =     -58.73334514 eV      
+  Final Gnorm       =       0.28788465
+
+  Components of free energy : 
+
+--------------------------------------------------------------------------------
+  Interatomic potentials     =         -59.02607352 eV    
+  Three-body potentials      =           0.01885319 eV    
+  Four-body potentials       =           0.00154230 eV    
+  Improper torsions          =           0.00000000 eV    
+  Out of plane potentials    =           0.00000000 eV    
+  Monopole - monopole (real) =          14.45197391 eV    
+  Monopole - monopole (recip)=         -15.92268146 eV    
+  Monopole - monopole (total)=          -1.47070755 eV    
+  Dispersion (real+recip)    =          -1.46961281 eV    
+  Vibrational contribution   =           3.21265325 eV    
+--------------------------------------------------------------------------------
+  Total free energy          =         -58.73334514 eV    
+--------------------------------------------------------------------------------
+  Total free energy          =           -5666.8700 kJ/(mole unit cells)
+--------------------------------------------------------------------------------
+
+  Final fractional coordinates of atoms :
+
+--------------------------------------------------------------------------------
+   No.  Atomic        x           y          z          Radius
+        Label       (Frac)      (Frac)     (Frac)       (Angs) 
+--------------------------------------------------------------------------------
+     1  C     c     0.016937    0.509886    0.370079    0.000000
+     2  C     c     0.519975    0.009317    0.641810    0.000000
+     3  O     c     0.012753    0.514626    0.627570    0.000000
+     4  O     c     0.529038    0.004463    0.384364    0.000000
+     5  N     c     0.168968    0.635326    0.230154    0.000000
+     6  N     c     0.872194    0.378966    0.224827    0.000000
+     7  N     c     0.663221    0.882024    0.796932    0.000000
+     8  N     c     0.365402    0.141583    0.771730    0.000000
+     9  H     c     0.290590    0.744091    0.328700    0.000000
+    10  H     c     0.750611    0.273972    0.319777    0.000000
+    11  H     c     0.789005    0.772032    0.711560    0.000000
+    12  H     c     0.247831    0.247549    0.667531    0.000000
+    13  H     c     0.170107    0.628511    0.013625    0.000000
+    14  H     c     0.874306    0.380971    0.016685    0.000000
+    15  H     c     0.651867    0.894028    0.013524    0.000000
+    16  H     c     0.362141    0.137859    0.980592    0.000000
+--------------------------------------------------------------------------------
+
+  Final Cartesian lattice vectors (Angstroms) :
+
+        5.205714    0.009414   -0.034058
+        0.005414    6.172524   -0.001738
+       -0.024500   -0.006671    4.770704
+
+
+  Final cell parameters and derivatives :
+
+--------------------------------------------------------------------------------
+       a            5.205834 Angstrom     dE/de1(xx)     1.713602 eV/strain
+       b            6.172526 Angstrom     dE/de2(yy)     1.851885 eV/strain
+       c            4.770772 Angstrom     dE/de3(zz)     0.924468 eV/strain
+       alpha       90.096505 Degrees      dE/de4(yz)     1.315481 eV/strain
+       beta        90.669224 Degrees      dE/de5(xz)    -0.740134 eV/strain
+       gamma       89.846033 Degrees      dE/de6(xy)    -3.172514 eV/strain
+--------------------------------------------------------------------------------
+
+  Primitive cell volume =           153.288685 Angs**3
+
+  Density of cell =      1.301468 g/cm**3
+
+  Non-primitive cell volume =           153.288685 Angs**3
+
+
+  Final internal derivatives :
+
+--------------------------------------------------------------------------------
+   No.  Atomic          a             b             c           Radius
+        Label          (eV)          (eV)          (eV)        (eV/Angs)
+--------------------------------------------------------------------------------
+      1 C     c      -0.147185     -0.086059     -0.549239      0.000000
+      2 C     c       3.392554     -3.596608     -2.724128      0.000000
+      3 O     c       0.271729      0.237360     -0.426200      0.000000
+      4 O     c       0.794621     -1.001661     -1.080473      0.000000
+      5 N     c      -2.922815     -3.375982      1.117257      0.000000
+      6 N     c       1.876443      1.961454     -0.723246      0.000000
+      7 N     c      -0.249569      0.251185      1.277263      0.000000
+      8 N     c      -4.513660      5.578684      2.961796      0.000000
+      9 H     c       0.252586      0.177755      0.167343      0.000000
+     10 H     c       1.064456      1.361612     -0.814386      0.000000
+     11 H     c       4.024136     -5.214039     -2.158299      0.000000
+     12 H     c      -2.023303      2.736021     -0.160090      0.000000
+     13 H     c       0.489374      0.590723     -0.184307      0.000000
+     14 H     c      -0.975916     -0.931268      1.432550      0.000000
+     15 H     c      -0.656058      0.824728      0.751501      0.000000
+     16 H     c       0.000000      0.000000      0.000000      0.000000
+--------------------------------------------------------------------------------
+  Maximum abs         4.513660      5.578684      2.961796      0.000000
+--------------------------------------------------------------------------------
+
+
+  Born effective charge tensors : 
+
+-------------------------------------------------------------------------------
+  Atom             x           y             z
+-------------------------------------------------------------------------------
+    1 C     x       0.3800      0.0000      0.0000
+            y       0.0000      0.3800      0.0000
+            z       0.0000      0.0000      0.3800
+-------------------------------------------------------------------------------
+    2 C     x       0.3800      0.0000      0.0000
+            y       0.0000      0.3800      0.0000
+            z       0.0000      0.0000      0.3800
+-------------------------------------------------------------------------------
+    3 O     x      -0.3800      0.0000      0.0000
+            y       0.0000     -0.3800      0.0000
+            z       0.0000      0.0000     -0.3800
+-------------------------------------------------------------------------------
+    4 O     x      -0.3800      0.0000      0.0000
+            y       0.0000     -0.3800      0.0000
+            z       0.0000      0.0000     -0.3800
+-------------------------------------------------------------------------------
+    5 N     x      -0.8300      0.0000      0.0000
+            y       0.0000     -0.8300      0.0000
+            z       0.0000      0.0000     -0.8300
+-------------------------------------------------------------------------------
+    6 N     x      -0.8300      0.0000      0.0000
+            y       0.0000     -0.8300      0.0000
+            z       0.0000      0.0000     -0.8300
+-------------------------------------------------------------------------------
+    7 N     x      -0.8300      0.0000      0.0000
+            y       0.0000     -0.8300      0.0000
+            z       0.0000      0.0000     -0.8300
+-------------------------------------------------------------------------------
+    8 N     x      -0.8300      0.0000      0.0000
+            y       0.0000     -0.8300      0.0000
+            z       0.0000      0.0000     -0.8300
+-------------------------------------------------------------------------------
+    9 H     x       0.4150      0.0000      0.0000
+            y       0.0000      0.4150      0.0000
+            z       0.0000      0.0000      0.4150
+-------------------------------------------------------------------------------
+   10 H     x       0.4150      0.0000      0.0000
+            y       0.0000      0.4150      0.0000
+            z       0.0000      0.0000      0.4150
+-------------------------------------------------------------------------------
+   11 H     x       0.4150      0.0000      0.0000
+            y       0.0000      0.4150      0.0000
+            z       0.0000      0.0000      0.4150
+-------------------------------------------------------------------------------
+   12 H     x       0.4150      0.0000      0.0000
+            y       0.0000      0.4150      0.0000
+            z       0.0000      0.0000      0.4150
+-------------------------------------------------------------------------------
+   13 H     x       0.4150      0.0000      0.0000
+            y       0.0000      0.4150      0.0000
+            z       0.0000      0.0000      0.4150
+-------------------------------------------------------------------------------
+   14 H     x       0.4150      0.0000      0.0000
+            y       0.0000      0.4150      0.0000
+            z       0.0000      0.0000      0.4150
+-------------------------------------------------------------------------------
+   15 H     x       0.4150      0.0000      0.0000
+            y       0.0000      0.4150      0.0000
+            z       0.0000      0.0000      0.4150
+-------------------------------------------------------------------------------
+   16 H     x       0.4150      0.0000      0.0000
+            y       0.0000      0.4150      0.0000
+            z       0.0000      0.0000      0.4150
+-------------------------------------------------------------------------------
+
+
+
+
+  Elastic Constant Matrix: (Units=GPa)
+
+-------------------------------------------------------------------------------
+  Indices      1         2         3         4         5         6    
+-------------------------------------------------------------------------------
+       1     13.0531    5.3641    3.9816    6.5396    5.6195   -0.8582
+       2      5.3641   18.2447    4.7253    3.6136   -3.5468    0.9438
+       3      3.9816    4.7253   62.1957   -9.8761    6.0526   -5.1692
+       4      6.5396    3.6136   -9.8761   62.7811   11.0191    2.6994
+       5      5.6195   -3.5468    6.0526   11.0191   41.3292   -9.7087
+       6     -0.8582    0.9438   -5.1692    2.6994   -9.7087   16.6944
+-------------------------------------------------------------------------------
+
+
+  Elastic Compliance Matrix: (Units=1/GPa)
+
+-------------------------------------------------------------------------------
+  Indices      1         2         3         4         5         6    
+-------------------------------------------------------------------------------
+       1    0.099224 -0.029459 -0.003947 -0.006739 -0.013999 -0.001507
+       2   -0.029459  0.067711 -0.004932 -0.003667  0.011631  0.000487
+       3   -0.003947 -0.004932  0.017863  0.003837 -0.002727  0.003401
+       4   -0.006739 -0.003667  0.003837  0.018794 -0.006299 -0.005653
+       5   -0.013999  0.011631 -0.002727 -0.006299  0.033465  0.018259
+       6   -0.001507  0.000487  0.003401 -0.005653  0.018259  0.072381
+-------------------------------------------------------------------------------
+
+  Mechanical properties :
+
+-------------------------------------------------------------------------------
+  Convention :                    Reuss         Voigt         Hill
+-------------------------------------------------------------------------------
+  Bulk  Modulus (GPa)     =       9.24883      13.51507      11.38195
+  Shear Modulus (GPa)     =      11.84399      29.45579      20.64989
+-------------------------------------------------------------------------------
+  Velocity S-wave (km/s)  =       3.01670       4.75739       3.98329
+  Velocity P-wave (km/s)  =       4.38639       6.36879       5.46818
+-------------------------------------------------------------------------------
+  Compressibility (1/GPa) =    0.10812181
+-------------------------------------------------------------------------------
+  Stress axis :                     x             y             z
+-------------------------------------------------------------------------------
+  Youngs Moduli (GPa)     =      10.07820      14.76862      55.98157
+-------------------------------------------------------------------------------
+  Poissons Ratio (x)      =                     0.43507       0.22096
+  Poissons Ratio (y)      =       0.29689                     0.27611
+  Poissons Ratio (z)      =       0.03978       0.07284
+-------------------------------------------------------------------------------
+
+
+  Piezoelectric Strain Matrix: (Units=C/m**2)
+
+-------------------------------------------------------------------------------
+  Indices      1         2         3         4         5         6    
+-------------------------------------------------------------------------------
+       x    -2.16391  -2.78245   7.04846 -21.41567  -0.63421  -2.44703
+       y    -2.00007   1.80130  -4.94558  -2.37915 -12.59424   4.27174
+       z     0.19621  -0.36686   1.50009  -0.79819   2.18427  -0.78407
+-------------------------------------------------------------------------------
+
+
+  Piezoelectric Stress Matrix: (Units=10**-11 C/N)
+
+-------------------------------------------------------------------------------
+  Indices      1         2         3         4         5         6    
+-------------------------------------------------------------------------------
+       x    -0.36733  -8.94583   5.93973 -33.28182   4.77037  -4.17591
+       y    -4.61011   6.96047  -4.95931  -0.16344 -26.60534   7.97575
+       z     0.03388  -1.00696   1.61454  -1.85479   5.27050  -0.77303
+-------------------------------------------------------------------------------
+
+
+  Static dielectric constant tensor : 
+
+-------------------------------------------------------------------------------
+              x         y         z
+-------------------------------------------------------------------------------
+       x    -5.28697   0.71717  -0.52077
+       y     0.71717  -2.39241   0.83841
+       z    -0.52077   0.83841   0.99858
+--------------------------------------------------------------------------------
+
+  Static refractive indices : 
+
+-------------------------------------------------------------------------------
+    1 =   -2.35187      2 =   -1.53713      3 =    1.10147
+-------------------------------------------------------------------------------
+
+
+  Time to end of optimisation =      24.6511 seconds
+
+
+  Peak dynamic memory used =       2.17 MB 
+
+
+  Timing analysis for GULP :
+
+--------------------------------------------------------------------------------
+  Task / Subroutine                                          Time (Seconds)
+--------------------------------------------------------------------------------
+  Calculation of reciprocal space energy and derivatives          0.5744
+  Calculation of real space energy and derivatives                1.9407
+  Calculation of three-body energy and derivatives                0.6157
+  Calculation of four-body energy and derivatives                 0.4814
+  Calculation of molecules and connectivity                       0.0370
+  Calculation of free energy and derivatives                     21.6360
+  Calculation and manipulation of Hessian matrix                  0.0171
+  Calculation of matrix diagonalisation                           4.8744
+  Calculation of matrix inversion                                 0.4892
+  Global summation overhead                                       0.2358
+--------------------------------------------------------------------------------
+  Total CPU time                                                 24.6512
+--------------------------------------------------------------------------------
+
+
+
+  **** GULP has completed with 594 warnings - beware! ****
+
+  Job Finished at 21:50.36  1st March      2023                               
+
+# mpiexec: finished at Wed  1 Mar 21:50:36 GMT 2023
+
+DATE END   : Wed  1 Mar 21:50:36 GMT 2023
+Script run_exec done.
+--------------------------------------------
+
+Post Processing Report
+--------------------------------------------
+Begining of post processing : Wed  1 Mar 21:50:36 GMT 2023
+List of saved files
+  TEMPORARY            SAVED
+--------------------------------------------
+
+Temporary Directory Disk Info
+--------------------------------------------
+  Temporary directory      : /rds/general/user/hz1420/ephemeral/example10-free-300K0G_7127847
+
+  Disk usage (df -h)
+Filesystem      Size  Used Avail Use% Mounted on
+rds              14P   13P  1.7P  88% /rds
+
+  Usage by folders (du -m)
+1	/rds/general/user/hz1420/ephemeral/example10-free-300K0G_7127847
+
+  Detailed file list (ls -l .)
+total 33
+-rw-------. 1 hz1420 hpc-nmh  2596 Mar  1 21:50 example10-free-300K0G.gin
+-rw-------. 1 hz1420 hpc-nmh 11905 Mar  1 21:47 Job_script
+-rw-------. 1 hz1420 hpc-nmh  4164 Mar  1 21:50 Post_script
+--------------------------------------------
+
+End of post processing : Wed  1 Mar 21:50:37 GMT 2023
+Script post_proc done.
+--------------------------------------------
