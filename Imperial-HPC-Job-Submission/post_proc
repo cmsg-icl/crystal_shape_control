@@ -13,7 +13,7 @@ function get_input_ {
     while [[ true ]]; do
         case $1 in
         --in ) 
-            shift; JOBNAME=${1%.*} ;;
+            shift; JOBFILE=$1; JOBNAME=${JOBFILE%.*}; JOBNAME=${JOBNAME##*/}  ;;
         --set )
             shift; SETFILE=$1 ;;
         -- ) 
@@ -30,15 +30,16 @@ function get_input_ {
 # Restore variables - kept same as job submission script
 in_var="header "$@""
 get_input_
-INPDIR=`pwd`
-OUTDIR=`pwd`
+OUTDIR=$(realpath ${JOBFILE})
+OUTDIR=${OUTDIR%/*}
 OUTPUT=${JOBNAME}.out
+INPDIR=${OUTDIR}
 JOBTMPDIR=`echo $(grep -w -A 1 'JOB_TMPDIR' ${SETFILE} | tail -1)`
 if [[ -z ${JOBTMPDIR} || ${JOBTMPDIR} == 'default' ]]; then # As subdirectory under the current one
-    JOBTMPDIR=$(pwd)/${JOBNAME}_${PBS_JOBID%.*}
+    JOBTMPDIR=$(dirname ${JOBFILE})/${JOBNAME}_${PBS_JOBID%.*}
     move_file=true
 elif [[ ${JOBTMPDIR} == 'nodir' ]]; then # In current directory
-    JOBTMPDIR=$(pwd)
+    JOBTMPDIR=$(dirname ${JOBFILE})
     move_file=false
 else # In a separate directory
     JOBTMPDIR=${JOBTMPDIR}/${JOBNAME}_${PBS_JOBID%.*}
@@ -79,9 +80,9 @@ LINE_POSTCALC=`grep -nw 'POST_CALC' ${SETFILE}`
 LINE_POSTCALC=`echo "scale=0;${LINE_POSTCALC%%:*}+4" | bc`
 
 SAVED_NAME=`echo $(awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", substr($0,1,21))}' ${SETFILE})`
-SAVED_NAME_FLAG=`echo ${SAVED_NAME} | cut -c 1-9`
+SAVED_NAME_FLAG=`echo "${SAVED_NAME}" | cut -c 1-9`
 TMP_NAME=`echo $(awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", substr($0,22,21))}' ${SETFILE})`
-TMP_NAME_FLAG=`echo ${TMP_NAME} | cut -c 1-9`
+TMP_NAME_FLAG=`echo "${TMP_NAME}" | cut -c 1-9`
 
 while [[ ${TMP_NAME} != '---------'* && ${move_file} == true ]]; do
 
@@ -89,11 +90,6 @@ while [[ ${TMP_NAME} != '---------'* && ${move_file} == true ]]; do
 
     if [[ ${SAVED_NAME_FLAG} == '[jobname]' ]]; then
         SAVED_NAME=${JOBNAME}$(echo ${SAVED_NAME} | sed -r 's/^.{9}//')
-
-    # If SAVED_NAME begins with '*', keep the original name
-
-	elif [[ $(echo "${SAVED_NAME_FLAG}" | cut -c 1) == '*' ]]; then
-		SAVED_NAME=''
     fi
 
     # Substitute variable flags for temporary name in JOBTMPDIR
@@ -120,14 +116,17 @@ while [[ ${TMP_NAME} != '---------'* && ${move_file} == true ]]; do
             continue
         fi
 
-        # When saved name is '*', cover it with file
+        # If SAVED_NAME has '*', keep the original name
 
-        if [[ -z ${SAVED_NAME} ]]; then
+        if [[ ${SAVED_NAME} == *'*'* ]]; then
             SAVED_NAME=${file}
         fi
 
-        # Copy files
-
+        # Copy files - cover the old ones
+        if [[ -e ${OUTDIR}/${SAVED_NAME} && -s ${OUTDIR}/${SAVED_NAME} ]]; then
+            echo "Warning! Duplicate file detected in out directory: ${OUTDIR}/${SAVED_NAME}." 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+            echo "  The file will be covered by the new entry ${JOBTMPDIR}/${TMP_NAME}." 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+        fi
         echo "${file} ${SAVED_NAME}" | awk '{printf("  %-21s%-12s"),$1,$2}' 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
         ls -l ${file} | awk '{printf("  %-8s %s %s %s\n"),$5,$6,$7,$8}' 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
         cp -r ${JOBTMPDIR}/${file} ${OUTDIR}/${SAVED_NAME}
@@ -135,9 +134,9 @@ while [[ ${TMP_NAME} != '---------'* && ${move_file} == true ]]; do
 
     LINE_POSTCALC=`echo "scale=0;${LINE_POSTCALC%%:*}+1" | bc`
     SAVED_NAME=`echo $(awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", substr($0,1,21))}' ${SETFILE})`
-    SAVED_NAME_FLAG=`echo ${SAVED_NAME} | cut -c 1-9`
+    SAVED_NAME_FLAG=`echo "${SAVED_NAME}" | cut -c 1-9`
     TMP_NAME=`echo $(awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", substr($0,22,21))}' ${SETFILE})`
-    TMP_NAME_FLAG=`echo ${TMP_NAME} | cut -c 1-9`
+    TMP_NAME_FLAG=`echo "${TMP_NAME}" | cut -c 1-9`
 done
 
 # Calculation summary
@@ -178,10 +177,10 @@ chmod 755 ${JOBTMPDIR}/checkfile0
 if [[ ! -z ${PBS_NODEFILE} ]]; then
     echo "Check files across nodes ..."
     echo "List of saved files"
-	echo "  TEMPORARY            SAVED"
-	PCLIST=`awk '{if ($I != old){printf("%s ",$I);old=$I}}' ${PBS_NODEFILE}`
+    echo "  TEMPORARY            SAVED"
+    PCLIST=`awk '{if ($I != old){printf("%s ",$I);old=$I}}' ${PBS_NODEFILE}`
     for ((i = 2; i < ${#PCLIST[@]}; i++)); do
-	    PC=${PCLIST[$i]}
+        PC=${PCLIST[$i]}
         echo "--------------------------------------------"
         echo "node: ${PC}, checkfile..."
         echo "scp ${JOBTMPDIR}/checkfile0    ${PC}:${JOBTMPDIR}/checkfile"

@@ -114,7 +114,7 @@ EOF
 
 function check_EXELABEL_ {
     
-	# No -x input
+    # No -x input
 
     if [[ -z ${EXELABEL} ]]; then
         cat << EOF
@@ -142,7 +142,7 @@ EOF
                 break
             fi
             line_exe=`echo "scale=0;${line_exe}+1" | bc`
-			avail_exe=`echo $(awk 'NR=="'${line_exe}'"{printf("%s", substr($0,1,11))}' ${SETFILE})`
+            avail_exe=`echo $(awk 'NR=="'${line_exe}'"{printf("%s", substr($0,1,11))}' ${SETFILE})`
         done
         if [[ ${found_exe} != true ]]; then
             cat << EOF
@@ -223,6 +223,7 @@ EOF
 
     if [[ ${#INFILE[@]} -eq 1 ]]; then
         JOBNAME=${INFILE[0]%.*}
+        JOBNAME=${JOBNAME##*/}
         echo "Name of the single job qsub file : ${JOBNAME}.qsub"
     fi
 }
@@ -425,6 +426,7 @@ EOF
 function set_multijob_name_ {
     if [[ -z ${TMPJOBNAME} ]]; then
         JOBNAME=${INFILE[0]%.*}_et_al
+        JOBNAME=${JOBNAME##*/}
     else
         JOBNAME=${TMPJOBNAME}
     fi
@@ -472,10 +474,10 @@ function print_HOWTO_ {
         Xcrys17 -name mgo_band -nd 4 -x Pcrys -in mgo.d12 -ref no -wt 02:00 -x Pprop -in mgo.d3 -ref mgo -wt 00:30
 
     This command generates a single 'mgo_band.qsub' file which 
-	sequentially run parallel crystal calculation by 'mgo.d12' 
-	without reference and a parallel properties calculation by 'mgo.d3'
-	with 'mgo' SCF calculation as reference. The walltime for 'mgo.d12'
-	is 2 hours and for 'mgo.d3' is 30 minutes.
+    sequentially run parallel crystal calculation by 'mgo.d12' 
+    without reference and a parallel properties calculation by 'mgo.d3'
+    with 'mgo' SCF calculation as reference. The walltime for 'mgo.d12'
+    is 2 hours and for 'mgo.d3' is 30 minutes.
 
 EOF
     

@@ -15,14 +15,14 @@ function welcome_msg {
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
-CRYSTAL 17 Job Submitter for Imperial HPC - Configuration
+CRYSTAL 23 Job Submitter for Imperial HPC - Configuration
 
 Installation date     : `date`
-Version               : v2.1
+Version               : v0.1
 IC-HPC script version : v1.2 
 Batch system          : PBS
 
-Configured by Spica-Vir, Feb.26, 23, ICL, spica.h.zhou@gmail.com
+Configured by Spica-Vir, Mar.01, 23, ICL, spica.h.zhou@gmail.com
 Based on IC-HPC script released by Spica-Vir, Mar.01, 23, ICL, spica.h.zhou@gmail.com
 
 Special thanks to G.Mallia and N.M.Harrison
@@ -37,7 +37,7 @@ function get_scriptdir {
     Please specify your installation path.
 
     Default Option
-    ${HOME}/etc/runCRYSTAL17/):
+    ${HOME}/etc/runCRYSTAL23/):
 
 EOF
 
@@ -45,7 +45,7 @@ EOF
     SCRIPTDIR=`echo ${SCRIPTDIR}`
 
     if [[ -z ${SCRIPTDIR} ]]; then
-        SCRIPTDIR=${HOME}/etc/runCRYSTAL17
+        SCRIPTDIR=${HOME}/etc/runCRYSTAL23
     fi
 
     if [[ ${SCRIPTDIR: -1} == '/' ]]; then
@@ -77,11 +77,11 @@ EOF
 function set_exe {
     cat << EOF
 ================================================================================
-    Please specify the directory of CRYSTAL17 exectuables, 
-    or the command to load CRYSTAL17 modules
+    Please specify the directory of CRYSTAL23 exectuables, 
+    or the command to load CRYSTAL23 modules
 
     Default Option
-    cry17gnu v2.2 (mpich - ifort - MPP)
+    CRYSTAL23 v1.0.1 (openmpi - AMD aocc/aocl)
 
 EOF
     
@@ -89,7 +89,7 @@ EOF
     EXEDIR=`echo ${EXEDIR}`
 
     if [[ -z ${EXEDIR} ]]; then
-        EXEDIR='/rds/general/user/gmallia/home/CRYSTAL17_cx1/v2.2gnu/bin/Linux-mpigfortran_MPP/Xeon___mpich__3.2.1'
+        EXEDIR='/rds/general/user/hz1420/home/apps/CRYSTAL23_v1.0.1/bin/Linux-flang_openmpi_amd64EPYC/std'
     fi
 
     if [[ ! -d ${EXEDIR} && (${EXEDIR} != *'module load'*) ]]; then
@@ -120,7 +120,7 @@ function set_mpi {
     Please specify the directory of MPI executables or mpi modules
 
     Default Option
-    mpich/3.2.1
+    openmpi/4.1.4
 
 EOF
     
@@ -128,7 +128,7 @@ EOF
     MPIDIR=`echo ${MPIDIR}`
 
     if [[ -z ${MPIDIR} ]]; then
-        MPIDIR='module load /rds/general/user/gmallia/home/CRYSTAL17_cx1/v2.2gnu/modules/mpich/3.2.1'
+        MPIDIR='module load  /rds/general/user/hz1420/home/apps/openmpi-4.1.4/openmpi-4.1.4_module'
     fi
 
     if [[ ! -d ${EXEDIR} && (${EXEDIR} != *'module load'*) ]]; then
@@ -185,14 +185,14 @@ function set_settings {
     LINE_EXE=`grep -nw 'EXE_TABLE' ${SETFILE}`
     LINE_EXE=`echo "scale=0;${LINE_EXE%:*}+3" | bc`
     sed -i "${LINE_EXE}a\sprop                           properties < [jobname].d3      Serial properties calculation" ${SETFILE}
-    sed -i "${LINE_EXE}a\scrys                           properties < [jobname].d12     Serial crystal calculation" ${SETFILE}
+    sed -i "${LINE_EXE}a\scrys                           crystal < [jobname].d12        Serial crystal calculation" ${SETFILE}
     sed -i "${LINE_EXE}a\pprop      mpiexec              Pproperties                    Parallel properties calculation" ${SETFILE}
     sed -i "${LINE_EXE}a\mppcrys    mpiexec              MPPcrystal                     Massive parallel crystal calculation" ${SETFILE}
     sed -i "${LINE_EXE}a\pcrys      mpiexec              Pcrystal                       Parallel crystal calculation" ${SETFILE}
 
     # Input file table
 
-	LINE_PRE=`grep -nw 'PRE_CALC' ${SETFILE}`
+    LINE_PRE=`grep -nw 'PRE_CALC' ${SETFILE}`
     LINE_PRE=`echo "scale=0;${LINE_PRE%:*}+3" | bc`
     sed -i "${LINE_PRE}a\[jobname].POINTCHG   POINTCHG.INP         Dummy atoms with 0 mass and given charge" ${SETFILE}
     sed -i "${LINE_PRE}a\[jobname].gui        fort.34              Geometry input" ${SETFILE}
@@ -201,7 +201,7 @@ function set_settings {
     
     # Reference file table
 
-	LINE_REF=`grep -nw 'REF_FILE' ${SETFILE}`
+    LINE_REF=`grep -nw 'REF_FILE' ${SETFILE}`
     LINE_REF=`echo "scale=0;${LINE_REF%:*}+3" | bc`
     sed -i "${LINE_REF}a\[refname].f31        fort.32              Derivative of density matrix" ${SETFILE}
     sed -i "${LINE_REF}a\[refname].f80        fort.81              Wannier funcion - input" ${SETFILE}
@@ -211,7 +211,7 @@ function set_settings {
     sed -i "${LINE_REF}a\[refname].BORN       BORN.DAT             Born tensor" ${SETFILE}
     sed -i "${LINE_REF}a\[refname].FREQINFO   FREQINFO.DAT         Frequency restart data" ${SETFILE}
     sed -i "${LINE_REF}a\[refname].OPTINFO    OPTINFO.DAT          Optimisation restart data" ${SETFILE}
-	sed -i "${LINE_REF}a\[refname].f9         fort.9               Last step wavefunction - properties input" ${SETFILE}
+    sed -i "${LINE_REF}a\[refname].f9         fort.9               Last step wavefunction - properties input" ${SETFILE}
     sed -i "${LINE_REF}a\[refname].f9         fort.20              Last step wavefunction - crystal input" ${SETFILE}
     
     # Post-processing file table
@@ -306,8 +306,8 @@ EOF
 # Configure user alias
 
 function set_commands {
-    bgline=`grep -nw "# >>> begin CRYSTAL17 job submitter settings >>>" ${HOME}/.bashrc`
-    edline=`grep -nw "# <<< finish CRYSTAL17 job submitter settings <<<" ${HOME}/.bashrc`
+    bgline=`grep -nw "# >>> begin CRYSTAL23 job submitter settings >>>" ${HOME}/.bashrc`
+    edline=`grep -nw "# <<< finish CRYSTAL23 job submitter settings <<<" ${HOME}/.bashrc`
 
     if [[ ! -z ${bgline} && ! -z ${edline} ]]; then
         bgline=${bgline%%:*}
@@ -315,20 +315,20 @@ function set_commands {
         sed -i "${bgline},${edline}d" ${HOME}/.bashrc
     fi
 
-    echo "# >>> begin CRYSTAL17 job submitter settings >>>" >> ${HOME}/.bashrc
-    echo "alias Pcrys17='${CTRLDIR}/gen_sub -x pcrys -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "alias MPPcrys17='${CTRLDIR}/gen_sub -x mppcrys -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "alias Pprop17='${CTRLDIR}/gen_sub -x pprop -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "alias Scrys17='${CTRLDIR}/gen_sub -x scrys -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "alias Sprop17='${CTRLDIR}/gen_sub -x sprop -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "alias Xcrys17='${CTRLDIR}/gen_sub -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "alias SETcrys17='cat ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "alias HELPcrys17='bash ${CTRLDIR}/run_help'" >> ${HOME}/.bashrc
+    echo "# >>> begin CRYSTAL23 job submitter settings >>>" >> ${HOME}/.bashrc
+    echo "alias Pcrys23='${CTRLDIR}/gen_sub -x pcrys -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
+    echo "alias MPPcrys23='${CTRLDIR}/gen_sub -x mppcrys -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
+    echo "alias Pprop23='${CTRLDIR}/gen_sub -x pprop -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
+    echo "alias Scrys23='${CTRLDIR}/gen_sub -x scrys -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
+    echo "alias Sprop23='${CTRLDIR}/gen_sub -x sprop -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
+    echo "alias Xcrys23='${CTRLDIR}/gen_sub -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
+    echo "alias SETcrys23='cat ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
+    echo "alias HELPcrys23='bash ${CTRLDIR}/run_help'" >> ${HOME}/.bashrc
     # echo "chmod 777 $(dirname $0)/gen_sub" >> ${HOME}/.bashrc
     # echo "chmod 777 $(dirname $0)/run_exec" >> ${HOME}/.bashrc
     # echo "chmod 777 $(dirname $0)/post_proc" >> ${HOME}/.bashrc 
     # echo "chmod 777 $(dirname $0)/run_help" >> ${HOME}/.bashrc 
-    echo "# <<< finish CRYSTAL17 job submitter settings <<<" >> ${HOME}/.bashrc
+    echo "# <<< finish CRYSTAL23 job submitter settings <<<" >> ${HOME}/.bashrc
     
     source $(dirname $0)/run_help
     print_ALIAS_HOWTO_

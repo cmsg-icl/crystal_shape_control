@@ -26,9 +26,9 @@ EOF
 # Instructions of user-defined commands
 
 function print_GENSUB_HOWTO_ {
-    SOURCE=$(dirname $0)/gen_sub
+    SOURCE=${CTRLDIR}/gen_sub
     source ${SOURCE} -help
 }
-
+CTRLDIR=$(dirname $0)/../
 print_ALIAS_HOWTO_
 print_GENSUB_HOWTO_
