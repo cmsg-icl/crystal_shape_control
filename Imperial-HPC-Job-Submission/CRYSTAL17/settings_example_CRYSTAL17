@@ -44,8 +44,8 @@ LABEL      MPI & OPTION         EXECUTABLE & OPTION            DEFINITION
 pcrys      mpiexec              Pcrystal                       Parallel crystal calculation
 mppcrys    mpiexec              MPPcrystal                     Massive parallel crystal calculation
 pprop      mpiexec              Pproperties                    Parallel properties calculation
-scrys                           crystal < [jobname].d12        Serial crystal calculation
-sprop                           properties < [jobname].d3      Serial properties calculation
+scrys                           crystal < INPUT                Serial crystal calculation
+sprop                           properties < INPUT             Serial properties calculation
 -----------------------------------------------------------------------------------
 
 
