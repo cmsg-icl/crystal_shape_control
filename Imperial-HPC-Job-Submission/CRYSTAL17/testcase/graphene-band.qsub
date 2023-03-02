@@ -1,5 +1,5 @@
 #!/bin/bash  --login
-#PBS -N g-scf-band
+#PBS -N graphene-band
 #PBS -l select=1:ncpus=24:mem=100GB:mpiprocs=24:ompthreads=1:avx2=true
 #PBS -l walltime=0:60:00
 
@@ -31,11 +31,11 @@ timeout 37m /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-
 /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/../post_proc -in graphene.d12 -set /rds/general/user/hz1420/home/etc/runCRYSTAL17/settings
 
 
-timeout 37m /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/../run_exec -set /rds/general/user/hz1420/home/etc/runCRYSTAL17/settings -in graphene.d3 -ref graphene -- 'mpiexec Pproperties'
+timeout 17m /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/../run_exec -set /rds/general/user/hz1420/home/etc/runCRYSTAL17/settings -in graphene.d3 -ref graphene. -- 'mpiexec Pproperties'
 /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/../post_proc -in graphene.d3 -set /rds/general/user/hz1420/home/etc/runCRYSTAL17/settings
 
 
-if [[ -f ./g-scf-band.run ]];then
-chmod 755 ./g-scf-band.run
-./g-scf-band.run
+if [[ -f ./graphene-band.run ]];then
+chmod 755 ./graphene-band.run
+./graphene-band.run
 fi

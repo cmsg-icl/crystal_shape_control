@@ -18,14 +18,14 @@ function welcome_msg {
 GULP 6.1.2 Job Submitter for Imperial HPC - Configuration
 
 Installation date     : `date`
-Version               : v0.2
-IC-HPC script version : v1.2 
+Version               : v0.3
+IC-HPC script version : v1.3 
 Batch system          : PBS
 
 Configured by Spica-Vir, Feb.28, 23, ICL, spica.h.zhou@gmail.com
 Based on IC-HPC script released by Spica-Vir, Mar.01, 23, ICL, spica.h.zhou@gmail.com
 
-Special thanks to G.Mallia, N.M.Harrison and A. Arber
+Special thanks to K. Tallat-Kelpsa, G.Mallia, N.M.Harrison
 
 EOF
 }
@@ -267,7 +267,7 @@ function set_commands {
     echo "alias Pglp6='${CTRLDIR}/gen_sub -x pgulp -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
     echo "alias Xglp6='${CTRLDIR}/gen_sub -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
     echo "alias SETglp6='cat ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "alias HELPglp6='bash ${CTRLDIR}/run_help'" >> ${HOME}/.bashrc
+    echo "alias HELPglp6='bash $(dirname $0)/run_help'" >> ${HOME}/.bashrc
     # echo "chmod 777 $(dirname $0)/gen_sub" >> ${HOME}/.bashrc
     # echo "chmod 777 $(dirname $0)/run_exec" >> ${HOME}/.bashrc
     # echo "chmod 777 $(dirname $0)/post_proc" >> ${HOME}/.bashrc 

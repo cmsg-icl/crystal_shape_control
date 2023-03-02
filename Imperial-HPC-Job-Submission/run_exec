@@ -22,7 +22,7 @@ function get_input_ {
         --in ) 
             shift; JOBFILE=$1; JOBNAME=${JOBFILE%.*}; JOBNAME=${JOBNAME##*/} ;;
         --ref )
-            shift; REFNAME=$1 ;;
+            shift; REFNAME=$1; REFNAME=${REFNAME%.*}; REFNAME=${REFNAME##*/} ;;
         -- ) 
             shift;
             while [[ ! -z $1 ]]; do

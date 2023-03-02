@@ -546,7 +546,7 @@ EOF
     # Generate job executation and post processing commands
 
     for (( i = 0; i < ${#INFILE[@]}; i++ )); do
-        echo "timeout ${TOUT} ${SCRIPTDIR}/${SCRIPT} -set ${SETFILE} -in ${INFILE[$i]} -ref ${REFNAME[$i]} -- '${MPICOMMAND[$i]} ${COMMAND[$i]}'" >> ${JOBNAME}.${SUB_EXT}
+        echo "timeout ${TOUT[$i]} ${SCRIPTDIR}/${SCRIPT} -set ${SETFILE} -in ${INFILE[$i]} -ref ${REFNAME[$i]} -- '${MPICOMMAND[$i]} ${COMMAND[$i]}'" >> ${JOBNAME}.${SUB_EXT}
         echo "${SCRIPTDIR}/${POSCRIPT} -in ${INFILE[$i]} -set ${SETFILE}" >> ${JOBNAME}.${SUB_EXT}
         echo -e "\n" >> ${JOBNAME}.${SUB_EXT}
     done

@@ -18,14 +18,14 @@ function welcome_msg {
 CRYSTAL 23 Job Submitter for Imperial HPC - Configuration
 
 Installation date     : `date`
-Version               : v0.1
-IC-HPC script version : v1.2 
+Version               : v0.2
+IC-HPC script version : v1.3 
 Batch system          : PBS
 
 Configured by Spica-Vir, Mar.01, 23, ICL, spica.h.zhou@gmail.com
 Based on IC-HPC script released by Spica-Vir, Mar.01, 23, ICL, spica.h.zhou@gmail.com
 
-Special thanks to G.Mallia and N.M.Harrison
+Special thanks to K. Tallat-Kelpsa, G.Mallia and N.M.Harrison
 
 EOF
 }
@@ -323,7 +323,7 @@ function set_commands {
     echo "alias Sprop23='${CTRLDIR}/gen_sub -x sprop -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
     echo "alias Xcrys23='${CTRLDIR}/gen_sub -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
     echo "alias SETcrys23='cat ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "alias HELPcrys23='bash ${CTRLDIR}/run_help'" >> ${HOME}/.bashrc
+    echo "alias HELPcrys23='bash $(dirname $0)/run_help'" >> ${HOME}/.bashrc
     # echo "chmod 777 $(dirname $0)/gen_sub" >> ${HOME}/.bashrc
     # echo "chmod 777 $(dirname $0)/run_exec" >> ${HOME}/.bashrc
     # echo "chmod 777 $(dirname $0)/post_proc" >> ${HOME}/.bashrc 

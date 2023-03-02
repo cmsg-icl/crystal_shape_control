@@ -155,7 +155,12 @@ $(df -h ${JOBTMPDIR} 2>&1)
 $(du -m ${JOBTMPDIR} 2>&1)
 
   Detailed file list (ls -l .)
+    see ${OUTDIR}/*.o${PBS_JOBID} file
+EOF
+cat << EOF
 $(ls -l . 2>&1)
+EOF
+cat << EOF | tee -a ${OUTDIR}/${OUTPUT}
 --------------------------------------------
 
 EOF
