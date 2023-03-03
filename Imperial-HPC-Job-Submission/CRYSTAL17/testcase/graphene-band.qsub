@@ -27,12 +27,12 @@ export OMP_NUM_THREADS=1
 cd ${PBS_O_WORKDIR}
 
 # start calculation: command added below by gen_sub
-timeout 27m /rds/general/user/hz1420/home/apps/Job_Submission/CRYSTAL17/run_exec -set /rds/general/user/hz1420/home/etc/runCRYSTAL17/settings -in graphene.d12 -ref no -- 'mpiexec Pcrystal'
-/rds/general/user/hz1420/home/apps/Job_Submission/CRYSTAL17/post_proc -in graphene.d12 -set /rds/general/user/hz1420/home/etc/runCRYSTAL17/settings
+timeout 37m /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/../run_exec -set /rds/general/user/hz1420/home/etc/runCRYSTAL17/settings -in graphene.d12 -ref no -- 'mpiexec Pcrystal'
+/rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/../post_proc -in graphene.d12 -set /rds/general/user/hz1420/home/etc/runCRYSTAL17/settings
 
 
-timeout 27m /rds/general/user/hz1420/home/apps/Job_Submission/CRYSTAL17/run_exec -set /rds/general/user/hz1420/home/etc/runCRYSTAL17/settings -in band.d3 -ref graphene -- 'mpiexec Pproperties'
-/rds/general/user/hz1420/home/apps/Job_Submission/CRYSTAL17/post_proc -in band.d3 -set /rds/general/user/hz1420/home/etc/runCRYSTAL17/settings
+timeout 17m /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/../run_exec -set /rds/general/user/hz1420/home/etc/runCRYSTAL17/settings -in graphene.d3 -ref graphene. -- 'mpiexec Pproperties'
+/rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/../post_proc -in graphene.d3 -set /rds/general/user/hz1420/home/etc/runCRYSTAL17/settings
 
 
 if [[ -f ./graphene-band.run ]];then

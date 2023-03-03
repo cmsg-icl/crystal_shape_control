@@ -1,0 +1,37 @@
+#!/bin/bash  --login
+#PBS -N molecule-omp
+#PBS -l select=1:ncpus=24:mem=100GB:mpiprocs=1:ompthreads=24:avx2=true
+#PBS -l walltime=1:0:00
+
+echo "PBS Job Report"
+echo "--------------------------------------------"
+echo "  Start Date : $(date)"
+echo "  PBS Job ID : ${PBS_JOBID}"
+echo "  Status"
+qstat -f ${PBS_JOBID}
+echo "--------------------------------------------"
+echo ""
+
+# number of cores per node used
+export NCORES=24
+# number of processes
+export NPROCESSES=1
+
+# Make sure any symbolic links are resolved to absolute path
+export PBS_O_WORKDIR=$(readlink -f ${PBS_O_WORKDIR})
+
+# Set the number of threads
+export OMP_NUM_THREADS=24
+
+# to sync nodes
+cd ${PBS_O_WORKDIR}
+
+# start calculation: command added below by gen_sub
+timeout 57m /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL23/../run_exec -set /rds/general/user/hz1420/home/etc/runCRYSTAL23/settings -in molecule-omp.d12 -ref  -- ' crystal < INPUT'
+/rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL23/../post_proc -in molecule-omp.d12 -set /rds/general/user/hz1420/home/etc/runCRYSTAL23/settings
+
+
+if [[ -f ./molecule-omp.run ]];then
+chmod 755 ./molecule-omp.run
+./molecule-omp.run
+fi

@@ -1,5 +1,6 @@
 #!/bin/bash
 
+#---- BEGIN_USER ----# version number and authors
 function welcome_msg {
     cat << EOF
 --------------------------------------------------------------------------------
@@ -29,8 +30,10 @@ Special thanks to K. Tallat-Kelpsa, G.Mallia and N.M.Harrison
 
 EOF
 }
+#---- END_USER ----#
 
 function get_scriptdir {
+#---- BEGIN_USER ----# version number
     cat << EOF
 ================================================================================
     Note: all scripts should be placed into the same directory!
@@ -40,12 +43,15 @@ function get_scriptdir {
     ${HOME}/etc/runCRYSTAL17/):
 
 EOF
+#---- END_USER ----#
 
     read -p " " SCRIPTDIR
     SCRIPTDIR=`echo ${SCRIPTDIR}`
 
     if [[ -z ${SCRIPTDIR} ]]; then
+#---- BEGIN_USER ----# if input is empty, use default
         SCRIPTDIR=${HOME}/etc/runCRYSTAL17
+#---- END_USER ----#
     fi
 
     if [[ ${SCRIPTDIR: -1} == '/' ]]; then
@@ -75,6 +81,7 @@ EOF
 }
 
 function set_exe {
+#---- BEGIN_USER ----# version number
     cat << EOF
 ================================================================================
     Please specify the directory of CRYSTAL17 exectuables, 
@@ -84,12 +91,15 @@ function set_exe {
     cry17gnu v2.2 (mpich - ifort - MPP)
 
 EOF
+#---- END_USER ----#
     
     read -p " " EXEDIR
     EXEDIR=`echo ${EXEDIR}`
 
     if [[ -z ${EXEDIR} ]]; then
+#---- BEGIN_USER ----# if input is empty, use default
         EXEDIR='/rds/general/user/gmallia/home/CRYSTAL17_cx1/v2.2gnu/bin/Linux-mpigfortran_MPP/Xeon___mpich__3.2.1'
+#---- END_USER ----#
     fi
 
     if [[ ! -d ${EXEDIR} && (${EXEDIR} != *'module load'*) ]]; then
@@ -115,6 +125,7 @@ EOF
 }
 
 function set_mpi {
+#---- BEGIN_USER ----# version number
     cat << EOF
 ================================================================================
     Please specify the directory of MPI executables or mpi modules
@@ -123,12 +134,15 @@ function set_mpi {
     mpich/3.2.1
 
 EOF
+#---- END_USER ----#
     
     read -p " " MPIDIR
     MPIDIR=`echo ${MPIDIR}`
 
     if [[ -z ${MPIDIR} ]]; then
+#---- BEGIN_USER ----# if input is empty, use default
         MPIDIR='module load /rds/general/user/gmallia/home/CRYSTAL17_cx1/v2.2gnu/modules/mpich/3.2.1'
+#---- END_USER ----#
     fi
 
     if [[ ! -d ${EXEDIR} && (${EXEDIR} != *'module load'*) ]]; then
@@ -170,6 +184,7 @@ function set_settings {
 
     # Values for keywords
     sed -i "/SUBMISSION_EXT/a\ .qsub" ${SETFILE}
+#---- BEGIN_USER ----#
     sed -i "/NCPU_PER_NODE/a\ 24" ${SETFILE}
     sed -i "/MEM_PER_NODE/a\ 100" ${SETFILE}
     sed -i "/N_THREAD/a\ 1" ${SETFILE}
@@ -177,6 +192,7 @@ function set_settings {
     sed -i "/GPU_TYPE/a\ RTX6000" ${SETFILE}
     sed -i "/TIME_OUT/a\ 3" ${SETFILE}
     sed -i "/JOB_TMPDIR/a\ ${EPHEMERAL}" ${SETFILE}
+#---- END_USER ----#
     sed -i "/EXEDIR/a\ ${EXEDIR}" ${SETFILE}
     sed -i "/MPIDIR/a\ ${MPIDIR}" ${SETFILE}
 
@@ -184,25 +200,28 @@ function set_settings {
 
     LINE_EXE=`grep -nw 'EXE_TABLE' ${SETFILE}`
     LINE_EXE=`echo "scale=0;${LINE_EXE%:*}+3" | bc`
+#---- BEGIN_USER ----# MPI+executable options
     sed -i "${LINE_EXE}a\sprop                           properties < INPUT             Serial properties calculation" ${SETFILE}
     sed -i "${LINE_EXE}a\scrys                           crystal < INPUT                Serial crystal calculation" ${SETFILE}
     sed -i "${LINE_EXE}a\pprop      mpiexec              Pproperties                    Parallel properties calculation" ${SETFILE}
     sed -i "${LINE_EXE}a\mppcrys    mpiexec              MPPcrystal                     Massive parallel crystal calculation" ${SETFILE}
     sed -i "${LINE_EXE}a\pcrys      mpiexec              Pcrystal                       Parallel crystal calculation" ${SETFILE}
-
+#---- END_USER ----#
     # Input file table
 
 	LINE_PRE=`grep -nw 'PRE_CALC' ${SETFILE}`
     LINE_PRE=`echo "scale=0;${LINE_PRE%:*}+3" | bc`
+#---- BEGIN_USER ----# Files with jobname
     sed -i "${LINE_PRE}a\[jobname].POINTCHG   POINTCHG.INP         Dummy atoms with 0 mass and given charge" ${SETFILE}
     sed -i "${LINE_PRE}a\[jobname].gui        fort.34              Geometry input" ${SETFILE}
     sed -i "${LINE_PRE}a\[jobname].d3         INPUT                Properties input file" ${SETFILE}
     sed -i "${LINE_PRE}a\[jobname].d12        INPUT                Crystal input file" ${SETFILE}
-    
+#---- END_USER ----#   
     # Reference file table
 
 	LINE_REF=`grep -nw 'REF_FILE' ${SETFILE}`
     LINE_REF=`echo "scale=0;${LINE_REF%:*}+3" | bc`
+#---- BEGIN_USER ----# Files with refname
     sed -i "${LINE_REF}a\[refname].f31        fort.32              Derivative of density matrix" ${SETFILE}
     sed -i "${LINE_REF}a\[refname].f80        fort.81              Wannier funcion - input" ${SETFILE}
     sed -i "${LINE_REF}a\[refname].f28        fort.28              Binary IR intensity restart data" ${SETFILE}
@@ -213,12 +232,12 @@ function set_settings {
     sed -i "${LINE_REF}a\[refname].OPTINFO    OPTINFO.DAT          Optimisation restart data" ${SETFILE}
 	sed -i "${LINE_REF}a\[refname].f9         fort.9               Last step wavefunction - properties input" ${SETFILE}
     sed -i "${LINE_REF}a\[refname].f9         fort.20              Last step wavefunction - crystal input" ${SETFILE}
-    
+#---- END_USER ----#      
     # Post-processing file table
 
     LINE_POST=`grep -nw 'POST_CALC' ${SETFILE}`
     LINE_POST=`echo "scale=0;${LINE_POST%:*}+3" | bc`
-    
+#---- BEGIN_USER ----# Output files   
     sed -i "${LINE_POST}a\[jobname].POTC       POTC.DAT             Electrostatic potential and derivatives" ${SETFILE}
     sed -i "${LINE_POST}a\[jobname]_POT.CUBE   POT_CUBE.DAT         3D electrostatic potential CUBE format  " ${SETFILE}
     sed -i "${LINE_POST}a\[jobname]_SPIN.CUBE  SPIN_CUBE.DAT        3D spin density CUBE format" ${SETFILE}
@@ -259,9 +278,9 @@ function set_settings {
     sed -i "${LINE_POST}a\[jobname].xyz        fort.33              Geometry, non-periodic xyz format" ${SETFILE}
     sed -i "${LINE_POST}a\[jobname].gui        fort.34              Geometry, CRYSTAL fort34 format" ${SETFILE}
     sed -i "${LINE_POST}a\[jobname].ERROR      fort.87              Error report" ${SETFILE}
-
+#---- END_USER ----#      
     # Job submission file template - should be placed at the end of file
-
+#---- BEGIN_USER ----# 
     cat << EOF >> ${SETFILE}
 -----------------------------------------------------------------------------------
 #!/bin/bash  --login
@@ -302,6 +321,7 @@ EOF
 
 EOF
 }
+#---- END_USER ----# 
 
 # Configure user alias
 
@@ -314,7 +334,7 @@ function set_commands {
         edline=${edline%%:*}
         sed -i "${bgline},${edline}d" ${HOME}/.bashrc
     fi
-
+#---- BEGIN_USER ----# Alias commands
     echo "# >>> begin CRYSTAL17 job submitter settings >>>" >> ${HOME}/.bashrc
     echo "alias Pcrys17='${CTRLDIR}/gen_sub -x pcrys -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
     echo "alias MPPcrys17='${CTRLDIR}/gen_sub -x mppcrys -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
@@ -329,7 +349,7 @@ function set_commands {
     # echo "chmod 777 $(dirname $0)/post_proc" >> ${HOME}/.bashrc 
     # echo "chmod 777 $(dirname $0)/run_help" >> ${HOME}/.bashrc 
     echo "# <<< finish CRYSTAL17 job submitter settings <<<" >> ${HOME}/.bashrc
-    
+#---- END_USER ----# 
     source $(dirname $0)/run_help
     print_ALIAS_HOWTO_
 }

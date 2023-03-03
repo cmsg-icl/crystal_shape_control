@@ -55,7 +55,8 @@ EOF
         esac
         shift
     done
-
+    INPDIR=$(realpath ${INFILE[0]})
+    INPDIR=${INPDIR%/*}
     check_SETFILE_
     check_EXELABEL_
     check_INFILE_
@@ -114,7 +115,7 @@ EOF
 
 function check_EXELABEL_ {
     
-	# No -x input
+    # No -x input
 
     if [[ -z ${EXELABEL} ]]; then
         cat << EOF
@@ -142,7 +143,7 @@ EOF
                 break
             fi
             line_exe=`echo "scale=0;${line_exe}+1" | bc`
-			avail_exe=`echo $(awk 'NR=="'${line_exe}'"{printf("%s", substr($0,1,11))}' ${SETFILE})`
+            avail_exe=`echo $(awk 'NR=="'${line_exe}'"{printf("%s", substr($0,1,11))}' ${SETFILE})`
         done
         if [[ ${found_exe} != true ]]; then
             cat << EOF
@@ -191,7 +192,8 @@ EOF
 
         # Specified input not found / empty
 
-        file=${INPDIR}/${INFILE[${i}]}
+        file=${INFILE[${i}]}
+        file=${INPDIR}/${file##*/}
         if [[ ! -e ${file} || ! -s ${file} ]]; then
             cat << EOF
     ERROR:
@@ -223,6 +225,7 @@ EOF
 
     if [[ ${#INFILE[@]} -eq 1 ]]; then
         JOBNAME=${INFILE[0]%.*}
+        JOBNAME=${JOBNAME##*/}
         echo "Name of the single job qsub file : ${JOBNAME}.qsub"
     fi
 }
@@ -425,6 +428,7 @@ EOF
 function set_multijob_name_ {
     if [[ -z ${TMPJOBNAME} ]]; then
         JOBNAME=${INFILE[0]%.*}_et_al
+        JOBNAME=${JOBNAME##*/}
     else
         JOBNAME=${TMPJOBNAME}
     fi
@@ -472,10 +476,10 @@ function print_HOWTO_ {
         Xcrys17 -name mgo_band -nd 4 -x Pcrys -in mgo.d12 -ref no -wt 02:00 -x Pprop -in mgo.d3 -ref mgo -wt 00:30
 
     This command generates a single 'mgo_band.qsub' file which 
-	sequentially run parallel crystal calculation by 'mgo.d12' 
-	without reference and a parallel properties calculation by 'mgo.d3'
-	with 'mgo' SCF calculation as reference. The walltime for 'mgo.d12'
-	is 2 hours and for 'mgo.d3' is 30 minutes.
+    sequentially run parallel crystal calculation by 'mgo.d12' 
+    without reference and a parallel properties calculation by 'mgo.d3'
+    with 'mgo' SCF calculation as reference. The walltime for 'mgo.d12'
+    is 2 hours and for 'mgo.d3' is 30 minutes.
 
 EOF
     
@@ -542,7 +546,7 @@ EOF
     # Generate job executation and post processing commands
 
     for (( i = 0; i < ${#INFILE[@]}; i++ )); do
-        echo "timeout ${TOUT} ${SCRIPTDIR}/${SCRIPT} -set ${SETFILE} -in ${INFILE[$i]} -ref ${REFNAME[$i]} -- '${MPICOMMAND[$i]} ${COMMAND[$i]}'" >> ${JOBNAME}.${SUB_EXT}
+        echo "timeout ${TOUT[$i]} ${SCRIPTDIR}/${SCRIPT} -set ${SETFILE} -in ${INFILE[$i]} -ref ${REFNAME[$i]} -- '${MPICOMMAND[$i]} ${COMMAND[$i]}'" >> ${JOBNAME}.${SUB_EXT}
         echo "${SCRIPTDIR}/${POSCRIPT} -in ${INFILE[$i]} -set ${SETFILE}" >> ${JOBNAME}.${SUB_EXT}
         echo -e "\n" >> ${JOBNAME}.${SUB_EXT}
     done
@@ -703,7 +707,6 @@ function get_subtemplate_ {
 
 # Main I/O function
 in_var="header "$@""
-INPDIR=`pwd`
 SCRIPTDIR=`dirname $0`
 
 get_input_

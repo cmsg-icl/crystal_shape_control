@@ -20,9 +20,9 @@ function get_input_ {
         --set )
             shift; SETFILE=$1 ;;
         --in ) 
-            shift; JOBFILE=$1; JOBNAME=${JOBFILE%.*} ;;
+            shift; JOBFILE=$1; JOBNAME=${JOBFILE%.*}; JOBNAME=${JOBNAME##*/} ;;
         --ref )
-            shift; REFNAME=$1 ;;
+            shift; REFNAME=$1; REFNAME=${REFNAME%.*}; REFNAME=${REFNAME##*/} ;;
         -- ) 
             shift;
             while [[ ! -z $1 ]]; do
@@ -46,13 +46,13 @@ get_input_
 
 # Input and output file directories
 
-OUTDIR=`pwd`
+OUTDIR=$(realpath ${JOBFILE})
+OUTDIR=${OUTDIR%/*}
 OUTPUT=${JOBNAME}.out
 
 if [[ -e ${OUTDIR}/${OUTPUT} && -s ${OUTDIR}/${OUTPUT} ]]; then
-    echo "Output exists: ${OUTDIR}/${OUTPUT}"
-    echo "Job terminated without calculation."
-    exit
+    echo "Warning! Output exists: ${OUTDIR}/${OUTPUT}" | tee -a ${OUTDIR}/${OUTPUT}
+    echo "New data will be attached to the same file." | tee -a ${OUTDIR}/${OUTPUT}
 fi
 
 echo "Printed output filename ${OUTDIR}/${OUTPUT}"
@@ -85,12 +85,12 @@ echo "MPI command: ${EXECOMMAND}"
 
 JOBTMPDIR=`echo $(grep -w -A 1 'JOB_TMPDIR' ${SETFILE} | tail -1)`
 if [[ -z ${JOBTMPDIR} || ${JOBTMPDIR} == 'default' ]]; then # As subdirectory under the current one
-    JOBTMPDIR=$(pwd)/${JOBNAME}_${PBS_JOBID%.*}
+    JOBTMPDIR=$(dirname ${JOBFILE})/${JOBNAME}_${PBS_JOBID%.*}
     move_file=true
     mkdir -p ${JOBTMPDIR}
     echo "Temporary directory : ${JOBTMPDIR}"
 elif [[ ${JOBTMPDIR} == 'nodir' ]]; then # In current directory
-    JOBTMPDIR=$(pwd)
+    JOBTMPDIR=$(dirname ${JOBFILE})
     move_file=false
     echo "Temporary file stored under the current directory ${OUTDIR}"
 else # In a separate directory
@@ -159,8 +159,7 @@ fi
 
 # Generate basic information of output file
 
-OUTDIR=`pwd`
-INPDIR=`pwd`
+INPDIR=${OUTDIR}
 
 cat << EOF | tee -a ${OUTDIR}/${OUTPUT}
 Pre-Calc Summary
@@ -169,7 +168,7 @@ Pre-Calc Summary
   hostname:            `hostname`
   system:              `uname -a`
   user:                `whoami`
-  input:               ${OUTDIR}/${JOBFILE}
+  input:               ${OUTDIR}/${JOBFILE##/*}
   output:              ${OUTDIR}/${OUTPUT}
   temporary directory: ${JOBTMPDIR}
   executable script:   $0
@@ -204,42 +203,79 @@ while [[ ${TMP_NAME} != '---------'* && ${move_file} == true ]]; do
 
     # Substitute variable flags for saved name in INPDIR
 
-	if [[ ${SAVED_NAME_FLAG} == '[jobname]' ]]; then
-		SAVED_NAME=${JOBNAME}$(echo ${SAVED_NAME} | sed -r 's/^.{9}//')
-	fi
+    if [[ ${SAVED_NAME_FLAG} == '[jobname]' ]]; then
+        SAVED_NAME=${JOBNAME}$(echo ${SAVED_NAME} | sed -r 's/^.{9}//')
+    fi
 
     # Substitute variable flags for temporary name in JOBTMPDIR
 
-	if [[ ${TMP_NAME_FLAG} == '[jobname]' ]]; then
-		TMP_NAME=${JOBNAME}$(echo ${TMP_NAME} | sed -r 's/^.{9}//')
+    if [[ ${TMP_NAME_FLAG} == '[jobname]' ]]; then
+        TMP_NAME=${JOBNAME}$(echo ${TMP_NAME} | sed -r 's/^.{9}//')
     elif [[ ${TMP_NAME_FLAG} == '[refname]' && ! -z ${REFNAME} ]]; then
         TMP_NAME=${REFNAME}$(echo ${TMP_NAME} | sed -r 's/^.{9}//')
-	fi
+    fi
 
-    # Find files in INPDIR and  copy them to JOBTMPDIR
+    # List files, to get all matched files in 'SAVED_NAME' settings
 
-    if [[ -e ${INPDIR}/${SAVED_NAME} && -s ${INPDIR}/${SAVED_NAME} ]]; then
-        echo "Find input data: ${INPDIR}/${SAVED_NAME}" 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
-        cp ${INPDIR}/${SAVED_NAME} ${JOBTMPDIR}/${TMP_NAME}
-        echo "Input ${SAVED_NAME} copied."
+    filelist=`find ${INPDIR} -name "${SAVED_NAME}"`
+    filelist=(${filelist//${INPDIR}\//})
 
+    # Make subdir for files stored in sub-folders 
+
+    if [[ ${TMP_NAME: -1} == '/' && ${#filelist[@]} -ge 1 ]]; then
+        mkdir -p "${JOBTMPDIR}/${TMP_NAME}"
+    fi
+    for file in ${filelist[@]}; do
+        
+        # Make sure the file is not empty
+
+        if [[ ! -s ${INPDIR}/${file} ]]; then
+            continue
+        fi
+
+        # If TMP_NAME has '*', keep the original name
+
+        if [[ ${TMP_NAME} == *'*'* ]]; then
+            TMP_NAME=${file}
+        fi
+
+        # Find files in INPDIR and  copy them to JOBTMPDIR
+
+        echo "Find input data: ${INPDIR}/${file}" 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+
+        # Cover the duplicate file. 
+        ## Fix CRYSTRAL d12/d3: JOBFILE takes priority
+        if [[ ${file} == ${JOBFILE##*/} ]]; then
+            is_jobfile=true
+        else
+            is_jobfile=false
+        fi
+
+        if [[ -e ${JOBTMPDIR}/${TMP_NAME} && -s ${JOBTMPDIR}/${TMP_NAME} ]]; then
+            if [[ ${is_jobfile} != true ]]; then
+                continue
+            fi
+            echo "Warning! Duplicate file detected in temporary directory: ${JOBTMPDIR}/${TMP_NAME}." 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+            echo "  The file will be covered by the new entry ${INPDIR}/${file}." 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+        fi
+        cp -r ${INPDIR}/${file} ${JOBTMPDIR}/${TMP_NAME}
+        echo "Input ${file} copied."
+            
         # Synchonise files on all nodes
 
         if [[ ! -z ${PCLIST} ]]; then
             for PC in ${PCLIST[@]}; do
-                scp ${INPDIR}/${SAVED_NAME} ${PC}:${JOBTMPDIR}/${TMP_NAME}
+                scp ${INPDIR}/${file} ${PC}     : ${JOBTMPDIR}/${TMP_NAME}
                 echo "File synchonised on ${PC} : ${JOBTMPDIR}/${TMP_NAME}"
             done
         fi
-    else
-        echo "Input ${SAVED_NAME} not found or empty in ${INPDIR}."
-    fi
+    done
 
     LINE_PRECALC=`echo "scale=0;${LINE_PRECALC}+1" | bc`
     SAVED_NAME=`echo $(awk 'NR=="'${LINE_PRECALC}'"{printf("%s", substr($0,1,21))}' ${SETFILE})`
-	SAVED_NAME_FLAG=`echo "${SAVED_NAME}" | cut -c 1-9`
+    SAVED_NAME_FLAG=`echo "${SAVED_NAME}" | cut -c 1-9`
     TMP_NAME=`echo $(awk 'NR=="'${LINE_PRECALC}'"{printf("%s", substr($0,22,21))}' ${SETFILE})`
-	TMP_NAME_FLAG=`echo "${TMP_NAME}" | cut -c 1-9`
+    TMP_NAME_FLAG=`echo "${TMP_NAME}" | cut -c 1-9`
 done
 
 # Read external file list - Same as REFNAME (Table REF_FILE)
@@ -256,36 +292,65 @@ while [[ ${TMP_NAME} != '---------'* && ${move_file} == true && ${REFNAME} != 'n
 
     # Substitute variable flags for saved name in INPDIR
 
-	if [[ ${SAVED_NAME_FLAG} == '[refname]' && ! -z ${REFNAME} ]]; then
-		SAVED_NAME=${REFNAME}$(echo ${SAVED_NAME} | sed -r 's/^.{9}//')
-	fi
+    if [[ ${SAVED_NAME_FLAG} == '[refname]' && ! -z ${REFNAME} ]]; then
+        SAVED_NAME=${REFNAME}$(echo ${SAVED_NAME} | sed -r 's/^.{9}//')
+    fi
 
     # Substitute variable flags for temporary name in JOBTMPDIR
-	
-	if [[ ${TMP_NAME_FLAG} == '[jobname]' ]]; then
-		TMP_NAME=${JOBNAME}$(echo ${TMP_NAME} | sed -r 's/^.{9}//')
-	elif [[ ${TMP_NAME_FLAG} == '[refname]' && ! -z ${REFNAME} ]]; then
-		TMP_NAME=${REFNAME}$(echo ${TMP_NAME} | sed -r 's/^.{9}//')
-	fi
+    
+    if [[ ${TMP_NAME_FLAG} == '[jobname]' ]]; then
+        TMP_NAME=${JOBNAME}$(echo ${TMP_NAME} | sed -r 's/^.{9}//')
+    elif [[ ${TMP_NAME_FLAG} == '[refname]' && ! -z ${REFNAME} ]]; then
+        TMP_NAME=${REFNAME}$(echo ${TMP_NAME} | sed -r 's/^.{9}//')
+    fi
 
-    # Find files in INPDIR and  copy them to JOBTMPDIR
+    # List files, to get all matched files in 'SAVED_NAME' settings
 
-    if [[ -e ${INPDIR}/${SAVED_NAME} && -s ${INPDIR}/${SAVED_NAME} ]]; then
-        echo "Find input reference: ${INPDIR}/${SAVED_NAME}" 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
-        cp ${INPDIR}/${SAVED_NAME} ${JOBTMPDIR}/${TMP_NAME}
-        echo "Input reference ${SAVED_NAME} copied as ${TMP_NAME}."
+    filelist=`find ${INPDIR} -name "${SAVED_NAME}"`
+    filelist=(${filelist//${INPDIR}\//})
 
+    # Make subdir for files stored in sub-folders 
+
+    if [[ ${TMP_NAME: -1} == '/' && ${#filelist[@]} -ge 1 ]]; then
+        mkdir -p "${JOBTMPDIR}/${TMP_NAME}"
+    fi
+    for file in ${filelist[@]}; do
+        
+        # Make sure the file is not empty
+
+        if [[ ! -s ${INPDIR}/${file} ]]; then
+            continue
+        fi
+
+        # If TMP_NAME has '*', keep the original name
+
+        if [[ ${TMP_NAME} == *'*'* ]]; then
+            TMP_NAME=${file}
+        fi
+
+        # Find files in INPDIR and  copy them to JOBTMPDIR
+
+        echo "Find input reference: ${INPDIR}/${file}" 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+
+        # Do not cover the duplicate file. 
+
+        if [[ -e ${JOBTMPDIR}/${TMP_NAME} && -s ${JOBTMPDIR}/${TMP_NAME} ]]; then
+            echo "Warning! Duplicate file detected in temporary directory: ${JOBTMPDIR}/${TMP_NAME}." 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+            echo "  The new reference entry ${INPDIR}/${file} is ignored." 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+            continue
+        fi
+        cp -r ${INPDIR}/${file} ${JOBTMPDIR}/${TMP_NAME}
+        echo "Input ${file} copied."
+            
         # Synchonise files on all nodes
 
         if [[ ! -z ${PCLIST} ]]; then
             for PC in ${PCLIST[@]}; do
-                scp ${INPDIR}/${SAVED_NAME} ${PC}:${JOBTMPDIR}/${TMP_NAME}
+                scp ${INPDIR}/${file}     ${PC} : ${JOBTMPDIR}/${TMP_NAME}
                 echo "File synchonised on ${PC} : ${JOBTMPDIR}/${TMP_NAME}"
             done
         fi
-    else
-        echo "Input reference ${SAVED_NAME} not found or empty in ${INPDIR}."
-    fi
+    done
 
     LINE_REF=`echo "scale=0;${LINE_REF}+1" | bc`
     SAVED_NAME=`echo $(awk 'NR=="'${LINE_REF}'"{printf("%s", substr($0,1,21))}' ${SETFILE})`

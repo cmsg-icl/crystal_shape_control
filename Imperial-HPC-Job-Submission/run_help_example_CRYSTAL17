@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Instructions of pre-defined commands
-
+#---- BEGIN_USER ----# Instructions
 function print_ALIAS_HOWTO_ {
     cat << EOF
     -------------------------------------------
@@ -26,6 +26,7 @@ function print_ALIAS_HOWTO_ {
 
 EOF
 }
+#---- END_USER ----#
 
 # Instructions of user-defined commands
 
