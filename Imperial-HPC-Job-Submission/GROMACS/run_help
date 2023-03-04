@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# Instructions of pre-defined commands
+
+function print_ALIAS_HOWTO_ {
+    cat << EOF
+    -------------------------------------------
+    Imperial HPC GROMACS job submitter HOWTO
+    -------------------------------------------
+    Use 'source ~/.bashrc' to activate pre-defined
+    commands
+
+    Pre-defined commands
+        Pmdrun   : Run parallel molecular dynamics by GROMACS
+        Xgmx     : Run user defined commands (Advanced)
+        SETgmx   : Quick reference of settings file
+        HELPgmx  : Print help file
+
+    Example code:
+        Pmdrun -in em-1AKI.tpr -wt 02:00 -nd 1
+
+    Note:
+        Considering the nature of popular MD codes,
+        pre-set commands and MPI+executable labels
+        are only compitable with the default options.
+        Please check the values in EXE_TABLE to
+        ensure a successful job submission
+
+        PS. This configuration is also rarely tested.
+
+EOF
+}
+
+# Instructions of user-defined commands
+
+function print_GENSUB_HOWTO_ {
+    SOURCE=${CTRLDIR}/gen_sub
+    source ${SOURCE} -help
+}
+CTRLDIR=$(dirname $0)/../
