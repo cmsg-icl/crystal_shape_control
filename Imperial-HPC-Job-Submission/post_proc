@@ -80,23 +80,17 @@ LINE_POSTCALC=`grep -nw 'POST_CALC' ${SETFILE}`
 LINE_POSTCALC=`echo "scale=0;${LINE_POSTCALC%%:*}+4" | bc`
 
 SAVED_NAME=`echo $(awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", substr($0,1,21))}' ${SETFILE})`
-SAVED_NAME_FLAG=`echo "${SAVED_NAME}" | cut -c 1-9`
 TMP_NAME=`echo $(awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", substr($0,22,21))}' ${SETFILE})`
-TMP_NAME_FLAG=`echo "${TMP_NAME}" | cut -c 1-9`
 
 while [[ ${TMP_NAME} != '---------'* && ${move_file} == true ]]; do
 
     # Substitute variable flags for saved name in INPDIR
 
-    if [[ ${SAVED_NAME_FLAG} == '[jobname]' ]]; then
-        SAVED_NAME=${JOBNAME}$(echo ${SAVED_NAME} | sed -r 's/^.{9}//')
-    fi
+    SAVED_NAME=`echo ${SAVED_NAME} | sed "s/\[job.*\]/${JOBNAME}/g"`
 
     # Substitute variable flags for temporary name in JOBTMPDIR
 
-    if [[ ${TMP_NAME_FLAG} == '[jobname]' ]]; then
-        TMP_NAME=${JOBNAME}$(echo ${TMP_NAME} | sed -r 's/^.{9}//')
-    fi
+    TMP_NAME=`echo ${TMP_NAME} | sed "s/\[job.*\]/${JOBNAME}/g"`
 
     # List files, to get all matched files in 'TMP_NAME' settings
 
@@ -134,10 +128,7 @@ while [[ ${TMP_NAME} != '---------'* && ${move_file} == true ]]; do
 
     LINE_POSTCALC=`echo "scale=0;${LINE_POSTCALC%%:*}+1" | bc`
     SAVED_NAME=`echo $(awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", substr($0,1,21))}' ${SETFILE})`
-    SAVED_NAME_FLAG=`echo "${SAVED_NAME}" | cut -c 1-9`
     TMP_NAME=`echo $(awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", substr($0,22,21))}' ${SETFILE})`
-    TMP_NAME_FLAG=`echo "${TMP_NAME}" | cut -c 1-9`
-done
 
 # Calculation summary
 
