@@ -182,17 +182,19 @@ In practice, `run_exec` and `post_proc` scan all the formats listed and moves al
 
 To ensure the generality, a 'pseudo' regular expression is used. Note that not all the sym
 
-| SYMBOL      | Definition                                                                                  |
-|:------------|:--------------------------------------------------------------------------------------------|
-| \[jobname\] | Value of `-in` flag without extension and upper-level folder                                | 
-| \[refname\] | Value of `-ref` flag without extension and upper-level folder                               |
-| \*          | Match any character for any times. A single '*' in destination means keep the original name |
-| /           | Creat a folder rather than copy as files                                                    |
+| SYMBOL  | Definition                                                                                  |
+|:--------|:--------------------------------------------------------------------------------------------|
+| \[job\] | Value of `-in` flag without extension and upper-level folder                                | 
+| \[ref\] | Value of `-ref` flag without extension and upper-level folder                               |
+| \*      | Match any character for any times. A single '*' in destination means keep the original name |
+| /       | Creat a folder rather than copy as files                                                    |
 
 Note:
 
 1. Typically the 'text\*' expression is used in source directory and '/' and '\*' are used in destination directory.  
-2. In 'SAVED' colume, both 'PRE\_CALC' and 'POST\_CALC' allow \[jobname\] only, while 'REF\_FILE' allows \[refname\] only.
+2. In 'SAVED' colume, both 'PRE\_CALC' and 'POST\_CALC' allow \[job\] only, while 'REF\_FILE' allows \[ref\] only.  
+3. In practice, any text begins with \[job or \[ref and ends with \] are recognized and substituted. In fact, in files configured eariler, keywords \[jobname\] and \[refname\] were used. New keywords are adopted to spare space for command options.  
+4. In principle, \[job\] and \[ref\] can be placed at any part of the file name, but it is strongly recommended to keep them as the 1st part of the file name to keep the consistency.
 
 
 ### Structure of the repository

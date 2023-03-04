@@ -34,5 +34,3 @@ function print_GENSUB_HOWTO_ {
     source ${SOURCE} -help
 }
 CTRLDIR=$(dirname $0)/../
-print_ALIAS_HOWTO_
-print_GENSUB_HOWTO_

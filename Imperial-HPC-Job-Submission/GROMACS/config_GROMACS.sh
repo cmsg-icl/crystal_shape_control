@@ -15,17 +15,17 @@ function welcome_msg {
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
-GULP 6.1.2 Job Submitter for Imperial HPC - Configuration
+GROMACS2021 Job Submitter for Imperial HPC - Configuration
 
 Installation date     : `date`
-Version               : v0.4
+Version               : v1.0
 IC-HPC script version : v1.3 
 Batch system          : PBS
 
-Configured by Spica-Vir, Feb.28, 23, ICL, spica.h.zhou@gmail.com
+Configured by Spica-Vir, Mar.04, 23, ICL, spica.h.zhou@gmail.com
 Based on IC-HPC script released by Spica-Vir, Mar.01, 23, ICL, spica.h.zhou@gmail.com
 
-Special thanks to K. Tallat-Kelpsa, G.Mallia, N.M.Harrison
+Special thanks to K. Tallat Kelpsa, G.Mallia and N.M.Harrison, 
 
 EOF
 }
@@ -36,8 +36,8 @@ function get_scriptdir {
     Note: all scripts should be placed into the same directory!
     Please specify your installation path.
 
-    Default Option
-    ${HOME}/etc/runGULP6/):
+    Default Option:
+    ${HOME}/runGROMACS/
 
 EOF
 
@@ -45,7 +45,7 @@ EOF
     SCRIPTDIR=`echo ${SCRIPTDIR}`
 
     if [[ -z ${SCRIPTDIR} ]]; then
-        SCRIPTDIR=${HOME}/etc/runGULP6
+        SCRIPTDIR=${HOME}/runGROMACS/
     fi
 
     if [[ ${SCRIPTDIR: -1} == '/' ]]; then
@@ -77,11 +77,11 @@ EOF
 function set_exe {
     cat << EOF
 ================================================================================
-    Please specify the directory of GULP 6 exectuables, 
-    or the command to load CRYSTAL17 modules
+    Please specify the directory of GROMACS exectuables, 
+    or the command to load GROMACS modules 
 
-    Default Option
-    gulp-mpi (mpiintel2019 - ifort2019.4 - fftw3.3.3double - PLUMED)
+    Default Option:
+    module load  gromacs/2021.3-mpi
 
 EOF
     
@@ -89,13 +89,13 @@ EOF
     EXEDIR=`echo ${EXEDIR}`
 
     if [[ -z ${EXEDIR} ]]; then
-        EXEDIR='module load  /rds/general/user/hz1420/home/apps/gulp-6.1.2/module_gulp'
+        EXEDIR='module load  gromacs/2021.3-mpi'
     fi
 
     if [[ ! -d ${EXEDIR} && (${EXEDIR} != *'module load'*) ]]; then
         cat << EOF
 --------------------------------------------------------------------------------
-    Error: Directory or command does not exist. Check your input: ${EXEDIR}
+    Error: Directory or command does not exist. Exiting current job. 
 
 EOF
         exit
@@ -104,7 +104,7 @@ EOF
     if [[ ${EXEDIR} == *'module load'* ]]; then
         ${EXEDIR} > /dev/null 2>&1
         if [[ $? != 0 ]]; then
-            cat << EOF
+                    cat << EOF
 --------------------------------------------------------------------------------
     Error: Module specified not available. Check your input: ${EXEDIR}
 
@@ -120,7 +120,7 @@ function set_mpi {
     Please specify the directory of MPI executables or mpi modules
 
     Default Option
-    mpi/intel-2019
+    module load mpi/intel-2019
 
 EOF
     
@@ -128,7 +128,7 @@ EOF
     MPIDIR=`echo ${MPIDIR}`
 
     if [[ -z ${MPIDIR} ]]; then
-        MPIDIR='module load  mpi/intel-2019'
+        MPIDIR='module load mpi/intel-2019'
     fi
 
     if [[ ! -d ${EXEDIR} && (${EXEDIR} != *'module load'*) ]]; then
@@ -159,56 +159,56 @@ function copy_scripts {
 
     cat << EOF
 ================================================================================
-    Moving and modifying scripts at ${SCRIPTDIR}/
+    modified scripts at ${SCRIPTDIR}/
 EOF
 }
 
 # Configure settings file
 
 function set_settings {
-    SETFILE=${SCRIPTDIR}/settings
 
     # Values for keywords
-    sed -i "/SUBMISSION_EXT/a\ .qsub" ${SETFILE}
-    sed -i "/NCPU_PER_NODE/a\ 24" ${SETFILE}
-    sed -i "/MEM_PER_NODE/a\ 100" ${SETFILE}
-    sed -i "/N_THREAD/a\ 1" ${SETFILE}
-    sed -i "/NGPU_PER_NODE/a\ 0" ${SETFILE}
-    sed -i "/GPU_TYPE/a\ RTX6000" ${SETFILE}
-    sed -i "/TIME_OUT/a\ 3" ${SETFILE}
-    sed -i "/JOB_TMPDIR/a\ ${EPHEMERAL}" ${SETFILE}
-    sed -i "/EXEDIR/a\ ${EXEDIR}" ${SETFILE}
-    sed -i "/MPIDIR/a\ ${MPIDIR}" ${SETFILE}
+    SETFILE=${SCRIPTDIR}/settings
+    sed -i "/SUBMISSION_EXT/a .qsub" ${SETFILE}
+    sed -i "/NCPU_PER_NODE/a 24" ${SETFILE}
+    sed -i "/MEM_PER_NODE/a 50" ${SETFILE}
+    sed -i "/N_THREAD/a 1" ${SETFILE}
+    sed -i "/NGPU_PER_NODE/a 0" ${SETFILE}
+    sed -i "/GPU_TYPE/a RTX6000" ${SETFILE}
+    sed -i "/TIME_OUT/a 3" ${SETFILE}
+    sed -i "/JOB_TMPDIR/a nodir" ${SETFILE}
+    sed -i "/EXEDIR/a ${EXEDIR}" ${SETFILE}
+    sed -i "/MPIDIR/a ${MPIDIR}" ${SETFILE}
 
     # Executable tabel
 
     LINE_EXE=`grep -nw 'EXE_TABLE' ${SETFILE}`
     LINE_EXE=`echo "scale=0;${LINE_EXE%:*}+3" | bc`
-    sed -i "${LINE_EXE}a\pgulp      mpiexec              gulp-mpi < [jobname].gin       Parallel GULP exectuable with PLUMED add-on" ${SETFILE}
+    sed -i "${LINE_EXE}a\mdrun      mpiexec              mdrun -s [jobname].tpr         Parallel GROMACS MD calculation" ${SETFILE}
 
-    # Input file table
+    # # Input file table - calculation performed in current directory
 
-	LINE_PRE=`grep -nw 'PRE_CALC' ${SETFILE}`
-    LINE_PRE=`echo "scale=0;${LINE_PRE%:*}+3" | bc`
-    sed -i "${LINE_PRE}a\[jobname].gin        [jobname].gin        GULP input file" ${SETFILE}
+    # LINE_PRE=`grep -nw 'PRE_CALC' ${SETFILE}`
+    # LINE_PRE=`echo "scale=0;${LINE_PRE%:*}+3" | bc`
+    # sed -i "${LINE_PRE}a\[jobname].tpr        [jobname].tpr        GROMACS portable binary run input file" ${SETFILE}
 
-    
-    # Reference file table
+    # # Reference file table - calculation performed in current directory
 
-	# LINE_REF=`grep -nw 'REF_FILE' ${SETFILE}`
+    # LINE_REF=`grep -nw 'REF_FILE' ${SETFILE}`
     # LINE_REF=`echo "scale=0;${LINE_REF%:*}+3" | bc`
-    # sed -i "${LINE_REF}a\[refname].something  something            Some reference files" ${SETFILE}
-    
-    # Post-processing file table
+    # sed -i "${LINE_REF}a\[refname].anything   anything             Anything" ${SETFILE}
 
-    LINE_POST=`grep -nw 'POST_CALC' ${SETFILE}`
-    LINE_POST=`echo "scale=0;${LINE_POST%:*}+3" | bc`
-    
-    sed -i "${LINE_POST}a\*                    *.inp                Force field coefficient file LAMMPS format" ${SETFILE}
-    sed -i "${LINE_POST}a\*                    *.lmp                Geometry file LAMMPS format" ${SETFILE}
-    sed -i "${LINE_POST}a\*                    *.xyz                Geometry file xyz format" ${SETFILE}
+    # # Post-processing file table
 
-    # Job submission file template
+    # LINE_POST=`grep -nw 'POST_CALC' ${SETFILE}`
+    # LINE_POST=`echo "scale=0;${LINE_POST%:*}+3" | bc`
+    # sed -i "${LINE_POST}a\[jobname].CheckPoint\/*.cpt                Checkpoint files" ${SETFILE}
+    # sed -i "${LINE_POST}a\[jobname].gro        *.gro                Gromacs geometry file" ${SETFILE}
+    # sed -i "${LINE_POST}a\[jobname].trr        *.trr                Trajectory file" ${SETFILE}
+    # sed -i "${LINE_POST}a\[jobname].trj        *.trj                Trajectory file" ${SETFILE}
+    # sed -i "${LINE_POST}a\[jobname].log        *.log                MD output file" ${SETFILE}
+
+    # Job submission file template - should be placed at the end of file
 
     cat << EOF >> ${SETFILE}
 -----------------------------------------------------------------------------------
@@ -246,16 +246,14 @@ cd \${PBS_O_WORKDIR}
 EOF
     cat << EOF
 ================================================================================
-    Paramters specified in ${SETFILE}. 
+    Paramters specified in ${SETFILE}.
 
 EOF
 }
 
-# Configure user alias
-
 function set_commands {
-    bgline=`grep -nw "# >>> begin GULP6 job submitter settings >>>" ${HOME}/.bashrc`
-    edline=`grep -nw "# <<< finish GULP6 job submitter settings <<<" ${HOME}/.bashrc`
+    bgline=`grep -nw "# >>> begin GROMACS job submitter settings >>>" ${HOME}/.bashrc`
+    edline=`grep -nw "# <<< finish GROMACS job submitter settings <<<" ${HOME}/.bashrc`
 
     if [[ ! -z ${bgline} && ! -z ${edline} ]]; then
         bgline=${bgline%%:*}
@@ -263,17 +261,16 @@ function set_commands {
         sed -i "${bgline},${edline}d" ${HOME}/.bashrc
     fi
 
-    echo "# >>> begin GULP6 job submitter settings >>>" >> ${HOME}/.bashrc
-    echo "alias Pglp6='${CTRLDIR}/gen_sub -x pgulp -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "alias Xglp6='${CTRLDIR}/gen_sub -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "alias SETglp6='cat ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "alias HELPglp6='source $(dirname $0)/run_help; print_ALIAS_HOWTO_; print_GENSUB_HOWTO_'" >> ${HOME}/.bashrc
-    # echo "chmod 777 $(dirname $0)/gen_sub" >> ${HOME}/.bashrc
-    # echo "chmod 777 $(dirname $0)/run_exec" >> ${HOME}/.bashrc
-    # echo "chmod 777 $(dirname $0)/post_proc" >> ${HOME}/.bashrc 
-    # echo "chmod 777 $(dirname $0)/run_help" >> ${HOME}/.bashrc 
-    echo "# <<< finish GULP6 job submitter settings <<<" >> ${HOME}/.bashrc
-    
+    echo "# >>> begin GROMACS job submitter settings >>>" >> ${HOME}/.bashrc
+    echo "alias Pmdrun='${CTRLDIR}/gen_sub -x mdrun -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
+    echo "alias Xgmx='${CTRLDIR}/gen_sub -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
+    echo "alias SETgmx='cat ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
+    echo "alias HELPgmx='source $(dirname $0)/run_help; print_ALIAS_HOWTO_; print_GENSUB_HOWTO_'" >> ${HOME}/.bashrc
+    # echo "chmod 777 ${SCRIPTDIR}/gen_sub" >> ${HOME}/.bashrc
+    # echo "chmod 777 ${SCRIPTDIR}/run_exec" >> ${HOME}/.bashrc
+    # echo "chmod 777 ${SCRIPTDIR}/post_proc" >> ${HOME}/.bashrc 
+    echo "# <<< finish GROMACS job submitter settings <<<" >> ${HOME}/.bashrc
+
     source $(dirname $0)/run_help; print_ALIAS_HOWTO_
 }
 

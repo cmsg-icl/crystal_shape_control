@@ -18,7 +18,7 @@ function welcome_msg {
 CRYSTAL 23 Job Submitter for Imperial HPC - Configuration
 
 Installation date     : `date`
-Version               : v0.2
+Version               : v0.3
 IC-HPC script version : v1.3 
 Batch system          : PBS
 
@@ -81,7 +81,7 @@ function set_exe {
     or the command to load CRYSTAL23 modules
 
     Default Option
-    CRYSTAL23 v1.0.1 (openmpi - AMD aocc/aocl)
+    CRYSTAL23 v1.0.1 (openmpi - AMD aocc/aocl - MPP)
 
 EOF
     
@@ -323,15 +323,14 @@ function set_commands {
     echo "alias Sprop23='${CTRLDIR}/gen_sub -x sprop -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
     echo "alias Xcrys23='${CTRLDIR}/gen_sub -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
     echo "alias SETcrys23='cat ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "alias HELPcrys23='bash $(dirname $0)/run_help'" >> ${HOME}/.bashrc
+    echo "alias HELPcrys23='source $(dirname $0)/run_help; print_ALIAS_HOWTO_; print_GENSUB_HOWTO_'" >> ${HOME}/.bashrc
     # echo "chmod 777 $(dirname $0)/gen_sub" >> ${HOME}/.bashrc
     # echo "chmod 777 $(dirname $0)/run_exec" >> ${HOME}/.bashrc
     # echo "chmod 777 $(dirname $0)/post_proc" >> ${HOME}/.bashrc 
     # echo "chmod 777 $(dirname $0)/run_help" >> ${HOME}/.bashrc 
     echo "# <<< finish CRYSTAL23 job submitter settings <<<" >> ${HOME}/.bashrc
     
-    source $(dirname $0)/run_help
-    print_ALIAS_HOWTO_
+    source $(dirname $0)/run_help; print_ALIAS_HOWTO_
 }
 
 # Main I/O function
