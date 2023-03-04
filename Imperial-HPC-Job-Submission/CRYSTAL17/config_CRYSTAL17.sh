@@ -18,7 +18,7 @@ function welcome_msg {
 CRYSTAL 17 Job Submitter for Imperial HPC - Configuration
 
 Installation date     : `date`
-Version               : v2.2
+Version               : v2.3
 IC-HPC script version : v1.3 
 Batch system          : PBS
 
@@ -323,15 +323,14 @@ function set_commands {
     echo "alias Sprop17='${CTRLDIR}/gen_sub -x sprop -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
     echo "alias Xcrys17='${CTRLDIR}/gen_sub -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
     echo "alias SETcrys17='cat ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "alias HELPcrys17='bash $(dirname $0)/run_help'" >> ${HOME}/.bashrc
+    echo "alias HELPcrys17='source $(dirname $0)/run_help; print_ALIAS_HOWTO_; print_GENSUB_HOWTO_'" >> ${HOME}/.bashrc
     # echo "chmod 777 $(dirname $0)/gen_sub" >> ${HOME}/.bashrc
     # echo "chmod 777 $(dirname $0)/run_exec" >> ${HOME}/.bashrc
     # echo "chmod 777 $(dirname $0)/post_proc" >> ${HOME}/.bashrc 
     # echo "chmod 777 $(dirname $0)/run_help" >> ${HOME}/.bashrc 
     echo "# <<< finish CRYSTAL17 job submitter settings <<<" >> ${HOME}/.bashrc
     
-    source $(dirname $0)/run_help
-    print_ALIAS_HOWTO_
+    source $(dirname $0)/run_help; print_ALIAS_HOWTO_
 }
 
 # Main I/O function
