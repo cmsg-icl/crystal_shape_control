@@ -28,3 +28,39 @@ Equilibrium volume and thermal expansion at finite temperature and pressure are 
 ![expansion](_fig/expansion.png)
 
 Note that the volumetric thermal expansion coefficient $\alpha_{V}(T)$ is computed against the 0K equilibrium volume. Therefore, $V-V_{0}=T\alpha_{V}(T)$.
+
+## Developing notes & Reminders
+### Unit system & constants
+During developing, 2 catagories of units should be distinguished:
+1. External units: For data I/O
+2. Solver units: For all calculations. The Hartree unit system is adopted. 
+
+Constants and unit conversion coefficients are defined in 'constants.py'. When reading files, use the following line to convert the original data (eV in this case) to solver unit system (Hartree):
+
+``` python
+>>> import constants as cst
+>>> energy /= cst.ev
+```
+
+Similarily, use the following line to express data in solver unit system (Hartree) by external unit system (kJ/mol):
+
+``` python
+>>> import constants as cst
+>>> energy *= cst.kjmol
+```
+
+### I/O
+Formats of important quantutities:
+
+| VARIABLE    | DATA TYPE              | DEFINITION |
+|:-----------:|:----------------------:|:-----------|
+| dimension   | int                    | Dimension of the system |
+| structure   | PyMatGen Structure     | Geometry of the system |
+| supercell   | 3\*3 numpy array       | Supercell expansion matrix |
+| eint        | float                  | Internal energy without vibration |
+| qpoint      | nqpoint\*4 numpy array | `[x, y, z, w]`, Fractional coordinates and weights of phonon q points in reciprocal space |
+| frequency   | nqpoint\*nmode array   | Frequency of phonon modes |
+| symmetry    | nqpoint\*nmode array (?)                      | Symmetry of phonon modes |
+| eigenvector | nqpoint\*nmode\*natom\*3 complex number array | Eigenvectors of phonon modes. Normalized to 1 |
+
+To allow for reading multiple inputs, a wrapper function should be written to call the output reader classes.
