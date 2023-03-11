@@ -19,11 +19,11 @@ LAMMPS Job Submitter for Imperial HPC - Configuration
 
 Installation date     : `date`
 Version               : v2.0
-IC-HPC script version : v1.3 
+IC-HPC script version : v1.5
 Batch system          : PBS
 
 Configured by Spica-Vir, Mar.04, 23, ICL, spica.h.zhou@gmail.com
-Based on IC-HPC script released by Spica-Vir, Mar.01, 23, ICL, spica.h.zhou@gmail.com
+Based on IC-HPC script released by Spica-Vir, Mar.11, 23, ICL, spica.h.zhou@gmail.com
 
 Special thanks to A. Arber, K. Tallat Kelpsa, G.Mallia and N.M.Harrison
 
@@ -37,22 +37,22 @@ function get_scriptdir {
     Please specify your installation path.
 
     Default Option:
-    ${HOME}/runLAMMPS/
+    ${HOME}/etc/runLAMMPS/
 
 EOF
 
     read -p " " SCRIPTDIR
-    SCRIPTDIR=`echo ${SCRIPTDIR}`
+    SCRIPTDIR=`realpath $(echo ${SCRIPTDIR})`
 
     if [[ -z ${SCRIPTDIR} ]]; then
-        SCRIPTDIR=${HOME}/runLAMMPS/
+        SCRIPTDIR=${HOME}/etc/runLAMMPS/
     fi
 
     if [[ ${SCRIPTDIR: -1} == '/' ]]; then
         SCRIPTDIR=${SCRIPTDIR%/*}
     fi
 
-    source_dir=`dirname $0`
+    source_dir=`realpath $(dirname $0)`
     if [[ ${source_dir} == ${SCRIPTDIR} ]]; then
         cat << EOF
 --------------------------------------------------------------------------------
@@ -66,7 +66,7 @@ EOF
         if [[ $? == 0 ]]; then
             cat << EOF
 --------------------------------------------------------------------------------
-    Warning: Directory exists - currnet folder will be removed.
+    Warning: Directory exists - current folder will be removed.
 
 EOF
             rm -r ${SCRIPTDIR}
@@ -81,7 +81,7 @@ function set_exe {
     or the command to load lammps modules
 
     Default Option:
-    module load  lammps/19Mar2020
+    lammps Sept. 2021 (Intel, OPENMP, KSPACE, MOLECULE, EXTRA-MOLECULE, EXTRA-PAIR)
 
 EOF
     
@@ -89,7 +89,7 @@ EOF
     EXEDIR=`echo ${EXEDIR}`
 
     if [[ -z ${EXEDIR} ]]; then
-        EXEDIR='module load  lammps/19Mar2020'
+        EXEDIR='/rds/general/user/hz1420/home/apps/lammps_2109/bin'
     fi
 
     if [[ ! -d ${EXEDIR} && (${EXEDIR} != *'module load'*) ]]; then
@@ -120,7 +120,7 @@ function set_mpi {
     Please specify the directory of MPI executables or mpi modules
 
     Default Option
-    module load mpi/intel-2019 intel-suite/2019.4
+    IntelOneAPI 2022.1.2
 
 EOF
     
@@ -128,7 +128,7 @@ EOF
     MPIDIR=`echo ${MPIDIR}`
 
     if [[ -z ${MPIDIR} ]]; then
-        MPIDIR='module load mpi/intel-2019 intel-suite/2019.4'
+        MPIDIR='module load /rds/general/user/hz1420/home/apps/IntelOneAPI_v2022.1.2/modulefiles/Intel-OneAPI-2022.1.2'
     fi
 
     if [[ ! -d ${EXEDIR} && (${EXEDIR} != *'module load'*) ]]; then
@@ -184,9 +184,8 @@ function set_settings {
 
     LINE_EXE=`grep -nw 'EXE_TABLE' ${SETFILE}`
     LINE_EXE=`echo "scale=0;${LINE_EXE%:*}+3" | bc`
-    sed -i "${LINE_EXE}a\slmp                            lmp -in [job].in –pk omp       Serial lammps" ${SETFILE}
-    sed -i "${LINE_EXE}a\plmp-gpu   mpiexec              lmp_gpu -in [job].in           Parallel lammps with GPU acceleration" ${SETFILE}
-    sed -i "${LINE_EXE}a\plmp       mpiexec              lmp_mpi -in [job].in -sf intel Parallel lammps" ${SETFILE}
+    sed -i "${LINE_EXE}a\slmp                            lmp_omp -in [job].in           Serial lammps with OMP" ${SETFILE}
+    sed -i "${LINE_EXE}a\plmp       mpiexec              lmp_omp -in [job].in           Parallel lammps" ${SETFILE}
 
     # # Input file table - calculation performed in current directory
 
@@ -271,13 +270,13 @@ function set_commands {
     echo "alias Slmp='${CTRLDIR}/gen_sub -x slmp -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
     echo "alias Xlmp='${CTRLDIR}/gen_sub -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
     echo "alias SETlmp='cat ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "alias HELPlmp='source $(dirname $0)/run_help; print_ALIAS_HOWTO_; print_GENSUB_HOWTO_'" >> ${HOME}/.bashrc
+    echo "alias HELPlmp='source ${CONFIGDIR}/run_help; print_ALIAS_HOWTO_; print_GENSUB_HOWTO_'" >> ${HOME}/.bashrc
     # echo "chmod 777 ${SCRIPTDIR}/gen_sub" >> ${HOME}/.bashrc
     # echo "chmod 777 ${SCRIPTDIR}/run_exec" >> ${HOME}/.bashrc
     # echo "chmod 777 ${SCRIPTDIR}/post_proc" >> ${HOME}/.bashrc 
     echo "# <<< finish LAMMPS job submitter settings <<<" >> ${HOME}/.bashrc
 
-    source $(dirname $0)/run_help; print_ALIAS_HOWTO_
+    source ${CONFIGDIR}/run_help; print_ALIAS_HOWTO_
 }
 
 # Main I/O function
@@ -286,7 +285,9 @@ function set_commands {
 ## In the current implementation, ${SCRIPTDIR} only has 1 file, i.e., user-defined settings file
 ## Executable scripts are now centralized and shared in ${CTRLDIR}
 ## For executable scripts, ${SCRIPTDIR} refer to their own directory. ${SETTINGS} refers to local settings file. 
-CTRLDIR=$(dirname $0)/../
+CONFIGDIR=`realpath $(dirname $0)`
+CTRLDIR=`realpath ${CONFIGDIR}/../`
+
 welcome_msg
 get_scriptdir
 copy_scripts

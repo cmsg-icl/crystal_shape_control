@@ -1,0 +1,267 @@
+
+################################################################################
+#### Covalent bond parameters
+################################################################################
+#@    27 bond types 
+
+bond_style harmonic
+bond_coeff   1     12.580022      1.5500000
+bond_coeff   2     14.236543      1.5080000
+bond_coeff   3     15.164542      1.4870000
+bond_coeff   4     14.097777      1.1010000
+bond_coeff   5     20.736871      1.3450000
+bond_coeff   6     28.100152      1.2140000
+bond_coeff   7     20.225171      1.3060000
+bond_coeff   8     13.143759      1.5350000
+bond_coeff   9     14.028394      1.5130000
+bond_coeff  10     14.626823      1.0920000
+bond_coeff  11     14.336281      1.4600000
+bond_coeff  12     18.325809      1.3350000
+bond_coeff  13     13.620768      1.4260000
+bond_coeff  14     20.745544      1.3870000
+bond_coeff  15     14.930374      1.0870000
+bond_coeff  16     16.144578      1.4220000
+bond_coeff  17     22.536495      1.2750000
+bond_coeff  18     16.743007      1.3620000
+bond_coeff  19     17.788090      1.0090000
+bond_coeff  20     15.520130      0.9810000
+bond_coeff  21     16.027494      0.9740000
+bond_coeff  22     20.368274      1.3900000
+bond_coeff  23     28.039442      1.2640000
+bond_coeff  24     17.146296      1.4100000
+bond_coeff  25     16.664951      1.4300000
+bond_coeff  26     12.775162      1.5170000
+bond_coeff  27     14.765589      1.4690000
+ 
+################################################################################
+#### Covalent angle parameters
+################################################################################
+#@    91 angle types 
+
+angle_style harmonic
+angle_coeff   1     2.7016041      111.68000
+angle_coeff   2     2.6755855      116.86000
+angle_coeff   3     1.9427266      115.43000
+angle_coeff   4     1.9340537      117.08000
+angle_coeff   5     3.0311738      104.81000
+angle_coeff   6     2.8967441      122.34000
+angle_coeff   7     2.9574543      113.23000
+angle_coeff   8     2.7232863      116.05000
+angle_coeff   9     2.7016041      119.53000
+angle_coeff  10     1.9947639      115.22000
+angle_coeff  11     2.9444449      115.15000
+angle_coeff  12     2.9487814      123.11000
+angle_coeff  13     3.0268374      112.20000
+angle_coeff  14     2.7232863      119.53000
+angle_coeff  15     2.0294554      114.12000
+angle_coeff  16     3.0094916      112.03000
+angle_coeff  17     2.9791365      123.44000
+angle_coeff  18     3.0138280      115.46000
+angle_coeff  19     1.6435120      115.61000
+angle_coeff  20     2.2722962      112.37000
+angle_coeff  21     2.3546887      121.94000
+angle_coeff  22     2.3416793      111.82000
+angle_coeff  23     1.7042222      115.68000
+angle_coeff  24     2.2159225      120.00000
+angle_coeff  25     2.4023895      120.00000
+angle_coeff  26     2.3460158      113.70000
+angle_coeff  27     3.2696782      111.70000
+angle_coeff  28     3.2870239      122.03000
+angle_coeff  29     3.4301266      127.33000
+angle_coeff  30     3.3564070      122.88000
+angle_coeff  31     3.4214537      110.56000
+angle_coeff  32     2.7623143      112.95000
+angle_coeff  33     2.7666508      110.53000
+angle_coeff  34     2.7796601      111.23000
+angle_coeff  35     2.0468012      109.68000
+angle_coeff  36     2.8924076      111.56000
+angle_coeff  37     2.9661272      109.46000
+angle_coeff  38     2.7406321      110.63000
+angle_coeff  39     2.7102770      114.61000
+angle_coeff  40     2.0121096      110.05000
+angle_coeff  41     2.8577161      112.13000
+angle_coeff  42     2.9357720      109.43000
+angle_coeff  43     2.7579779      112.47000
+angle_coeff  44     2.0381283      110.15000
+angle_coeff  45     2.9140898      112.97000
+angle_coeff  46     1.7085586      108.35000
+angle_coeff  47     2.1595487      109.50000
+angle_coeff  48     2.2159225      109.50000
+angle_coeff  49     2.9834729      113.81000
+angle_coeff  50     3.1829493      122.30000
+angle_coeff  51     3.1265755      111.08000
+angle_coeff  52     2.7189499      120.00000
+angle_coeff  53     2.7146134      118.06000
+angle_coeff  54     2.8013423      120.14000
+angle_coeff  55     2.0164461      115.90000
+angle_coeff  56     0.4856816      120.00000
+angle_coeff  57     2.7059406      116.80000
+angle_coeff  58     2.7666508      120.63000
+angle_coeff  59     2.9140898      119.97000
+angle_coeff  60     2.1031750      120.01000
+angle_coeff  61     2.9487814      119.89000
+angle_coeff  62     3.0745382      123.43000
+angle_coeff  63     3.0268374      119.94000
+angle_coeff  64     3.2740146      126.82000
+angle_coeff  65     3.1482578      120.00000
+angle_coeff  66     2.9227627      119.63000
+angle_coeff  67     2.7709872      121.35000
+angle_coeff  68     2.7883330      123.71000
+angle_coeff  69     2.1335301      118.46000
+angle_coeff  70     2.9574543      118.42000
+angle_coeff  71     3.1048933      118.90000
+angle_coeff  72     3.0138280      113.39000
+angle_coeff  73     2.7753237      112.62000
+angle_coeff  74     2.7059406      121.15000
+angle_coeff  75     1.9947639      116.78000
+angle_coeff  76     2.7970059      116.80000
+angle_coeff  77     2.0641470      114.59000
+angle_coeff  78     1.7215680      117.85000
+angle_coeff  79     2.1725580      113.12000
+angle_coeff  80     2.3330064      116.32000
+angle_coeff  81     2.1985767      109.21000
+angle_coeff  82     3.0311738      114.62000
+angle_coeff  83     3.1829493      128.61000
+angle_coeff  84     3.1222391      107.26000
+angle_coeff  85     2.2202589      107.37000
+angle_coeff  86     2.0424647      108.16000
+angle_coeff  87     2.1205207      109.47000
+angle_coeff  88     1.8169697      104.80000
+angle_coeff  89     2.1899038      101.03000
+angle_coeff  90     2.0511376      100.87000
+angle_coeff  91     2.1378665       98.72000
+ 
+################################################################################
+#### Covalent torsion parameters
+################################################################################
+#@    40 dihedral types 
+
+dihedral_style   fourier
+dihedral_coeff   1   1        0.01300933   2   180
+dihedral_coeff   2   1        0.00000000   2   180
+dihedral_coeff   3   1        0.15719607   2   180
+dihedral_coeff   4   1        0.10841108   2   180
+dihedral_coeff   5   1        0.09973819   2   180
+dihedral_coeff   6   1        0.00674751   3     0
+dihedral_coeff   7   1        0.00000000   2     0
+dihedral_coeff   8   1        0.00000000   2     0
+dihedral_coeff   9   1        0.00722885   3     0
+dihedral_coeff  10   1        0.15719607   2   180
+dihedral_coeff  11   1        0.01951399   2   180
+dihedral_coeff  12   1        0.03902799   2   180
+dihedral_coeff  13   1        0.04986910   2     0
+dihedral_coeff  14   1        0.06504665   2     0
+dihedral_coeff  15   1        0.06938309   2     0
+dihedral_coeff  16   1        0.07371953   1   180
+dihedral_coeff  17   1        0.08672886   2   180
+dihedral_coeff  18   1        0.03685977   2   180
+dihedral_coeff  19   1        0.03469155   1     0
+dihedral_coeff  20   1        0.02168222   4   180
+dihedral_coeff  21   1        0.00650466   3   180
+dihedral_coeff  22   1        0.02298315   1     0
+dihedral_coeff  23   1        0.00433644   4     0
+dihedral_coeff  24   1        0.00303551   2     0
+dihedral_coeff  25   1        0.10841108   2   180
+dihedral_coeff  26   1        0.08672886   1     0
+dihedral_coeff  27   1        0.03469155   1     0
+dihedral_coeff  28   1        0.00346915   3   180
+dihedral_coeff  29   1        0.00650466   3     0
+dihedral_coeff  30   1        0.00693831   3     0
+dihedral_coeff  31   1        0.00693831   3     0
+dihedral_coeff  32   1        0.01084111   1     0
+dihedral_coeff  33   1        0.09973819   2   180
+dihedral_coeff  34   1        0.08239242   1     0
+dihedral_coeff  35   1        0.00780560   3     0
+dihedral_coeff  36   1        0.01084111   2   180
+dihedral_coeff  37   1        0.00867289   1   180
+dihedral_coeff  38   1        0.00624448   3     0
+dihedral_coeff  39   1        0.05095321   2     0
+dihedral_coeff  40   1        0.01084111   1     0
+ 
+################################################################################
+#### Covalent improper dihedral parameters
+################################################################################
+#@    15 improper types 
+
+improper_style cvff
+improper_coeff   1        0.02385044  -1     2
+improper_coeff   2        0.22766327  -1     2
+improper_coeff   3        0.02385044  -1     2
+improper_coeff   4        0.02385044  -1     2
+improper_coeff   5        0.02385044  -1     2
+improper_coeff   6        0.02385044  -1     2
+improper_coeff   7        0.02385044  -1     2
+improper_coeff   8        0.02385044  -1     2
+improper_coeff   9        0.02385044  -1     2
+improper_coeff  10        0.02385044  -1     2
+improper_coeff  11        0.02385044  -1     2
+improper_coeff  12        0.02385044  -1     2
+improper_coeff  13        0.02385044  -1     2
+improper_coeff  14        0.02385044  -1     2
+improper_coeff  15        0.02385044  -1     2
+ 
+################################################################################
+#### Pair potentials
+################################################################################
+
+pair_style hybrid/overlay lj/mdf   8.0000 12.0000 coul/long 10.0000
+pair_coeff   *   *  coul/long
+pair_coeff   1   1  lj/mdf 0.0037293412  3.3996695084   8.0000  12.0000
+pair_coeff   1   2  lj/mdf 0.0037293412  3.3996695084   8.0000  12.0000
+pair_coeff   2   2  lj/mdf 0.0037293412  3.3996695084   8.0000  12.0000
+pair_coeff   1   3  lj/mdf 0.0042062158  3.3996695084   8.0000  12.0000
+pair_coeff   2   3  lj/mdf 0.0042062158  3.3996695084   8.0000  12.0000
+pair_coeff   3   3  lj/mdf 0.0047440689  3.3996695084   8.0000  12.0000
+pair_coeff   1   4  lj/mdf 0.0015575017  2.9996559840   8.0000  12.0000
+pair_coeff   2   4  lj/mdf 0.0015575017  2.9996559840   8.0000  12.0000
+pair_coeff   3   4  lj/mdf 0.0017566610  2.9996559840   8.0000  12.0000
+pair_coeff   4   4  lj/mdf 0.0006504665  2.5996424595   8.0000  12.0000
+pair_coeff   1   5  lj/mdf 0.0000000000  1.6998347542   8.0000  12.0000
+pair_coeff   2   5  lj/mdf 0.0000000000  1.6998347542   8.0000  12.0000
+pair_coeff   3   5  lj/mdf 0.0000000000  1.6998347542   8.0000  12.0000
+pair_coeff   4   5  lj/mdf 0.0000000000  1.2998212298   8.0000  12.0000
+pair_coeff   5   5  lj/mdf 0.0000000000  0.0000000000   8.0000  12.0000
+pair_coeff   1   6  lj/mdf 0.0015934290  2.2343739851   8.0000  12.0000
+pair_coeff   2   6  lj/mdf 0.0015934290  2.2343739851   8.0000  12.0000
+pair_coeff   3   6  lj/mdf 0.0017971824  2.2343739851   8.0000  12.0000
+pair_coeff   4   6  lj/mdf 0.0006654710  1.8343604607   8.0000  12.0000
+pair_coeff   5   6  lj/mdf 0.0000000000  0.5345392309   8.0000  12.0000
+pair_coeff   6   6  lj/mdf 0.0006808216  1.0690784618   8.0000  12.0000
+pair_coeff   1   7  lj/mdf 0.0015934290  3.0246011481   8.0000  12.0000
+pair_coeff   2   7  lj/mdf 0.0015934290  3.0246011481   8.0000  12.0000
+pair_coeff   3   7  lj/mdf 0.0017971824  3.0246011481   8.0000  12.0000
+pair_coeff   4   7  lj/mdf 0.0006654710  2.6245876236   8.0000  12.0000
+pair_coeff   5   7  lj/mdf 0.0000000000  1.3247663939   8.0000  12.0000
+pair_coeff   6   7  lj/mdf 0.0006808216  1.8593056248   8.0000  12.0000
+pair_coeff   7   7  lj/mdf 0.0006808216  2.6495327877   8.0000  12.0000
+pair_coeff   1   8  lj/mdf 0.0058331851  3.2330714481   8.0000  12.0000
+pair_coeff   2   8  lj/mdf 0.0058331851  3.2330714481   8.0000  12.0000
+pair_coeff   3   8  lj/mdf 0.0065790804  3.2330714481   8.0000  12.0000
+pair_coeff   4   8  lj/mdf 0.0024361395  2.8330579237   8.0000  12.0000
+pair_coeff   5   8  lj/mdf 0.0000000000  1.5332366939   8.0000  12.0000
+pair_coeff   6   8  lj/mdf 0.0024923347  2.0677759248   8.0000  12.0000
+pair_coeff   7   8  lj/mdf 0.0024923347  2.8580030878   8.0000  12.0000
+pair_coeff   8   8  lj/mdf 0.0091238765  3.0664733878   8.0000  12.0000
+pair_coeff   1   9  lj/mdf 0.0058276376  3.1797957048   8.0000  12.0000
+pair_coeff   2   9  lj/mdf 0.0058276376  3.1797957048   8.0000  12.0000
+pair_coeff   3   9  lj/mdf 0.0065728235  3.1797957048   8.0000  12.0000
+pair_coeff   4   9  lj/mdf 0.0024338227  2.7797821803   8.0000  12.0000
+pair_coeff   5   9  lj/mdf 0.0000000000  1.4799609506   8.0000  12.0000
+pair_coeff   6   9  lj/mdf 0.0024899644  2.0145001815   8.0000  12.0000
+pair_coeff   7   9  lj/mdf 0.0024899644  2.8047273444   8.0000  12.0000
+pair_coeff   8   9  lj/mdf 0.0091151995  3.0131976445   8.0000  12.0000
+pair_coeff   9   9  lj/mdf 0.0091065307  2.9599219011   8.0000  12.0000
+pair_coeff   1  10  lj/mdf 0.0052433319  3.3248340161   8.0000  12.0000
+pair_coeff   2  10  lj/mdf 0.0052433319  3.3248340161   8.0000  12.0000
+pair_coeff   3  10  lj/mdf 0.0059138021  3.3248340161   8.0000  12.0000
+pair_coeff   4  10  lj/mdf 0.0021897965  2.9248204917   8.0000  12.0000
+pair_coeff   5  10  lj/mdf 0.0000000000  1.6249992619   8.0000  12.0000
+pair_coeff   6  10  lj/mdf 0.0022403091  2.1595384928   8.0000  12.0000
+pair_coeff   7  10  lj/mdf 0.0022403091  2.9497656558   8.0000  12.0000
+pair_coeff   8  10  lj/mdf 0.0082012678  3.1582359558   8.0000  12.0000
+pair_coeff   9  10  lj/mdf 0.0081934682  3.1049602125   8.0000  12.0000
+pair_coeff  10  10  lj/mdf 0.0073719534  3.2499985238   8.0000  12.0000
+
+special_bonds amber
+
+

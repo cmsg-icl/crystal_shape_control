@@ -43,4 +43,7 @@ function print_GENSUB_HOWTO_ {
     SOURCE=${CTRLDIR}/gen_sub
     source ${SOURCE} -help
 }
-CTRLDIR=$(dirname $0)/../
+
+CONFIGDIR=`realpath $(dirname $0)`
+CTRLDIR=`realpath ${CONFIGDIR}/../`
+

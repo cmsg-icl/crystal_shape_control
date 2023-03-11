@@ -20,11 +20,11 @@ CRYSTAL 17 Job Submitter for Imperial HPC - Configuration
 
 Installation date     : `date`
 Version               : v2.2
-IC-HPC script version : v1.3 
+IC-HPC script version : v1.5
 Batch system          : PBS
 
 Configured by Spica-Vir, Feb.26, 23, ICL, spica.h.zhou@gmail.com
-Based on IC-HPC script released by Spica-Vir, Mar.01, 23, ICL, spica.h.zhou@gmail.com
+Based on IC-HPC script released by Spica-Vir, Mar.11, 23, ICL, spica.h.zhou@gmail.com
 
 Special thanks to K. Tallat-Kelpsa, G.Mallia and N.M.Harrison
 
@@ -46,7 +46,7 @@ EOF
 #---- END_USER ----#
 
     read -p " " SCRIPTDIR
-    SCRIPTDIR=`echo ${SCRIPTDIR}`
+    SCRIPTDIR=`realpath $(echo ${SCRIPTDIR})`
 
     if [[ -z ${SCRIPTDIR} ]]; then
 #---- BEGIN_USER ----# if input is empty, use default
@@ -58,7 +58,7 @@ EOF
         SCRIPTDIR=${SCRIPTDIR%/*}
     fi
 
-    source_dir=`dirname $0`
+    source_dir=`realpath $(dirname $0)`
     if [[ ${source_dir} == ${SCRIPTDIR} ]]; then
         cat << EOF
 --------------------------------------------------------------------------------
@@ -72,7 +72,7 @@ EOF
         if [[ $? == 0 ]]; then
             cat << EOF
 --------------------------------------------------------------------------------
-    Warning: Directory exists - currnet folder will be removed.
+    Warning: Directory exists - current folder will be removed.
 
 EOF
             rm -r ${SCRIPTDIR}
@@ -343,14 +343,14 @@ function set_commands {
     echo "alias Sprop17='${CTRLDIR}/gen_sub -x sprop -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
     echo "alias Xcrys17='${CTRLDIR}/gen_sub -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
     echo "alias SETcrys17='cat ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "alias HELPcrys17='source $(dirname $0)/run_help; print_ALIAS_HOWTO_; print_GENSUB_HOWTO_'" >> ${HOME}/.bashrc
+    echo "alias HELPcrys17='source ${CONFIGDIR}/run_help; print_ALIAS_HOWTO_; print_GENSUB_HOWTO_'" >> ${HOME}/.bashrc
     # echo "chmod 777 $(dirname $0)/gen_sub" >> ${HOME}/.bashrc
     # echo "chmod 777 $(dirname $0)/run_exec" >> ${HOME}/.bashrc
     # echo "chmod 777 $(dirname $0)/post_proc" >> ${HOME}/.bashrc 
     # echo "chmod 777 $(dirname $0)/run_help" >> ${HOME}/.bashrc 
     echo "# <<< finish CRYSTAL17 job submitter settings <<<" >> ${HOME}/.bashrc
 #---- END_USER ----# 
-    source $(dirname $0)/run_help; print_ALIAS_HOWTO_
+    source ${CONFIGDIR}/run_help; print_ALIAS_HOWTO_
 }
 
 # Main I/O function
@@ -359,7 +359,8 @@ function set_commands {
 ## In the current implementation, ${SCRIPTDIR} only has 1 file, i.e., user-defined settings file
 ## Executable scripts are now centralized and shared in ${CTRLDIR}
 ## For executable scripts, ${SCRIPTDIR} refer to their own directory. ${SETTINGS} refers to local settings file. 
-CTRLDIR=$(dirname $0)/../
+CONFIGDIR=`realpath $(dirname $0)`
+CTRLDIR=`realpath ${CONFIGDIR}/../`
 welcome_msg
 get_scriptdir
 copy_scripts
