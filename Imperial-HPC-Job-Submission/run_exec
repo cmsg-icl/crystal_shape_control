@@ -11,7 +11,7 @@ function get_input_ {
     # REFNAME: Reference file name without extension
     # COMMAND: Command + options to lauch calculation
 
-    param_list=$(getopt -a -l set:,in:,ref: -n "$0" -- ${in_var} 2> /dev/null) 
+    param_list=$(getopt -a -l set:,in:,ref:: -n "$0" -- ${in_var} 2> /dev/null) 
     eval set -- "${param_list}"
     COMMAND=""
     REFNAME=""
@@ -22,7 +22,12 @@ function get_input_ {
         --in ) 
             shift; JOBFILE=$1; JOBNAME=${JOBFILE%.*}; JOBNAME=${JOBNAME##*/} ;;
         --ref )
-            shift; REFNAME=$1; REFNAME=${REFNAME%.*}; REFNAME=${REFNAME##*/} ;;
+            shift; 
+			if [[ -z $1 ]]; then
+			    REFNAME=$1;
+				REFNAME=${REFNAME%.*}; 
+				REFNAME=${REFNAME##*/};
+			fi ;;
         -- ) 
             shift;
             while [[ ! -z $1 ]]; do
@@ -73,24 +78,27 @@ if [[ ${MDIR} == *'module load'* ]]; then
 else
     export PATH="${MDIR}:${PATH}"
 fi
-
-EXECOMMAND=`echo ${COMMAND} | sed "s/\[job.*\]/${JOBNAME}/g"`
+# This substitution is doubtful - works occasionally. [job] is substituted in gen_sub.
+EXECOMMAND=`echo ${COMMAND} | sed "s/\[job.*\]/${JOBNAME}/g"` 
 echo "MPI command: ${EXECOMMAND}"
 
 # Set temporary directory
 
 JOBTMPDIR=`echo $(grep -w -A 1 'JOB_TMPDIR' ${SETFILE} | tail -1)`
-if [[ -z ${JOBTMPDIR} || ${JOBTMPDIR} == 'default' ]]; then # As subdirectory under the current one
+if [[ -z ${JOBTMPDIR} || ${JOBTMPDIR} == *'default'* ]]; then # As subdirectory under the current one
     JOBTMPDIR=$(dirname ${JOBFILE})/${JOBNAME}_${PBS_JOBID%.*}
+	JOBTMPDIR=`realpath ${JOBTMPDIR}`
     move_file=true
     mkdir -p ${JOBTMPDIR}
     echo "Temporary directory : ${JOBTMPDIR}"
-elif [[ ${JOBTMPDIR} == 'nodir' ]]; then # In current directory
+elif [[ ${JOBTMPDIR} == *'nodir'* ]]; then # In current directory
     JOBTMPDIR=$(dirname ${JOBFILE})
+	JOBTMPDIR=`realpath ${JOBTMPDIR}`
     move_file=false
     echo "Temporary file stored under the current directory ${OUTDIR}"
 else # In a separate directory
     JOBTMPDIR=${JOBTMPDIR}/${JOBNAME}_${PBS_JOBID%.*}
+	JOBTMPDIR=`realpath ${JOBTMPDIR}`
     move_file=true
     mkdir -p ${JOBTMPDIR}
     echo "Temporary directory : ${JOBTMPDIR}"

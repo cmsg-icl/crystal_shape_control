@@ -592,6 +592,9 @@ function check_executable_ {
     XDIR=`echo $(grep -w -A 1 'EXEDIR' ${SETFILE} | tail -1)`
     for (( i = 0; i < ${#COMMAND[@]}; i++ )); do
         cmd=${COMMAND[$i]}
+
+        # command existance
+
         if [[ ${XDIR} == *'module load'* ]]; then
             ${XDIR} > /dev/null 2>&1
             which ${cmd%% *} > /dev/null 2>&1
@@ -622,6 +625,11 @@ EOF
                 exit
             fi
         fi
+		
+        # substitute jobname
+
+		COMMAND[$i]=`echo ${cmd} | sed "s/\[job.*\]/${JOBNAME[$i]}/g"`
+
     done
 }
 

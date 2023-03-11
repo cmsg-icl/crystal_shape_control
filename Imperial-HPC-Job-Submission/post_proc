@@ -37,12 +37,15 @@ INPDIR=${OUTDIR}
 JOBTMPDIR=`echo $(grep -w -A 1 'JOB_TMPDIR' ${SETFILE} | tail -1)`
 if [[ -z ${JOBTMPDIR} || ${JOBTMPDIR} == 'default' ]]; then # As subdirectory under the current one
     JOBTMPDIR=$(dirname ${JOBFILE})/${JOBNAME}_${PBS_JOBID%.*}
+	JOBTMPDIR=`realpath ${JOBTMPDIR}`
     move_file=true
 elif [[ ${JOBTMPDIR} == 'nodir' ]]; then # In current directory
     JOBTMPDIR=$(dirname ${JOBFILE})
+	JOBTMPDIR=`realpath ${JOBTMPDIR}`
     move_file=false
 else # In a separate directory
     JOBTMPDIR=${JOBTMPDIR}/${JOBNAME}_${PBS_JOBID%.*}
+	JOBTMPDIR=`realpath ${JOBTMPDIR}`
     move_file=true
 fi
 
@@ -129,6 +132,7 @@ while [[ ${TMP_NAME} != '---------'* && ${move_file} == true ]]; do
     LINE_POSTCALC=`echo "scale=0;${LINE_POSTCALC%%:*}+1" | bc`
     SAVED_NAME=`echo $(awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", substr($0,1,21))}' ${SETFILE})`
     TMP_NAME=`echo $(awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", substr($0,22,21))}' ${SETFILE})`
+done
 
 # Calculation summary
 
@@ -193,5 +197,7 @@ fi
 cd ${OUTDIR}
 if [[ ${move_file} == true ]]; then
     rm -fr ${JOBTMPDIR}
+else
+    rm Job_script Post_script checkfile0 
 fi
 
