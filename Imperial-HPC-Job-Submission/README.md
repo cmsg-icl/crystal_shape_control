@@ -27,7 +27,7 @@ In the table below are listed command line flags for script `gen_sub`. The seque
 
 | FLAG  | FORMAT | DEFINITION                                                               |
 |:------|:------:| :------------------------------------------------------------------------|
-| -x    | string | Executable label, see the 'EXE_TABLE' of settings file                   |
+| -x    | string | Executable label, see the 'EXE\_TABLE' of settings file                  |
 | -in   | string | The main input file                                                      |
 | -nd   | int    | Number of nodes requested for the job                                    |
 | -wt   | hh:mm  | Walltime requested for the job                                           |
@@ -135,7 +135,7 @@ To run `Xcrys17` command, the number of in-line flags should follow certain rule
 1. `-name` flag should appear at most only once, otherwise the last one will cover the previous entries. If left blank, the qsub file will be named as `mgo_et_al.qsub` (taking the previous line as an example).  
 2. `-nd` flag is mandatory and should appear once.  
 3. `-x` `-in` `-wt` flags should be always in the same length, otherwise error is reported. 
-4. `-wt` flag defines the walltime for individual jobs. For each job, by default 3 minutes are spared for post-processing. Check the 'TIME_OUT' keyword in settings file.   
+4. `-wt` flag defines the walltime for individual jobs. For each job, by default 3 minutes are spared for post-processing. Check the 'TIME\_OUT' keyword in settings file.   
 5. `-ref` flags should have either 0 length or the same length as `-x`. If no reference is needed, that flag should be matched with value 'no'. See the line above.  
 
 When job terminates, the output of each calculation is available in corresponding .out files. If input files have the same name, for example, mgo.d12 and mgo.d3, the output will be attached in the same .out file, i.e., mgo.out, with a warning message dividing the files. Check [testcase of CRYSTAL17](https://github.com/cmsg-icl/crystal_shape_control/tree/main/Imperial-HPC-Job-Submission/CRYSTAL17/testcase). On the other hand, PBS-related outputs, .qsub, .e`${PBS_JOBID%.*}` and .o`${PBS_JOBID%.*}` files, are defined by the `-name` flag.
@@ -170,7 +170,7 @@ For each job submission script, multiple executables can be placed in the same d
 
 **PRE\_CALC, REF\_FILE and POST\_CALC**
 
-Both tables function as file references before computation. Files with the same name as input file (the value of `-in` flag) should be listed in 'PRE\_CALC' and the input reference (`-ref` flag) should be listed in 'REF\_FILE'. The 'SAVED' column specifies the file names in input directory, while 'TEMPORARY' specifies the file names in ephemeral directory. Lengths of both 'SAVED' and 'TEMPORARY' columes should be 21 characters to ensure the values can be read. The 'DEFINITION' column will not be scanned. This part is skipped if 'JOB_TMPDIR' is 'nodir'.
+Both tables function as file references before computation. Files with the same name as input file (the value of `-in` flag) should be listed in 'PRE\_CALC' and the input reference (`-ref` flag) should be listed in 'REF\_FILE'. The 'SAVED' column specifies the file names in input directory, while 'TEMPORARY' specifies the file names in ephemeral directory. Lengths of both 'SAVED' and 'TEMPORARY' columes should be 21 characters to ensure the values can be read. The 'DEFINITION' column will not be scanned. This part is skipped if 'JOB\_TMPDIR' is 'nodir'.
 
 In practice, `run_exec` and `post_proc` scan all the formats listed and moves all the matching files forward and backward. Missing files will in any case not lead to abruption of jobs since file existence has been checked when generating qsub files. However, the priority changes when duplicate files are found in distination directory (ephemeral for 'PRE\_CALC' and 'REF\_FILE', input for 'POST\_CALC'). In all cases, that would lead to a warning message in both .out and .o`${PBS_JOBID%.*}` files
 
@@ -298,9 +298,9 @@ ${EPHEMERAL}
 ~$ Scrys23 -nd 1 -in molecule-omp.d12 -wt 01:00
 ```
 
-Note that this is also an illustruction of multi-threading feature of CRYSTAL23. Since a serial executable is used, the 'ompthreads' and 'OMP_NUM_THREADS' are changed to 24, while 'mpiproc' and 'NPROCESSES' are 1.
+Note that this is also an illustruction of multi-threading feature of CRYSTAL23. Since a serial executable is used, the 'ompthreads' and 'OMP\_NUM\_THREADS' are changed to 24, while 'mpiproc' and 'NPROCESSES' are 1.
 
-### [GULP6](http://gulp.curtin.edu.au/gulp/)
+### GULP6
 
 *Author: Spica. Vir.*
 
@@ -328,3 +328,77 @@ ${EPHEMERAL}
 ``` console
 ~$ Pglp6 -in example10-free-300K0G.gin -nd 1 -wt 01:00
 ```
+
+### LAMMPS
+
+*Author: Spica. Vir.*
+
+**Default settings file**
+
+${HOME}/etc/runLAMMPS/settings
+
+**Default executable**
+
+Version Sept. 2021 compiled with Intel OneAPI 2022.1.2. With INTEL, OPENMP, KSPACE, MOLECULE, EXTRA\_MOLECULE, EXTRA\_PAIR
+
+| LABEL   | ACTUAL IN-LINE COMMAND             |
+|:-------:|:-----------------------------------|
+| plmp    | mpiexec lmp\_omp -in \[job\].in    |
+| slmp    | lmp\_omp -in \[job\].in            |
+
+**Default ephemeral directory**
+
+nodir
+
+**Commands**
+
+`Plmp` `Slmp` `Xlmp` `SETlmp` `HELPlmp`
+
+**Command used for testcase**
+
+``` console
+~$ Plmp -in f1-nvt.in -nd 1 -wt 00:30
+```
+
+**Notes**
+
+1. Due to the flexible feature of LAMMPS, the default configuration is used as an example. The user is suggested to compile their own version of LAMMPS locally. Due to the same reason, version number is not provided.  
+2. In testcase, the output actually reports an error, which is an error of LAMMPS code and does not influence the performance of job submission script. Since the author hates LAMMPS so much, no further test is performed.  
+3. This module is rarely tested and might lead to unexpected outputs.
+
+### GROMACS
+
+*Author: Spica. Vir.*
+
+**Default settings file**
+
+${HOME}/etc/runGROMACS/settings
+
+**Default executable**
+
+gromacs/2021.3-mpi, with mpi/intel-2019
+
+| LABEL   | ACTUAL IN-LINE COMMAND                   |
+|:-------:|:-----------------------------------------|
+| mdrun   | mpiexec gmx\_mpi mdrun -v -s \[job\].tpr |
+
+**Default ephemeral directory**
+
+nodir
+
+**Commands**
+
+`Pmdrun` `Xgmx` `SETgmx` `HELPgmx`
+
+**Command used for testcase**
+
+Preliminary files are generated according to the [Lysozyme in Water tutorial](http://www.mdtutorials.com/gmx/lysozyme/index.html) of [GROMACS tutorial webpage](http://www.mdtutorials.com/gmx/).
+
+``` console
+~$ Pmdrun -in em.tpr -nd 1 -wt 01:00
+```
+
+**Notes**
+1. The screen output of GROMACS seems not to be human-readable. For the log file of molecular dynamics, please refer to 'md.log' file.  
+2. This module is rarely tested and might lead to unexpected outputs.
+
