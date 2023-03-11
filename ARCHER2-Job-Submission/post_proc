@@ -51,7 +51,7 @@ fi
 
 # Create temporary copy of the script for execution
 
-POSTSCRIPT="Post_script"
+POSTSCRIPT="Post_script_${SLURM_JOB_ID}"
 sed '1,/^#tag_copy/d' $0 > ${JOBTMPDIR}/${POSTSCRIPT}
 
 # Start post-processing
@@ -165,7 +165,7 @@ cd ${OUTDIR}
 if [[ ${move_file} == true ]]; then
     rm -fr ${JOBTMPDIR}
 else
-    rm Job_script Post_script checkfile0 
+    rm Job_script_${SLURM_JOB_ID} Post_script_${SLURM_JOB_ID}
 fi
 
 mv slurm-${SLURM_JOB_ID}.out ${JOBNAME}.log

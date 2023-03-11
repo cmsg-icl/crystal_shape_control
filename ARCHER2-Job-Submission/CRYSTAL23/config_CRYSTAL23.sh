@@ -1,16 +1,16 @@
 #!/bin/bash
 
 function welcome_msg {
-    core_version=`grep 'core' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,22,11))}'`
-    core_date=`grep 'core' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,33,21))}'`
-    core_author=`grep 'core' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,54,21))}'`
-    core_contact=`grep 'core' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,75,31))}'`
-    core_acknolg=`grep 'core' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,106,length($0)))}'`
-    code_version=`grep 'CRYSTAL23' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,22,11))}'`
-    code_date=`grep 'CRYSTAL23' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,33,21))}'`
-    code_author=`grep 'CRYSTAL23' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,54,21))}'`
-    code_contact=`grep 'CRYSTAL23' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,75,31))}'`
-    code_acknolg=`grep 'CRYSTAL23' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,106,length($0)))}'`
+    core_version=`grep 'core' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,22,11))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
+    core_date=`grep 'core' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,33,21))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
+    core_author=`grep 'core' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,54,21))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
+    core_contact=`grep 'core' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,75,31))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
+    core_acknolg=`grep 'core' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,106,length($0)))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
+    code_version=`grep 'CRYSTAL23' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,22,11))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
+    code_date=`grep 'CRYSTAL23' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,33,21))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
+    code_author=`grep 'CRYSTAL23' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,54,21))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
+    code_contact=`grep 'CRYSTAL23' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,75,31))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
+    code_acknolg=`grep 'CRYSTAL23' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,106,length($0)))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
     cat << EOF
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
@@ -41,6 +41,7 @@ EOF
 }
 
 function get_scriptdir {
+    WORK=`echo "/work/${HOME#*/home/}"`
     cat << EOF
 ================================================================================
     Note: all scripts should be placed into the same directory!
@@ -52,7 +53,6 @@ function get_scriptdir {
 EOF
 
     read -p " " SCRIPTDIR
-    SCRIPTDIR=`realpath $(echo ${SCRIPTDIR})`
 
     if [[ -z ${SCRIPTDIR} ]]; then
         SCRIPTDIR=${WORK}/etc/runCRYSTAL
@@ -61,7 +61,8 @@ EOF
     if [[ ${SCRIPTDIR: -1} == '/' ]]; then
         SCRIPTDIR=${SCRIPTDIR%/*}
     fi
-
+    
+	SCRIPTDIR=`realpath $(echo ${SCRIPTDIR})`
     source_dir=`realpath $(dirname $0)`
     if [[ ${source_dir} == ${SCRIPTDIR} ]]; then
         cat << EOF

@@ -519,7 +519,7 @@ EOF
 
     # Substitute SLURM setup variables in template 
 
-    # sed -i "s|\${V_JOBNAME}|${JOBNAME}|g" ${JOBNAME}.${SUB_EXT}
+    sed -i "s|\${V_JOBNAME}|${JOBNAME}|g" ${JOBNAME}.${SUB_EXT}
     sed -i "s|\${V_ND}|${ND}|g" ${JOBNAME}.${SUB_EXT}
     # sed -i "s|\${V_NCPU}|${NCPU}|g" ${JOBNAME}.${SUB_EXT}
     # sed -i "s|\${V_MEM}|${MEM}GB|g" ${JOBNAME}.${SUB_EXT}
@@ -624,7 +624,7 @@ EOF
 		
         # substitute jobname
 
-		COMMAND[$i]=`echo ${cmd} | sed "s/\[job.*\]/${JOBNAME[$i]}/g"`
+		COMMAND[$i]=`echo "${XDIR}/${cmd}" | sed "s/\[job.*\]/${JOBNAME[$i]}/g"`
 
     done
 }
@@ -686,6 +686,18 @@ function get_subinfo_ {
     # Time spared for post processing
 
     TOUT_PER_JOB=`echo $(grep -w -A 1 'TIME_OUT' ${SETFILE} | tail -1)`
+
+	# Budget code
+
+	BUDGET=`echo $(grep -w -A 1 'BUDGET_CODE' ${SETFILE} | tail -1)`
+
+	# QOS
+
+	QOS=`echo $(grep -w -A 1 'QOS' ${SETFILE} | tail -1)`
+
+	# Partition of service
+
+	PARTITION=`echo $(grep -w -A 1 'PARTITION' ${SETFILE} | tail -1)`
 }
 
 # get submission file template and necessary information

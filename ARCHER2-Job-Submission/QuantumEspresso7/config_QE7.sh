@@ -1,16 +1,16 @@
 #!/bin/bash
 
 function welcome_msg {
-    core_version=`grep 'core' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,22,11))}'`
-    core_date=`grep 'core' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,33,21))}'`
-    core_author=`grep 'core' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,54,21))}'`
-    core_contact=`grep 'core' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,75,31))}'`
-    core_acknolg=`grep 'core' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,106,length($0)))}'`
-    code_version=`grep 'Quantum-Espresso7' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,22,11))}'`
-    code_date=`grep 'Quantum-Espresso7' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,33,21))}'`
-    code_author=`grep 'Quantum-Espresso7' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,54,21))}'`
-    code_contact=`grep 'Quantum-Espresso7' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,75,31))}'`
-    code_acknolg=`grep 'Quantum-Espresso7' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,106,length($0)))}'`
+    core_version=`grep 'core' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,22,11))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
+    core_date=`grep 'core' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,33,21))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'` 
+    core_author=`grep 'core' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,54,21))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
+    core_contact=`grep 'core' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,75,31))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
+    core_acknolg=`grep 'core' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,106,length($0)))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
+    code_version=`grep 'Quantum-Espresso7' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,22,11))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
+    code_date=`grep 'Quantum-Espresso7' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,33,21))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
+    code_author=`grep 'Quantum-Espresso7' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,54,21))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
+    code_contact=`grep 'Quantum-Espresso7' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,75,31))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
+    code_acknolg=`grep 'Quantum-Espresso7' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,106,length($0)))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
     cat << EOF
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
@@ -28,11 +28,11 @@ function welcome_msg {
 Quantum-Espresso7 job submission script for ARCHER2 - Setting up
 
 Job submission script installed date : `date`
-Batch system                         :    SLURM
+Batch system                         : SLURM
 Job submission script version        : ${code_version} (${code_date})
 Job submission script author         : ${code_author} (${code_contact})
 Core script version                  : ${core_version} (${core_date})
-Job submission script author         : ${core_author} (${core_contact})
+Core script author                   : ${core_author} (${core_contact})
 
 ${code_acknolg}
 ${core_acknolg}
@@ -52,7 +52,6 @@ function get_scriptdir {
 EOF
 
     read -p " " SCRIPTDIR
-    SCRIPTDIR=`realpath $(echo ${SCRIPTDIR})`
 
     if [[ -z ${SCRIPTDIR} ]]; then
         SCRIPTDIR=${WORK}/etc/runQE
@@ -62,6 +61,7 @@ EOF
         SCRIPTDIR=${SCRIPTDIR%/*}
     fi
 
+	SCRIPTDIR=`realpath $(echo ${SCRIPTDIR})`
     source_dir=`realpath $(dirname $0)`
     if [[ ${source_dir} == ${SCRIPTDIR} ]]; then
         cat << EOF
@@ -244,8 +244,8 @@ function set_settings {
 ----------------------------------------------------------------------------------------
 #!/bin/bash
 #SBATCH --nodes=\${V_ND}
-#SBATCH --ntasks-per-node=\${V_NPROC_PER_NODE}
-#SBATCH --cpus-per-task=\${V_NTHREAD_PER_PROC}
+#SBATCH --ntasks-per-node=\${V_PROC}
+#SBATCH --cpus-per-task=\${V_TREAD}
 #SBATCH --time=\${V_TWT}
 
 # Replace [budget code] below with your full project code
@@ -269,6 +269,9 @@ export FI_MR_CACHE_MAX_COUNT=0
 # Set number of threads and OMP level
 export OMP_NUM_THREADS=\${V_TRED}
 export OMP_PLACES=cores
+
+# Set temporary directory
+export ESPRESSO_TMPDIR=\$(pwd)/\${V_JOBNAME}_\${SLURM_JOB_ID}
 
 # start calculation: command added below by gen_sub
 ----------------------------------------------------------------------------------------
