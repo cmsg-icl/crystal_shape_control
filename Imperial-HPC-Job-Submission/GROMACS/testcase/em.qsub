@@ -1,0 +1,37 @@
+#!/bin/bash  --login
+#PBS -N em
+#PBS -l select=1:ncpus=24:mem=50GB:mpiprocs=24:ompthreads=1:avx2=true
+#PBS -l walltime=0:30:00
+
+echo "PBS Job Report"
+echo "--------------------------------------------"
+echo "  Start Date : $(date)"
+echo "  PBS Job ID : ${PBS_JOBID}"
+echo "  Status"
+qstat -f ${PBS_JOBID}
+echo "--------------------------------------------"
+echo ""
+
+# number of cores per node used
+export NCORES=24
+# number of processes
+export NPROCESSES=24
+
+# Make sure any symbolic links are resolved to absolute path
+export PBS_O_WORKDIR=$(readlink -f ${PBS_O_WORKDIR})
+
+# Set the number of threads
+export OMP_NUM_THREADS=1
+
+# to sync nodes
+cd ${PBS_O_WORKDIR}
+
+# start calculation: command added below by gen_sub
+timeout 27m /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/run_exec -set /rds/general/user/hz1420/home/etc/runGROMACS/settings -in em.tpr -ref  -- 'mpiexec gmx_mpi mdrun -s em.tpr'
+/rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/post_proc -in em.tpr -set /rds/general/user/hz1420/home/etc/runGROMACS/settings
+
+
+if [[ -f ./em.run ]];then
+chmod 755 ./em.run
+./em.run
+fi
