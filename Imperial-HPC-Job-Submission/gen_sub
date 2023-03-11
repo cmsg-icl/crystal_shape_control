@@ -138,8 +138,8 @@ EOF
             echo ${exe} | grep -i ${avail_exe} > /dev/null 2>&1
             if [[ $? -eq 0 ]]; then
                 found_exe=true
-                MPICOMMAND+=("`echo $(awk 'NR=="'${line_exe}'"{printf("%s", substr($0,12,21))}' ${SETFILE})`")
-                COMMAND+=("`echo $(awk 'NR=="'${line_exe}'"{printf("%s", substr($0,33,31))}' ${SETFILE})`")
+                MPICOMMAND+=("`echo $(awk 'NR=="'${line_exe}'"{printf("%s", substr($0,12,61))}' ${SETFILE})`")
+                COMMAND+=("`echo $(awk 'NR=="'${line_exe}'"{printf("%s", substr($0,73,61))}' ${SETFILE})`")
                 break
             fi
             line_exe=`echo "scale=0;${line_exe}+1" | bc`
@@ -515,7 +515,7 @@ EOF
         tot=`echo "scale=0;${thr}*60+${tmn}-${TOUT_PER_JOB}" | bc`
         TOUT+=("${tot}m")
     done
-    TWT="${tthr}:${ttmn}:00"
+    TWT=`echo "$(printf "%02d\n" ${tthr}):$(printf "%02d\n" ${ttmn}):00"`
 
     # Substitute PBS setup variables in template 
 

@@ -142,9 +142,9 @@ exit
 if [[ ! -z ${PBS_NODEFILE} ]]; then
     if [[ -e ${PBS_NODEFILE} ]]; then
         cat << EOF
-PBE NODEFILE Info: Found in ${PBS_NODEFILE}
+PBE NODEFILE Info
 --------------------------------------------
-${PBS_NODEFILE}
+Found in ${PBS_NODEFILE}
 EOF
         PCLIST=`awk '{if ($I != old){printf("%s ",$I);old=$I}}' ${PBS_NODEFILE}`
         for PC in ${PCLIST[@]}; do
