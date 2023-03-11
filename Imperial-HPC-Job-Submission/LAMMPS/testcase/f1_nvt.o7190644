@@ -1,0 +1,178 @@
+PBS Job Report
+--------------------------------------------
+  Start Date : Sat 11 Mar 02:00:24 GMT 2023
+  PBS Job ID : 7190644.pbs
+  Status
+--------------------------------------------
+
+Printed output filename /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/LAMMPS/testcase/f1_nvt.out
+Loading IntelOneAPI-2022.1.2.146...
+
+Modules loaded:
+	compiler
+	compiler-rt
+	icc
+	intel_ippcp_intel64
+	intel_ipp_intel64
+	mkl
+	mpi
+	oclfpga
+	tbb
+
+Loading icc version 2022.0.2
+Loading compiler-rt version 2022.0.2
+Loading intel_ippcp_intel64 version 2021.5.1
+
+For a full Intel(R) Integrated Performance Primitives Cryptography functionality, you should load Intel(R) oneAPI Compiler and Intel(R) oneAPI Threading Building Blocks modules.
+
+Loading intel_ipp_intel64 version 2021.5.2
+
+For a full Intel(R) Integrated Performance Primitives functionality, you should load Intel(R) oneAPI Compiler and Intel(R) oneAPI Threading Building Blocks modules.
+
+Loading mkl version 2022.0.2
+Loading tbb version 2021.5.1
+Loading mpi version 2021.5.1
+Loading oclfpga version 2022.0.2
+Loading compiler version 2022.0.2
+  Load "debugger" to debug DPC++ applications with the gdb-oneapi debugger.
+  Load "dpl" for additional DPC++ APIs: https://github.com/oneapi-src/oneDPL
+
+Loading /rds/general/user/hz1420/home/apps/IntelOneAPI_v2022.1.2/modulefiles/Intel-OneAPI-2022.1.2
+  Loading requirement: compiler-rt/latest icc/latest intel_ippcp_intel64/latest
+    intel_ipp_intel64/latest tbb/latest mkl/latest mpi/latest oclfpga/latest
+    compiler/latest
+MPI command: mpiexec lmp_omp -in f1_nvt.in
+Temporary file stored under the current directory /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/LAMMPS/testcase
+Job Executation Script
+--------------------------------------------
+/rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/LAMMPS/testcase/Job_script
+--------------------------------------------
+
+Running Job Report
+--------------------------------------------
+DATE START : Sat 11 Mar 02:02:35 GMT 2023
+
+PBE NODEFILE Info: Found in /var/spool/PBS/aux/7190644.pbs
+--------------------------------------------
+/var/spool/PBS/aux/7190644.pbs
+  temporary directory on cx3-13-0.cx3.hpc.ic.ac.uk
+--------------------------------------------
+
+Pre-Calc Summary
+--------------------------------------------
+  date:                Sat 11 Mar 02:03:03 GMT 2023
+  hostname:            cx3-13-0.cx3.hpc.ic.ac.uk
+  system:              Linux cx3-13-0.cx3.hpc.ic.ac.uk 4.18.0-348.20.1.el8_5.x86_64 #1 SMP Tue Mar 8 12:56:54 EST 2022 x86_64 x86_64 x86_64 GNU/Linux
+  user:                hz1420
+  input:               /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/LAMMPS/testcase/f1_nvt.in
+  output:              /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/LAMMPS/testcase/f1_nvt.out
+  temporary directory: /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/LAMMPS/testcase
+  executable script:   /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/run_exec
+  executable dir:      /rds/general/user/hz1420/home/apps/lammps_2109/bin
+  mpi + exe command:    mpiexec lmp_omp -in f1_nvt.in
+-------------------------------------------
+
+PBS Job Status
+-------------------------------------------
+  Connection timed out
+qstat: cannot connect to server pbs (errno=110)
+-------------------------------------------
+
+All files are synchonised.
+
+Job Ready to Go
+-------------------------------------------
+  Job name       : f1_nvt
+  ID             : 7190644.pbs
+  Command        : mpiexec lmp_omp -in f1_nvt.in >> /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/LAMMPS/testcase/f1_nvt.out 2>&1
+  Temporary dir  : /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/LAMMPS/testcase
+  List of files  : total 99
+-rw-r-----. 1 hz1420 hpc-nmh 25220 Jan 31 18:32 f1_nvt.data
+-rw-------. 1 hz1420 hpc-nmh   353 Mar 11 02:02 f1_nvt.e7190644
+-rwxr-xr-x. 1 hz1420 hpc-nmh   820 Mar 11 01:14 f1_nvt.in
+-rw-------. 1 hz1420 hpc-nmh  3554 Mar 11 02:05 f1_nvt.o7190644
+-rw-------. 1 hz1420 hpc-nmh  1343 Mar 11 02:05 f1_nvt.out
+-rw-r--r--. 1 hz1420 hpc-nmh  1182 Mar 11 01:59 f1_nvt.qsub
+-rw-r-----. 1 hz1420 hpc-nmh 13270 Jan 31 18:32 f1_nvt.settings
+-rw-------. 1 hz1420 hpc-nmh 11270 Mar 11 02:03 Job_script
+  Input script   :
+# Basic settings
+units          metal
+atom_style     full
+kspace_style   ewald 1e-4
+
+# Geometry
+dimension      3
+boundary       p p p
+read_data      "f1_nvt.data"
+
+# FF coefficients
+include        "f1_nvt.settings"
+pair_modify    mix arithmetic
+
+# Minimization
+thermo_style   custom step temp press etotal epair ebond eangle edihed eimp
+fix            rlx all box/relax tri 0.0
+min_style      cg
+minimize       0. 1e-7 5 50
+write_data     "form1_min.data"
+
+# NVT
+thermo          100
+thermo_style    custom step temp etotal epair emol press vol enthalpy
+dump            2 all custom 100 f1_nvt.lammpstrj id mol type x y z ix iy iz
+restart         1000 f1_nvt-step*.restart
+velocity        all create 100 1000 dist gaussian rot yes mom yes
+fix             1 all nvt temp 100 100 100
+timestep        1
+run             5000
+-------------------------------------------
+
+Entering temporary directory...
+Launching the job...
+
+DATE END   : Sat 11 Mar 02:05:20 GMT 2023
+Script run_exec done.
+--------------------------------------------
+
+Post Processing Report
+--------------------------------------------
+Begining of post processing : Sat 11 Mar 02:05:20 GMT 2023
+List of saved files
+  TEMPORARY            SAVED
+--------------------------------------------
+
+Temporary Directory Disk Info
+--------------------------------------------
+  Temporary directory      : /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/LAMMPS/testcase
+
+  Disk usage (df -h)
+Filesystem      Size  Used Avail Use% Mounted on
+rds              14P   13P  1.5P  90% /rds
+
+  Usage by folders (du -m)
+17	/rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/LAMMPS/testcase
+
+  Detailed file list (ls -l .)
+    see /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/LAMMPS/testcase/*.o7190644.pbs file
+total 16482
+-rw-r-----. 1 hz1420 hpc-nmh 25220 Jan 31 18:32 f1_nvt.data
+-rw-------. 1 hz1420 hpc-nmh   353 Mar 11 02:02 f1_nvt.e7190644
+-rwxr-xr-x. 1 hz1420 hpc-nmh   820 Mar 11 01:14 f1_nvt.in
+-rw-------. 1 hz1420 hpc-nmh 20898 Mar 11 02:05 f1_nvt.lammpstrj
+-rw-------. 1 hz1420 hpc-nmh  6369 Mar 11 02:05 f1_nvt.o7190644
+-rw-------. 1 hz1420 hpc-nmh 16187 Mar 11 02:05 f1_nvt.out
+-rw-r--r--. 1 hz1420 hpc-nmh  1182 Mar 11 01:59 f1_nvt.qsub
+-rw-r-----. 1 hz1420 hpc-nmh 13270 Jan 31 18:32 f1_nvt.settings
+-rw-------. 1 hz1420 hpc-nmh 17231 Mar 11 02:05 form1_min.data
+-rw-------. 1 hz1420 hpc-nmh 11270 Mar 11 02:03 Job_script
+-rw-------. 1 hz1420 hpc-nmh 20611 Mar 11 02:05 log.lammps
+-rw-------. 1 hz1420 hpc-nmh  3977 Mar 11 02:05 Post_script
+--------------------------------------------
+
+Check files across nodes ...
+List of saved files
+  TEMPORARY            SAVED
+End of post processing : Sat 11 Mar 02:05:20 GMT 2023
+Script post_proc done.
+--------------------------------------------

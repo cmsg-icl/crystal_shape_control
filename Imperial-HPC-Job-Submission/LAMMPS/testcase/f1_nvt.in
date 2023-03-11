@@ -1,0 +1,30 @@
+# Basic settings
+units          metal
+atom_style     full
+kspace_style   ewald 1e-4
+
+# Geometry
+dimension      3
+boundary       p p p
+read_data      "f1_nvt.data"
+
+# FF coefficients
+include        "f1_nvt.settings"
+pair_modify    mix arithmetic
+
+# Minimization
+thermo_style   custom step temp press etotal epair ebond eangle edihed eimp
+fix            rlx all box/relax tri 0.0
+min_style      cg
+minimize       0. 1e-7 5 50
+write_data     "form1_min.data"
+
+# NVT
+thermo          100
+thermo_style    custom step temp etotal epair emol press vol enthalpy
+dump            2 all custom 100 f1_nvt.lammpstrj id mol type x y z ix iy iz
+restart         1000 f1_nvt-step*.restart
+velocity        all create 100 1000 dist gaussian rot yes mom yes
+fix             1 all nvt temp 100 100 100
+timestep        1
+run             5000
