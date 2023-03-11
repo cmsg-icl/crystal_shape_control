@@ -164,8 +164,8 @@ For each job submission script, multiple executables can be placed in the same d
 | NAME                | RECOGNIZABLE LENGTH | EXPLANATION                                                               |
 |:--------------------|:-------------------:| :-------------------------------------------------------------------------|
 | LABEL               | 11                  | Alias of MPI+executable combination. Input of `-x` flag. No space allowed |
-| MPI & OPTION        | 21                  | In-line commands of MPI, such as 'mpiexec'                                |
-| EXECUTABLE & OPTION | 31                  | In-line commands of executable, such as 'gulp-mpi < \[jobname\].gin'      |
+| MPI & OPTION        | 61                  | In-line commands of MPI, such as 'mpiexec'                                |
+| EXECUTABLE & OPTION | 61                  | In-line commands of executable, such as 'gulp-mpi < \[jobname\].gin'      |
 | DEFINITION          | Not read            | Definitions for reference                                                 |
 
 **PRE\_CALC, REF\_FILE and POST\_CALC**
