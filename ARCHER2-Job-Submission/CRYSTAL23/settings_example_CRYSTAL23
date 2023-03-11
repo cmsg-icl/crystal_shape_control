@@ -1,0 +1,159 @@
+# Job submission scripts
+SUBMISSION_EXT
+.slurm
+
+NCPU_PER_NODE
+128
+
+MEM_PER_NODE
+
+NTHREAD_PER_PROC
+1
+
+NGPU_PER_NODE
+
+GPU_TYPE
+
+BUDGET_CODE
+e89-ic_c
+
+QOS
+standard
+
+PARTITION
+standard
+
+TIME_OUT
+3
+
+JOB_TMPDIR
+default
+
+
+# Executables
+EXEDIR
+ module load other-software crystal/23-1.0.1
+
+MPIDIR
+ module load gcc/10.2.0 PrgEnv-gnu/8.0.0 cray-mpich/8.1.9 cray-libsci/21.08.1.2 craype/2.7.10
+
+EXE_TABLE                                                               [jobname]
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+LABEL      MPI & OPTION                                                 EXECUTABLE & OPTION                                          DEFINITION
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+pcrys      srun --hint=nomultithread --distribution=block:block         Pcrystal                                                     Parallel crystal calculation
+pcrysomp   srun --hint=nomultithread --distribution=block:block         PcrystalOMP                                                  Parallel crystal calculation - OMP
+mppcrys    srun --hint=nomultithread --distribution=block:block         MPPcrystal                                                   Massive parallel crystal calculation
+mppcrysomp srun --hint=nomultithread --distribution=block:block         MPPcrystalOMP                                                Massive parallel crystal calculation - OMP
+pprop      srun --hint=nomultithread --distribution=block:block         Pproperties                                                  Parallel properties calculation
+mppprop    srun --hint=nomultithread --distribution=block:block         MPPproperties                                                Massive parallel properties calculation
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+# file formats table
+PRE_CALC    [jobname]    [jobname]/[refname]
+-----------------------------------------------------------------------------------
+SAVED                TEMPORARY            DEFINITION
+-----------------------------------------------------------------------------------
+[jobname].d12        INPUT                Crystal input file
+[jobname].d3         INPUT                Properties input file
+[jobname].gui        fort.34              Geometry input
+[jobname].POINTCHG   POINTCHG.INP         Dummy atoms with 0 mass and given charge
+-----------------------------------------------------------------------------------
+
+REF_FILE    [refname]    [jobname]/[refname]
+-----------------------------------------------------------------------------------
+KEYWORD              TEMPORATY            DEFINITION
+-----------------------------------------------------------------------------------
+[refname].f9         fort.20              Last step wavefunction - crystal input
+[refname].f9         fort.9               Last step wavefunction - properties input
+[refname].OPTINFO    OPTINFO.DAT          Optimisation restart data
+[refname].FREQINFO   FREQINFO.DAT         Frequency restart data
+[refname].BORN       BORN.DAT             Born tensor
+[refname].TENS_RAMAN TENS_RAMAN.DAT       Raman tensor
+[refname].f13        fort.13              Binary reducible density matrix
+[refname].f28        fort.28              Binary IR intensity restart data
+[refname].f80        fort.81              Wannier funcion - input
+[refname].f31        fort.32              Derivative of density matrix
+-----------------------------------------------------------------------------------
+
+POST_CALC   [jobname]    [jobname]
+-----------------------------------------------------------------------------------
+SAVED                TEMPORARY            DEFINITION
+-----------------------------------------------------------------------------------
+[jobname].ERROR      fort.87              Error report
+[jobname].gui        fort.34              Geometry, CRYSTAL fort34 format
+[jobname].xyz        fort.33              Geometry, non-periodic xyz format
+[jobname].cif        GEOMETRY.CIF         Geometry, cif format (CIFPRT/CIFPRTSYM)
+[jobname].FINDSYM    FINDSYM.DAT          Geometry, for FINDSYM
+[jobname].GAUSSIAN   GAUSSIAN.DAT         Geometry, for Gaussian98/03
+[jobname].STRUC      STRUC.INCOOR         Geometry, STRUC.INCOOR format
+[jobname].f9         fort.9               Last step wavefunction - crystal output
+[jobname].f98        fort.98              Formatted wavefunction
+[jobname].PPAN       PPAN.DAT             Mulliken population
+[jobname].SCFLOG     SCFOUT.LOG           SCF output per step
+[jobname].OPTINFO    OPTINFO.DAT          Optimisation restart data
+[jobname].HESSOPT    HESSOPT.DAT          Hessian matrix per optimisation step
+[jobname].optstory/  opt*                 Optimised geometry per step 
+[jobname].FREQINFO   FREQINFO.DAT         Frequency restart data
+[jobname].f13        fort.13              Binary reducible density matrix
+[jobname].f28        fort.28              Binary IR intensity restart data
+[jobname].f80        fort.80              Wannier funcion - output
+[jobname].scanmode/  SCAN*                Displaced geometry along scanned mode
+[jobname].FREQINFO   FREQINFO.DAT         Frequency restart data
+[jobname].f25        fort.25              Data in Crgra2006 format
+[jobname].PHONBANDS  PHONBANDS.DAT        Phonon bands xmgrace format
+[jobname].IRDIEL     IRDIEL.DAT           IR dielectric function
+[jobname].IRREFR     IRREFR.DAT           IR refractive index
+[jobname].IRSPEC     IRSPEC.DAT           IR absorbance and reflectance
+[jobname].BORN       BORN.DAT             Born tensor
+[jobname].RAMSPEC    RAMSPEC.DAT          Raman spectra
+[jobname].TENS_RAMAN TENS_RAMAN.DAT       Raman tensor
+[jobname].EOSINFO    EOSINFO.DAT          QHA and equation of states information
+[jobname].f31        fort.31              Derivative of density matrix / Proeprties 3D grid data
+[jobname].GRED       GRED.DAT             Real space information for cryapi_inp
+[jobname].KRED       KRED.DAT             K space information for cryapi_inp
+[jobname].DIEL       DIEL.DAT             Dielectric constants
+[jobname].BAND       BAND.DAT             Band xmgrace format 
+[jobname].DOSS       DOSS.DAT             DOS xmgrace format
+[jobname]_CHG.CUBE   DENS_CUBE.DAT        3D charge density Gaussian CUBE format
+[jobname].RHOLINE    RHOLINE.DAT          1D charge density and gradient
+[jobname]_SPIN.CUBE  SPIN_CUBE.DAT        3D spin density CUBE format
+[jobname]_POT.CUBE   POT_CUBE.DAT         3D electrostatic potential CUBE format  
+[jobname].POTC       POTC.DAT             Electrostatic potential and derivatives
+-----------------------------------------------------------------------------------
+                         
+
+JOB_SUBMISSION_TEMPLATE
+----------------------------------------------------------------------------------------
+#!/bin/bash
+#SBATCH --nodes=${V_ND}
+#SBATCH --ntasks-per-node=${V_PROC}
+#SBATCH --cpus-per-task=${V_TRED}
+#SBATCH --time=${V_TWT}
+
+# Replace [budget code] below with your full project code
+#SBATCH --account=${V_BUDGET}
+#SBATCH --partition=${V_PARTITION}
+#SBATCH --qos=${V_QOS}
+#SBATCH --export=none
+
+echo "SLURM Job Report"
+echo "--------------------------------------------"
+echo "  Start Date : $(date)"
+echo "  SLURM Job ID : ${SLURM_JOB_ID}"
+echo "  Status"
+squeue -j ${SLURM_JOB_ID} 2>&1
+echo "--------------------------------------------"
+echo ""
+
+# Address the memory leak
+export FI_MR_CACHE_MAX_COUNT=0
+
+# Set number of threads and OMP level
+export OMP_NUM_THREADS=${V_TRED}
+export OMP_PLACES=cores
+
+# start calculation: command added below by gen_sub
+----------------------------------------------------------------------------------------
+
