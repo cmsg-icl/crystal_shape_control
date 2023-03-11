@@ -19,11 +19,11 @@ GROMACS2021 Job Submitter for Imperial HPC - Configuration
 
 Installation date     : `date`
 Version               : v1.0
-IC-HPC script version : v1.3 
+IC-HPC script version : v1.5
 Batch system          : PBS
 
 Configured by Spica-Vir, Mar.04, 23, ICL, spica.h.zhou@gmail.com
-Based on IC-HPC script released by Spica-Vir, Mar.01, 23, ICL, spica.h.zhou@gmail.com
+Based on IC-HPC script released by Spica-Vir, Mar.11, 23, ICL, spica.h.zhou@gmail.com
 
 Special thanks to K. Tallat Kelpsa, G.Mallia and N.M.Harrison, 
 
@@ -37,22 +37,22 @@ function get_scriptdir {
     Please specify your installation path.
 
     Default Option:
-    ${HOME}/runGROMACS/
+    ${HOME}/etc/runGROMACS/
 
 EOF
 
     read -p " " SCRIPTDIR
-    SCRIPTDIR=`echo ${SCRIPTDIR}`
+    SCRIPTDIR=`realpath $(echo ${SCRIPTDIR})`
 
     if [[ -z ${SCRIPTDIR} ]]; then
-        SCRIPTDIR=${HOME}/runGROMACS/
+        SCRIPTDIR=${HOME}/etc/runGROMACS/
     fi
 
     if [[ ${SCRIPTDIR: -1} == '/' ]]; then
         SCRIPTDIR=${SCRIPTDIR%/*}
     fi
 
-    source_dir=`dirname $0`
+    source_dir=`realpath $(dirname $0)`
     if [[ ${source_dir} == ${SCRIPTDIR} ]]; then
         cat << EOF
 --------------------------------------------------------------------------------
@@ -66,7 +66,7 @@ EOF
         if [[ $? == 0 ]]; then
             cat << EOF
 --------------------------------------------------------------------------------
-    Warning: Directory exists - currnet folder will be removed.
+    Warning: Directory exists - current folder will be removed.
 
 EOF
             rm -r ${SCRIPTDIR}
@@ -184,7 +184,7 @@ function set_settings {
 
     LINE_EXE=`grep -nw 'EXE_TABLE' ${SETFILE}`
     LINE_EXE=`echo "scale=0;${LINE_EXE%:*}+3" | bc`
-    sed -i "${LINE_EXE}a\mdrun      mpiexec              mdrun -s [jobname].tpr         Parallel GROMACS MD calculation" ${SETFILE}
+    sed -i "${LINE_EXE}a\mdrun      mpiexec              gmx_mpi mdrun -s [job].tpr     Parallel GROMACS MD calculation" ${SETFILE}
 
     # # Input file table - calculation performed in current directory
 
@@ -265,13 +265,13 @@ function set_commands {
     echo "alias Pmdrun='${CTRLDIR}/gen_sub -x mdrun -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
     echo "alias Xgmx='${CTRLDIR}/gen_sub -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
     echo "alias SETgmx='cat ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "alias HELPgmx='source $(dirname $0)/run_help; print_ALIAS_HOWTO_; print_GENSUB_HOWTO_'" >> ${HOME}/.bashrc
+    echo "alias HELPgmx='source ${CONFIGDIR}/run_help; print_ALIAS_HOWTO_; print_GENSUB_HOWTO_'" >> ${HOME}/.bashrc
     # echo "chmod 777 ${SCRIPTDIR}/gen_sub" >> ${HOME}/.bashrc
     # echo "chmod 777 ${SCRIPTDIR}/run_exec" >> ${HOME}/.bashrc
     # echo "chmod 777 ${SCRIPTDIR}/post_proc" >> ${HOME}/.bashrc 
     echo "# <<< finish GROMACS job submitter settings <<<" >> ${HOME}/.bashrc
 
-    source $(dirname $0)/run_help; print_ALIAS_HOWTO_
+    source ${CONFIGDIR}/run_help; print_ALIAS_HOWTO_
 }
 
 # Main I/O function
@@ -280,7 +280,9 @@ function set_commands {
 ## In the current implementation, ${SCRIPTDIR} only has 1 file, i.e., user-defined settings file
 ## Executable scripts are now centralized and shared in ${CTRLDIR}
 ## For executable scripts, ${SCRIPTDIR} refer to their own directory. ${SETTINGS} refers to local settings file. 
-CTRLDIR=$(dirname $0)/../
+CONFIGDIR=`realpath $(dirname $0)`
+CTRLDIR=`realpath ${CONFIGDIR}/../`
+
 welcome_msg
 get_scriptdir
 copy_scripts

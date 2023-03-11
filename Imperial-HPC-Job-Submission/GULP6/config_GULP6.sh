@@ -19,11 +19,11 @@ GULP 6.1.2 Job Submitter for Imperial HPC - Configuration
 
 Installation date     : `date`
 Version               : v0.4
-IC-HPC script version : v1.3 
+IC-HPC script version : v1.5
 Batch system          : PBS
 
 Configured by Spica-Vir, Feb.28, 23, ICL, spica.h.zhou@gmail.com
-Based on IC-HPC script released by Spica-Vir, Mar.01, 23, ICL, spica.h.zhou@gmail.com
+Based on IC-HPC script released by Spica-Vir, Mar.11, 23, ICL, spica.h.zhou@gmail.com
 
 Special thanks to K. Tallat-Kelpsa, G.Mallia, N.M.Harrison
 
@@ -42,7 +42,7 @@ function get_scriptdir {
 EOF
 
     read -p " " SCRIPTDIR
-    SCRIPTDIR=`echo ${SCRIPTDIR}`
+    SCRIPTDIR=`realpath $(echo ${SCRIPTDIR})`
 
     if [[ -z ${SCRIPTDIR} ]]; then
         SCRIPTDIR=${HOME}/etc/runGULP6
@@ -52,7 +52,7 @@ EOF
         SCRIPTDIR=${SCRIPTDIR%/*}
     fi
 
-    source_dir=`dirname $0`
+    source_dir=`realpath $(dirname $0)`
     if [[ ${source_dir} == ${SCRIPTDIR} ]]; then
         cat << EOF
 --------------------------------------------------------------------------------
@@ -66,7 +66,7 @@ EOF
         if [[ $? == 0 ]]; then
             cat << EOF
 --------------------------------------------------------------------------------
-    Warning: Directory exists - currnet folder will be removed.
+    Warning: Directory exists - current folder will be removed.
 
 EOF
             rm -r ${SCRIPTDIR}
@@ -267,14 +267,14 @@ function set_commands {
     echo "alias Pglp6='${CTRLDIR}/gen_sub -x pgulp -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
     echo "alias Xglp6='${CTRLDIR}/gen_sub -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
     echo "alias SETglp6='cat ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "alias HELPglp6='source $(dirname $0)/run_help; print_ALIAS_HOWTO_; print_GENSUB_HOWTO_'" >> ${HOME}/.bashrc
+    echo "alias HELPglp6='source ${CONFIGDIR}/run_help; print_ALIAS_HOWTO_; print_GENSUB_HOWTO_'" >> ${HOME}/.bashrc
     # echo "chmod 777 $(dirname $0)/gen_sub" >> ${HOME}/.bashrc
     # echo "chmod 777 $(dirname $0)/run_exec" >> ${HOME}/.bashrc
     # echo "chmod 777 $(dirname $0)/post_proc" >> ${HOME}/.bashrc 
     # echo "chmod 777 $(dirname $0)/run_help" >> ${HOME}/.bashrc 
     echo "# <<< finish GULP6 job submitter settings <<<" >> ${HOME}/.bashrc
     
-    source $(dirname $0)/run_help; print_ALIAS_HOWTO_
+    source ${CONFIGDIR}/run_help; print_ALIAS_HOWTO_
 }
 
 # Main I/O function
@@ -283,7 +283,9 @@ function set_commands {
 ## In the current implementation, ${SCRIPTDIR} only has 1 file, i.e., user-defined settings file
 ## Executable scripts are now centralized and shared in ${CTRLDIR}
 ## For executable scripts, ${SCRIPTDIR} refer to their own directory. ${SETTINGS} refers to local settings file. 
-CTRLDIR=$(dirname $0)/../
+CONFIGDIR=`realpath $(dirname $0)`
+CTRLDIR=`realpath ${CONFIGDIR}/../`
+
 welcome_msg
 get_scriptdir
 copy_scripts
