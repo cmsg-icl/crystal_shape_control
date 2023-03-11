@@ -1,0 +1,9 @@
+VERSION_INFO
+-----------------------------------------------------------------------------------------------------------------------------------
+CODE                 VERSION    DATE                 AUTHOR               CONTACT                        ACKNOWLEDGEMENT
+-----------------------------------------------------------------------------------------------------------------------------------
+core                 v1.0       Mar.11, 23           Spica-Vir            ICL, spica.h.zhou@gmail.com    
+CRYSTAL23            v1.0       Mar.11, 23           Spica-Vir            ICL, spica.h.zhou@gmail.com    
+CRYSTAL17            v1.0       Mar.11, 23           Spica-Vir            ICL, spica.h.zhou@gmail.com   
+Quantum-Espresso7    v1.0       Mar.11, 23           Spica-Vir            ICL, spica.h.zhou@gmail.com
+-----------------------------------------------------------------------------------------------------------------------------------
