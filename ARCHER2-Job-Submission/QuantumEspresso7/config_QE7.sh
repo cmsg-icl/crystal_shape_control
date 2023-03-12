@@ -47,14 +47,14 @@ function get_scriptdir {
     Please specify your installation path.
 
     Default Option
-    ${WORK}/etc/runQE
+    ${WORK}/etc/runQE7
 
 EOF
 
     read -p " " SCRIPTDIR
 
     if [[ -z ${SCRIPTDIR} ]]; then
-        SCRIPTDIR=${WORK}/etc/runQE
+        SCRIPTDIR=${WORK}/etc/runQE7
     fi
 
     if [[ ${SCRIPTDIR: -1} == '/' ]]; then

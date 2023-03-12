@@ -6,11 +6,11 @@ function welcome_msg {
     core_author=`grep 'core' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,54,21))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
     core_contact=`grep 'core' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,75,31))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
     core_acknolg=`grep 'core' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,106,length($0)))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
-    code_version=`grep 'CRYSTAL23' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,22,11))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
-    code_date=`grep 'CRYSTAL23' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,33,21))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
-    code_author=`grep 'CRYSTAL23' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,54,21))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
-    code_contact=`grep 'CRYSTAL23' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,75,31))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
-    code_acknolg=`grep 'CRYSTAL23' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,106,length($0)))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
+    code_version=`grep 'CRYSTAL17' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,22,11))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
+    code_date=`grep 'CRYSTAL17' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,33,21))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
+    code_author=`grep 'CRYSTAL17' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,54,21))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
+    code_contact=`grep 'CRYSTAL17' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,75,31))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
+    code_acknolg=`grep 'CRYSTAL17' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,106,length($0)))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
     cat << EOF
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
@@ -25,7 +25,7 @@ function welcome_msg {
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
-CRYSTAL23 job submission script for ARCHER2 - Setting up
+CRYSTAL17 job submission script for ARCHER2 - Setting up
 
 Job submission script installed date : `date`
 Batch system                         : SLURM
@@ -48,14 +48,14 @@ function get_scriptdir {
     Please specify your installation path.
 
     Default Option
-    ${WORK}/etc/runCRYSTAL23
+    ${WORK}/etc/runCRYSTAL17
 
 EOF
 
     read -p " " SCRIPTDIR
 
     if [[ -z ${SCRIPTDIR} ]]; then
-        SCRIPTDIR=${WORK}/etc/runCRYSTAL23
+        SCRIPTDIR=${WORK}/etc/runCRYSTAL17
     fi
 
     if [[ ${SCRIPTDIR: -1} == '/' ]]; then
@@ -112,7 +112,7 @@ function set_exe {
     or the command to load CRYSTAL modules
 
     Default Option
-    crystal/23-1.0.1 (Available module)
+    crystal/17-1.0.2 (Available module)
 
 EOF
     
@@ -120,7 +120,7 @@ EOF
     EXEDIR=`echo ${EXEDIR}`
 
     if [[ -z ${EXEDIR} ]]; then
-        EXEDIR='module load other-software crystal/23-1.0.1'
+        EXEDIR='module load other-software crystal/17-1.0.2'
     fi
 
     if [[ ! -d ${EXEDIR} && (${EXEDIR} != *'module load'*) ]]; then
@@ -151,7 +151,7 @@ function set_mpi {
     Please specify the directory of MPI executables or mpi modules
 
     Default Option
-    gcc/10.2.0 PrgEnv-gnu/8.0.0 cray-mpich/8.1.9 cray-libsci/21.08.1.2 craype/2.7.10
+    PrgEnv-cray/8.0.0 cray-mpich/8.1.4 cray-libsci/21.04.1.1 cce/11.0.4
 
 EOF
     
@@ -159,7 +159,7 @@ EOF
     MPIDIR=`echo ${MPIDIR}`
 
     if [[ -z ${MPIDIR} ]]; then
-        MPIDIR='module load gcc/10.2.0 PrgEnv-gnu/8.0.0 cray-mpich/8.1.9 cray-libsci/21.08.1.2 craype/2.7.10'
+        MPIDIR='module load PrgEnv-cray/8.0.0 cray-mpich/8.1.4 cray-libsci/21.04.1.1 cce/11.0.4'
     fi
 
     if [[ ! -d ${EXEDIR} && (${EXEDIR} != *'module load'*) ]]; then
@@ -215,11 +215,8 @@ function set_settings {
 
     LINE_EXE=`grep -nw 'EXE_TABLE' ${SETFILE}`
     LINE_EXE=`echo "scale=0;${LINE_EXE%:*}+3" | bc`
-    sed -i "${LINE_EXE}a\mppprop    srun --hint=nomultithread --distribution=block:block         MPPproperties                                                Massive parallel properties calculation" ${SETFILE}
     sed -i "${LINE_EXE}a\pprop      srun --hint=nomultithread --distribution=block:block         Pproperties                                                  Parallel properties calculation" ${SETFILE}
-    sed -i "${LINE_EXE}a\mppcrysomp srun --hint=nomultithread --distribution=block:block         MPPcrystalOMP                                                Massive parallel crystal calculation - OMP" ${SETFILE}
     sed -i "${LINE_EXE}a\mppcrys    srun --hint=nomultithread --distribution=block:block         MPPcrystal                                                   Massive parallel crystal calculation" ${SETFILE}
-    sed -i "${LINE_EXE}a\pcrysomp   srun --hint=nomultithread --distribution=block:block         PcrystalOMP                                                  Parallel crystal calculation - OMP" ${SETFILE}
     sed -i "${LINE_EXE}a\pcrys      srun --hint=nomultithread --distribution=block:block         Pcrystal                                                     Parallel crystal calculation" ${SETFILE}
 
     # Input file table
@@ -337,8 +334,8 @@ EOF
 # Configure user alias
 
 function set_commands {
-    bgline=`grep -nw "# >>> begin CRYSTAL23 job submitter settings >>>" ${HOME}/.bashrc`
-    edline=`grep -nw "# <<< finish CRYSTAL23 job submitter settings <<<" ${HOME}/.bashrc`
+    bgline=`grep -nw "# >>> begin CRYSTAL17 job submitter settings >>>" ${HOME}/.bashrc`
+    edline=`grep -nw "# <<< finish CRYSTAL17 job submitter settings <<<" ${HOME}/.bashrc`
 
     if [[ ! -z ${bgline} && ! -z ${edline} ]]; then
         bgline=${bgline%%:*}
@@ -346,19 +343,16 @@ function set_commands {
         sed -i "${bgline},${edline}d" ${HOME}/.bashrc
     fi
 
-    echo "# >>> begin CRYSTAL23 job submitter settings >>>" >> ${HOME}/.bashrc
-    echo "alias Pcrys23='${CTRLDIR}/gen_sub -x pcrys -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "alias OPcrys23='${CTRLDIR}/gen_sub -x pcrysomp -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "alias MPPcrys23='${CTRLDIR}/gen_sub -x mppcrys -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "alias OMPPcrys23='${CTRLDIR}/gen_sub -x mppcrysomp -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "alias Pprop23='${CTRLDIR}/gen_sub -x pprop -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "alias MPPprop23='${CTRLDIR}/gen_sub -x mppprop -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "alias Xcrys23='${CTRLDIR}/gen_sub -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "alias SETcrys23='cat ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "alias HELPcrys23='source ${CONFIGDIR}/run_help; print_ALIAS_HOWTO_; print_GENSUB_HOWTO_'" >> ${HOME}/.bashrc
+    echo "# >>> begin CRYSTAL17 job submitter settings >>>" >> ${HOME}/.bashrc
+    echo "alias Pcrys17='${CTRLDIR}/gen_sub -x pcrys -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
+    echo "alias MPPcrys17='${CTRLDIR}/gen_sub -x mppcrys -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
+    echo "alias Pprop17='${CTRLDIR}/gen_sub -x pprop -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
+    echo "alias Xcrys17='${CTRLDIR}/gen_sub -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
+    echo "alias SETcrys17='cat ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
+    echo "alias HELPcrys17='source ${CONFIGDIR}/run_help; print_ALIAS_HOWTO_; print_GENSUB_HOWTO_'" >> ${HOME}/.bashrc
     echo "chmod -R 'u+r+w+x' ${CTRLDIR}" >> ${HOME}/.bashrc
     echo "chmod 'u+r+w+x' ${CONFIGDIR}/run_help" >> ${HOME}/.bashrc
-    echo "# <<< finish CRYSTAL23 job submitter settings <<<" >> ${HOME}/.bashrc
+    echo "# <<< finish CRYSTAL17 job submitter settings <<<" >> ${HOME}/.bashrc
 
     source ${CONFIGDIR}/run_help; print_ALIAS_HOWTO_
 }
