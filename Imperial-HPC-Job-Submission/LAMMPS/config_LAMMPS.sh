@@ -52,7 +52,6 @@ function get_scriptdir {
 EOF
 
     read -p " " SCRIPTDIR
-    SCRIPTDIR=`realpath $(echo ${SCRIPTDIR})`
 
     if [[ -z ${SCRIPTDIR} ]]; then
         SCRIPTDIR=${HOME}/etc/runLAMMPS/
@@ -61,7 +60,8 @@ EOF
     if [[ ${SCRIPTDIR: -1} == '/' ]]; then
         SCRIPTDIR=${SCRIPTDIR%/*}
     fi
-
+    
+    SCRIPTDIR=`realpath $(echo ${SCRIPTDIR})`
     source_dir=`realpath $(dirname $0)`
     if [[ ${source_dir} == ${SCRIPTDIR} ]]; then
         cat << EOF
@@ -182,7 +182,7 @@ function set_settings {
     sed -i "/SUBMISSION_EXT/a .qsub" ${SETFILE}
     sed -i "/NCPU_PER_NODE/a 24" ${SETFILE}
     sed -i "/MEM_PER_NODE/a 50" ${SETFILE}
-    sed -i "/N_THREAD/a 1" ${SETFILE}
+    sed -i "/NTHREAD_PER_PROC/a 1" ${SETFILE}
     sed -i "/NGPU_PER_NODE/a 0" ${SETFILE}
     sed -i "/GPU_TYPE/a RTX6000" ${SETFILE}
     sed -i "/TIME_OUT/a 3" ${SETFILE}
@@ -190,12 +190,12 @@ function set_settings {
     sed -i "/EXEDIR/a ${EXEDIR}" ${SETFILE}
     sed -i "/MPIDIR/a ${MPIDIR}" ${SETFILE}
 
-    # Executable tabel
+    # Executable table
 
     LINE_EXE=`grep -nw 'EXE_TABLE' ${SETFILE}`
     LINE_EXE=`echo "scale=0;${LINE_EXE%:*}+3" | bc`
-    sed -i "${LINE_EXE}a\slmp                            lmp_omp -in [job].in           Serial lammps with OMP" ${SETFILE}
-    sed -i "${LINE_EXE}a\plmp       mpiexec              lmp_omp -in [job].in           Parallel lammps" ${SETFILE}
+    sed -i "${LINE_EXE}a\slmp                                                                    lmp_omp -in [job].in                                         Serial lammps with OMP" ${SETFILE}
+    sed -i "${LINE_EXE}a\plmp       mpiexec                                                      lmp_omp -in [job].in                                         Parallel lammps" ${SETFILE}
 
     # # Input file table - calculation performed in current directory
 

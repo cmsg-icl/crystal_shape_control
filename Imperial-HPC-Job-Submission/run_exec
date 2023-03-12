@@ -106,7 +106,7 @@ fi
 
 # Create temporary copy of the script for execution
 
-SCRIPT="Job_script"
+SCRIPT="Job_script_${PBS_JOBID%.*}"
 sed '1,/^#tag_copy/d' $0 > ${JOBTMPDIR}/${SCRIPT}
 
 # Execute file 

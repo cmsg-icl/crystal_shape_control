@@ -660,9 +660,9 @@ function get_subinfo_ {
     MEM=${MEM%G*}
     MEM=${MEM%g*}
 
-    # threads per node
+    # threads per process
 
-    TRED=`echo $(grep -w -A 1 'N_THREAD' ${SETFILE} | tail -1)`
+    TRED=`echo $(grep -w -A 1 'NTHREAD_PER_PROC' ${SETFILE} | tail -1)`
     
     # processes per node = NCPU/TRED, multi-threading in 1 CPU is not allowed.
     

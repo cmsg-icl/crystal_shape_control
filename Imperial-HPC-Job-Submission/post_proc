@@ -51,7 +51,7 @@ fi
 
 # Create temporary copy of the script for execution
 
-POSTSCRIPT="Post_script"
+POSTSCRIPT="Post_script_${PBS_JOBID%.*}"
 sed '1,/^#tag_copy/d' $0 > ${JOBTMPDIR}/${POSTSCRIPT}
 
 # Start post-processing
@@ -172,7 +172,7 @@ OUTPUT=${OUTPUT}
 JOBTMPDIR=${JOBTMPDIR}
 cd  ${JOBTMPDIR}
 EOF
-sed '1,/^#tag_s/d;/^#tag_e/,$d'  $0 >> ${JOBTMPDIR}/checkfile0
+sed '1,/^#tag_s/d;/^#tag_e/,$d'  $0 >> ${JOBTMPDIR}/checkfile0_${PBS_JOBID%.*}
 chmod 755 ${JOBTMPDIR}/checkfile0
 if [[ ! -z ${PBS_NODEFILE} ]]; then
     echo "Check files across nodes ..."
@@ -198,6 +198,6 @@ cd ${OUTDIR}
 if [[ ${move_file} == true ]]; then
     rm -fr ${JOBTMPDIR}
 else
-    rm Job_script Post_script checkfile0 
+    rm Job_script_${PBS_JOBID%.*} Post_script_${PBS_JOBID%.*} checkfile0_${PBS_JOBID%.*}
 fi
 

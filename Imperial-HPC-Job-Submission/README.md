@@ -45,7 +45,7 @@ Parameters are defined in local 'settings' file. By default it is in `${HOME}/et
 | SUBMISSION\_EXT           | .qsub           | The extension of job submission script                                |
 | NCPU\_PER\_NODE           | 24              | Number of processors per node                                         |
 | MEM\_PER\_NODE            | 50              | Unit: GB. Requested memory per node                                   |
-| N\_THREAD                 | 1               | Number of threads. Multi-threading within 1 CPU is prohibited         |
+| NTHREAD\_PER\_PROC        | 1               | Number of threads. Multi-threading within 1 CPU is prohibited         |
 | NGPU\_PER\_NODE           | 0               | Number of GPUs per node                                               |
 | GPU\_TYPE                 | RTX6000         | The default type of GPU                                               |
 | BUDGET\_CODE              | -               | For ARCHER2. Not used                                                 |
@@ -108,7 +108,7 @@ Error and warning messages (that should be printed on screen) from PBS system an
 
 ### When a job terminates
 
-There are 4 probable occasions of job termination. If an ephemeral directory is defined, i.e., 'JOB_TMPDIR' in 'settings' is not 'nodir', temporary files generated during calculation might be either in the output directory or in the ephemeral directory.
+There are 4 probable occasions of job termination. If an ephemeral directory is defined, i.e., 'JOB\_TMPDIR' in 'settings' is not 'nodir', temporary files generated during calculation might be either in the output directory or in the ephemeral directory.
 
 1. For normal termination, all the non-empty files are kept in the output directory, with 'SAVED' names. The ephemeral directory will be removed.  
 2. If the job is terminated due to exceeding walltime, same as normal termination.  
@@ -204,7 +204,8 @@ Scripts in the main folder, i.e., `gen_sub`, `run_exec`, `post_proc` and `settin
 `gen_sub` - Process the options in command line, execute necessary checks (file existence, walltime and node format) and generate the qsub file.  
 `run_exec` - Move and rename input files from the home directory to the ephemeral directory, sync nodes and launch (usually) parallel jobs.  
 `post_proc` - Save output files to the home directory and remove the ephemeral directory.  
-`settings_template` - A formatted empty list of keywords. It will be configured when running configure scripts such as `config_CRYSTAL17.sh`.
+`settings_template` - A formatted empty list of keywords. It will be configured when running configure scripts such as `config_CRYSTAL17.sh`.  
+`version_control.txt` - Information of version numbers and authorship.
 
 In the sub-folders with specific names of simulation codes. Taking CRYSTAL17 as the example, the configuration file is `config_CRYSTAL17.sh`, which is called during installation. The `run_help` script (a rather easy one) is launched by `HELPcrys17` command. The `settings_example_CRYSTAL17` gives an example of configured settings file and the `testcase` directory contains an example run on IC-CX1.
 
@@ -216,7 +217,7 @@ The basic principle of this job submission script is illustrated in the figure b
 
 Configurations scripts `config_CODE.sh` and help information `run_help` (a rather simple one) are code-specific so are stored separately in sub-folders with code names. Typically the core sriptes `gen_sub` `run_exec` and `post_proc` do not need revision unless bug is identified. Examples (`config_example_CRYSTAL17.sh` and `run_help_example_CRYSTAL17`) are placed in the main directory for illustrating proposes. Lines need modification are marked with comment lines `#---- BEGIN_USER ----#`, `#---- END_USER ----#`. Several considerations suggested:
 
-1. Title line and version number  
+1. Title line and version number, which should be provided in a separate file [version\_control.txt](https://github.com/cmsg-icl/crystal_shape_control/tree/main/Imperial-HPC-Job-Submission/version_control.txt), which has clear instructions for reference.  
 3. Script directory: The default directory  
 4. Executable directory: The default executable directory or `module load` command  
 5. MPI directory: The default executable directory or `module load` command   
@@ -280,7 +281,7 @@ All executables are compiled with multi-threading.
 | LABEL   | ACTUAL IN-LINE COMMAND |
 |:-------:|:-----------------------|
 | pcrys   | mpiexec Pcrystal       | 
-| mppcrys | mpiexec MPPcrystal (Currently unavailable) |
+| mppcrys | mpiexec MPPcrystal     |
 | pporp   | mpiexec Pproperties    |
 | scrys   | crystal < INPUT        |
 | sprop   | properties < INPUT     |
