@@ -16,7 +16,7 @@ Here the configuration of 'CRYSTAL17' is used as the example.
 |:-----------|:---------------------------------------------:| :--------------------------------------------------------|
 | Pcrys17    | -in -nd -wt -ref(Optional)                    | Run parallel CRYSTAL17 executable                        |
 | MPPcrys17  | -in -nd -wt -ref(Optional)                    | Run massive parallel CRYSTAL17 executable                |
-| Scrys17    | -in -nd -wt -ref(Optional)                    | Run sequential CRYSTAL17 executable                      |
+| Scrys17    | -in -nd -wt -ref(Optional)                    | Run sequential CRYSTAL17 executable (for illustration, not implemented) |
 | Xcrys17    | -x -in -nd -wt -ref(Optional) -name(Optional) | Run user-defined multiple jobs (see advanced section)    |
 | SETcrys17  | No flag                                       | Print the local (user-defined) 'settings' file on screen |
 | HELPcrys17 | No flag                                       | Print instructions on screen                             |
@@ -247,15 +247,13 @@ crystal/17-1.0.2 (shared module)
 | pcrys   | mpiexec Pcrystal       | 
 | mppcrys | mpiexec MPPcrystal     |
 | pporp   | mpiexec Pproperties    |
-| scrys   | crystal < INPUT        |
-| sprop   | properties < INPUT     |
 
 **Default ephemeral directory**
 
 'default'
 
 **Commands**  
-`Pcrys17` `MPPcrys17` `Pprop17` `Scrys17` `Sprop17` `Xcrys17` `SETcrys17` `HELPcrys17`
+`Pcrys17` `MPPcrys17` `Pprop17` `Xcrys17` `SETcrys17` `HELPcrys17`
 
 **Command used for testcase**
 
