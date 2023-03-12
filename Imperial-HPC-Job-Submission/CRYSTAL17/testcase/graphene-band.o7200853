@@ -1,0 +1,977 @@
+PBS Job Report
+--------------------------------------------
+  Start Date : Sun 12 Mar 12:44:16 GMT 2023
+  PBS Job ID : 7200853.pbs
+  Status
+--------------------------------------------
+
+Parameter list:  --set '/rds/general/user/hz1420/home/etc/runCRYSTAL17/settings' --in 'graphene.d12' --ref 'no' -- 'mpiexec' 'Pcrystal'
+Printed output filename /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/testcase/graphene.out
+Loading /rds/general/user/gmallia/home/CRYSTAL17_cx1/v2.2gnu/modules/mpich/3.2.1
+  Loading requirement: gcc/6.2.0
+MPI command: mpiexec Pcrystal
+Temporary directory : /rds/general/ephemeral/user/hz1420/ephemeral/graphene_7200853
+Job Executation Script
+--------------------------------------------
+/rds/general/ephemeral/user/hz1420/ephemeral/graphene_7200853/Job_script_7200853
+--------------------------------------------
+
+Running Job Report
+--------------------------------------------
+DATE START : Sun 12 Mar 12:46:27 GMT 2023
+
+PBE NODEFILE Info
+--------------------------------------------
+Found in /var/spool/PBS/aux/7200853.pbs
+  temporary directory on cx3-7-2.cx3.hpc.ic.ac.uk
+--------------------------------------------
+
+Pre-Calc Summary
+--------------------------------------------
+  date:                Sun 12 Mar 12:46:41 GMT 2023
+  hostname:            cx3-7-2.cx3.hpc.ic.ac.uk
+  system:              Linux cx3-7-2.cx3.hpc.ic.ac.uk 4.18.0-348.20.1.el8_5.x86_64 #1 SMP Tue Mar 8 12:56:54 EST 2022 x86_64 x86_64 x86_64 GNU/Linux
+  user:                hz1420
+  input:               /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/testcase/graphene.d12
+  output:              /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/testcase/graphene.out
+  temporary directory: /rds/general/ephemeral/user/hz1420/ephemeral/graphene_7200853
+  executable script:   /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/run_exec
+  executable dir:      /rds/general/user/hz1420/home/apps/CRYSTAL17_v2.2gnu/
+  mpi + exe command:    mpiexec Pcrystal
+-------------------------------------------
+
+PBS Job Status
+-------------------------------------------
+  Connection timed out
+qstat: cannot connect to server pbs (errno=110)
+-------------------------------------------
+
+Find input data: /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/testcase/graphene.d12
+Input graphene.d12 copied.
+File synchonised on cx3-7-2.cx3.hpc.ic.ac.uk : /rds/general/ephemeral/user/hz1420/ephemeral/graphene_7200853/INPUT
+Find input data: /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/testcase/graphene.d3
+All files are synchonised.
+
+Job Ready to Go
+-------------------------------------------
+  Job name       : graphene
+  ID             : 7200853.pbs
+  Command        : mpiexec Pcrystal >> /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/testcase/graphene.out 2>&1
+  Temporary dir  : /rds/general/ephemeral/user/hz1420/ephemeral/graphene_7200853
+  List of files  : total 33
+-rw-------. 1 hz1420 hpc-nmh   413 Mar 12 12:48 INPUT
+-rw-------. 1 hz1420 hpc-nmh 11308 Mar 12 12:46 Job_script_7200853
+  Input script   :
+G Unit
+SLAB
+77
+2.46
+1
+6 0.33333333 0.66666667 0.00000000
+ENDGEOM
+6 4
+0 0 6 2.0 1.0
+ 3048.0 0.001826
+  456.4 0.01406
+  103.7 0.06876
+  29.23 0.2304
+  9.349 0.4685
+  3.189 0.3628
+0 1 2 4.0 1.0
+  3.665 -0.3959 0.2365
+  0.7705 1.216 0.8606
+0 1 1 0.0 1.0
+  0.26 1.0 1.0
+0 3 1 0.0 1.0
+  0.8 1.0
+99 0
+ENDBS
+DFT
+HSE06
+XXLGRID
+ENDDFT
+TOLINTEG
+7 7 7 7 14
+SHRINK
+24 48
+TOLDEE
+8
+MAXCYCLE
+100
+FMIXING
+30
+SMEAR
+0.000100
+ENDSCF
+-------------------------------------------
+
+Entering temporary directory...
+Launching the job...
+
+DATE END   : Sun 12 Mar 12:48:55 GMT 2023
+Script run_exec done.
+--------------------------------------------
+
+Parameter list:  --in 'graphene.d12' --set '/rds/general/user/hz1420/home/etc/runCRYSTAL17/settings' --
+Post Processing Report
+--------------------------------------------
+Begining of post processing : Sun 12 Mar 12:48:55 GMT 2023
+List of saved files
+  TEMPORARY            SAVED
+  fort.9               graphene.f9   111308   Mar 12 12:48
+  fort.98              graphene.f98  282657   Mar 12 12:48
+--------------------------------------------
+
+Temporary Directory Disk Info
+--------------------------------------------
+  Temporary directory      : /rds/general/ephemeral/user/hz1420/ephemeral/graphene_7200853
+
+  Disk usage (df -h)
+Filesystem      Size  Used Avail Use% Mounted on
+rds              14P   13P  1.5P  90% /rds
+
+  Usage by folders (du -m)
+1	/rds/general/ephemeral/user/hz1420/ephemeral/graphene_7200853
+
+  Detailed file list (ls -l .)
+    see /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/testcase/*.o7200853.pbs file
+total 58
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 dffit3.dat
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_err1.pe00
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_err1.pe01
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_err1.pe02
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_err1.pe03
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_err1.pe04
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_err1.pe05
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_err1.pe06
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_err1.pe07
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_err1.pe08
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_err1.pe09
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_err1.pe10
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_err1.pe11
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_err1.pe12
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_err1.pe13
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_err1.pe14
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_err1.pe15
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_err1.pe16
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_err1.pe17
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_err1.pe18
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_err1.pe19
+-rw-------. 1 hz1420 hpc-nmh    544 Mar 12 12:48 diis_err1.pe20
+-rw-------. 1 hz1420 hpc-nmh    544 Mar 12 12:48 diis_err1.pe21
+-rw-------. 1 hz1420 hpc-nmh   1184 Mar 12 12:48 diis_err1.pe22
+-rw-------. 1 hz1420 hpc-nmh   1184 Mar 12 12:48 diis_err1.pe23
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_err2.pe00
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_err2.pe01
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_err2.pe02
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_err2.pe03
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_err2.pe04
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_err2.pe05
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_err2.pe06
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_err2.pe07
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_err2.pe08
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_err2.pe09
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_err2.pe10
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_err2.pe11
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_err2.pe12
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_err2.pe13
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_err2.pe14
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_err2.pe15
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_err2.pe16
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_err2.pe17
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_err2.pe18
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_err2.pe19
+-rw-------. 1 hz1420 hpc-nmh    680 Mar 12 12:48 diis_err2.pe20
+-rw-------. 1 hz1420 hpc-nmh    680 Mar 12 12:48 diis_err2.pe21
+-rw-------. 1 hz1420 hpc-nmh   1480 Mar 12 12:48 diis_err2.pe22
+-rw-------. 1 hz1420 hpc-nmh   1480 Mar 12 12:48 diis_err2.pe23
+-rw-------. 1 hz1420 hpc-nmh  33888 Mar 12 12:48 diis_Fg
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_Sk.pe00
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_Sk.pe01
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_Sk.pe02
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_Sk.pe03
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_Sk.pe04
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_Sk.pe05
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_Sk.pe06
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_Sk.pe07
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_Sk.pe08
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_Sk.pe09
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_Sk.pe10
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_Sk.pe11
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_Sk.pe12
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_Sk.pe13
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_Sk.pe14
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_Sk.pe15
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_Sk.pe16
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_Sk.pe17
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_Sk.pe18
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_Sk.pe19
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_Sk.pe20
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_Sk.pe21
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_Sk.pe22
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 diis_Sk.pe23
+-rw-------. 1 hz1420 hpc-nmh  16728 Mar 12 12:48 fort.10.pe00
+-rw-------. 1 hz1420 hpc-nmh  22104 Mar 12 12:48 fort.10.pe01
+-rw-------. 1 hz1420 hpc-nmh  26136 Mar 12 12:48 fort.10.pe02
+-rw-------. 1 hz1420 hpc-nmh  31512 Mar 12 12:48 fort.10.pe03
+-rw-------. 1 hz1420 hpc-nmh  16728 Mar 12 12:48 fort.10.pe04
+-rw-------. 1 hz1420 hpc-nmh  22104 Mar 12 12:48 fort.10.pe05
+-rw-------. 1 hz1420 hpc-nmh  26400 Mar 12 12:48 fort.10.pe06
+-rw-------. 1 hz1420 hpc-nmh  22368 Mar 12 12:48 fort.10.pe07
+-rw-------. 1 hz1420 hpc-nmh  18336 Mar 12 12:48 fort.10.pe08
+-rw-------. 1 hz1420 hpc-nmh  44064 Mar 12 12:48 fort.10.pe09
+-rw-------. 1 hz1420 hpc-nmh  29280 Mar 12 12:48 fort.10.pe10
+-rw-------. 1 hz1420 hpc-nmh  34656 Mar 12 12:48 fort.10.pe11
+-rw-------. 1 hz1420 hpc-nmh  29280 Mar 12 12:48 fort.10.pe12
+-rw-------. 1 hz1420 hpc-nmh  34656 Mar 12 12:48 fort.10.pe13
+-rw-------. 1 hz1420 hpc-nmh  38688 Mar 12 12:48 fort.10.pe14
+-rw-------. 1 hz1420 hpc-nmh  44064 Mar 12 12:48 fort.10.pe15
+-rw-------. 1 hz1420 hpc-nmh  10464 Mar 12 12:48 fort.10.pe16
+-rw-------. 1 hz1420 hpc-nmh  15840 Mar 12 12:48 fort.10.pe17
+-rw-------. 1 hz1420 hpc-nmh  16864 Mar 12 12:48 fort.10.pe18
+-rw-------. 1 hz1420 hpc-nmh  22240 Mar 12 12:48 fort.10.pe19
+-rw-------. 1 hz1420 hpc-nmh  26048 Mar 12 12:48 fort.10.pe20
+-rw-------. 1 hz1420 hpc-nmh  26048 Mar 12 12:48 fort.10.pe21
+-rw-------. 1 hz1420 hpc-nmh  17024 Mar 12 12:48 fort.10.pe22
+-rw-------. 1 hz1420 hpc-nmh  22400 Mar 12 12:48 fort.10.pe23
+-rw-------. 1 hz1420 hpc-nmh   5648 Mar 12 12:48 fort.11.pe00
+-rw-------. 1 hz1420 hpc-nmh   5648 Mar 12 12:48 fort.11.pe01
+-rw-------. 1 hz1420 hpc-nmh   5648 Mar 12 12:48 fort.11.pe02
+-rw-------. 1 hz1420 hpc-nmh   5648 Mar 12 12:48 fort.11.pe03
+-rw-------. 1 hz1420 hpc-nmh   5648 Mar 12 12:48 fort.11.pe04
+-rw-------. 1 hz1420 hpc-nmh   5648 Mar 12 12:48 fort.11.pe05
+-rw-------. 1 hz1420 hpc-nmh   5648 Mar 12 12:48 fort.11.pe06
+-rw-------. 1 hz1420 hpc-nmh   5648 Mar 12 12:48 fort.11.pe07
+-rw-------. 1 hz1420 hpc-nmh   5648 Mar 12 12:48 fort.11.pe08
+-rw-------. 1 hz1420 hpc-nmh   5648 Mar 12 12:48 fort.11.pe09
+-rw-------. 1 hz1420 hpc-nmh   5648 Mar 12 12:48 fort.11.pe10
+-rw-------. 1 hz1420 hpc-nmh   5648 Mar 12 12:48 fort.11.pe11
+-rw-------. 1 hz1420 hpc-nmh   5648 Mar 12 12:48 fort.11.pe12
+-rw-------. 1 hz1420 hpc-nmh   5648 Mar 12 12:48 fort.11.pe13
+-rw-------. 1 hz1420 hpc-nmh   5648 Mar 12 12:48 fort.11.pe14
+-rw-------. 1 hz1420 hpc-nmh   5648 Mar 12 12:48 fort.11.pe15
+-rw-------. 1 hz1420 hpc-nmh   5648 Mar 12 12:48 fort.11.pe16
+-rw-------. 1 hz1420 hpc-nmh   5648 Mar 12 12:48 fort.11.pe17
+-rw-------. 1 hz1420 hpc-nmh   5648 Mar 12 12:48 fort.11.pe18
+-rw-------. 1 hz1420 hpc-nmh   5648 Mar 12 12:48 fort.11.pe19
+-rw-------. 1 hz1420 hpc-nmh   5648 Mar 12 12:48 fort.11.pe20
+-rw-------. 1 hz1420 hpc-nmh   5648 Mar 12 12:48 fort.11.pe21
+-rw-------. 1 hz1420 hpc-nmh   5648 Mar 12 12:48 fort.11.pe22
+-rw-------. 1 hz1420 hpc-nmh   5648 Mar 12 12:48 fort.11.pe23
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.17.pe01
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.17.pe02
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.17.pe03
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.17.pe04
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.17.pe05
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.17.pe06
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.17.pe07
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.17.pe08
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.17.pe09
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.17.pe10
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.17.pe11
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.17.pe12
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.17.pe13
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.17.pe14
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.17.pe15
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.17.pe16
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.17.pe17
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.17.pe18
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.17.pe19
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.17.pe20
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.17.pe21
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.17.pe22
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.17.pe23
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.18.pe00
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.18.pe01
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.18.pe02
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.18.pe03
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.18.pe04
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.18.pe05
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.18.pe06
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.18.pe07
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.18.pe08
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.18.pe09
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.18.pe10
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.18.pe11
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.18.pe12
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.18.pe13
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.18.pe14
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.18.pe15
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.18.pe16
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.18.pe17
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.18.pe18
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.18.pe19
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.18.pe20
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.18.pe21
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.18.pe22
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.18.pe23
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.19.pe00
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.19.pe01
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.19.pe02
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.19.pe03
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.19.pe04
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.19.pe05
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.19.pe06
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.19.pe07
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.19.pe08
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.19.pe09
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.19.pe10
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.19.pe11
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.19.pe12
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.19.pe13
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.19.pe14
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.19.pe15
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.19.pe16
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.19.pe17
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.19.pe18
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.19.pe19
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.19.pe20
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.19.pe21
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.19.pe22
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.19.pe23
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.1.pe00
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.1.pe01
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.1.pe02
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.1.pe03
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.1.pe04
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.1.pe05
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.1.pe06
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.1.pe07
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.1.pe08
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.1.pe09
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.1.pe10
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.1.pe11
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.1.pe12
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.1.pe13
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.1.pe14
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.1.pe15
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.1.pe16
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.1.pe17
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.1.pe18
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.1.pe19
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.1.pe20
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.1.pe21
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.1.pe22
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.1.pe23
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.28.pe00
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.28.pe01
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.28.pe02
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.28.pe03
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.28.pe04
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.28.pe05
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.28.pe06
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.28.pe07
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.28.pe08
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.28.pe09
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.28.pe10
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.28.pe11
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.28.pe12
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.28.pe13
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.28.pe14
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.28.pe15
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.28.pe16
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.28.pe17
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.28.pe18
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.28.pe19
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.28.pe20
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.28.pe21
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.28.pe22
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.28.pe23
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.29.pe00
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.29.pe01
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.29.pe02
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.29.pe03
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.29.pe04
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.29.pe05
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.29.pe06
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.29.pe07
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.29.pe08
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.29.pe09
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.29.pe10
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.29.pe11
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.29.pe12
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.29.pe13
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.29.pe14
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.29.pe15
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.29.pe16
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.29.pe17
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.29.pe18
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.29.pe19
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.29.pe20
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.29.pe21
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.29.pe22
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.29.pe23
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.38.pe00
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.38.pe01
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.38.pe02
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.38.pe03
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.38.pe04
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.38.pe05
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.38.pe06
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.38.pe07
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.38.pe08
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.38.pe09
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.38.pe10
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.38.pe11
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.38.pe12
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.38.pe13
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.38.pe14
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.38.pe15
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.38.pe16
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.38.pe17
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.38.pe18
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.38.pe19
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.38.pe20
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.38.pe21
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.38.pe22
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.38.pe23
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.3.pe00
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.3.pe01
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.3.pe02
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.3.pe03
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.3.pe04
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.3.pe05
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.3.pe06
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.3.pe07
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.3.pe08
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.3.pe09
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.3.pe10
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.3.pe11
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.3.pe12
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.3.pe13
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.3.pe14
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.3.pe15
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.3.pe16
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.3.pe17
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.3.pe18
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.3.pe19
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.3.pe20
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.3.pe21
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.3.pe22
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.3.pe23
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.40.pe00
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.40.pe01
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.40.pe02
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.40.pe03
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.40.pe04
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.40.pe05
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.40.pe06
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.40.pe07
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.40.pe08
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.40.pe09
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.40.pe10
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.40.pe11
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.40.pe12
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.40.pe13
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.40.pe14
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.40.pe15
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.40.pe16
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.40.pe17
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.40.pe18
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.40.pe19
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.40.pe20
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.40.pe21
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.40.pe22
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.40.pe23
+-rw-------. 1 hz1420 hpc-nmh   1632 Mar 12 12:48 fort.61.pe00
+-rw-------. 1 hz1420 hpc-nmh   1632 Mar 12 12:48 fort.61.pe01
+-rw-------. 1 hz1420 hpc-nmh   1632 Mar 12 12:48 fort.61.pe02
+-rw-------. 1 hz1420 hpc-nmh   1632 Mar 12 12:48 fort.61.pe03
+-rw-------. 1 hz1420 hpc-nmh   1632 Mar 12 12:48 fort.61.pe04
+-rw-------. 1 hz1420 hpc-nmh   2832 Mar 12 12:48 fort.61.pe05
+-rw-------. 1 hz1420 hpc-nmh   1632 Mar 12 12:48 fort.61.pe06
+-rw-------. 1 hz1420 hpc-nmh   1632 Mar 12 12:48 fort.61.pe07
+-rw-------. 1 hz1420 hpc-nmh   1632 Mar 12 12:48 fort.61.pe08
+-rw-------. 1 hz1420 hpc-nmh   1632 Mar 12 12:48 fort.61.pe09
+-rw-------. 1 hz1420 hpc-nmh   2832 Mar 12 12:48 fort.61.pe10
+-rw-------. 1 hz1420 hpc-nmh   4208 Mar 12 12:48 fort.61.pe11
+-rw-------. 1 hz1420 hpc-nmh   2928 Mar 12 12:48 fort.61.pe12
+-rw-------. 1 hz1420 hpc-nmh   5328 Mar 12 12:48 fort.61.pe13
+-rw-------. 1 hz1420 hpc-nmh   5328 Mar 12 12:48 fort.61.pe14
+-rw-------. 1 hz1420 hpc-nmh   2928 Mar 12 12:48 fort.61.pe15
+-rw-------. 1 hz1420 hpc-nmh   2928 Mar 12 12:48 fort.61.pe16
+-rw-------. 1 hz1420 hpc-nmh   4128 Mar 12 12:48 fort.61.pe17
+-rw-------. 1 hz1420 hpc-nmh   2928 Mar 12 12:48 fort.61.pe18
+-rw-------. 1 hz1420 hpc-nmh   2928 Mar 12 12:48 fort.61.pe19
+-rw-------. 1 hz1420 hpc-nmh   2928 Mar 12 12:48 fort.61.pe20
+-rw-------. 1 hz1420 hpc-nmh   2928 Mar 12 12:48 fort.61.pe21
+-rw-------. 1 hz1420 hpc-nmh   4128 Mar 12 12:48 fort.61.pe22
+-rw-------. 1 hz1420 hpc-nmh   5424 Mar 12 12:48 fort.61.pe23
+-rw-------. 1 hz1420 hpc-nmh   1088 Mar 12 12:48 fort.62.pe00
+-rw-------. 1 hz1420 hpc-nmh   1280 Mar 12 12:48 fort.62.pe01
+-rw-------. 1 hz1420 hpc-nmh    256 Mar 12 12:48 fort.62.pe02
+-rw-------. 1 hz1420 hpc-nmh    448 Mar 12 12:48 fort.62.pe03
+-rw-------. 1 hz1420 hpc-nmh   1088 Mar 12 12:48 fort.62.pe04
+-rw-------. 1 hz1420 hpc-nmh   1280 Mar 12 12:48 fort.62.pe05
+-rw-------. 1 hz1420 hpc-nmh    800 Mar 12 12:48 fort.62.pe06
+-rw-------. 1 hz1420 hpc-nmh   1824 Mar 12 12:48 fort.62.pe07
+-rw-------. 1 hz1420 hpc-nmh   1920 Mar 12 12:48 fort.62.pe08
+-rw-------. 1 hz1420 hpc-nmh    448 Mar 12 12:48 fort.62.pe09
+-rw-------. 1 hz1420 hpc-nmh   1088 Mar 12 12:48 fort.62.pe10
+-rw-------. 1 hz1420 hpc-nmh   1280 Mar 12 12:48 fort.62.pe11
+-rw-------. 1 hz1420 hpc-nmh   1088 Mar 12 12:48 fort.62.pe12
+-rw-------. 1 hz1420 hpc-nmh   1280 Mar 12 12:48 fort.62.pe13
+-rw-------. 1 hz1420 hpc-nmh    256 Mar 12 12:48 fort.62.pe14
+-rw-------. 1 hz1420 hpc-nmh    448 Mar 12 12:48 fort.62.pe15
+-rw-------. 1 hz1420 hpc-nmh   2752 Mar 12 12:48 fort.62.pe16
+-rw-------. 1 hz1420 hpc-nmh   2944 Mar 12 12:48 fort.62.pe17
+-rw-------. 1 hz1420 hpc-nmh   1344 Mar 12 12:48 fort.62.pe18
+-rw-------. 1 hz1420 hpc-nmh   1536 Mar 12 12:48 fort.62.pe19
+-rw-------. 1 hz1420 hpc-nmh    896 Mar 12 12:48 fort.62.pe20
+-rw-------. 1 hz1420 hpc-nmh    896 Mar 12 12:48 fort.62.pe21
+-rw-------. 1 hz1420 hpc-nmh   1408 Mar 12 12:48 fort.62.pe22
+-rw-------. 1 hz1420 hpc-nmh   1600 Mar 12 12:48 fort.62.pe23
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.82.pe00
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.82.pe01
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.82.pe02
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.82.pe03
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.82.pe04
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.82.pe05
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.82.pe06
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.82.pe07
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.82.pe08
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.82.pe09
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.82.pe10
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.82.pe11
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.82.pe12
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.82.pe13
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.82.pe14
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.82.pe15
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.82.pe16
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.82.pe17
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.82.pe18
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.82.pe19
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.82.pe20
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.82.pe21
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.82.pe22
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.82.pe23
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.83.pe00
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.83.pe01
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.83.pe02
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.83.pe03
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.83.pe04
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.83.pe05
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.83.pe06
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.83.pe07
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.83.pe08
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.83.pe09
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.83.pe10
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.83.pe11
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.83.pe12
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.83.pe13
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.83.pe14
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.83.pe15
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.83.pe16
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.83.pe17
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.83.pe18
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.83.pe19
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.83.pe20
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.83.pe21
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.83.pe22
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:48 fort.83.pe23
+-rw-------. 1 hz1420 hpc-nmh  16728 Mar 12 12:48 fort.8.pe00
+-rw-------. 1 hz1420 hpc-nmh  22104 Mar 12 12:48 fort.8.pe01
+-rw-------. 1 hz1420 hpc-nmh  26136 Mar 12 12:48 fort.8.pe02
+-rw-------. 1 hz1420 hpc-nmh  31512 Mar 12 12:48 fort.8.pe03
+-rw-------. 1 hz1420 hpc-nmh  16728 Mar 12 12:48 fort.8.pe04
+-rw-------. 1 hz1420 hpc-nmh  22104 Mar 12 12:48 fort.8.pe05
+-rw-------. 1 hz1420 hpc-nmh  26400 Mar 12 12:48 fort.8.pe06
+-rw-------. 1 hz1420 hpc-nmh  22368 Mar 12 12:48 fort.8.pe07
+-rw-------. 1 hz1420 hpc-nmh  18336 Mar 12 12:48 fort.8.pe08
+-rw-------. 1 hz1420 hpc-nmh  44064 Mar 12 12:48 fort.8.pe09
+-rw-------. 1 hz1420 hpc-nmh  29280 Mar 12 12:48 fort.8.pe10
+-rw-------. 1 hz1420 hpc-nmh  34656 Mar 12 12:48 fort.8.pe11
+-rw-------. 1 hz1420 hpc-nmh  29280 Mar 12 12:48 fort.8.pe12
+-rw-------. 1 hz1420 hpc-nmh  34656 Mar 12 12:48 fort.8.pe13
+-rw-------. 1 hz1420 hpc-nmh  38688 Mar 12 12:48 fort.8.pe14
+-rw-------. 1 hz1420 hpc-nmh  44064 Mar 12 12:48 fort.8.pe15
+-rw-------. 1 hz1420 hpc-nmh  10464 Mar 12 12:48 fort.8.pe16
+-rw-------. 1 hz1420 hpc-nmh  15840 Mar 12 12:48 fort.8.pe17
+-rw-------. 1 hz1420 hpc-nmh  16864 Mar 12 12:48 fort.8.pe18
+-rw-------. 1 hz1420 hpc-nmh  22240 Mar 12 12:48 fort.8.pe19
+-rw-------. 1 hz1420 hpc-nmh  26048 Mar 12 12:48 fort.8.pe20
+-rw-------. 1 hz1420 hpc-nmh  26048 Mar 12 12:48 fort.8.pe21
+-rw-------. 1 hz1420 hpc-nmh  17024 Mar 12 12:48 fort.8.pe22
+-rw-------. 1 hz1420 hpc-nmh  22400 Mar 12 12:48 fort.8.pe23
+-rw-------. 1 hz1420 hpc-nmh 111308 Mar 12 12:48 fort.9
+-rw-------. 1 hz1420 hpc-nmh  12016 Mar 12 12:48 fort.95.pe00
+-rw-------. 1 hz1420 hpc-nmh  12016 Mar 12 12:48 fort.95.pe01
+-rw-------. 1 hz1420 hpc-nmh  12016 Mar 12 12:48 fort.95.pe02
+-rw-------. 1 hz1420 hpc-nmh  12016 Mar 12 12:48 fort.95.pe03
+-rw-------. 1 hz1420 hpc-nmh  12016 Mar 12 12:48 fort.95.pe04
+-rw-------. 1 hz1420 hpc-nmh  12016 Mar 12 12:48 fort.95.pe05
+-rw-------. 1 hz1420 hpc-nmh  12016 Mar 12 12:48 fort.95.pe06
+-rw-------. 1 hz1420 hpc-nmh  12016 Mar 12 12:48 fort.95.pe07
+-rw-------. 1 hz1420 hpc-nmh  12016 Mar 12 12:48 fort.95.pe08
+-rw-------. 1 hz1420 hpc-nmh  12016 Mar 12 12:48 fort.95.pe09
+-rw-------. 1 hz1420 hpc-nmh  12016 Mar 12 12:48 fort.95.pe10
+-rw-------. 1 hz1420 hpc-nmh  12016 Mar 12 12:48 fort.95.pe11
+-rw-------. 1 hz1420 hpc-nmh  12016 Mar 12 12:48 fort.95.pe12
+-rw-------. 1 hz1420 hpc-nmh  12016 Mar 12 12:48 fort.95.pe13
+-rw-------. 1 hz1420 hpc-nmh  12016 Mar 12 12:48 fort.95.pe14
+-rw-------. 1 hz1420 hpc-nmh  12016 Mar 12 12:48 fort.95.pe15
+-rw-------. 1 hz1420 hpc-nmh  12016 Mar 12 12:48 fort.95.pe16
+-rw-------. 1 hz1420 hpc-nmh  12016 Mar 12 12:48 fort.95.pe17
+-rw-------. 1 hz1420 hpc-nmh  12016 Mar 12 12:48 fort.95.pe18
+-rw-------. 1 hz1420 hpc-nmh  12016 Mar 12 12:48 fort.95.pe19
+-rw-------. 1 hz1420 hpc-nmh  12016 Mar 12 12:48 fort.95.pe20
+-rw-------. 1 hz1420 hpc-nmh  12016 Mar 12 12:48 fort.95.pe21
+-rw-------. 1 hz1420 hpc-nmh  12016 Mar 12 12:48 fort.95.pe22
+-rw-------. 1 hz1420 hpc-nmh  12016 Mar 12 12:48 fort.95.pe23
+-rw-------. 1 hz1420 hpc-nmh 282657 Mar 12 12:48 fort.98
+-rw-------. 1 hz1420 hpc-nmh    413 Mar 12 12:48 INPUT
+-rw-------. 1 hz1420 hpc-nmh  11308 Mar 12 12:46 Job_script_7200853
+-rw-------. 1 hz1420 hpc-nmh   4040 Mar 12 12:48 Post_script_7200853
+--------------------------------------------
+
+Check files across nodes ...
+List of saved files
+  TEMPORARY            SAVED
+End of post processing : Sun 12 Mar 12:48:56 GMT 2023
+Script post_proc done.
+--------------------------------------------
+Parameter list:  --set '/rds/general/user/hz1420/home/etc/runCRYSTAL17/settings' --in 'graphene.d3' --ref 'graphene' -- 'mpiexec' 'Pproperties'
+Warning! Output exists: /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/testcase/graphene.out
+New data will be attached to the same file.
+Printed output filename /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/testcase/graphene.out
+Loading /rds/general/user/gmallia/home/CRYSTAL17_cx1/v2.2gnu/modules/mpich/3.2.1
+  Loading requirement: gcc/6.2.0
+MPI command: mpiexec Pproperties
+Temporary directory : /rds/general/ephemeral/user/hz1420/ephemeral/graphene_7200853
+Job Executation Script
+--------------------------------------------
+/rds/general/ephemeral/user/hz1420/ephemeral/graphene_7200853/Job_script_7200853
+--------------------------------------------
+
+Running Job Report
+--------------------------------------------
+DATE START : Sun 12 Mar 12:48:57 GMT 2023
+
+PBE NODEFILE Info
+--------------------------------------------
+Found in /var/spool/PBS/aux/7200853.pbs
+  temporary directory on cx3-7-2.cx3.hpc.ic.ac.uk
+--------------------------------------------
+
+Pre-Calc Summary
+--------------------------------------------
+  date:                Sun 12 Mar 12:49:10 GMT 2023
+  hostname:            cx3-7-2.cx3.hpc.ic.ac.uk
+  system:              Linux cx3-7-2.cx3.hpc.ic.ac.uk 4.18.0-348.20.1.el8_5.x86_64 #1 SMP Tue Mar 8 12:56:54 EST 2022 x86_64 x86_64 x86_64 GNU/Linux
+  user:                hz1420
+  input:               /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/testcase/graphene.d3
+  output:              /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/testcase/graphene.out
+  temporary directory: /rds/general/ephemeral/user/hz1420/ephemeral/graphene_7200853
+  executable script:   /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/run_exec
+  executable dir:      /rds/general/user/hz1420/home/apps/CRYSTAL17_v2.2gnu/
+  mpi + exe command:    mpiexec Pproperties
+-------------------------------------------
+
+PBS Job Status
+-------------------------------------------
+  Connection timed out
+qstat: cannot connect to server pbs (errno=110)
+-------------------------------------------
+
+Find input data: /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/testcase/graphene.d12
+Input graphene.d12 copied.
+File synchonised on cx3-7-2.cx3.hpc.ic.ac.uk : /rds/general/ephemeral/user/hz1420/ephemeral/graphene_7200853/INPUT
+Find input data: /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/testcase/graphene.d3
+Warning! Duplicate file detected in temporary directory: /rds/general/ephemeral/user/hz1420/ephemeral/graphene_7200853/INPUT.
+  The file will be covered by the new entry /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/testcase/graphene.d3.
+Input graphene.d3 copied.
+File synchonised on cx3-7-2.cx3.hpc.ic.ac.uk : /rds/general/ephemeral/user/hz1420/ephemeral/graphene_7200853/INPUT
+Find input reference: /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/testcase/graphene.f9
+Input graphene.f9 copied.
+File synchonised on cx3-7-2.cx3.hpc.ic.ac.uk : /rds/general/ephemeral/user/hz1420/ephemeral/graphene_7200853/fort.20
+Find input reference: /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/testcase/graphene.f9
+Input graphene.f9 copied.
+File synchonised on cx3-7-2.cx3.hpc.ic.ac.uk : /rds/general/ephemeral/user/hz1420/ephemeral/graphene_7200853/fort.9
+All files are synchonised.
+
+Job Ready to Go
+-------------------------------------------
+  Job name       : graphene
+  ID             : 7200853.pbs
+  Command        : mpiexec Pproperties >> /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/testcase/graphene.out 2>&1
+  Temporary dir  : /rds/general/ephemeral/user/hz1420/ephemeral/graphene_7200853
+  List of files  : total 33
+-rw-------. 1 hz1420 hpc-nmh 111308 Mar 12 12:51 fort.20
+-rw-------. 1 hz1420 hpc-nmh 111308 Mar 12 12:51 fort.9
+-rw-------. 1 hz1420 hpc-nmh     73 Mar 12 12:51 INPUT
+-rw-------. 1 hz1420 hpc-nmh  11308 Mar 12 12:49 Job_script_7200853
+  Input script   :
+BAND
+graphene
+3 6 48 1 18 1 0
+0 0 0  2 2 0
+2 2 0  3 0 0
+3 0 0  0 0 0
+END
+-------------------------------------------
+
+Entering temporary directory...
+Launching the job...
+
+DATE END   : Sun 12 Mar 12:51:24 GMT 2023
+Script run_exec done.
+--------------------------------------------
+
+Parameter list:  --in 'graphene.d3' --set '/rds/general/user/hz1420/home/etc/runCRYSTAL17/settings' --
+Post Processing Report
+--------------------------------------------
+Begining of post processing : Sun 12 Mar 12:51:24 GMT 2023
+List of saved files
+  TEMPORARY            SAVED
+Warning! Duplicate file detected in out directory: /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/testcase/graphene.f9.
+  The file will be covered by the new entry /rds/general/ephemeral/user/hz1420/ephemeral/graphene_7200853/fort.9.
+  fort.9               graphene.f9   111308   Mar 12 12:51
+  fort.25              graphene.f25  10845    Mar 12 12:51
+  BAND.DAT             graphene.BAND  12760    Mar 12 12:51
+--------------------------------------------
+
+Temporary Directory Disk Info
+--------------------------------------------
+  Temporary directory      : /rds/general/ephemeral/user/hz1420/ephemeral/graphene_7200853
+
+  Disk usage (df -h)
+Filesystem      Size  Used Avail Use% Mounted on
+rds              14P   13P  1.5P  90% /rds
+
+  Usage by folders (du -m)
+1	/rds/general/ephemeral/user/hz1420/ephemeral/graphene_7200853
+
+  Detailed file list (ls -l .)
+    see /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/testcase/*.o7200853.pbs file
+total 55
+-rw-------. 1 hz1420 hpc-nmh  12760 Mar 12 12:51 BAND.DAT
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.10.pe00
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.10.pe01
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.10.pe02
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.10.pe03
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.10.pe04
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.10.pe05
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.10.pe06
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.10.pe07
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.10.pe08
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.10.pe09
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.10.pe10
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.10.pe11
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.10.pe12
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.10.pe13
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.10.pe14
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.10.pe15
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.10.pe16
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.10.pe17
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.10.pe18
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.10.pe19
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.10.pe20
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.10.pe21
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.10.pe22
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.10.pe23
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.11.pe00
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.11.pe01
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.11.pe02
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.11.pe03
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.11.pe04
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.11.pe05
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.11.pe06
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.11.pe07
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.11.pe08
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.11.pe09
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.11.pe10
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.11.pe11
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.11.pe12
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.11.pe13
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.11.pe14
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.11.pe15
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.11.pe16
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.11.pe17
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.11.pe18
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.11.pe19
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.11.pe20
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.11.pe21
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.11.pe22
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.11.pe23
+-rw-------. 1 hz1420 hpc-nmh 129144 Mar 12 12:51 fort.13.pe00
+-rw-------. 1 hz1420 hpc-nmh 129144 Mar 12 12:51 fort.13.pe01
+-rw-------. 1 hz1420 hpc-nmh 129144 Mar 12 12:51 fort.13.pe02
+-rw-------. 1 hz1420 hpc-nmh 129144 Mar 12 12:51 fort.13.pe03
+-rw-------. 1 hz1420 hpc-nmh 129144 Mar 12 12:51 fort.13.pe04
+-rw-------. 1 hz1420 hpc-nmh 129144 Mar 12 12:51 fort.13.pe05
+-rw-------. 1 hz1420 hpc-nmh 129144 Mar 12 12:51 fort.13.pe06
+-rw-------. 1 hz1420 hpc-nmh 129144 Mar 12 12:51 fort.13.pe07
+-rw-------. 1 hz1420 hpc-nmh 129144 Mar 12 12:51 fort.13.pe08
+-rw-------. 1 hz1420 hpc-nmh 129144 Mar 12 12:51 fort.13.pe09
+-rw-------. 1 hz1420 hpc-nmh 129144 Mar 12 12:51 fort.13.pe10
+-rw-------. 1 hz1420 hpc-nmh 129144 Mar 12 12:51 fort.13.pe11
+-rw-------. 1 hz1420 hpc-nmh 129144 Mar 12 12:51 fort.13.pe12
+-rw-------. 1 hz1420 hpc-nmh 129144 Mar 12 12:51 fort.13.pe13
+-rw-------. 1 hz1420 hpc-nmh 129144 Mar 12 12:51 fort.13.pe14
+-rw-------. 1 hz1420 hpc-nmh 129144 Mar 12 12:51 fort.13.pe15
+-rw-------. 1 hz1420 hpc-nmh 129144 Mar 12 12:51 fort.13.pe16
+-rw-------. 1 hz1420 hpc-nmh 129144 Mar 12 12:51 fort.13.pe17
+-rw-------. 1 hz1420 hpc-nmh 129144 Mar 12 12:51 fort.13.pe18
+-rw-------. 1 hz1420 hpc-nmh 129144 Mar 12 12:51 fort.13.pe19
+-rw-------. 1 hz1420 hpc-nmh 129144 Mar 12 12:51 fort.13.pe20
+-rw-------. 1 hz1420 hpc-nmh 129144 Mar 12 12:51 fort.13.pe21
+-rw-------. 1 hz1420 hpc-nmh 129144 Mar 12 12:51 fort.13.pe22
+-rw-------. 1 hz1420 hpc-nmh 129144 Mar 12 12:51 fort.13.pe23
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.15.pe00
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.15.pe01
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.15.pe02
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.15.pe03
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.15.pe04
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.15.pe05
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.15.pe06
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.15.pe07
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.15.pe08
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.15.pe09
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.15.pe10
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.15.pe11
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.15.pe12
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.15.pe13
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.15.pe14
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.15.pe15
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.15.pe16
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.15.pe17
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.15.pe18
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.15.pe19
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.15.pe20
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.15.pe21
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.15.pe22
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.15.pe23
+-rw-------. 1 hz1420 hpc-nmh 111308 Mar 12 12:51 fort.20
+-rw-------. 1 hz1420 hpc-nmh  10845 Mar 12 12:51 fort.25
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.26.pe00
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.26.pe01
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.26.pe02
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.26.pe03
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.26.pe04
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.26.pe05
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.26.pe06
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.26.pe07
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.26.pe08
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.26.pe09
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.26.pe10
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.26.pe11
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.26.pe12
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.26.pe13
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.26.pe14
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.26.pe15
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.26.pe16
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.26.pe17
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.26.pe18
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.26.pe19
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.26.pe20
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.26.pe21
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.26.pe22
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.26.pe23
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.3.pe00
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.3.pe01
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.3.pe02
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.3.pe03
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.3.pe04
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.3.pe05
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.3.pe06
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.3.pe07
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.3.pe08
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.3.pe09
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.3.pe10
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.3.pe11
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.3.pe12
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.3.pe13
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.3.pe14
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.3.pe15
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.3.pe16
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.3.pe17
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.3.pe18
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.3.pe19
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.3.pe20
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.3.pe21
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.3.pe22
+-rw-------. 1 hz1420 hpc-nmh  31760 Mar 12 12:51 fort.3.pe23
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.61.pe00
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.61.pe01
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.61.pe02
+-rw-------. 1 hz1420 hpc-nmh   2000 Mar 12 12:51 fort.61.pe03
+-rw-------. 1 hz1420 hpc-nmh   2016 Mar 12 12:51 fort.61.pe04
+-rw-------. 1 hz1420 hpc-nmh   2016 Mar 12 12:51 fort.61.pe05
+-rw-------. 1 hz1420 hpc-nmh   2016 Mar 12 12:51 fort.61.pe06
+-rw-------. 1 hz1420 hpc-nmh   1392 Mar 12 12:51 fort.61.pe07
+-rw-------. 1 hz1420 hpc-nmh   1296 Mar 12 12:51 fort.61.pe08
+-rw-------. 1 hz1420 hpc-nmh   1296 Mar 12 12:51 fort.61.pe09
+-rw-------. 1 hz1420 hpc-nmh   1296 Mar 12 12:51 fort.61.pe10
+-rw-------. 1 hz1420 hpc-nmh   1296 Mar 12 12:51 fort.61.pe11
+-rw-------. 1 hz1420 hpc-nmh   1296 Mar 12 12:51 fort.61.pe12
+-rw-------. 1 hz1420 hpc-nmh   1296 Mar 12 12:51 fort.61.pe13
+-rw-------. 1 hz1420 hpc-nmh   1296 Mar 12 12:51 fort.61.pe14
+-rw-------. 1 hz1420 hpc-nmh   1296 Mar 12 12:51 fort.61.pe15
+-rw-------. 1 hz1420 hpc-nmh   1296 Mar 12 12:51 fort.61.pe16
+-rw-------. 1 hz1420 hpc-nmh   1296 Mar 12 12:51 fort.61.pe17
+-rw-------. 1 hz1420 hpc-nmh   1296 Mar 12 12:51 fort.61.pe18
+-rw-------. 1 hz1420 hpc-nmh   1296 Mar 12 12:51 fort.61.pe19
+-rw-------. 1 hz1420 hpc-nmh   1296 Mar 12 12:51 fort.61.pe20
+-rw-------. 1 hz1420 hpc-nmh   1296 Mar 12 12:51 fort.61.pe21
+-rw-------. 1 hz1420 hpc-nmh   1296 Mar 12 12:51 fort.61.pe22
+-rw-------. 1 hz1420 hpc-nmh   1296 Mar 12 12:51 fort.61.pe23
+-rw-------. 1 hz1420 hpc-nmh    256 Mar 12 12:51 fort.62.pe00
+-rw-------. 1 hz1420 hpc-nmh    448 Mar 12 12:51 fort.62.pe01
+-rw-------. 1 hz1420 hpc-nmh    256 Mar 12 12:51 fort.62.pe02
+-rw-------. 1 hz1420 hpc-nmh    448 Mar 12 12:51 fort.62.pe03
+-rw-------. 1 hz1420 hpc-nmh    256 Mar 12 12:51 fort.62.pe04
+-rw-------. 1 hz1420 hpc-nmh    448 Mar 12 12:51 fort.62.pe05
+-rw-------. 1 hz1420 hpc-nmh    256 Mar 12 12:51 fort.62.pe06
+-rw-------. 1 hz1420 hpc-nmh    448 Mar 12 12:51 fort.62.pe07
+-rw-------. 1 hz1420 hpc-nmh    256 Mar 12 12:51 fort.62.pe08
+-rw-------. 1 hz1420 hpc-nmh    448 Mar 12 12:51 fort.62.pe09
+-rw-------. 1 hz1420 hpc-nmh    256 Mar 12 12:51 fort.62.pe10
+-rw-------. 1 hz1420 hpc-nmh    448 Mar 12 12:51 fort.62.pe11
+-rw-------. 1 hz1420 hpc-nmh    704 Mar 12 12:51 fort.62.pe12
+-rw-------. 1 hz1420 hpc-nmh    896 Mar 12 12:51 fort.62.pe13
+-rw-------. 1 hz1420 hpc-nmh    576 Mar 12 12:51 fort.62.pe14
+-rw-------. 1 hz1420 hpc-nmh    768 Mar 12 12:51 fort.62.pe15
+-rw-------. 1 hz1420 hpc-nmh    512 Mar 12 12:51 fort.62.pe16
+-rw-------. 1 hz1420 hpc-nmh    896 Mar 12 12:51 fort.62.pe17
+-rw-------. 1 hz1420 hpc-nmh    512 Mar 12 12:51 fort.62.pe18
+-rw-------. 1 hz1420 hpc-nmh    896 Mar 12 12:51 fort.62.pe19
+-rw-------. 1 hz1420 hpc-nmh    512 Mar 12 12:51 fort.62.pe20
+-rw-------. 1 hz1420 hpc-nmh    896 Mar 12 12:51 fort.62.pe21
+-rw-------. 1 hz1420 hpc-nmh    512 Mar 12 12:51 fort.62.pe22
+-rw-------. 1 hz1420 hpc-nmh    896 Mar 12 12:51 fort.62.pe23
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.8.pe00
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.8.pe01
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.8.pe02
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.8.pe03
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.8.pe04
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.8.pe05
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.8.pe06
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.8.pe07
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.8.pe08
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.8.pe09
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.8.pe10
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.8.pe11
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.8.pe12
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.8.pe13
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.8.pe14
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.8.pe15
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.8.pe16
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.8.pe17
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.8.pe18
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.8.pe19
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.8.pe20
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.8.pe21
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.8.pe22
+-rw-------. 1 hz1420 hpc-nmh      0 Mar 12 12:51 fort.8.pe23
+-rw-------. 1 hz1420 hpc-nmh 111308 Mar 12 12:51 fort.9
+-rw-------. 1 hz1420 hpc-nmh     73 Mar 12 12:51 INPUT
+-rw-------. 1 hz1420 hpc-nmh  11308 Mar 12 12:49 Job_script_7200853
+-rw-------. 1 hz1420 hpc-nmh   4040 Mar 12 12:51 Post_script_7200853
+--------------------------------------------
+
+Check files across nodes ...
+List of saved files
+  TEMPORARY            SAVED
+End of post processing : Sun 12 Mar 12:51:26 GMT 2023
+Script post_proc done.
+--------------------------------------------

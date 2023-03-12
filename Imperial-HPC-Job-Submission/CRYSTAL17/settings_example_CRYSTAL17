@@ -8,7 +8,7 @@ NCPU_PER_NODE
 MEM_PER_NODE
  100
 
-N_THREAD
+NTHREAD_PER_PROC
  1
 
 NGPU_PER_NODE
@@ -32,21 +32,21 @@ JOB_TMPDIR
 
 # Executables
 EXEDIR
- /rds/general/user/hz1420/home/apps/CRYSTAL23_v1.0.1/bin/Linux-flang_openmpi_amd64EPYC/std
+ /rds/general/user/hz1420/home/apps/CRYSTAL17_v2.2gnu/
 
 MPIDIR
- module load  /rds/general/user/hz1420/home/apps/openmpi-4.1.4/openmpi-4.1.4_module
+ module load /rds/general/user/gmallia/home/CRYSTAL17_cx1/v2.2gnu/modules/mpich/3.2.1
 
-EXE_TABLE                       [jobname]
------------------------------------------------------------------------------------
-LABEL      MPI & OPTION         EXECUTABLE & OPTION            DEFINITION
------------------------------------------------------------------------------------
-pcrys      mpiexec              Pcrystal                       Parallel crystal calculation
-mppcrys    mpiexec              MPPcrystal                     Massive parallel crystal calculation
-pprop      mpiexec              Pproperties                    Parallel properties calculation
-scrys                           crystal < INPUT                Serial crystal calculation
-sprop                           properties < INPUT             Serial properties calculation
------------------------------------------------------------------------------------
+EXE_TABLE                                                               [jobname]
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+LABEL      MPI & OPTION                                                 EXECUTABLE & OPTION                                          DEFINITION
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+pcrys      mpiexec                                                      Pcrystal                                                     Parallel crystal calculation
+mppcrys    mpiexec                                                      MPPcrystal                                                   Massive parallel crystal calculation
+pprop      mpiexec                                                      Pproperties                                                  Parallel properties calculation
+scrys                                                                   crystal < INPUT                                              Serial crystal calculation
+sprop                                                                   properties < INPUT                                           Serial properties calculation
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 # file formats table

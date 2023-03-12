@@ -1,17 +1,17 @@
 Running Job Report
 --------------------------------------------
-DATE START : Thu  2 Mar 13:55:42 GMT 2023
+DATE START : Sun 12 Mar 12:46:27 GMT 2023
 
 Pre-Calc Summary
 --------------------------------------------
-  date:                Thu  2 Mar 13:57:41 GMT 2023
-  hostname:            cx3-12-8.cx3.hpc.ic.ac.uk
-  system:              Linux cx3-12-8.cx3.hpc.ic.ac.uk 4.18.0-348.20.1.el8_5.x86_64 #1 SMP Tue Mar 8 12:56:54 EST 2022 x86_64 x86_64 x86_64 GNU/Linux
+  date:                Sun 12 Mar 12:46:41 GMT 2023
+  hostname:            cx3-7-2.cx3.hpc.ic.ac.uk
+  system:              Linux cx3-7-2.cx3.hpc.ic.ac.uk 4.18.0-348.20.1.el8_5.x86_64 #1 SMP Tue Mar 8 12:56:54 EST 2022 x86_64 x86_64 x86_64 GNU/Linux
   user:                hz1420
   input:               /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/testcase/graphene.d12
   output:              /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/testcase/graphene.out
-  temporary directory: /rds/general/user/hz1420/ephemeral/graphene_7132662
-  executable script:   /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/../run_exec
+  temporary directory: /rds/general/ephemeral/user/hz1420/ephemeral/graphene_7200853
+  executable script:   /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/run_exec
   executable dir:      /rds/general/user/hz1420/home/apps/CRYSTAL17_v2.2gnu/
   mpi + exe command:    mpiexec Pcrystal
 -------------------------------------------
@@ -29,12 +29,12 @@ All files are synchonised.
 Job Ready to Go
 -------------------------------------------
   Job name       : graphene
-  ID             : 7132662.pbs
+  ID             : 7200853.pbs
   Command        : mpiexec Pcrystal >> /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/testcase/graphene.out 2>&1
-  Temporary dir  : /rds/general/user/hz1420/ephemeral/graphene_7132662
+  Temporary dir  : /rds/general/ephemeral/user/hz1420/ephemeral/graphene_7200853
   List of files  : total 33
--rw-------. 1 hz1420 hpc-nmh   413 Mar  2 13:59 INPUT
--rw-------. 1 hz1420 hpc-nmh 11952 Mar  2 13:57 Job_script
+-rw-------. 1 hz1420 hpc-nmh   413 Mar 12 12:48 INPUT
+-rw-------. 1 hz1420 hpc-nmh 11308 Mar 12 12:46 Job_script_7200853
   Input script   :
 G Unit
 SLAB
@@ -79,27 +79,30 @@ SMEAR
 ENDSCF
 -------------------------------------------
 
- PROCESS            3  OF           24  WORKING
- PROCESS            6  OF           24  WORKING
- PROCESS            7  OF           24  WORKING
- PROCESS           17  OF           24  WORKING
- PROCESS           23  OF           24  WORKING
- PROCESS            0  OF           24  WORKING
- PROCESS           11  OF           24  WORKING
- PROCESS            2  OF           24  WORKING
  PROCESS            1  OF           24  WORKING
+ PROCESS            2  OF           24  WORKING
+ PROCESS            4  OF           24  WORKING
  PROCESS            5  OF           24  WORKING
+ PROCESS            7  OF           24  WORKING
+ PROCESS           10  OF           24  WORKING
+ PROCESS           12  OF           24  WORKING
+ PROCESS           13  OF           24  WORKING
+ PROCESS           15  OF           24  WORKING
+ PROCESS           16  OF           24  WORKING
+ PROCESS           17  OF           24  WORKING
+ PROCESS           19  OF           24  WORKING
+ PROCESS           22  OF           24  WORKING
+ PROCESS           23  OF           24  WORKING
+ PROCESS            3  OF           24  WORKING
+ PROCESS            8  OF           24  WORKING
  PROCESS            9  OF           24  WORKING
  PROCESS           20  OF           24  WORKING
- PROCESS            4  OF           24  WORKING
- PROCESS           15  OF           24  WORKING
- PROCESS           19  OF           24  WORKING
  PROCESS           21  OF           24  WORKING
- PROCESS           13  OF           24  WORKING
+ PROCESS            0  OF           24  WORKING
+ PROCESS            6  OF           24  WORKING
+ PROCESS           11  OF           24  WORKING
  PROCESS           14  OF           24  WORKING
- PROCESS            8  OF           24  WORKING
  PROCESS           18  OF           24  WORKING
- PROCESS           22  OF           24  WORKING
 
          
  *******************************************************************************
@@ -144,11 +147,8 @@ ENDSCF
  *(18) CAMBRIDGE UNIVERSITY - CAMBRIDGE (UK)                                   *
  *                                                                             *
  *******************************************************************************
- PROCESS           16  OF           24  WORKING
- EEEEEEEEEE STARTING  DATE 02 03 2023 TIME 13:59:58.9
+ EEEEEEEEEE STARTING  DATE 12 03 2023 TIME 12:48:52.0
  G Unit                                                                          
- PROCESS           10  OF           24  WORKING
- PROCESS           12  OF           24  WORKING
 
  SLAB CALCULATION
  SYSTEM AND LATTICE                   :  HEXAGONAL   
@@ -334,12 +334,12 @@ ENDSCF
  DISK SPACE FOR EIGENVECTORS (FTN 10)       94080 REALS
 
  SYMMETRY ADAPTION OF THE BLOCH FUNCTIONS ENABLED
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT gordsh1     TELAPSE        1.85 TCPU        0.03
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT gordsh1     TELAPSE        2.06 TCPU        0.11
 
  MATRIX SIZE: P(G)   16142, F(G)    3969, P(G) IRR    1249, F(G) IRR     705
  MAX G-VECTOR INDEX FOR 1- AND 2-ELECTRON INTEGRALS  55
 
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT INPUT       TELAPSE        1.89 TCPU        0.06
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT INPUT       TELAPSE        2.06 TCPU        0.11
 
  NEIGHBORS OF THE NON-EQUIVALENT ATOMS
 
@@ -358,8 +358,8 @@ ENDSCF
 
 
  THERE ARE NO SYMMETRY ALLOWED DIRECTIONS
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SYMM        TELAPSE        1.92 TCPU        0.10
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT INT_SCREEN  TELAPSE        1.92 TCPU        0.10
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SYMM        TELAPSE        2.12 TCPU        0.17
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT INT_SCREEN  TELAPSE        2.12 TCPU        0.18
 
  DFT PARAMETERS
 
@@ -367,7 +367,7 @@ ENDSCF
    1   6  C       6.0000      0.0000     0.77000000
 
  SIZE OF GRID=      12906
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MAKE_GRID2  TELAPSE        2.03 TCPU        0.20
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MAKE_GRID2  TELAPSE        2.21 TCPU        0.26
  BECKE WEIGHT FUNCTION
  RADSAFE =     2.00
  TOLERANCES - DENSITY:10**- 6; POTENTIAL:10**- 9; GRID WGT:10**-14
@@ -377,8 +377,8 @@ ENDSCF
  ANGULAR INTEGRATION - INTERVALS (ACCURACY LEVEL [N. POINTS] UPPER LIMIT):
   1(  6[ 146]   0.2)  2( 11[ 302]   0.5)  3( 14[ 590]   0.9)  4( 18[1454]   3.5)
   5( 14[ 590]9999.0)
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT INT_CALC    TELAPSE        2.03 TCPU        0.21
- EEEEEEEEEE INT_CALC TERMINATION  DATE 02 03 2023 TIME 14:00:00.9
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT INT_CALC    TELAPSE        2.21 TCPU        0.26
+ EEEEEEEEEE INT_CALC TERMINATION  DATE 12 03 2023 TIME 12:48:54.1
 
  *******************************************************************************
  G Unit                                                                          
@@ -387,7 +387,7 @@ ENDSCF
 
  CAPPA:IS1 24;IS2 24;IS3  1; K PTS MONK NET  61; SYMMOPS:K SPACE  24;G SPACE  12
 
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SDIK        TELAPSE        2.04 TCPU        0.21
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SDIK        TELAPSE        2.22 TCPU        0.26
 
  AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
          ATOMIC WAVEFUNCTION(S)
@@ -407,91 +407,91 @@ ENDSCF
  CHARGE NORMALIZATION FACTOR   1.00000000
  TOTAL ATOMIC CHARGES:
    6.0000000   6.0000000
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE        2.09 TCPU        0.25
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLXN     TELAPSE        2.10 TCPU        0.26
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE        2.24 TCPU        0.40
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE        2.23 TCPU        0.27
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLXN     TELAPSE        2.26 TCPU        0.28
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE        2.34 TCPU        0.31
  NUMERICALLY INTEGRATED DENSITY     12.0000018201
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE        2.27 TCPU        0.42
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE        2.39 TCPU        0.36
  CYC   0 ETOT(AU) -7.655179176511E+01 DETOT -7.66E+01 tst  0.00E+00 PX  1.00E+00
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT DIIS        TELAPSE        2.28 TCPU        0.44
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE        2.32 TCPU        0.47
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT DIIS        TELAPSE        2.40 TCPU        0.37
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE        2.46 TCPU        0.42
  POSSIBLY CONDUCTING STATE - EFERMI(AU) -1.2523212E-01 (RES. CHARGE  3.55E-15;IT.  0)
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE        2.33 TCPU        0.48
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE        2.47 TCPU        0.43
  CHARGE NORMALIZATION FACTOR   1.00000000
  TOTAL ATOMIC CHARGES:
    6.0000000   6.0000000
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE        2.33 TCPU        0.48
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLXN     TELAPSE        2.33 TCPU        0.48
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE        2.45 TCPU        0.60
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE        2.47 TCPU        0.43
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLXN     TELAPSE        2.48 TCPU        0.44
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE        2.56 TCPU        0.52
  NUMERICALLY INTEGRATED DENSITY     12.0000010940
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE        2.50 TCPU        0.64
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE        2.60 TCPU        0.55
  CYC   1 ETOT(AU) -7.608930316756E+01 DETOT  4.62E-01 tst  0.00E+00 PX  1.00E+00
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT DIIS        TELAPSE        2.50 TCPU        0.64
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT DIIS        TELAPSE        2.60 TCPU        0.55
  DIIS TEST: 0.30460E-02 AT SCF   CYCLE   1 - MIX   30 %
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE        5.02 TCPU        3.15
- POSSIBLY CONDUCTING STATE - EFERMI(AU) -9.8315163E-02 (RES. CHARGE  2.66E-15;IT.  0)
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE        5.06 TCPU        3.18
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE        2.63 TCPU        0.58
+ POSSIBLY CONDUCTING STATE - EFERMI(AU) -9.8315163E-02 (RES. CHARGE  1.78E-15;IT.  0)
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE        2.63 TCPU        0.58
  CHARGE NORMALIZATION FACTOR   1.00000000
  TOTAL ATOMIC CHARGES:
    6.0000000   6.0000000
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE        5.06 TCPU        3.18
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLXN     TELAPSE        5.07 TCPU        3.19
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE        5.20 TCPU        3.32
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE        2.64 TCPU        0.59
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLXN     TELAPSE        2.65 TCPU        0.59
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE        2.73 TCPU        0.67
  NUMERICALLY INTEGRATED DENSITY     12.0000011281
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE        5.24 TCPU        3.36
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE        2.76 TCPU        0.69
  CYC   2 ETOT(AU) -7.609117162559E+01 DETOT -1.87E-03 tst  2.43E-04 PX  1.66E-02
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT DIIS        TELAPSE        5.24 TCPU        3.36
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT DIIS        TELAPSE        2.76 TCPU        0.69
  DIIS TEST: 0.82806E-04 AT SCF   CYCLE   2 - DIIS ACTIVE - HISTORY:     2 CYCLES
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE        5.25 TCPU        3.36
- POSSIBLY CONDUCTING STATE - EFERMI(AU) -9.9131099E-02 (RES. CHARGE  2.84E-13;IT. 10)
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE        5.25 TCPU        3.36
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE        2.77 TCPU        0.70
+ POSSIBLY CONDUCTING STATE - EFERMI(AU) -9.9131099E-02 (RES. CHARGE  2.85E-13;IT. 10)
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE        2.77 TCPU        0.70
  CHARGE NORMALIZATION FACTOR   1.00000000
  TOTAL ATOMIC CHARGES:
    6.0000000   6.0000000
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE        5.25 TCPU        3.37
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLXN     TELAPSE        5.25 TCPU        3.37
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE        5.39 TCPU        3.50
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE        2.77 TCPU        0.70
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLXN     TELAPSE        2.78 TCPU        0.71
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE        2.87 TCPU        0.79
  NUMERICALLY INTEGRATED DENSITY     12.0000011296
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE        5.43 TCPU        3.55
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE        2.89 TCPU        0.82
  CYC   3 ETOT(AU) -7.609130298838E+01 DETOT -1.31E-04 tst  3.13E-05 PX  8.59E-03
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT DIIS        TELAPSE        5.43 TCPU        3.55
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT DIIS        TELAPSE        2.90 TCPU        0.82
  DIIS TEST: 0.10601E-05 AT SCF   CYCLE   3 - DIIS ACTIVE - HISTORY:     3 CYCLES
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE        5.44 TCPU        3.55
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE        2.90 TCPU        0.82
  POSSIBLY CONDUCTING STATE - EFERMI(AU) -9.8574266E-02 (RES. CHARGE  2.02E-11;IT. 10)
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE        5.44 TCPU        3.55
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE        2.91 TCPU        0.82
  CHARGE NORMALIZATION FACTOR   1.00000000
  TOTAL ATOMIC CHARGES:
    6.0000000   6.0000000
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE        5.44 TCPU        3.55
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLXN     TELAPSE        5.45 TCPU        3.56
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE        5.58 TCPU        3.69
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE        2.91 TCPU        0.82
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLXN     TELAPSE        2.92 TCPU        0.82
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE        3.00 TCPU        0.90
  NUMERICALLY INTEGRATED DENSITY     12.0000011303
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE        5.62 TCPU        3.73
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE        3.03 TCPU        0.93
  CYC   4 ETOT(AU) -7.609130346821E+01 DETOT -4.80E-07 tst  8.29E-08 PX  3.86E-04
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT DIIS        TELAPSE        5.63 TCPU        3.73
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT DIIS        TELAPSE        3.03 TCPU        0.93
  DIIS TEST: 0.73370E-09 AT SCF   CYCLE   4 - DIIS ACTIVE - HISTORY:     4 CYCLES
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE        5.63 TCPU        3.74
- POSSIBLY CONDUCTING STATE - EFERMI(AU) -9.8558295E-02 (RES. CHARGE  3.38E-13;IT.  6)
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE        5.63 TCPU        3.74
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE        3.06 TCPU        0.96
+ POSSIBLY CONDUCTING STATE - EFERMI(AU) -9.8558295E-02 (RES. CHARGE  3.40E-13;IT.  6)
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE        3.07 TCPU        0.96
  CHARGE NORMALIZATION FACTOR   1.00000000
  TOTAL ATOMIC CHARGES:
    6.0000000   6.0000000
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE        5.64 TCPU        3.74
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLXN     TELAPSE        5.64 TCPU        3.74
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE        5.78 TCPU        3.88
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE        3.07 TCPU        0.96
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLXN     TELAPSE        3.08 TCPU        0.97
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE        3.16 TCPU        1.04
  NUMERICALLY INTEGRATED DENSITY     12.0000011303
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE        5.82 TCPU        3.92
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE        3.19 TCPU        1.08
  CYC   5 ETOT(AU) -7.609130346663E+01 DETOT  1.58E-09 tst  7.10E-11 PX  7.69E-06
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT DIIS        TELAPSE        5.82 TCPU        3.92
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT DIIS        TELAPSE        3.19 TCPU        1.08
  DIIS TEST: 0.92113E-12 AT SCF   CYCLE   5 - DIIS ACTIVE - HISTORY:     5 CYCLES
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE        5.82 TCPU        3.92
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE        3.20 TCPU        1.08
  POSSIBLY CONDUCTING STATE - EFERMI(AU) -9.8558395E-02 (RES. CHARGE  0.00E+00;IT.  4)
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE        5.83 TCPU        3.93
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE        3.20 TCPU        1.08
  CHARGE NORMALIZATION FACTOR   1.00000000
  TOTAL ATOMIC CHARGES:
    6.0000000   6.0000000
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE        5.83 TCPU        3.93
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLXN     TELAPSE        5.83 TCPU        3.93
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE        3.20 TCPU        1.08
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLXN     TELAPSE        3.21 TCPU        1.08
 
  ::: DIPOLE MOMENT ALONG NON PERIODIC DIRECTIONS:
  ::: A.U.     (Z)  1.36185E-06
@@ -500,17 +500,17 @@ ENDSCF
  +++ ENERGIES IN A.U. +++
  ::: EXT EL-POLE                                  -1.7254183908874E+02
  ::: EXT EL-SPHEROPOLE                             0.0000000000000E+00
- ::: BIELET ZONE E-E                               1.6161590234392E+02
+ ::: BIELET ZONE E-E                               1.6161590234391E+02
  ::: TOTAL E-E                                    -1.0925936744824E+01
  ::: TOTAL E-N + N-E                              -8.8003591643423E+01
  ::: TOTAL N-N                                    -4.4572020877889E+01
  ::: KINETIC ENERGY                                7.5823137123164E+01
  ::: PSEUDO TOTAL   ENERGY                        -6.7678412142972E+01
  ::: VIRIAL COEFFICIENT                            1.0567570526022E+00
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE        5.96 TCPU        4.06
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE        3.29 TCPU        1.17
  NUMERICALLY INTEGRATED DENSITY     12.0000011303
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE        6.00 TCPU        4.10
- CYC   6 ETOT(AU) -7.609130346663E+01 DETOT -1.61E-12 tst  3.50E-14 PX  7.69E-06
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE        3.32 TCPU        1.19
+ CYC   6 ETOT(AU) -7.609130346663E+01 DETOT -1.55E-12 tst  3.50E-14 PX  7.69E-06
 
  == SCF ENDED - CONVERGENCE ON ENERGY      E(AU) -7.6091303466628E+01 CYCLES   6
 
@@ -525,108 +525,108 @@ ENDSCF
  (E(T)+F(T))/2    (E0)  -7.609130358697E+01
 
 
- TOTAL ENERGY(DFT)(AU)(  6) -7.6091303586967E+01 DE-1.6E-12 tester 3.5E-14
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT EDFT        TELAPSE        6.01 TCPU        4.10
+ TOTAL ENERGY(DFT)(AU)(  6) -7.6091303586966E+01 DE-1.5E-12 tester 3.5E-14
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT EDFT        TELAPSE        3.32 TCPU        1.19
  EIGENVECTORS IN FORTRAN UNIT  8
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT END         TELAPSE        6.02 TCPU        4.11
- EEEEEEEEEE TERMINATION  DATE 02 03 2023 TIME 14:00:04.9
-NODE    0 CPU TIME =         4.114
-NODE    1 CPU TIME =         4.153
-NODE    2 CPU TIME =         1.581
-NODE    3 CPU TIME =         4.337
-NODE    4 CPU TIME =         4.146
-NODE    5 CPU TIME =         4.136
-NODE    6 CPU TIME =         4.111
-NODE    7 CPU TIME =         4.084
-NODE    8 CPU TIME =         4.083
-NODE    9 CPU TIME =         4.136
-NODE   10 CPU TIME =         4.133
-NODE   11 CPU TIME =         4.063
-NODE   12 CPU TIME =         4.078
-NODE   13 CPU TIME =         4.070
-NODE   14 CPU TIME =         4.016
-NODE   15 CPU TIME =         4.056
-NODE   16 CPU TIME =         4.211
-NODE   17 CPU TIME =         4.046
-NODE   18 CPU TIME =         4.142
-NODE   19 CPU TIME =         4.101
-NODE   20 CPU TIME =         4.143
-NODE   21 CPU TIME =         4.157
-NODE   22 CPU TIME =         4.147
-NODE   23 CPU TIME =         4.130
-    TOTAL CPU TIME =        96.375
-Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAGNote: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT END         TELAPSE        3.33 TCPU        1.20
+ EEEEEEEEEE TERMINATION  DATE 12 03 2023 TIME 12:48:55.2
+NODE    0 CPU TIME =         1.201
+NODE    1 CPU TIME =         1.569
+NODE    2 CPU TIME =         1.422
+NODE    3 CPU TIME =         1.343
+NODE    4 CPU TIME =         1.430
+NODE    5 CPU TIME =         1.323
+NODE    6 CPU TIME =         1.263
+NODE    7 CPU TIME =         1.314
+NODE    8 CPU TIME =         1.284
+NODE    9 CPU TIME =         1.272
+NODE   10 CPU TIME =         1.425
+NODE   11 CPU TIME =         1.363
+NODE   12 CPU TIME =         1.336
+NODE   13 CPU TIME =         1.620
+NODE   14 CPU TIME =         1.313
+NODE   15 CPU TIME =         1.295
+NODE   16 CPU TIME =         1.387
+NODE   17 CPU TIME =         1.434
+NODE   18 CPU TIME =         1.548
+NODE   19 CPU TIME =         1.305
+NODE   20 CPU TIME =         1.418
+NODE   21 CPU TIME =         1.388
+NODE   22 CPU TIME =         1.272
+NODE   23 CPU TIME =         1.420
+    TOTAL CPU TIME =        32.947
+Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+Note: The following floating-point exceptions are signalling:Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL IEEE_UNDERFLOW_FLAG
+ IEEE_DENORMALNote: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+
+Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+Note: The following floating-point exceptions are signalling:Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+ IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+Note: The following floating-point exceptions are signalling:Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+ IEEE_UNDERFLOW_FLAGNote: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
  IEEE_DENORMAL
 Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
 Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
 Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
 Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
-Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
-Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
-Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
-Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
-Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
-Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
-Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
-Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
-Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
-Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
-Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
-Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
-Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
-Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
-Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
-Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
-Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
-Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
 
-DATE END   : Thu  2 Mar 14:00:04 GMT 2023
+DATE END   : Sun 12 Mar 12:48:55 GMT 2023
 Script run_exec done.
 --------------------------------------------
 
 Post Processing Report
 --------------------------------------------
-Begining of post processing : Thu  2 Mar 14:00:05 GMT 2023
+Begining of post processing : Sun 12 Mar 12:48:55 GMT 2023
 List of saved files
   TEMPORARY            SAVED
-  fort.9               graphene.f9   111308   Mar 2 14:00
-  fort.98              graphene.f98  282657   Mar 2 14:00
+  fort.9               graphene.f9   111308   Mar 12 12:48
+  fort.98              graphene.f98  282657   Mar 12 12:48
 --------------------------------------------
 
 Temporary Directory Disk Info
 --------------------------------------------
-  Temporary directory      : /rds/general/user/hz1420/ephemeral/graphene_7132662
+  Temporary directory      : /rds/general/ephemeral/user/hz1420/ephemeral/graphene_7200853
 
   Disk usage (df -h)
 Filesystem      Size  Used Avail Use% Mounted on
-rds              14P   13P  1.7P  88% /rds
+rds              14P   13P  1.5P  90% /rds
 
   Usage by folders (du -m)
-114	/rds/general/user/hz1420/ephemeral/graphene_7132662
+1	/rds/general/ephemeral/user/hz1420/ephemeral/graphene_7200853
 
   Detailed file list (ls -l .)
-    see /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/testcase/*.o7132662.pbs file
+    see /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/testcase/*.o7200853.pbs file
 --------------------------------------------
 
-End of post processing : Thu  2 Mar 14:00:07 GMT 2023
+End of post processing : Sun 12 Mar 12:48:56 GMT 2023
 Script post_proc done.
 --------------------------------------------
 Warning! Output exists: /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/testcase/graphene.out
 New data will be attached to the same file.
 Running Job Report
 --------------------------------------------
-DATE START : Thu  2 Mar 14:00:07 GMT 2023
+DATE START : Sun 12 Mar 12:48:57 GMT 2023
 
 Pre-Calc Summary
 --------------------------------------------
-  date:                Thu  2 Mar 14:00:23 GMT 2023
-  hostname:            cx3-12-8.cx3.hpc.ic.ac.uk
-  system:              Linux cx3-12-8.cx3.hpc.ic.ac.uk 4.18.0-348.20.1.el8_5.x86_64 #1 SMP Tue Mar 8 12:56:54 EST 2022 x86_64 x86_64 x86_64 GNU/Linux
+  date:                Sun 12 Mar 12:49:10 GMT 2023
+  hostname:            cx3-7-2.cx3.hpc.ic.ac.uk
+  system:              Linux cx3-7-2.cx3.hpc.ic.ac.uk 4.18.0-348.20.1.el8_5.x86_64 #1 SMP Tue Mar 8 12:56:54 EST 2022 x86_64 x86_64 x86_64 GNU/Linux
   user:                hz1420
   input:               /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/testcase/graphene.d3
   output:              /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/testcase/graphene.out
-  temporary directory: /rds/general/user/hz1420/ephemeral/graphene_7132662
-  executable script:   /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/../run_exec
+  temporary directory: /rds/general/ephemeral/user/hz1420/ephemeral/graphene_7200853
+  executable script:   /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/run_exec
   executable dir:      /rds/general/user/hz1420/home/apps/CRYSTAL17_v2.2gnu/
   mpi + exe command:    mpiexec Pproperties
 -------------------------------------------
@@ -639,7 +639,7 @@ qstat: cannot connect to server pbs (errno=110)
 
 Find input data: /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/testcase/graphene.d12
 Find input data: /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/testcase/graphene.d3
-Warning! Duplicate file detected in temporary directory: /rds/general/user/hz1420/ephemeral/graphene_7132662/INPUT.
+Warning! Duplicate file detected in temporary directory: /rds/general/ephemeral/user/hz1420/ephemeral/graphene_7200853/INPUT.
   The file will be covered by the new entry /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/testcase/graphene.d3.
 Find input reference: /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/testcase/graphene.f9
 Find input reference: /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/testcase/graphene.f9
@@ -648,14 +648,14 @@ All files are synchonised.
 Job Ready to Go
 -------------------------------------------
   Job name       : graphene
-  ID             : 7132662.pbs
+  ID             : 7200853.pbs
   Command        : mpiexec Pproperties >> /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/testcase/graphene.out 2>&1
-  Temporary dir  : /rds/general/user/hz1420/ephemeral/graphene_7132662
+  Temporary dir  : /rds/general/ephemeral/user/hz1420/ephemeral/graphene_7200853
   List of files  : total 33
--rw-------. 1 hz1420 hpc-nmh 111308 Mar  2 14:02 fort.20
--rw-------. 1 hz1420 hpc-nmh 111308 Mar  2 14:02 fort.9
--rw-------. 1 hz1420 hpc-nmh     73 Mar  2 14:02 INPUT
--rw-------. 1 hz1420 hpc-nmh  11952 Mar  2 14:00 Job_script
+-rw-------. 1 hz1420 hpc-nmh 111308 Mar 12 12:51 fort.20
+-rw-------. 1 hz1420 hpc-nmh 111308 Mar 12 12:51 fort.9
+-rw-------. 1 hz1420 hpc-nmh     73 Mar 12 12:51 INPUT
+-rw-------. 1 hz1420 hpc-nmh  11308 Mar 12 12:49 Job_script_7200853
   Input script   :
 BAND
 graphene
@@ -666,23 +666,26 @@ graphene
 END
 -------------------------------------------
 
- PROCESS           16  OF           24  WORKING
- PROCESS            3  OF           24  WORKING
- PROCESS            7  OF           24  WORKING
- PROCESS           17  OF           24  WORKING
- PROCESS           19  OF           24  WORKING
- PROCESS           20  OF           24  WORKING
  PROCESS            9  OF           24  WORKING
- PROCESS           23  OF           24  WORKING
- PROCESS           18  OF           24  WORKING
+ PROCESS           12  OF           24  WORKING
+ PROCESS           14  OF           24  WORKING
  PROCESS           21  OF           24  WORKING
- PROCESS            2  OF           24  WORKING
+ PROCESS            8  OF           24  WORKING
+ PROCESS           19  OF           24  WORKING
+ PROCESS            4  OF           24  WORKING
+ PROCESS            7  OF           24  WORKING
+ PROCESS           11  OF           24  WORKING
+ PROCESS           18  OF           24  WORKING
+ PROCESS            6  OF           24  WORKING
+ PROCESS            1  OF           24  WORKING
  PROCESS           13  OF           24  WORKING
  PROCESS            0  OF           24  WORKING
- PROCESS            1  OF           24  WORKING
- PROCESS            8  OF           24  WORKING
- PROCESS           14  OF           24  WORKING
+ PROCESS           17  OF           24  WORKING
+ PROCESS           20  OF           24  WORKING
  PROCESS           22  OF           24  WORKING
+ PROCESS           15  OF           24  WORKING
+ PROCESS           16  OF           24  WORKING
+ PROCESS           23  OF           24  WORKING
 
          
  *******************************************************************************
@@ -699,7 +702,6 @@ END
  *  M. LLUNELL(9), M. CAUSA'(10), Y. NOEL(8), L. MASCHIO(1,11), A. ERBA(1,11)  *
  *  M. RE'RAT(14), S. CASASSA(1,11)                                            *
  *                                                                             *
- PROCESS           11  OF           24  WORKING
  *        CONTRIBUTIONS TO THE CODE HAVE ALSO BEEN GIVEN BY                    *
  *                                                                             *
  *  M. FERRABONE(1,11), M. DE LA PIERRE(1,11), M. FERRERO(1,11),               *
@@ -728,13 +730,11 @@ END
  *(18) CAMBRIDGE UNIVERSITY - CAMBRIDGE (UK)                                   *
  *                                                                             *
  *******************************************************************************
- EEEEEEEEEE STARTING  DATE 02 03 2023 TIME 14:02:39.3
- PROCESS            4  OF           24  WORKING
- PROCESS            6  OF           24  WORKING
- PROCESS           15  OF           24  WORKING
- PROCESS           12  OF           24  WORKING
+ EEEEEEEEEE STARTING  DATE 12 03 2023 TIME 12:51:23.6
  PROCESS            5  OF           24  WORKING
+ PROCESS            2  OF           24  WORKING
  PROCESS           10  OF           24  WORKING
+ PROCESS            3  OF           24  WORKING
 
  *******************************************************************************
  G Unit                                                                          
@@ -771,7 +771,7 @@ END
     2    6 C     4    -0.710    -1.230     0.000   8.000E-01       6.000
  *******************************************************************************
  DE(K)                   0.000E+00  ENERGY LEVEL SHIFTING        0.00000
- TOTAL ENERGY -7.6091303586967E+01  CONVERGENCE ON ENER       -1.606E-12
+ TOTAL ENERGY -7.6091303586966E+01  CONVERGENCE ON ENER       -1.549E-12
  KIN. ENERGY   7.5823137123164E+01  VIR. COEFF.           1.05675705E+00
  N. OF SCF CYCLES                6  FERMI ENERGY              -0.986E-01
  WEIGHT OF F(I) IN F(I+1)      30
@@ -781,7 +781,7 @@ END
 
  GCALCO - MAX INDICES DIRECT LATTICE VECTOR    83    83     0
  NO.OF VECTORS CREATED 6999 STARS  503 RMAX   204.38542 BOHR
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT gordsh1     TELAPSE        1.68 TCPU        0.03
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT gordsh1     TELAPSE        0.83 TCPU        0.07
 
  MATRIX SIZE: P(G)   16142, F(G)    3969, P(G) IRR    1249, F(G) IRR     705
  MAX G-VECTOR INDEX FOR 1- AND 2-ELECTRON INTEGRALS  55
@@ -877,42 +877,35 @@ END
 
  CAPPA:IS1 24;IS2 24;IS3  1; K PTS MONK NET  61; SYMMOPS:K SPACE  24;G SPACE  12
 
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT BAND        TELAPSE        1.74 TCPU        0.06
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT BAND        TELAPSE        1.02 TCPU        0.21
  ENDPROP   
- TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT END         TELAPSE        1.74 TCPU        0.06
- EEEEEEEEEE TERMINATION  DATE 02 03 2023 TIME 14:02:41.0
-NODE    0 CPU TIME =         0.060
-NODE    1 CPU TIME =         0.059
-NODE    2 CPU TIME =         0.073
-NODE    3 CPU TIME =         1.578
-NODE    4 CPU TIME =         1.586
-NODE    5 CPU TIME =         0.059
-NODE    6 CPU TIME =         0.056
-NODE    7 CPU TIME =         0.045
-NODE    8 CPU TIME =         1.574
-NODE    9 CPU TIME =         0.044
-NODE   10 CPU TIME =         0.054
-NODE   11 CPU TIME =         0.042
-NODE   12 CPU TIME =         0.045
-NODE   13 CPU TIME =         0.052
-NODE   14 CPU TIME =         0.054
-NODE   15 CPU TIME =         1.569
-NODE   16 CPU TIME =         1.571
-NODE   17 CPU TIME =         1.565
-NODE   18 CPU TIME =         0.056
-NODE   19 CPU TIME =         1.579
-NODE   20 CPU TIME =         0.059
-NODE   21 CPU TIME =         0.058
-NODE   22 CPU TIME =         0.057
-NODE   23 CPU TIME =         1.567
-    TOTAL CPU TIME =        13.462
-Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
-Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
-Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
-Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
-Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
-Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAGNote: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
- IEEE_DENORMAL
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT END         TELAPSE        1.02 TCPU        0.21
+ EEEEEEEEEE TERMINATION  DATE 12 03 2023 TIME 12:51:24.5
+NODE    0 CPU TIME =         0.209
+NODE    1 CPU TIME =         0.246
+NODE    2 CPU TIME =         0.206
+NODE    3 CPU TIME =         0.146
+NODE    4 CPU TIME =         0.239
+NODE    5 CPU TIME =         0.222
+NODE    6 CPU TIME =         0.166
+NODE    7 CPU TIME =         0.153
+NODE    8 CPU TIME =         0.208
+NODE    9 CPU TIME =         0.258
+NODE   10 CPU TIME =         0.241
+NODE   11 CPU TIME =         0.226
+NODE   12 CPU TIME =         0.171
+NODE   13 CPU TIME =         0.197
+NODE   14 CPU TIME =         0.304
+NODE   15 CPU TIME =         0.136
+NODE   16 CPU TIME =         0.238
+NODE   17 CPU TIME =         0.189
+NODE   18 CPU TIME =         0.172
+NODE   19 CPU TIME =         0.166
+NODE   20 CPU TIME =         0.170
+NODE   21 CPU TIME =         0.213
+NODE   22 CPU TIME =         0.182
+NODE   23 CPU TIME =         0.193
+    TOTAL CPU TIME =         4.852
 Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
 Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
 Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
@@ -920,10 +913,17 @@ Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLA
 Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
 Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
 Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+Note: The following floating-point exceptions are signalling:Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+ IEEE_UNDERFLOW_FLAGNote: The following floating-point exceptions are signalling: IEEE_DENORMAL
 Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
 Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
 Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
 Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+ IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+Note: The following floating-point exceptions are signalling:Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
+ IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
 Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
 Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
 Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
@@ -931,37 +931,37 @@ Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLA
 Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
 Note: The following floating-point exceptions are signalling: IEEE_UNDERFLOW_FLAG IEEE_DENORMAL
 
-DATE END   : Thu  2 Mar 14:02:41 GMT 2023
+DATE END   : Sun 12 Mar 12:51:24 GMT 2023
 Script run_exec done.
 --------------------------------------------
 
 Post Processing Report
 --------------------------------------------
-Begining of post processing : Thu  2 Mar 14:02:41 GMT 2023
+Begining of post processing : Sun 12 Mar 12:51:24 GMT 2023
 List of saved files
   TEMPORARY            SAVED
 Warning! Duplicate file detected in out directory: /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/testcase/graphene.f9.
-  The file will be covered by the new entry /rds/general/user/hz1420/ephemeral/graphene_7132662/fort.9.
-  fort.9               graphene.f9   111308   Mar 2 14:02
-  fort.25              graphene.f25  10845    Mar 2 14:02
-  BAND.DAT             graphene.BAND  12760    Mar 2 14:02
+  The file will be covered by the new entry /rds/general/ephemeral/user/hz1420/ephemeral/graphene_7200853/fort.9.
+  fort.9               graphene.f9   111308   Mar 12 12:51
+  fort.25              graphene.f25  10845    Mar 12 12:51
+  BAND.DAT             graphene.BAND  12760    Mar 12 12:51
 --------------------------------------------
 
 Temporary Directory Disk Info
 --------------------------------------------
-  Temporary directory      : /rds/general/user/hz1420/ephemeral/graphene_7132662
+  Temporary directory      : /rds/general/ephemeral/user/hz1420/ephemeral/graphene_7200853
 
   Disk usage (df -h)
 Filesystem      Size  Used Avail Use% Mounted on
-rds              14P   13P  1.7P  88% /rds
+rds              14P   13P  1.5P  90% /rds
 
   Usage by folders (du -m)
-1	/rds/general/user/hz1420/ephemeral/graphene_7132662
+1	/rds/general/ephemeral/user/hz1420/ephemeral/graphene_7200853
 
   Detailed file list (ls -l .)
-    see /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/testcase/*.o7132662.pbs file
+    see /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/testcase/*.o7200853.pbs file
 --------------------------------------------
 
-End of post processing : Thu  2 Mar 14:02:42 GMT 2023
+End of post processing : Sun 12 Mar 12:51:26 GMT 2023
 Script post_proc done.
 --------------------------------------------

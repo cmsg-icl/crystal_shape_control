@@ -1,7 +1,7 @@
 #!/bin/bash  --login
 #PBS -N example10-free-300K0G
 #PBS -l select=1:ncpus=24:mem=100GB:mpiprocs=24:ompthreads=1:avx2=true
-#PBS -l walltime=1:0:00
+#PBS -l walltime=01:00:00
 
 echo "PBS Job Report"
 echo "--------------------------------------------"
@@ -27,8 +27,8 @@ export OMP_NUM_THREADS=1
 cd ${PBS_O_WORKDIR}
 
 # start calculation: command added below by gen_sub
-timeout 57m /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/GULP/../run_exec -set /rds/general/user/hz1420/home/etc/runGULP6/settings -in example10-free-300K0G.gin -ref  -- 'mpiexec gulp-mpi < [jobname].gin'
-/rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/GULP/../post_proc -in example10-free-300K0G.gin -set /rds/general/user/hz1420/home/etc/runGULP6/settings
+timeout 57m /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/run_exec -set /rds/general/user/hz1420/home/etc/runGULP6/settings -in example10-free-300K0G.gin -ref  -- 'mpiexec gulp-mpi < example10-free-300K0G.gin'
+/rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/post_proc -in example10-free-300K0G.gin -set /rds/general/user/hz1420/home/etc/runGULP6/settings
 
 
 if [[ -f ./example10-free-300K0G.run ]];then

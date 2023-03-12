@@ -1,11 +1,11 @@
 PBS Job Report
 --------------------------------------------
-  Start Date : Wed  1 Mar 21:45:36 GMT 2023
-  PBS Job ID : 7127847.pbs
+  Start Date : Sun 12 Mar 11:18:30 GMT 2023
+  PBS Job ID : 7200381.pbs
   Status
 --------------------------------------------
 
-Printed output filename /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/GULP/testcase/example10-free-300K0G.out
+Printed output filename /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/GULP6/testcase/example10-free-300K0G.out
 Loading GLUP 6.1.2 (with PLUMED) ...
 Modules loaded:
 	Intel-suite 2019.4
@@ -15,34 +15,34 @@ Modules loaded:
 Loading /rds/general/user/hz1420/home/apps/gulp-6.1.2/module_gulp
   Loading requirement: fftw/3.3.3-double intel-suite/2019.4 mpi/intel-2019
 MPI command: mpiexec gulp-mpi < example10-free-300K0G.gin
-Temporary directory : /rds/general/user/hz1420/ephemeral/example10-free-300K0G_7127847
+Temporary directory : /rds/general/ephemeral/user/hz1420/ephemeral/example10-free-300K0G_7200381
 Job Executation Script
 --------------------------------------------
-/rds/general/user/hz1420/ephemeral/example10-free-300K0G_7127847/Job_script
+/rds/general/ephemeral/user/hz1420/ephemeral/example10-free-300K0G_7200381/Job_script_7200381
 --------------------------------------------
 
 Running Job Report
 --------------------------------------------
-DATE START : Wed  1 Mar 21:47:45 GMT 2023
+DATE START : Sun 12 Mar 11:20:39 GMT 2023
 
-PBE NODEFILE Info: Found in /var/spool/PBS/aux/7127847.pbs
+PBE NODEFILE Info
 --------------------------------------------
-/var/spool/PBS/aux/7127847.pbs
-  temporary directory on cx3-7-2.cx3.hpc.ic.ac.uk
+Found in /var/spool/PBS/aux/7200381.pbs
+  temporary directory on cx3-13-5.cx3.hpc.ic.ac.uk
 --------------------------------------------
 
 Pre-Calc Summary
 --------------------------------------------
-  date:                Wed  1 Mar 21:47:59 GMT 2023
-  hostname:            cx3-7-2.cx3.hpc.ic.ac.uk
-  system:              Linux cx3-7-2.cx3.hpc.ic.ac.uk 4.18.0-348.20.1.el8_5.x86_64 #1 SMP Tue Mar 8 12:56:54 EST 2022 x86_64 x86_64 x86_64 GNU/Linux
+  date:                Sun 12 Mar 11:20:53 GMT 2023
+  hostname:            cx3-13-5.cx3.hpc.ic.ac.uk
+  system:              Linux cx3-13-5.cx3.hpc.ic.ac.uk 4.18.0-348.20.1.el8_5.x86_64 #1 SMP Tue Mar 8 12:56:54 EST 2022 x86_64 x86_64 x86_64 GNU/Linux
   user:                hz1420
-  input:               /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/GULP/testcase/example10-free-300K0G.gin
-  output:              /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/GULP/testcase/example10-free-300K0G.out
-  temporary directory: /rds/general/user/hz1420/ephemeral/example10-free-300K0G_7127847
-  executable script:   /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/GULP/../run_exec
+  input:               /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/GULP6/testcase/example10-free-300K0G.gin
+  output:              /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/GULP6/testcase/example10-free-300K0G.out
+  temporary directory: /rds/general/ephemeral/user/hz1420/ephemeral/example10-free-300K0G_7200381
+  executable script:   /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/run_exec
   executable dir:      module load /rds/general/user/hz1420/home/apps/gulp-6.1.2/module_gulp
-  mpi + exe command:    mpiexec gulp-mpi < [jobname].gin
+  mpi + exe command:    mpiexec gulp-mpi < example10-free-300K0G.gin
 -------------------------------------------
 
 PBS Job Status
@@ -51,20 +51,20 @@ PBS Job Status
 qstat: cannot connect to server pbs (errno=110)
 -------------------------------------------
 
-Find input data: /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/GULP/testcase/example10-free-300K0G.gin
+Find input data: /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/GULP6/testcase/example10-free-300K0G.gin
 Input example10-free-300K0G.gin copied.
-File synchonised on cx3-7-2.cx3.hpc.ic.ac.uk : /rds/general/user/hz1420/ephemeral/example10-free-300K0G_7127847/example10-free-300K0G.gin
+File synchonised on cx3-13-5.cx3.hpc.ic.ac.uk : /rds/general/ephemeral/user/hz1420/ephemeral/example10-free-300K0G_7200381/example10-free-300K0G.gin
 All files are synchonised.
 
 Job Ready to Go
 -------------------------------------------
   Job name       : example10-free-300K0G
-  ID             : 7127847.pbs
-  Command        : mpiexec gulp-mpi < example10-free-300K0G.gin >> /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/GULP/testcase/example10-free-300K0G.out 2>&1
-  Temporary dir  : /rds/general/user/hz1420/ephemeral/example10-free-300K0G_7127847
+  ID             : 7200381.pbs
+  Command        : mpiexec gulp-mpi < example10-free-300K0G.gin >> /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/GULP6/testcase/example10-free-300K0G.out 2>&1
+  Temporary dir  : /rds/general/ephemeral/user/hz1420/ephemeral/example10-free-300K0G_7200381
   List of files  : total 33
--rw-------. 1 hz1420 hpc-nmh  2596 Mar  1 21:50 example10-free-300K0G.gin
--rw-------. 1 hz1420 hpc-nmh 11905 Mar  1 21:47 Job_script
+-rw-------. 1 hz1420 hpc-nmh  2596 Mar 12 11:23 example10-free-300K0G.gin
+-rw-------. 1 hz1420 hpc-nmh 11269 Mar 12 11:20 Job_script_7200381
   Input script   :
 opti molecule conp prop c6 free_energy
 title
@@ -129,38 +129,39 @@ pressure       0.0
 Entering temporary directory...
 Launching the job...
 
-DATE END   : Wed  1 Mar 21:50:36 GMT 2023
+DATE END   : Sun 12 Mar 11:23:29 GMT 2023
 Script run_exec done.
 --------------------------------------------
 
 Post Processing Report
 --------------------------------------------
-Begining of post processing : Wed  1 Mar 21:50:36 GMT 2023
+Begining of post processing : Sun 12 Mar 11:23:30 GMT 2023
 List of saved files
   TEMPORARY            SAVED
 --------------------------------------------
 
 Temporary Directory Disk Info
 --------------------------------------------
-  Temporary directory      : /rds/general/user/hz1420/ephemeral/example10-free-300K0G_7127847
+  Temporary directory      : /rds/general/ephemeral/user/hz1420/ephemeral/example10-free-300K0G_7200381
 
   Disk usage (df -h)
 Filesystem      Size  Used Avail Use% Mounted on
-rds              14P   13P  1.7P  88% /rds
+rds              14P   13P  1.5P  90% /rds
 
   Usage by folders (du -m)
-1	/rds/general/user/hz1420/ephemeral/example10-free-300K0G_7127847
+1	/rds/general/ephemeral/user/hz1420/ephemeral/example10-free-300K0G_7200381
 
   Detailed file list (ls -l .)
+    see /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/GULP6/testcase/*.o7200381.pbs file
 total 33
--rw-------. 1 hz1420 hpc-nmh  2596 Mar  1 21:50 example10-free-300K0G.gin
--rw-------. 1 hz1420 hpc-nmh 11905 Mar  1 21:47 Job_script
--rw-------. 1 hz1420 hpc-nmh  4164 Mar  1 21:50 Post_script
+-rw-------. 1 hz1420 hpc-nmh  2596 Mar 12 11:23 example10-free-300K0G.gin
+-rw-------. 1 hz1420 hpc-nmh 11269 Mar 12 11:20 Job_script_7200381
+-rw-------. 1 hz1420 hpc-nmh  4040 Mar 12 11:23 Post_script_7200381
 --------------------------------------------
 
 Check files across nodes ...
 List of saved files
   TEMPORARY            SAVED
-End of post processing : Wed  1 Mar 21:50:37 GMT 2023
+End of post processing : Sun 12 Mar 11:23:30 GMT 2023
 Script post_proc done.
 --------------------------------------------

@@ -1,21 +1,21 @@
 # Job submission scripts
 SUBMISSION_EXT
- .qsub
+.qsub
 
 NCPU_PER_NODE
- 24
+24
 
 MEM_PER_NODE
- 100
+50
 
 NTHREAD_PER_PROC
- 1
+1
 
 NGPU_PER_NODE
- 0
+0
 
 GPU_TYPE
- RTX6000
+RTX6000
 
 BUDGET_CODE
 
@@ -24,24 +24,24 @@ QOS
 PARTITION
 
 TIME_OUT
- 3
+3
 
 JOB_TMPDIR
- /rds/general/user/hz1420/ephemeral
+nodir
 
 
 # Executables
 EXEDIR
- module load  /rds/general/user/hz1420/home/apps/gulp-6.1.2/module_gulp
+module load  gromacs/2021.3-mpi
 
 MPIDIR
- module load  mpi/intel-2019
+module load mpi/intel-2019
 
 EXE_TABLE                                                               [jobname]
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 LABEL      MPI & OPTION                                                 EXECUTABLE & OPTION                                          DEFINITION
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
-pgulp      mpiexec                                                      gulp-mpi < [jobname].gin                                     Parallel GULP exectuable with PLUMED add-on
+mdrun      mpiexec                                                      gmx_mpi mdrun -s [job].tpr                                   Parallel GROMACS MD calculation
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -50,7 +50,6 @@ PRE_CALC    [jobname]    [jobname]/[refname]
 -----------------------------------------------------------------------------------
 SAVED                TEMPORARY            DEFINITION
 -----------------------------------------------------------------------------------
-[jobname].gin        [jobname].gin        GULP input file
 -----------------------------------------------------------------------------------
 
 REF_FILE    [refname]    [jobname]/[refname]
@@ -63,9 +62,6 @@ POST_CALC   [jobname]    [jobname]
 -----------------------------------------------------------------------------------
 SAVED                TEMPORARY            DEFINITION
 -----------------------------------------------------------------------------------
-*                    *.xyz                Geometry file xyz format
-*                    *.lmp                Geometry file LAMMPS format
-*                    *.inp                Force field coefficient file LAMMPS format
 -----------------------------------------------------------------------------------
                          
 

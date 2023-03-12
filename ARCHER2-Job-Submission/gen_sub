@@ -62,6 +62,10 @@ EOF
     check_INFILE_
     if [[ ! -z ${REFNAME} ]]; then
         check_REFNAME_
+    else
+	    for ((i=0; i<${#EXELABEL[@]}; i++)); do
+		    REFNAME+=('no')
+		done
     fi
     check_ND_
     check_WT_

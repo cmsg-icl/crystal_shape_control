@@ -1,7 +1,7 @@
 #!/bin/bash  --login
 #PBS -N graphene-band
 #PBS -l select=1:ncpus=24:mem=100GB:mpiprocs=24:ompthreads=1:avx2=true
-#PBS -l walltime=0:60:00
+#PBS -l walltime=00:30:00
 
 echo "PBS Job Report"
 echo "--------------------------------------------"
@@ -27,12 +27,12 @@ export OMP_NUM_THREADS=1
 cd ${PBS_O_WORKDIR}
 
 # start calculation: command added below by gen_sub
-timeout 37m /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/../run_exec -set /rds/general/user/hz1420/home/etc/runCRYSTAL17/settings -in graphene.d12 -ref no -- 'mpiexec Pcrystal'
-/rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/../post_proc -in graphene.d12 -set /rds/general/user/hz1420/home/etc/runCRYSTAL17/settings
+timeout 17m /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/run_exec -set /rds/general/user/hz1420/home/etc/runCRYSTAL17/settings -in graphene.d12 -ref no -- 'mpiexec Pcrystal'
+/rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/post_proc -in graphene.d12 -set /rds/general/user/hz1420/home/etc/runCRYSTAL17/settings
 
 
-timeout 17m /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/../run_exec -set /rds/general/user/hz1420/home/etc/runCRYSTAL17/settings -in graphene.d3 -ref graphene. -- 'mpiexec Pproperties'
-/rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/CRYSTAL17/../post_proc -in graphene.d3 -set /rds/general/user/hz1420/home/etc/runCRYSTAL17/settings
+timeout 7m /rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/run_exec -set /rds/general/user/hz1420/home/etc/runCRYSTAL17/settings -in graphene.d3 -ref graphene -- 'mpiexec Pproperties'
+/rds/general/user/hz1420/home/GitHub/crystal_shape_control/Imperial-HPC-Job-Submission/post_proc -in graphene.d3 -set /rds/general/user/hz1420/home/etc/runCRYSTAL17/settings
 
 
 if [[ -f ./graphene-band.run ]];then

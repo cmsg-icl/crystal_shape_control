@@ -8,7 +8,7 @@ NCPU_PER_NODE
 MEM_PER_NODE
  100
 
-N_THREAD
+NTHREAD_PER_PROC
  1
 
 NGPU_PER_NODE
@@ -37,16 +37,16 @@ EXEDIR
 MPIDIR
  module load  /rds/general/user/hz1420/home/apps/openmpi-4.1.4/openmpi-4.1.4_module
 
-EXE_TABLE                       [jobname]
------------------------------------------------------------------------------------
-LABEL      MPI & OPTION         EXECUTABLE & OPTION            DEFINITION
------------------------------------------------------------------------------------
-pcrys      mpiexec              Pcrystal                       Parallel crystal calculation
-mppcrys    mpiexec              MPPcrystal                     Massive parallel crystal calculation
-pprop      mpiexec              Pproperties                    Parallel properties calculation
-scrys                           crystal < INPUT                Serial crystal calculation
-sprop                           properties < INPUT             Serial properties calculation
------------------------------------------------------------------------------------
+EXE_TABLE                                                               [jobname]
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+LABEL      MPI & OPTION                                                 EXECUTABLE & OPTION                                          DEFINITION
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+pcrys      mpiexec                                                      Pcrystal                                                     Parallel crystal calculation
+mppcrys    mpiexec                                                      MPPcrystal                                                   Massive parallel crystal calculation
+pprop      mpiexec                                                      Pproperties                                                  Parallel properties calculation
+scrys                                                                   crystal < INPUT                                              Serial crystal calculation
+sprop                                                                   properties < INPUT                                           Serial properties calculation
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 # file formats table

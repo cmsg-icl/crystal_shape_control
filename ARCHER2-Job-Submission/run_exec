@@ -11,10 +11,11 @@ function get_input_ {
     # REFNAME: Reference file name without extension
     # COMMAND: Command + options to lauch calculation
 
-    param_list=$(getopt -a -l set:,in:,ref:: -n "$0" -- ${in_var} 2> /dev/null) 
+    param_list=$(getopt -a -l set:,in:,ref: -n "$0" -- ${in_var} 2> /dev/null) 
     eval set -- "${param_list}"
     COMMAND=""
     REFNAME=""
+    echo "Parameter list: ${param_list}"
     while [[ true ]]; do
         case $1 in
         --set )
@@ -23,7 +24,7 @@ function get_input_ {
             shift; JOBFILE=$1; JOBNAME=${JOBFILE%.*}; JOBNAME=${JOBNAME##*/} ;;
         --ref )
             shift; 
-			if [[ -z $1 ]]; then
+			if [[ ! -z $1 ]]; then
 			    REFNAME=$1;
 				REFNAME=${REFNAME%.*}; 
 				REFNAME=${REFNAME##*/};

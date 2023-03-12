@@ -10,6 +10,7 @@ function get_input_ {
 
     param_list=$(getopt -a -l set:,in: -n "$0" -- ${in_var} 2> /dev/null) 
     eval set -- "${param_list}"
+    echo "Parameter list: ${param_list}"
     while [[ true ]]; do
         case $1 in
         --in ) 
