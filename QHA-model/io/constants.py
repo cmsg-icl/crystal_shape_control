@@ -209,11 +209,15 @@ class Constants:
         self._assign_hartree()
 
     def redefine(self, unit):
+        """
+        Define the unit system of the solver - Disabled. For testing only.
+        Hartree unit system is the only unit system for solvers
+        """
         import scipy.constants as scst
 
         method = {
             'HARTREE': 'self._assign_hartree()',
-            'METRIC': 'self._assign_metric()'
+            # 'METRIC': 'self._assign_metric()'
         }
 
         param = {'self': self}
@@ -295,57 +299,57 @@ class Constants:
 
         return self
 
-    def _assign_metric(self):
-        """
-        Assign constants and unit conversion parameters based on metric system
-        Rarely tested and not recommanded!
-        """
-        import scipy.constants as scst
+#     def _assign_metric(self):
+#         """
+#         Assign constants and unit conversion parameters based on metric system
+#         Rarely tested and not recommanded!
+#         """
+#         import scipy.constants as scst
 
-        self._pi = scst.pi
-        self._rad = scst.pi / 180.
-        self._deg = 1.
-        self._h = scst.h
-        self._hbar = scst.hbar
-        self._kb = scst.k
-        self._na = scst.Avogadro
-        self._c = scst.c
-        self._epsilon0 = scst.epsilon_0
-        self._me = scst.m_e**-1
-        self._mau = scst.physical_constants['unified atomic mass unit'][0]**-1
-        self._j = 1.
-        self._kjmol = 1e-3 * scst.Avogadro
-        # https://en.wikipedia.org/wiki/Calorie
-        self._kcalmol = 1e-3 * scst.Avogadro / 4.184
-        self._ev = scst.physical_constants['electron volt'][0]**-1
-        self._ha = scst.physical_constants['Hartree energy'][0]**-1
-        self._ry = 2 * scst.physical_constants['Hartree energy'][0]**-1
-        self._ang = scst.physical_constants['Angstrom star'][0]**-1
-        self._br = scst.physical_constants['Bohr radius'][0]**-1
-        self._cmmol = 1e2 * scst.Avogadro
-        self._ang2 = scst.physical_constants['Angstrom star'][0]**-2
-        self._br2 = scst.physical_constants['Bohr radius'][0]**-2
-        self._cm2mol = 1e4 * scst.Avogadro
-        self._ang3 = scst.physical_constants['Angstrom star'][0]**-3
-        self._br3 = scst.physical_constants['Bohr radius'][0]**-3
-        self._cm3mol = 1e6 * scst.Avogadro
-        self._k = 1.
-        self._s = 1.
-        self._tau = scst.c * \
-            scst.physical_constants['fine-structure constant'][0] * \
-            scst.physical_constants['Bohr radius'][0]**-1
-        self._thz = 1e-12
-        self._cm_1 = 1e-2 * scst.c**-1
-        self._fau = scst.physical_constants['inverse fine-structure constant'][0] * \
-            scst.c**-1 * scst.physical_constants['Bohr radius'][0]
-        self._mpa = 1e-6
-        self._gpa = 1e-9
-        self._pau = scst.physical_constants['Bohr radius'][0]**3 * \
-            scst.physical_constants['Hartree energy'][0]**-1
-        self._jmolk = scst.Avogadro
-        self._sau = scst.physical_constants['Hartree energy'][0]**-1
+#         self._pi = scst.pi
+#         self._rad = scst.pi / 180.
+#         self._deg = 1.
+#         self._h = scst.h
+#         self._hbar = scst.hbar
+#         self._kb = scst.k
+#         self._na = scst.Avogadro
+#         self._c = scst.c
+#         self._epsilon0 = scst.epsilon_0
+#         self._me = scst.m_e**-1
+#         self._mau = scst.physical_constants['unified atomic mass unit'][0]**-1
+#         self._j = 1.
+#         self._kjmol = 1e-3 * scst.Avogadro
+#         # https://en.wikipedia.org/wiki/Calorie
+#         self._kcalmol = 1e-3 * scst.Avogadro / 4.184
+#         self._ev = scst.physical_constants['electron volt'][0]**-1
+#         self._ha = scst.physical_constants['Hartree energy'][0]**-1
+#         self._ry = 2 * scst.physical_constants['Hartree energy'][0]**-1
+#         self._ang = scst.physical_constants['Angstrom star'][0]**-1
+#         self._br = scst.physical_constants['Bohr radius'][0]**-1
+#         self._cmmol = 1e2 * scst.Avogadro
+#         self._ang2 = scst.physical_constants['Angstrom star'][0]**-2
+#         self._br2 = scst.physical_constants['Bohr radius'][0]**-2
+#         self._cm2mol = 1e4 * scst.Avogadro
+#         self._ang3 = scst.physical_constants['Angstrom star'][0]**-3
+#         self._br3 = scst.physical_constants['Bohr radius'][0]**-3
+#         self._cm3mol = 1e6 * scst.Avogadro
+#         self._k = 1.
+#         self._s = 1.
+#         self._tau = scst.c * \
+#             scst.physical_constants['fine-structure constant'][0] * \
+#             scst.physical_constants['Bohr radius'][0]**-1
+#         self._thz = 1e-12
+#         self._cm_1 = 1e-2 * scst.c**-1
+#         self._fau = scst.physical_constants['inverse fine-structure constant'][0] * \
+#             scst.c**-1 * scst.physical_constants['Bohr radius'][0]
+#         self._mpa = 1e-6
+#         self._gpa = 1e-9
+#         self._pau = scst.physical_constants['Bohr radius'][0]**3 * \
+#             scst.physical_constants['Hartree energy'][0]**-1
+#         self._jmolk = scst.Avogadro
+#         self._sau = scst.physical_constants['Hartree energy'][0]**-1
 
-        return self
+#         return self
 
 constant = Constants()
 sys.modules[__name__] = constant

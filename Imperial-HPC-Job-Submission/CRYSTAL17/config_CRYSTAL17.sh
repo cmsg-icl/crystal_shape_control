@@ -1,6 +1,16 @@
 #!/bin/bash
 
 function welcome_msg {
+    core_version=`grep 'core' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,22,11))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
+    core_date=`grep 'core' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,33,21))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
+    core_author=`grep 'core' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,54,21))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
+    core_contact=`grep 'core' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,75,31))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
+    core_acknolg=`grep 'core' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,106,length($0)))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
+    code_version=`grep 'CRYSTAL17' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,22,11))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
+    code_date=`grep 'CRYSTAL17' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,33,21))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
+    code_author=`grep 'CRYSTAL17' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,54,21))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
+    code_contact=`grep 'CRYSTAL17' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,75,31))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
+    code_acknolg=`grep 'CRYSTAL17' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,106,length($0)))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
     cat << EOF
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
@@ -15,17 +25,17 @@ function welcome_msg {
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
-CRYSTAL 17 Job Submitter for Imperial HPC - Configuration
+CRYSTAL17 job submission script for Imperial HPC - Setting up
 
-Installation date     : `date`
-Version               : v2.3
-IC-HPC script version : v1.5
-Batch system          : PBS
+Job submission script installed date : `date`
+Batch system                         : PBS
+Job submission script version        : ${code_version} (${code_date})
+Job submission script author         : ${code_author} (${code_contact})
+Core script version                  : ${core_version} (${core_date})
+Job submission script author         : ${core_author} (${core_contact})
 
-Configured by Spica-Vir, Feb.26, 23, ICL, spica.h.zhou@gmail.com
-Based on IC-HPC script released by Spica-Vir, Mar.11, 23, ICL, spica.h.zhou@gmail.com
-
-Special thanks to K. Tallat-Kelpsa, G.Mallia and N.M.Harrison
+${code_acknolg}
+${core_acknolg}
 
 EOF
 }
@@ -42,7 +52,6 @@ function get_scriptdir {
 EOF
 
     read -p " " SCRIPTDIR
-    SCRIPTDIR=`realpath $(echo ${SCRIPTDIR})`
 
     if [[ -z ${SCRIPTDIR} ]]; then
         SCRIPTDIR=${HOME}/etc/runCRYSTAL17
@@ -52,6 +61,7 @@ EOF
         SCRIPTDIR=${SCRIPTDIR%/*}
     fi
 
+    SCRIPTDIR=`realpath $(echo ${SCRIPTDIR})`
     source_dir=`realpath $(dirname $0)`
     if [[ ${source_dir} == ${SCRIPTDIR} ]]; then
         cat << EOF
@@ -172,7 +182,7 @@ function set_settings {
     sed -i "/SUBMISSION_EXT/a\ .qsub" ${SETFILE}
     sed -i "/NCPU_PER_NODE/a\ 24" ${SETFILE}
     sed -i "/MEM_PER_NODE/a\ 100" ${SETFILE}
-    sed -i "/N_THREAD/a\ 1" ${SETFILE}
+    sed -i "/NTHREAD_PER_PROC/a\ 1" ${SETFILE}
     sed -i "/NGPU_PER_NODE/a\ 0" ${SETFILE}
     sed -i "/GPU_TYPE/a\ RTX6000" ${SETFILE}
     sed -i "/TIME_OUT/a\ 3" ${SETFILE}
@@ -180,19 +190,19 @@ function set_settings {
     sed -i "/EXEDIR/a\ ${EXEDIR}" ${SETFILE}
     sed -i "/MPIDIR/a\ ${MPIDIR}" ${SETFILE}
 
-    # Executable tabel
+    # Executable table
 
     LINE_EXE=`grep -nw 'EXE_TABLE' ${SETFILE}`
     LINE_EXE=`echo "scale=0;${LINE_EXE%:*}+3" | bc`
-    sed -i "${LINE_EXE}a\sprop                           properties < INPUT             Serial properties calculation" ${SETFILE}
-    sed -i "${LINE_EXE}a\scrys                           crystal < INPUT                Serial crystal calculation" ${SETFILE}
-    sed -i "${LINE_EXE}a\pprop      mpiexec              Pproperties                    Parallel properties calculation" ${SETFILE}
-    sed -i "${LINE_EXE}a\mppcrys    mpiexec              MPPcrystal                     Massive parallel crystal calculation" ${SETFILE}
-    sed -i "${LINE_EXE}a\pcrys      mpiexec              Pcrystal                       Parallel crystal calculation" ${SETFILE}
+    sed -i "${LINE_EXE}a\sprop                                                                   properties < INPUT                                           Serial properties calculation" ${SETFILE}
+    sed -i "${LINE_EXE}a\scrys                                                                   crystal < INPUT                                              Serial crystal calculation" ${SETFILE}
+    sed -i "${LINE_EXE}a\pprop      mpiexec                                                      Pproperties                                                  Parallel properties calculation" ${SETFILE}
+    sed -i "${LINE_EXE}a\mppcrys    mpiexec                                                      MPPcrystal                                                   Massive parallel crystal calculation" ${SETFILE}
+    sed -i "${LINE_EXE}a\pcrys      mpiexec                                                      Pcrystal                                                     Parallel crystal calculation" ${SETFILE}
 
     # Input file table
 
-	LINE_PRE=`grep -nw 'PRE_CALC' ${SETFILE}`
+    LINE_PRE=`grep -nw 'PRE_CALC' ${SETFILE}`
     LINE_PRE=`echo "scale=0;${LINE_PRE%:*}+3" | bc`
     sed -i "${LINE_PRE}a\[jobname].POINTCHG   POINTCHG.INP         Dummy atoms with 0 mass and given charge" ${SETFILE}
     sed -i "${LINE_PRE}a\[jobname].gui        fort.34              Geometry input" ${SETFILE}

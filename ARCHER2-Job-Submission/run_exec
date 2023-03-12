@@ -86,19 +86,19 @@ echo "MPI command: ${EXECOMMAND}"
 
 JOBTMPDIR=`echo $(grep -w -A 1 'JOB_TMPDIR' ${SETFILE} | tail -1)`
 if [[ -z ${JOBTMPDIR} || ${JOBTMPDIR} == *'default'* ]]; then # As subdirectory under the current one
-    JOBTMPDIR=$(dirname ${JOBFILE})/${JOBNAME}_${PBS_JOBID%.*}
-	JOBTMPDIR=`realpath ${JOBTMPDIR}`
+    JOBTMPDIR=$(dirname ${JOBFILE})/${JOBNAME}_${SLURM_JOB_ID}
+    JOBTMPDIR=`realpath ${JOBTMPDIR}`
     move_file=true
     mkdir -p ${JOBTMPDIR}
     echo "Temporary directory : ${JOBTMPDIR}"
 elif [[ ${JOBTMPDIR} == *'nodir'* ]]; then # In current directory
     JOBTMPDIR=$(dirname ${JOBFILE})
-	JOBTMPDIR=`realpath ${JOBTMPDIR}`
+    JOBTMPDIR=`realpath ${JOBTMPDIR}`
     move_file=false
     echo "Temporary file stored under the current directory ${OUTDIR}"
 else # In a separate directory
-    JOBTMPDIR=${JOBTMPDIR}/${JOBNAME}_${PBS_JOBID%.*}
-	JOBTMPDIR=`realpath ${JOBTMPDIR}`
+    JOBTMPDIR=${JOBTMPDIR}/${JOBNAME}_${SLURM_JOB_ID}
+    JOBTMPDIR=`realpath ${JOBTMPDIR}`
     move_file=true
     mkdir -p ${JOBTMPDIR}
     echo "Temporary directory : ${JOBTMPDIR}"
@@ -106,7 +106,7 @@ fi
 
 # Create temporary copy of the script for execution
 
-SCRIPT="Job_script_${PBS_JOBID%.*}"
+SCRIPT="Job_script_${SLURM_JOB_ID}"
 sed '1,/^#tag_copy/d' $0 > ${JOBTMPDIR}/${SCRIPT}
 
 # Execute file 
@@ -139,26 +139,17 @@ exit
 #tag_copy
 # Synchronise nodes
 
-if [[ ! -z ${PBS_NODEFILE} ]]; then
-    if [[ -e ${PBS_NODEFILE} ]]; then
-        cat << EOF
-PBE NODEFILE Info
+if [[ ! -z ${SLURM_JOB_NODELIST} ]]; then
+    cat << EOF
+SLURM NODEFILE Info
 --------------------------------------------
-Found in ${PBS_NODEFILE}
-EOF
-        PCLIST=`awk '{if ($I != old){printf("%s ",$I);old=$I}}' ${PBS_NODEFILE}`
-        for PC in ${PCLIST[@]}; do
-            ssh ${PC} "if [[ ! -d ${JOBTMPDIR} ]]; then mkdir -p ${JOBTMPDIR} ;fi; echo '  temporary directory on '${PC}"
-            scp $0 ${PC}:${JOBTMPDIR}/${SCRIPT}
-        done
-        cat << EOF
+${SLURM_JOB_NODELIST}
 --------------------------------------------
 
 EOF
-    else
-        echo '${PBS_NODEFILE} not found'
-        exit
-    fi
+else
+    echo 'SLURM node information is not found'
+    exit
 fi
 
 # Generate basic information of output file
@@ -172,6 +163,8 @@ Pre-Calc Summary
   hostname:            `hostname`
   system:              `uname -a`
   user:                `whoami`
+  queue:               ${SLURM_JOB_PARTITION}
+  QOS:                 ${SLURM_JOB_QOS}
   input:               ${OUTDIR}/${JOBFILE##/*}
   output:              ${OUTDIR}/${OUTPUT}
   temporary directory: ${JOBTMPDIR}
@@ -182,15 +175,13 @@ Pre-Calc Summary
 
 EOF
 
-if [[ ! -z ${PBS_JOBID} ]]; then
-    cat << EOF | tee -a ${OUTDIR}/${OUTPUT}
-PBS Job Status
+cat << EOF | tee -a ${OUTDIR}/${OUTPUT}
+SLURM Job Status
 -------------------------------------------
-  $(qstat -f ${PBS_JOBID} 2>&1)
+  $(squeue -j ${SLURM_JOB_ID} 2>&1)
 -------------------------------------------
 
 EOF
-fi
 
 # Check and read input file
 # Read mandatory file list - Same as JOBNAME (Table PRE_CALC)
@@ -257,15 +248,6 @@ while [[ ${TMP_NAME} != '---------'* && ${move_file} == true ]]; do
         fi
         cp -r ${INPDIR}/${file} ${JOBTMPDIR}/${TMP_NAME}
         echo "Input ${file} copied."
-            
-        # Synchonise files on all nodes
-
-        if [[ ! -z ${PCLIST} ]]; then
-            for PC in ${PCLIST[@]}; do
-                scp ${INPDIR}/${file} ${PC}     : ${JOBTMPDIR}/${TMP_NAME}
-                echo "File synchonised on ${PC} : ${JOBTMPDIR}/${TMP_NAME}"
-            done
-        fi
     done
 
     LINE_PRECALC=`echo "scale=0;${LINE_PRECALC}+1" | bc`
@@ -329,15 +311,6 @@ while [[ ${TMP_NAME} != '---------'* && ${move_file} == true && ${REFNAME} != 'n
         fi
         cp -r ${INPDIR}/${file} ${JOBTMPDIR}/${TMP_NAME}
         echo "Input ${file} copied."
-            
-        # Synchonise files on all nodes
-
-        if [[ ! -z ${PCLIST} ]]; then
-            for PC in ${PCLIST[@]}; do
-                scp ${INPDIR}/${file}     ${PC} : ${JOBTMPDIR}/${TMP_NAME}
-                echo "File synchonised on ${PC} : ${JOBTMPDIR}/${TMP_NAME}"
-            done
-        fi
     done
 
     LINE_REF=`echo "scale=0;${LINE_REF}+1" | bc`
@@ -353,7 +326,7 @@ cat << EOF | tee -a ${OUTDIR}/${OUTPUT}
 Job Ready to Go
 -------------------------------------------
   Job name       : ${JOBNAME}
-  ID             : ${PBS_JOBID}
+  ID             : ${SLURM_JOB_ID}
   Command        : ${EXECOMMAND} >> ${OUTDIR}/${OUTPUT} 2>&1
   Temporary dir  : ${JOBTMPDIR}
   List of files  : $(ls -l ${JOBTMPDIR} 2>&1)

@@ -36,22 +36,22 @@ OUTPUT=${JOBNAME}.out
 INPDIR=${OUTDIR}
 JOBTMPDIR=`echo $(grep -w -A 1 'JOB_TMPDIR' ${SETFILE} | tail -1)`
 if [[ -z ${JOBTMPDIR} || ${JOBTMPDIR} == 'default' ]]; then # As subdirectory under the current one
-    JOBTMPDIR=$(dirname ${JOBFILE})/${JOBNAME}_${PBS_JOBID%.*}
-	JOBTMPDIR=`realpath ${JOBTMPDIR}`
+    JOBTMPDIR=$(dirname ${JOBFILE})/${JOBNAME}_${SLURM_JOB_ID}
+    JOBTMPDIR=`realpath ${JOBTMPDIR}`
     move_file=true
 elif [[ ${JOBTMPDIR} == 'nodir' ]]; then # In current directory
     JOBTMPDIR=$(dirname ${JOBFILE})
-	JOBTMPDIR=`realpath ${JOBTMPDIR}`
+    JOBTMPDIR=`realpath ${JOBTMPDIR}`
     move_file=false
 else # In a separate directory
-    JOBTMPDIR=${JOBTMPDIR}/${JOBNAME}_${PBS_JOBID%.*}
-	JOBTMPDIR=`realpath ${JOBTMPDIR}`
+    JOBTMPDIR=${JOBTMPDIR}/${JOBNAME}_${SLURM_JOB_ID}
+    JOBTMPDIR=`realpath ${JOBTMPDIR}`
     move_file=true
 fi
 
 # Create temporary copy of the script for execution
 
-POSTSCRIPT="Post_script_${PBS_JOBID%.*}"
+POSTSCRIPT="Post_script_${SLURM_JOB_ID}"
 sed '1,/^#tag_copy/d' $0 > ${JOBTMPDIR}/${POSTSCRIPT}
 
 # Start post-processing
@@ -74,7 +74,6 @@ exit
 
 # Copied content: Between #tag_start_copy and #tag_end_copy are copied in temporary directory
 #tag_copy
-#tag_start_copy
 cd ${JOBTMPDIR}
 
 # Read POST_CALC list
@@ -150,7 +149,7 @@ $(df -h ${JOBTMPDIR} 2>&1)
 $(du -m ${JOBTMPDIR} 2>&1)
 
   Detailed file list (ls -l .)
-    see ${OUTDIR}/*.o${PBS_JOBID} file
+    see ${OUTDIR}/${JOBNAME}.log file
 EOF
 cat << EOF
 $(ls -l . 2>&1)
@@ -160,44 +159,13 @@ cat << EOF | tee -a ${OUTDIR}/${OUTPUT}
 
 EOF
 
-#tag_end_copy
-# Check files on all nodes before exiting
-
-cat << EOF > ${JOBTMPDIR}/checkfile0
-#!/bin/bash
-JOBNAME=${JOBNAME}
-SETFILE=${SETFILE}
-OUTDIR=${OUTDIR}
-OUTPUT=${OUTPUT}
-JOBTMPDIR=${JOBTMPDIR}
-cd  ${JOBTMPDIR}
-EOF
-sed '1,/^#tag_s/d;/^#tag_e/,$d'  $0 >> ${JOBTMPDIR}/checkfile0_${PBS_JOBID%.*}
-chmod 755 ${JOBTMPDIR}/checkfile0
-if [[ ! -z ${PBS_NODEFILE} ]]; then
-    echo "Check files across nodes ..."
-    echo "List of saved files"
-    echo "  TEMPORARY            SAVED"
-    PCLIST=`awk '{if ($I != old){printf("%s ",$I);old=$I}}' ${PBS_NODEFILE}`
-    for ((i = 2; i < ${#PCLIST[@]}; i++)); do
-        PC=${PCLIST[$i]}
-        echo "--------------------------------------------"
-        echo "node: ${PC}, checkfile..."
-        echo "scp ${JOBTMPDIR}/checkfile0    ${PC}:${JOBTMPDIR}/checkfile"
-        scp ${JOBTMPDIR}/checkfile0 ${PC}:${JOBTMPDIR}/checkfile
-        ssh ${PC} "source ${JOBTMPDIR}/checkfile"
-        echo "node: ${PC}, checkfile ended."
-        echo "--------------------------------------------"
-        echo ""
-    done
-fi
-
 # Remove temporary directory
 
 cd ${OUTDIR}
 if [[ ${move_file} == true ]]; then
     rm -fr ${JOBTMPDIR}
 else
-    rm Job_script_${PBS_JOBID%.*} Post_script_${PBS_JOBID%.*} checkfile0_${PBS_JOBID%.*}
+    rm Job_script_${SLURM_JOB_ID} Post_script_${SLURM_JOB_ID}
 fi
 
+mv slurm-${SLURM_JOB_ID}.out ${JOBNAME}.log

@@ -25,10 +25,10 @@ function welcome_msg {
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
-CRYSTAL23 job submission script for Imperial HPC - Setting up
+CRYSTAL23 job submission script for ARCHER2 - Setting up
 
 Job submission script installed date : `date`
-Batch system                         : PBS
+Batch system                         : SLURM
 Job submission script version        : ${code_version} (${code_date})
 Job submission script author         : ${code_author} (${code_contact})
 Core script version                  : ${core_version} (${core_date})
@@ -41,28 +41,29 @@ EOF
 }
 
 function get_scriptdir {
+    WORK=`echo "/work/${HOME#*/home/}"`
     cat << EOF
 ================================================================================
     Note: all scripts should be placed into the same directory!
     Please specify your installation path.
 
     Default Option
-    ${HOME}/etc/runCRYSTAL23/):
+    ${WORK}/etc/runCRYSTAL23
 
 EOF
 
     read -p " " SCRIPTDIR
 
     if [[ -z ${SCRIPTDIR} ]]; then
-        SCRIPTDIR=${HOME}/etc/runCRYSTAL23
+        SCRIPTDIR=${WORK}/etc/runCRYSTAL23
     fi
 
     if [[ ${SCRIPTDIR: -1} == '/' ]]; then
         SCRIPTDIR=${SCRIPTDIR%/*}
     fi
-
-    SCRIPTDIR=`realpath $(echo ${SCRIPTDIR})`
-    source_dir=`dirname $0`
+    
+	SCRIPTDIR=`realpath $(echo ${SCRIPTDIR})`
+    source_dir=`realpath $(dirname $0)`
     if [[ ${source_dir} == ${SCRIPTDIR} ]]; then
         cat << EOF
 --------------------------------------------------------------------------------
@@ -76,7 +77,7 @@ EOF
         if [[ $? == 0 ]]; then
             cat << EOF
 --------------------------------------------------------------------------------
-    Warning: Directory exists - current folder will be removed.
+    Warning: Directory exists - currnet folder will be removed.
 
 EOF
             rm -r ${SCRIPTDIR}
@@ -84,14 +85,34 @@ EOF
     fi
 }
 
+function get_budget_code {
+    cat << EOF
+================================================================================
+    Please specify your budget code:
+
+EOF
+    
+    read -p " " BUDGET_CODE
+    BUDGET_CODE=`echo ${BUDGET_CODE}`
+
+    if [[ -z ${BUDGET_CODE} ]]; then
+        cat << EOF
+--------------------------------------------------------------------------------
+    Error: Budget code must be specified. Exiting current job. 
+
+EOF
+        exit
+    fi
+}
+
 function set_exe {
     cat << EOF
 ================================================================================
-    Please specify the directory of CRYSTAL23 exectuables, 
-    or the command to load CRYSTAL23 modules
+    Please specify the directory of CRYSTAL exectuables, 
+    or the command to load CRYSTAL modules
 
     Default Option
-    CRYSTAL23 v1.0.1 (openmpi - AMD aocc/aocl - MPP)
+    crystal/23-1.0.1 (Available module)
 
 EOF
     
@@ -99,7 +120,7 @@ EOF
     EXEDIR=`echo ${EXEDIR}`
 
     if [[ -z ${EXEDIR} ]]; then
-        EXEDIR='/rds/general/user/hz1420/home/apps/CRYSTAL23_v1.0.1/bin/Linux-flang_openmpi_amd64EPYC/std'
+        EXEDIR='module load other-software crystal/23-1.0.1'
     fi
 
     if [[ ! -d ${EXEDIR} && (${EXEDIR} != *'module load'*) ]]; then
@@ -130,7 +151,7 @@ function set_mpi {
     Please specify the directory of MPI executables or mpi modules
 
     Default Option
-    openmpi/4.1.4
+    gcc/10.2.0 PrgEnv-gnu/8.0.0 cray-mpich/8.1.9 cray-libsci/21.08.1.2 craype/2.7.10
 
 EOF
     
@@ -138,7 +159,7 @@ EOF
     MPIDIR=`echo ${MPIDIR}`
 
     if [[ -z ${MPIDIR} ]]; then
-        MPIDIR='module load  /rds/general/user/hz1420/home/apps/openmpi-4.1.4/openmpi-4.1.4_module'
+        MPIDIR='module load gcc/10.2.0 PrgEnv-gnu/8.0.0 cray-mpich/8.1.9 cray-libsci/21.08.1.2 craype/2.7.10'
     fi
 
     if [[ ! -d ${EXEDIR} && (${EXEDIR} != *'module load'*) ]]; then
@@ -179,14 +200,14 @@ function set_settings {
     SETFILE=${SCRIPTDIR}/settings
 
     # Values for keywords
-    sed -i "/SUBMISSION_EXT/a\ .qsub" ${SETFILE}
-    sed -i "/NCPU_PER_NODE/a\ 24" ${SETFILE}
-    sed -i "/MEM_PER_NODE/a\ 100" ${SETFILE}
+    sed -i "/SUBMISSION_EXT/a\.slurm" ${SETFILE}
+    sed -i "/NCPU_PER_NODE/a\128" ${SETFILE}
     sed -i "/NTHREAD_PER_PROC/a\ 1" ${SETFILE}
-    sed -i "/NGPU_PER_NODE/a\ 0" ${SETFILE}
-    sed -i "/GPU_TYPE/a\ RTX6000" ${SETFILE}
-    sed -i "/TIME_OUT/a\ 3" ${SETFILE}
-    sed -i "/JOB_TMPDIR/a\ ${EPHEMERAL}" ${SETFILE}
+    sed -i "/BUDGET_CODE/a\ ${BUDGET_CODE}" ${SETFILE}
+    sed -i "/QOS/a\standard" ${SETFILE}
+    sed -i "/PARTITION/a\standard" ${SETFILE}
+    sed -i "/TIME_OUT/a\3" ${SETFILE}
+    sed -i "/JOB_TMPDIR/a\ default" ${SETFILE}
     sed -i "/EXEDIR/a\ ${EXEDIR}" ${SETFILE}
     sed -i "/MPIDIR/a\ ${MPIDIR}" ${SETFILE}
 
@@ -194,11 +215,12 @@ function set_settings {
 
     LINE_EXE=`grep -nw 'EXE_TABLE' ${SETFILE}`
     LINE_EXE=`echo "scale=0;${LINE_EXE%:*}+3" | bc`
-    sed -i "${LINE_EXE}a\sprop                                                                   properties < INPUT                                           Serial properties calculation" ${SETFILE}
-    sed -i "${LINE_EXE}a\scrys                                                                   crystal < INPUT                                              Serial crystal calculation" ${SETFILE}
-    sed -i "${LINE_EXE}a\pprop      mpiexec                                                      Pproperties                                                  Parallel properties calculation" ${SETFILE}
-    sed -i "${LINE_EXE}a\mppcrys    mpiexec                                                      MPPcrystal                                                   Massive parallel crystal calculation" ${SETFILE}
-    sed -i "${LINE_EXE}a\pcrys      mpiexec                                                      Pcrystal                                                     Parallel crystal calculation" ${SETFILE}
+    sed -i "${LINE_EXE}a\mppprop    srun --hint=nomultithread --distribution=block:block         MPPproperties                                                Massive parallel properties calculation" ${SETFILE}
+    sed -i "${LINE_EXE}a\pprop      srun --hint=nomultithread --distribution=block:block         Pproperties                                                  Parallel properties calculation" ${SETFILE}
+    sed -i "${LINE_EXE}a\mppcrysomp srun --hint=nomultithread --distribution=block:block         MPPcrystalOMP                                                Massive parallel crystal calculation - OMP" ${SETFILE}
+    sed -i "${LINE_EXE}a\mppcrys    srun --hint=nomultithread --distribution=block:block         MPPcrystal                                                   Massive parallel crystal calculation" ${SETFILE}
+    sed -i "${LINE_EXE}a\pcrysomp   srun --hint=nomultithread --distribution=block:block         PcrystalOMP                                                  Parallel crystal calculation - OMP" ${SETFILE}
+    sed -i "${LINE_EXE}a\pcrys      srun --hint=nomultithread --distribution=block:block         Pcrystal                                                     Parallel crystal calculation" ${SETFILE}
 
     # Input file table
 
@@ -208,7 +230,7 @@ function set_settings {
     sed -i "${LINE_PRE}a\[jobname].gui        fort.34              Geometry input" ${SETFILE}
     sed -i "${LINE_PRE}a\[jobname].d3         INPUT                Properties input file" ${SETFILE}
     sed -i "${LINE_PRE}a\[jobname].d12        INPUT                Crystal input file" ${SETFILE}
-    
+
     # Reference file table
 
     LINE_REF=`grep -nw 'REF_FILE' ${SETFILE}`
@@ -271,44 +293,43 @@ function set_settings {
     sed -i "${LINE_POST}a\[jobname].ERROR      fort.87              Error report" ${SETFILE}
 
     # Job submission file template - should be placed at the end of file
-
     cat << EOF >> ${SETFILE}
------------------------------------------------------------------------------------
-#!/bin/bash  --login
-#PBS -N \${V_JOBNAME}
-#PBS -l select=\${V_ND}:ncpus=\${V_NCPU}:mem=\${V_MEM}:mpiprocs=\${V_PROC}:ompthreads=\${V_TRED}\${V_NGPU}\${V_TGPU}:avx2=true
-#PBS -l walltime=\${V_TWT}
+----------------------------------------------------------------------------------------
+#!/bin/bash
+#SBATCH --nodes=\${V_ND}
+#SBATCH --ntasks-per-node=\${V_PROC}
+#SBATCH --cpus-per-task=\${V_TRED}
+#SBATCH --time=\${V_TWT}
 
-echo "PBS Job Report"
+# Replace [budget code] below with your full project code
+#SBATCH --account=\${V_BUDGET}
+#SBATCH --partition=\${V_PARTITION}
+#SBATCH --qos=\${V_QOS}
+#SBATCH --export=none
+
+echo "SLURM Job Report"
 echo "--------------------------------------------"
 echo "  Start Date : \$(date)"
-echo "  PBS Job ID : \${PBS_JOBID}"
+echo "  SLURM Job ID : \${SLURM_JOB_ID}"
 echo "  Status"
-qstat -f \${PBS_JOBID}
+squeue -j \${SLURM_JOB_ID} 2>&1
 echo "--------------------------------------------"
 echo ""
 
-# number of cores per node used
-export NCORES=\${V_NCPU}
-# number of processes
-export NPROCESSES=\${V_TPROC}
+# Address the memory leak
+export FI_MR_CACHE_MAX_COUNT=0
 
-# Make sure any symbolic links are resolved to absolute path
-export PBS_O_WORKDIR=\$(readlink -f \${PBS_O_WORKDIR})
-
-# Set the number of threads
+# Set number of threads and OMP level
 export OMP_NUM_THREADS=\${V_TRED}
-
-# to sync nodes
-cd \${PBS_O_WORKDIR}
+export OMP_PLACES=cores
 
 # start calculation: command added below by gen_sub
------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------
 
 EOF
     cat << EOF
 ================================================================================
-    Paramters specified in ${SETFILE}. 
+    Paramters specified in ${SETFILE}.
 
 EOF
 }
@@ -327,19 +348,18 @@ function set_commands {
 
     echo "# >>> begin CRYSTAL23 job submitter settings >>>" >> ${HOME}/.bashrc
     echo "alias Pcrys23='${CTRLDIR}/gen_sub -x pcrys -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
+    echo "alias OPcrys23='${CTRLDIR}/gen_sub -x pcrysomp -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
     echo "alias MPPcrys23='${CTRLDIR}/gen_sub -x mppcrys -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
+    echo "alias OMPPcrys23='${CTRLDIR}/gen_sub -x mppcrysomp -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
     echo "alias Pprop23='${CTRLDIR}/gen_sub -x pprop -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "alias Scrys23='${CTRLDIR}/gen_sub -x scrys -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "alias Sprop23='${CTRLDIR}/gen_sub -x sprop -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
+    echo "alias MPPprop23='${CTRLDIR}/gen_sub -x mppprop -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
     echo "alias Xcrys23='${CTRLDIR}/gen_sub -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
     echo "alias SETcrys23='cat ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
     echo "alias HELPcrys23='source ${CONFIGDIR}/run_help; print_ALIAS_HOWTO_; print_GENSUB_HOWTO_'" >> ${HOME}/.bashrc
-    # echo "chmod 777 $(dirname $0)/gen_sub" >> ${HOME}/.bashrc
-    # echo "chmod 777 $(dirname $0)/run_exec" >> ${HOME}/.bashrc
-    # echo "chmod 777 $(dirname $0)/post_proc" >> ${HOME}/.bashrc 
-    # echo "chmod 777 $(dirname $0)/run_help" >> ${HOME}/.bashrc 
+    echo "chmod -R 'u+r+w+x' ${CTRLDIR}" >> ${HOME}/.bashrc
+    echo "chmod 'u+r+w+x' ${CONFIGDIR}/run_help" >> ${HOME}/.bashrc
     echo "# <<< finish CRYSTAL23 job submitter settings <<<" >> ${HOME}/.bashrc
-    
+
     source ${CONFIGDIR}/run_help; print_ALIAS_HOWTO_
 }
 
@@ -355,6 +375,7 @@ CTRLDIR=`realpath ${CONFIGDIR}/../`
 welcome_msg
 get_scriptdir
 copy_scripts
+get_budget_code
 set_exe
 set_mpi
 set_settings

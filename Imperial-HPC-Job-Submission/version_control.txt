@@ -1,0 +1,12 @@
+VERSION_INFO 
+Width of columns: CODE - 21; VERSION - 11; DATE - 21; AUTHOR - 21; CONTACT - 31; ACKNOWLEDGEMENT - No limit
+-----------------------------------------------------------------------------------------------------------------------------------
+CODE                 VERSION    DATE                 AUTHOR               CONTACT                        ACKNOWLEDGEMENT
+-----------------------------------------------------------------------------------------------------------------------------------
+core                 v1.6       Mar.11, 23           Spica-Vir            ICL, spica.h.zhou@gmail.com    
+CRYSTAL23            v0.4       Mar.01, 23           Spica-Vir            ICL, spica.h.zhou@gmail.com    Special thanks to K. Tallat-Kelpsa, G.Mallia and N.M.Harrison
+CRYSTAL17            v1.6       Feb.26, 23           Spica-Vir            ICL, spica.h.zhou@gmail.com    Based on IC-HPC script released by Spica-Vir, Mar.11, 22. Special thanks to G.Mallia and N.M.Harrison.
+GULP6                v0.5       Feb.28, 23           Spica-Vir            ICL, spica.h.zhou@gmail.com
+GROMACS              v1.1       Mar.04, 23           Spica-Vir            ICL, spica.h.zhou@gmail.com    Special thanks to K. Tallat Kelpsa
+LAMMPS               v2.1       Mar.04, 23           Spica-Vir            ICL, spica.h.zhou@gmail.com    Special thanks to A. Arber and K. Tallat Kelpsa
+-----------------------------------------------------------------------------------------------------------------------------------
