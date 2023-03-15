@@ -1,4 +1,4 @@
-# General job submitter for Imperial CX1
+# General job submitter for ARCHER2
 
 A general job submission script for parallel programs for the SLURM batch system on [ARCHER2](https://www.archer2.ac.uk/) UK national supercomputing service. Based on Linux Bash Shell.
 

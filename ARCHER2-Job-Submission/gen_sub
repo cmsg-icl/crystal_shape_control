@@ -230,7 +230,7 @@ EOF
     if [[ ${#INFILE[@]} -eq 1 ]]; then
         JOBNAME=${INFILE[0]%.*}
         JOBNAME=${JOBNAME##*/}
-        echo "Name of the single job qsub file : ${JOBNAME}.qsub"
+        echo "Name of the single job SLURM file : ${JOBNAME}.slurm"
     fi
 }
 
@@ -436,7 +436,7 @@ function set_multijob_name_ {
     else
         JOBNAME=${TMPJOBNAME}
     fi
-    echo "Name of the multi-job qsub file : ${JOBNAME}.qsub"
+    echo "Name of the multi-job SLURM file : ${JOBNAME}.slurm"
 }
 
 # Instruction for -name flag
@@ -479,7 +479,7 @@ function print_HOWTO_ {
 
         Xcrys17 -name mgo_band -nd 4 -x Pcrys -in mgo.d12 -ref no -wt 02:00 -x Pprop -in mgo.d3 -ref mgo -wt 00:30
 
-    This command generates a single 'mgo_band.qsub' file which 
+    This command generates a single 'mgo_band.slurm' file which 
     sequentially run parallel crystal calculation by 'mgo.d12' 
     without reference and a parallel properties calculation by 'mgo.d3'
     with 'mgo' SCF calculation as reference. The walltime for 'mgo.d12'
@@ -610,6 +610,10 @@ function check_executable_ {
 EOF
                 exit
             fi
+
+            # substitute jobname
+
+            COMMAND[$i]=`echo "${cmd}" | sed "s/\[job.*\]/${JOBNAME[$i]}/g"`
         else
             ls ${XDIR}/${cmd%% *} > /dev/null 2>&1 
             if [[ $? -ne 0 ]]; then
@@ -624,12 +628,12 @@ EOF
 EOF
                 exit
             fi
+
+            # substitute jobname
+
+            COMMAND[$i]=`echo "${XDIR}/${cmd}" | sed "s/\[job.*\]/${JOBNAME[$i]}/g"`
         fi
-		
-        # substitute jobname
-
-		COMMAND[$i]=`echo "${XDIR}/${cmd}" | sed "s/\[job.*\]/${JOBNAME[$i]}/g"`
-
+	
     done
 }
 
@@ -737,7 +741,7 @@ File ${JOBNAME}.${SUB_EXT} has been generated.
 
 Job information:
 ----------------------------------------------------------------
-    PBS qsub file                 = ${JOBNAME}.${SUB_EXT}
+    SLURM file                    = ${JOBNAME}.${SUB_EXT}
     Job submission script         = ${SCRIPTDIR}${SCRIPT}
     Post processing script        = ${SCRIPTDIR}${POSCRIPT}
     Settings script               = ${SETFILE}
