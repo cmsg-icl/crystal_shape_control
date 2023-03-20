@@ -61,7 +61,7 @@ EOF
         SCRIPTDIR=${SCRIPTDIR%/*}
     fi
 
-    SCRIPTDIR=`realpath $(echo ${SCRIPTDIR})`
+    SCRIPTDIR=`realpath $(echo ${SCRIPTDIR}) 2>&1 | sed -r 's/.*\:(.*)\:.*/\1/' | sed 's/[[:space:]]//g'` # Ignore errors
     source_dir=`realpath $(dirname $0)`
     if [[ ${source_dir} == ${SCRIPTDIR} ]]; then
         cat << EOF
