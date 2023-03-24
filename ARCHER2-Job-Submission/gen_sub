@@ -506,8 +506,26 @@ function generate_subfile_ {
     cat << EOF > ${JOBNAME}.${SUB_EXT}
 ${TEMPT}
 EOF
-    
+
+	# Generate job executation and post processing commands
+    ############## Command template ################
+    # timeout ${TOUT} ${SCRIPTDIR}/${SCRIPT} -set ${SETFILE} -in ${INFILE} -ref ${REFNAME} -- ${MPICOMMAND} ${COMMAND} 
+    # ${SCRIPTDIR}/${POSCRIPT} -in ${INFILE} -set ${SETFILE}
+    #
+    # if [[ -f ./${JOBNAME}.run ]];then
+    # chmod 755 ./${JOBNAME}.run
+    # ./${JOBNAME}.run
+    # fi
+    ################################################
+
+    for (( i = 0; i < ${#INFILE[@]}; i++ )); do
+        echo "timeout ${TOUT[$i]} ${SCRIPTDIR}/${SCRIPT} -set ${SETFILE} -in ${INFILE[$i]} -ref ${REFNAME[$i]} -- '${MPICOMMAND[$i]} ${COMMAND[$i]}'" >> ${JOBNAME}.${SUB_EXT}
+        echo "${SCRIPTDIR}/${POSCRIPT} -in ${INFILE[$i]} -set ${SETFILE}" >> ${JOBNAME}.${SUB_EXT}
+        echo -e "\n" >> ${JOBNAME}.${SUB_EXT}
+    done
+
     # Calculate the timeout for calculations and calculate total walltime
+
     tthr=0
     ttmn=0
     for (( i = 0; i < ${#WT[@]}; i++ )); do
@@ -522,7 +540,7 @@ EOF
     TWT=`echo "$(printf "%02d\n" ${tthr}):$(printf "%02d\n" ${ttmn}):00"`
 
     # Substitute SLURM setup variables in template 
-
+    
     sed -i "s|\${V_JOBNAME}|${JOBNAME}|g" ${JOBNAME}.${SUB_EXT}
     sed -i "s|\${V_ND}|${ND}|g" ${JOBNAME}.${SUB_EXT}
     # sed -i "s|\${V_NCPU}|${NCPU}|g" ${JOBNAME}.${SUB_EXT}
@@ -536,24 +554,6 @@ EOF
     sed -i "s|\${V_BUDGET}|${BUDGET}|g" ${JOBNAME}.${SUB_EXT}
     sed -i "s|\${V_QOS}|${QOS}|g" ${JOBNAME}.${SUB_EXT}
     sed -i "s|\${V_PARTITION}|${PARTITION}|g" ${JOBNAME}.${SUB_EXT}
-
-    ############## Command template ################
-    # timeout ${TOUT} ${SCRIPTDIR}/${SCRIPT} -set ${SETFILE} -in ${INFILE} -ref ${REFNAME} -- ${MPICOMMAND} ${COMMAND} 
-    # ${SCRIPTDIR}/${POSCRIPT} -in ${INFILE} -set ${SETFILE}
-    #
-    # if [[ -f ./${JOBNAME}.run ]];then
-    # chmod 755 ./${JOBNAME}.run
-    # ./${JOBNAME}.run
-    # fi
-    ################################################
-
-    # Generate job executation and post processing commands
-
-    for (( i = 0; i < ${#INFILE[@]}; i++ )); do
-        echo "timeout ${TOUT[$i]} ${SCRIPTDIR}/${SCRIPT} -set ${SETFILE} -in ${INFILE[$i]} -ref ${REFNAME[$i]} -- '${MPICOMMAND[$i]} ${COMMAND[$i]}'" >> ${JOBNAME}.${SUB_EXT}
-        echo "${SCRIPTDIR}/${POSCRIPT} -in ${INFILE[$i]} -set ${SETFILE}" >> ${JOBNAME}.${SUB_EXT}
-        echo -e "\n" >> ${JOBNAME}.${SUB_EXT}
-    done
 }
 
 # check job execution scripts
