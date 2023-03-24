@@ -168,6 +168,8 @@ For each job submission script, multiple executables can be placed in the same d
 | EXECUTABLE & OPTION | 61                  | In-line commands of executable, such as 'gulp-mpi < \[jobname\].gin'      |
 | DEFINITION          | Not read            | Definitions for reference                                                 |
 
+Variable symbols `${V_VARIABLE}` defined under keyword 'JOB\_SUBMISSION\_TEMPLATE' are, in principle, compatible in 'MPI & OPTION' and 'EXECUTABLE & OPTION' columns. But such practice is not recommended to keep the structure clear and consistent. Using the 'pseudo' regular expression scheme (see below) and exporting environment variables in qsub file is preferred unless in line commands + variables are inevitable. For the definitions of `${V_VARIABLE}`, see below.
+
 **PRE\_CALC, REF\_FILE and POST\_CALC**
 
 Both tables function as file references before computation. Files with the same name as input file (the value of `-in` flag) should be listed in 'PRE\_CALC' and the input reference (`-ref` flag) should be listed in 'REF\_FILE'. The 'SAVED' column specifies the file names in input directory, while 'TEMPORARY' specifies the file names in ephemeral directory. Lengths of both 'SAVED' and 'TEMPORARY' columes should be 21 characters to ensure the values can be read. The 'DEFINITION' column will not be scanned. This part is skipped if 'JOB\_TMPDIR' is 'nodir'.
@@ -196,6 +198,22 @@ Note:
 3. In practice, any text begins with \[job or \[ref and ends with \] are recognized and substituted. In fact, in files configured eariler, keywords \[jobname\] and \[refname\] were used. New keywords are adopted to spare space for command options.  
 4. In principle, \[job\] and \[ref\] can be placed at any part of the file name, but it is strongly recommended to keep them as the 1st part of the file name to keep the consistency.
 
+**JOB\_SUBMISSION\_TEMPLATE and `${V_VARIABLE}`**
+
+Job submission template offers a template for qsub files, which contains essential set-ups perior to the parallel jobs and post-processing commands after the parallel job is finished. Variable symbols `${V_VARIABLE}` are defined in this block for substitution by the 'gen\_sub' script. Their values and difinitions are listed in the table below.
+
+| SYMBOL         | Definition                                                         |
+|:---------------|:-------------------------------------------------------------------|
+| `${V_JOBNAME}` | PBS job name                                                       |
+| `${V_ND}`      | Number of nodes                                                    |
+| `${V_NCPU}`    | Number of CPUs per node                                            |
+| `${V_MEM}`     | Memory allocation per node, in GB                                  |
+| `${V_PROC}`    | Number of processes per node                                       |
+| `${V_TRED}`    | Number of threads per process                                      |
+| `${V_NGPU}`    | ':ngpus=' + Number of GPUs per node                                |
+| `${V_TGPU}`    | ':gpu\_type=' + Type of GPU node                                   |
+| `${V_TWT}`     | Total wall time (timeout + post processing) requested by qsub file |
+| `${V_TPROC}`   | Total number of processes (`${V_PROC}` \* `${V_ND}`)               |
 
 ### Structure of the repository
 
@@ -278,13 +296,13 @@ Version 1.0.1 compiled with openmpi 4.1.4, AMD aocc 4.0.0 and AMD aocl 4.0
 
 All executables are compiled with multi-threading.
 
-| LABEL   | ACTUAL IN-LINE COMMAND |
-|:-------:|:-----------------------|
-| pcrys   | mpiexec Pcrystal       | 
-| mppcrys | mpiexec MPPcrystal     |
-| pporp   | mpiexec Pproperties    |
-| scrys   | crystal < INPUT        |
-| sprop   | properties < INPUT     |
+| LABEL   | ACTUAL IN-LINE COMMAND              |
+|:-------:|:------------------------------------|
+| pcrys   | mpiexec -np ${V\_TPROC} Pcrystal    | 
+| mppcrys | mpiexec -np ${V\_TPROC} MPPcrystal  |
+| pporp   | mpiexec -np ${V\_TPROC} Pproperties |
+| scrys   | crystal < INPUT                     |
+| sprop   | properties < INPUT                  |
 
 **Default ephemeral directory**
 
