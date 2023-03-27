@@ -1,0 +1,74 @@
+{
+  "Root":{
+    "Folders":[],
+    "Name":"+plane-avg (xsf-kit.exe)",
+    "Files":[{
+        "filename":".\\io.f",
+        "enabled":"1"
+      },{
+        "filename":".\\main.f",
+        "enabled":"1"
+      },{
+        "filename":".\\operation.f",
+        "enabled":"1"
+      },{
+        "filename":".\\option.f",
+        "enabled":"1"
+      }]
+  },
+  "Name":"plane-avg (xsf-kit.exe)",
+  "Options":{
+    "Compiler Options":{
+      "Fortran Flags":"",
+      "Link Flags":"",
+      "C Flags":""
+    },
+    "Architecture":1,
+    "Type":0,
+    "Revision":2,
+    "Windows GUI":0,
+    "File Options":{
+      "Library Directories":["Default Add-On Directory"],
+      "Build Directory":"build",
+      "Module Directory":"modules",
+      "Include Directories":["Default Add-On Include Directory"]
+    },
+    "Target":"xsf-kit.exe",
+    "Fortran Options":{
+      "Use C Preprocessor":"false",
+      "Runtime Diagnostics":"false",
+      "Floating Point Exception Trap":0,
+      "Cray Pointers":"false",
+      "Enable Coarrays":"false",
+      "Enable OpenMP":"false",
+      "Initialize Variables to Zero":"false",
+      "Default Double for Real":"false"
+    },
+    "Code Generation Options":{
+      "CPU Specific":"false",
+      "Processor":"generic",
+      "Aggressive Loops":"false",
+      "Debugging":"true",
+      "Optimization Mode":0,
+      "Profiling":"false"
+    },
+    "Build Dependencies":1,
+    "Launch Options":{
+      "Working Directory":"",
+      "Launch Using MPI":"false",
+      "Keep Console":"true",
+      "External Console":"false",
+      "Command Line Arguments":"",
+      "Build Before Launch":"true"
+    },
+    "Build Options":{
+      "Makefile":"Makefile",
+      "Auto Makefile":"true"
+    },
+    "Linker Options":{
+      "Static Linking Mode":7,
+      "Link MPI Library":"false",
+      "Link LAPACK":0
+    }
+  }
+}
