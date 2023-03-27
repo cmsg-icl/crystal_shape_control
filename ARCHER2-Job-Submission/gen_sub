@@ -507,6 +507,21 @@ function generate_subfile_ {
 ${TEMPT}
 EOF
 
+    # Calculate the timeout for calculations and calculate total walltime
+
+    tthr=0
+    ttmn=0
+    for (( i = 0; i < ${#WT[@]}; i++ )); do
+        time=${WT[$i]}
+        thr=${time%:*}
+        tthr=`echo "scale=0;${thr}+${tthr}" | bc`
+        tmn=${time#*:}
+        ttmn=`echo "scale=0;${tmn}+${ttmn}" | bc`
+        tot=`echo "scale=0;${thr}*60+${tmn}-${TOUT_PER_JOB}" | bc`
+        TOUT+=("${tot}m")
+    done
+    TWT=`echo "$(printf "%02d\n" ${tthr}):$(printf "%02d\n" ${ttmn}):00"`
+
 	# Generate job executation and post processing commands
     ############## Command template ################
     # timeout ${TOUT} ${SCRIPTDIR}/${SCRIPT} -set ${SETFILE} -in ${INFILE} -ref ${REFNAME} -- ${MPICOMMAND} ${COMMAND} 
@@ -523,21 +538,6 @@ EOF
         echo "${SCRIPTDIR}/${POSCRIPT} -in ${INFILE[$i]} -set ${SETFILE}" >> ${JOBNAME}.${SUB_EXT}
         echo -e "\n" >> ${JOBNAME}.${SUB_EXT}
     done
-
-    # Calculate the timeout for calculations and calculate total walltime
-
-    tthr=0
-    ttmn=0
-    for (( i = 0; i < ${#WT[@]}; i++ )); do
-        time=${WT[$i]}
-        thr=${time%:*}
-        tthr=`echo "scale=0;${thr}+${tthr}" | bc`
-        tmn=${time#*:}
-        ttmn=`echo "scale=0;${tmn}+${ttmn}" | bc`
-        tot=`echo "scale=0;${thr}*60+${tmn}-${TOUT_PER_JOB}" | bc`
-        TOUT+=("${tot}m")
-    done
-    TWT=`echo "$(printf "%02d\n" ${tthr}):$(printf "%02d\n" ${ttmn}):00"`
 
     # Substitute SLURM setup variables in template 
     
