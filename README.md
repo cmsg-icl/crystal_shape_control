@@ -30,6 +30,7 @@ Supported:
 5. **Dimer-disp.ipynb**, a python3 script displacing a molecule in dimer along any vector. Geometry read from CRYSTAL output. [CRYSTALpytools](https://github.com/crystal-code-tools/CRYSTALpytools) package required. *Spica. Vir.*  
 6. **Surface-Cut**, a 'semi-atomic' scheme based on python3 script stacking 2D periodic molecular layers to generate twisted slab surfaces for molecular crystals. *Spica. Vir.*
 7. **qe2cif.py**, Read Quantum-Espresso pw.x output file and generate cif geometry. *Spica. Vir.*
+8. **xsf-kit**, Read [XCrySDen](http://www.xcrysden.org/) real space 3D grid data in [xsf format](http://www.xcrysden.org/doc/XSF.html) and perform planar-averaged 1D profile analysis along 3 lattice vectors / get 3D differential data / get planar-averaged 1D differential profile. Also as a practice of free format Fortran. See the comment lins of 'main.f' for instructions. *Spica. Vir.*
 
 ## Student
 **H. Zhou** 21 PhD, Dept. Chem., GitHub: [Spica-Vir](https://github.com/Spica-Vir)  
