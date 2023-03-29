@@ -82,18 +82,15 @@ cd ${JOBTMPDIR}
 LINE_POSTCALC=`grep -nw 'POST_CALC' ${SETFILE}`
 LINE_POSTCALC=`echo "scale=0;${LINE_POSTCALC%%:*}+4" | bc`
 
-SAVED_NAME=`echo $(awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", substr($0,1,21))}' ${SETFILE})`
-TMP_NAME=`echo $(awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", substr($0,22,21))}' ${SETFILE})`
+# Read table, substitute variable flags and spaces for saved name in JOBTMPDIR
+
+SAVED_NAME=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", substr($0,1,21))}' ${SETFILE} | sed "s/\[job.*\]/${JOBNAME}/g" | sed "s/\s//g"`
+
+# Read table, substitute variable flags and spaces for temporary name in JOBTMPDIR
+
+TMP_NAME=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", substr($0,22,21))}' ${SETFILE} | sed "s/\[job.*\]/${JOBNAME}/g" | sed "s/\s//g"`
 
 while [[ ${TMP_NAME} != '---------'* && ${move_file} == true ]]; do
-
-    # Substitute variable flags for saved name in INPDIR
-
-    SAVED_NAME=`echo ${SAVED_NAME} | sed "s/\[job.*\]/${JOBNAME}/g"`
-
-    # Substitute variable flags for temporary name in JOBTMPDIR
-
-    TMP_NAME=`echo ${TMP_NAME} | sed "s/\[job.*\]/${JOBNAME}/g"`
 
     # List files, to get all matched files in 'TMP_NAME' settings
 
@@ -130,8 +127,8 @@ while [[ ${TMP_NAME} != '---------'* && ${move_file} == true ]]; do
     done
 
     LINE_POSTCALC=`echo "scale=0;${LINE_POSTCALC%%:*}+1" | bc`
-    SAVED_NAME=`echo $(awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", substr($0,1,21))}' ${SETFILE})`
-    TMP_NAME=`echo $(awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", substr($0,22,21))}' ${SETFILE})`
+    SAVED_NAME=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", substr($0,1,21))}' ${SETFILE} | sed "s/\[job.*\]/${JOBNAME}/g" | sed "s/\s//g"`
+    TMP_NAME=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", substr($0,22,21))}' ${SETFILE} | sed "s/\[job.*\]/${JOBNAME}/g" | sed "s/\s//g"`
 done
 
 # Calculation summary
