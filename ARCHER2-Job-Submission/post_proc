@@ -117,7 +117,7 @@ while [[ ${TMP_NAME} != '---------'* && ${move_file} == true ]]; do
         fi
 
         # Copy files - cover the old ones
-        if [[ -e ${OUTDIR}/${SAVED_NAME} && -s ${OUTDIR}/${SAVED_NAME} ]]; then
+        if [[ -e ${OUTDIR}/${SAVED_NAME} && -s ${OUTDIR}/${SAVED_NAME} && ! -d ${OUTDIR}/${SAVED_NAME} ]]; then
             echo "Warning! Duplicate file detected in out directory: ${OUTDIR}/${SAVED_NAME}." 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
             echo "  The file will be covered by the new entry ${JOBTMPDIR}/${TMP_NAME}." 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
         fi

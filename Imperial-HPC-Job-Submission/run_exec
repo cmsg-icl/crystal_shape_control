@@ -201,7 +201,7 @@ LINE_PRECALC=`echo "scale=0;${LINE_PRECALC%%:*}+4" | bc`
 
 # Read table, substitute variable flags and spaces for saved name in JOBTMPDIR
 
-SAVED_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", substr($0,1,21))}' ${SETFILE} | sed "s/\[job.*\]/${JOBNAME}/g" | sed "s/\s//g"`
+SAVED_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", substr($0,1,21))}' ${SETFILE} | sed "s/\[job.*\]/${JOBNAME}/g" | sed "s/\[ref.*\]/${REFNAME}/g" | sed "s/\s//g"`
 
 # Read table, substitute variable flags and spaces for temporary name in JOBTMPDIR
 
@@ -245,7 +245,7 @@ while [[ ${TMP_NAME} != '---------'* && ${move_file} == true ]]; do
             is_jobfile=false
         fi
 
-        if [[ -e ${JOBTMPDIR}/${TMP_NAME} && -s ${JOBTMPDIR}/${TMP_NAME} ]]; then
+        if [[ -e ${JOBTMPDIR}/${TMP_NAME} && -s ${JOBTMPDIR}/${TMP_NAME} && ! -d ${JOBTMPDIR}/${TMP_NAME} ]]; then
             if [[ ${is_jobfile} != true ]]; then
                 continue
             fi
@@ -266,7 +266,7 @@ while [[ ${TMP_NAME} != '---------'* && ${move_file} == true ]]; do
     done
 
     LINE_PRECALC=`echo "scale=0;${LINE_PRECALC}+1" | bc`
-    SAVED_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", substr($0,1,21))}' ${SETFILE} | sed "s/\[job.*\]/${JOBNAME}/g" | sed "s/\s//g"`
+    SAVED_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", substr($0,1,21))}' ${SETFILE} | sed "s/\[job.*\]/${JOBNAME}/g" | sed "s/\[ref.*\]/${REFNAME}/g" | sed "s/\s//g"`
     TMP_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", substr($0,22,21))}' ${SETFILE} | sed "s/\[job.*\]/${JOBNAME}/g" | sed "s/\[ref.*\]/${REFNAME}/g" | sed "s/\s//g"`
 done
 
@@ -277,7 +277,7 @@ LINE_REF=`echo "scale=0;${LINE_REF%%:*}+4" | bc`
 
 # Read table, substitute variable flags and spaces for saved name in JOBTMPDIR
 
-SAVED_NAME=`awk 'NR=="'${LINE_REF}'"{printf("%s", substr($0,1,21))}' ${SETFILE} | sed "s/\[job.*\]/${JOBNAME}/g" | sed "s/\s//g"`
+SAVED_NAME=`awk 'NR=="'${LINE_REF}'"{printf("%s", substr($0,1,21))}' ${SETFILE} | sed "s/\[job.*\]/${JOBNAME}/g" | sed "s/\[ref.*\]/${REFNAME}/g" | sed "s/\s//g"`
 
 # Read table, substitute variable flags and spaces for temporary name in JOBTMPDIR
 
@@ -315,7 +315,7 @@ while [[ ${TMP_NAME} != '---------'* && ${move_file} == true && ${REFNAME} != 'n
 
         # Do not cover the duplicate file. 
 
-        if [[ -e ${JOBTMPDIR}/${TMP_NAME} && -s ${JOBTMPDIR}/${TMP_NAME} ]]; then
+        if [[ -e ${JOBTMPDIR}/${TMP_NAME} && -s ${JOBTMPDIR}/${TMP_NAME} && ! -d ${JOBTMPDIR}/${TMP_NAME} ]]; then
             echo "Warning! Duplicate file detected in temporary directory: ${JOBTMPDIR}/${TMP_NAME}." 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
             echo "  The new reference entry ${INPDIR}/${file} is ignored." 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
             continue
@@ -334,7 +334,7 @@ while [[ ${TMP_NAME} != '---------'* && ${move_file} == true && ${REFNAME} != 'n
     done
 
     LINE_REF=`echo "scale=0;${LINE_REF}+1" | bc`
-    SAVED_NAME=`awk 'NR=="'${LINE_REF}'"{printf("%s", substr($0,1,21))}' ${SETFILE} | sed "s/\[job.*\]/${JOBNAME}/g" | sed "s/\s//g"`
+    SAVED_NAME=`awk 'NR=="'${LINE_REF}'"{printf("%s", substr($0,1,21))}' ${SETFILE} | sed "s/\[job.*\]/${JOBNAME}/g" | sed "s/\[ref.*\]/${REFNAME}/g" | sed "s/\s//g"`
     TMP_NAME=`awk 'NR=="'${LINE_REF}'"{printf("%s", substr($0,22,21))}' ${SETFILE} | sed "s/\[job.*\]/${JOBNAME}/g" | sed "s/\[ref.*\]/${REFNAME}/g" | sed "s/\s//g"`
 done
 
