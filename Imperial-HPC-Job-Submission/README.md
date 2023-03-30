@@ -172,13 +172,13 @@ Variable symbols `${V_VARIABLE}` defined under keyword 'JOB\_SUBMISSION\_TEMPLAT
 
 **PRE\_CALC, REF\_FILE and POST\_CALC**
 
-Both tables function as file references before computation. Files with the same name as input file (the value of `-in` flag) should be listed in 'PRE\_CALC' and the input reference (`-ref` flag) should be listed in 'REF\_FILE'. The 'SAVED' column specifies the file names in input directory, while 'TEMPORARY' specifies the file names in ephemeral directory. Lengths of both 'SAVED' and 'TEMPORARY' columes should be 21 characters to ensure the values can be read. The 'DEFINITION' column will not be scanned. This part is skipped if 'JOB\_TMPDIR' is 'nodir'.
+Both tables function as file references before computation. Although 'PRE\_CALC' and 'REF\_FILE' share almost the same rules (see below), it is recommended that files with the same name as input file (the value of `-in` flag) should be listed in the former and the input reference (`-ref` flag) listed in the latter. The 'SAVED' column specifies the file names in input directory, while 'TEMPORARY' specifies the file names in ephemeral directory. Lengths of both 'SAVED' and 'TEMPORARY' columes should be 21 characters to ensure the values can be read. The 'DEFINITION' column will not be scanned. This part is skipped if 'JOB\_TMPDIR' is 'nodir'.
 
 In practice, `run_exec` and `post_proc` scan all the formats listed and moves all the matching files forward and backward. Missing files will in any case not lead to abruption of jobs since file existence has been checked when generating qsub files. However, the priority changes when duplicate files are found in distination directory (ephemeral for 'PRE\_CALC' and 'REF\_FILE', input for 'POST\_CALC'). In all cases, that would lead to a warning message in both .out and .o`${PBS_JOBID%.*}` files
 
-1. When duplicate file is defined in 'PRE\_CALC', `run_exec` will cover the old one with the new entry, unless the old one is the file specified by `-in` flag.  
+1. When duplicate file is defined in 'PRE\_CALC', `run_exec` will cover the old one in the destination folder with the new entry, unless the old one is the file specified by `-in` flag.  
 2. When duplicate file is defined in 'REF\_FILE', `run_exec` will ignore the new entry and keep the old one.  
-3. When duplicate file is defined in 'POST\_CALC', `post_proc` will cover the old one with the new entry  
+3. When duplicate file is defined in 'POST\_CALC', `post_proc` will cover the old one with the new entry.  
 
 **A 'pesudo' regular expression scheme**
 
