@@ -4,7 +4,7 @@ Width of columns: CODE - 21; VERSION - 11; DATE - 21; AUTHOR - 21; CONTACT - 31;
 CODE                 VERSION    DATE                 AUTHOR               CONTACT                        ACKNOWLEDGEMENT
 -----------------------------------------------------------------------------------------------------------------------------------
 core                 v2.3       Mar.30, 23           Spica-Vir            ICL, spica.h.zhou@gmail.com    Special thanks to K. Tallat-Kelpsa
-CRYSTAL23            v0.5       Mar.24, 23           Spica-Vir            ICL, spica.h.zhou@gmail.com    Special thanks to K. Tallat-Kelpsa, G.Mallia and N.M.Harrison
+CRYSTAL23            v1.0       Apr.03, 23           Spica-Vir            ICL, spica.h.zhou@gmail.com    Special thanks to K. Tallat-Kelpsa, G.Mallia and N.M.Harrison
 CRYSTAL17            v1.6       Feb.26, 23           Spica-Vir            ICL, spica.h.zhou@gmail.com    Based on IC-HPC script released by Spica-Vir, Mar.11, 22. Special thanks to G.Mallia and N.M.Harrison.
 GULP6                v0.5       Feb.28, 23           Spica-Vir            ICL, spica.h.zhou@gmail.com
 GROMACS              v1.1       Mar.04, 23           Spica-Vir            ICL, spica.h.zhou@gmail.com    Special thanks to K. Tallat Kelpsa
