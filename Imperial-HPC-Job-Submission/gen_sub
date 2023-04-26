@@ -139,7 +139,7 @@ EOF
         avail_exe=`echo $(awk 'NR=="'${line_exe}'"{printf("%s", substr($0,1,11))}' ${SETFILE})`
         found_exe=false
         while [[ ${avail_exe} != '---------'* ]]; do
-            echo ${exe} | grep -i ${avail_exe} > /dev/null 2>&1
+            echo ${exe} | grep -i -E "^${avail_exe}$" > /dev/null 2>&1
             if [[ $? -eq 0 ]]; then
                 found_exe=true
                 MPICOMMAND+=("`echo $(awk 'NR=="'${line_exe}'"{printf("%s", substr($0,12,61))}' ${SETFILE})`")
