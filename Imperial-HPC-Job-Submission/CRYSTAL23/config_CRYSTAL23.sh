@@ -259,6 +259,7 @@ function set_settings {
     sed -i "${LINE_POST}a\[jobname].HESSOPT    HESSOPT.DAT          Hessian matrix per optimisation step" ${SETFILE}
     sed -i "${LINE_POST}a\[jobname].OPTINFO    OPTINFO.DAT          Optimisation restart data" ${SETFILE}
     sed -i "${LINE_POST}a\[jobname].SCFLOG     SCFOUT.LOG           SCF output per step" ${SETFILE}
+    sed -i "${LINE_POST}a\[jobname].f53        fort.53              Optimised Basis Set Output" ${SETFILE}
     sed -i "${LINE_POST}a\[jobname].PPAN       PPAN.DAT             Mulliken population" ${SETFILE}
     sed -i "${LINE_POST}a\[jobname].f98        fort.98              Formatted wavefunction" ${SETFILE}
     sed -i "${LINE_POST}a\[jobname].f9         fort.9               Last step wavefunction - crystal output" ${SETFILE}
