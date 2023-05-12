@@ -93,18 +93,17 @@ TMP_NAME=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", substr($0,22,21))}' ${SETFI
 
 while [[ ${TMP_NAME} != '---------'* && ${move_file} == true ]]; do
 
-    # Substitute variable flags for saved name in INPDIR
-
-    SAVED_NAME=`echo ${SAVED_NAME} | sed "s/\[job.*\]/${JOBNAME}/g"`
-
-    # Substitute variable flags for temporary name in JOBTMPDIR
-
-    TMP_NAME=`echo ${TMP_NAME} | sed "s/\[job.*\]/${JOBNAME}/g"`
-
     # List files, to get all matched files in 'TMP_NAME' settings
 
-    filelist=`find ${JOBTMPDIR} -name "${TMP_NAME}"`
-    filelist=(${filelist//${JOBTMPDIR}\//})
+    if [[ ${TMP_NAME: -1} == '/' ]]; then
+        filelist=($(ls ${TMP_NAME}))
+        for ((i=0; i<${#filelist[@]}; i++)); do
+            filelist[$i]=`echo "${TMP_NAME}${filelist[$i]}"`
+        done
+    else
+        filelist=`find ${JOBTMPDIR} -name "${TMP_NAME}"`
+        filelist=(${filelist//${JOBTMPDIR}\//})
+    fi
 
     # Make subdir for files stored in sub-folders 
 
@@ -119,20 +118,29 @@ while [[ ${TMP_NAME} != '---------'* && ${move_file} == true ]]; do
             continue
         fi
 
-        # If SAVED_NAME has '*', keep the original name
+        SAVED_NAME_REAL=${SAVED_NAME}
+
+        # If SAVED_NAME is '*', keep the original name
 
         if [[ ${SAVED_NAME} == *'*'* ]]; then
-            SAVED_NAME=${file}
+            SAVED_NAME_REAL=${file##*/}
+        fi
+
+        # If SAVED_NAME ends with '/', update it
+
+        if [[  ${SAVED_NAME: -1} == '/' ]]; then
+            SAVED_NAME_REAL=`echo "${SAVED_NAME}${file##*/}"`
         fi
 
         # Copy files - cover the old ones
-        if [[ -e ${OUTDIR}/${SAVED_NAME} && -s ${OUTDIR}/${SAVED_NAME} && ! -d ${OUTDIR}/${SAVED_NAME} ]]; then
-            echo "Warning! Duplicate file detected in out directory: ${OUTDIR}/${SAVED_NAME}." 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
-            echo "  The file will be covered by the new entry ${JOBTMPDIR}/${TMP_NAME}." 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+
+        if [[ -e ${OUTDIR}/${SAVED_NAME_REAL} && -s ${OUTDIR}/${SAVED_NAME_REAL} ]]; then
+            echo "Warning! Duplicate file detected in out directory: ${OUTDIR}/${SAVED_NAME_REAL}." 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+            echo "  The file will be covered by the new entry ${JOBTMPDIR}/${file}." 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
         fi
-        echo "${file} ${SAVED_NAME}" | awk '{printf("  %-21s%-12s"),$1,$2}' 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+        echo "${file} ${SAVED_NAME_REAL}" | awk '{printf("  %-21s%-52s"),$1,$2}' 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
         ls -l ${file} | awk '{printf("  %-8s %s %s %s\n"),$5,$6,$7,$8}' 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
-        cp -r ${JOBTMPDIR}/${file} ${OUTDIR}/${SAVED_NAME}
+        cp -r ${JOBTMPDIR}/${file} ${OUTDIR}/${SAVED_NAME_REAL}
     done
 
     LINE_POSTCALC=`echo "scale=0;${LINE_POSTCALC%%:*}+1" | bc`

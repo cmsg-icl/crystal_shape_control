@@ -100,7 +100,7 @@ while [[ ${TMP_NAME} != '---------'* && ${move_file} == true ]]; do
             filelist[$i]=`echo "${TMP_NAME}${filelist[$i]}"`
         done
     else
-        filelist=`find ${INPDIR} -name "${TMP_NAME}"`
+        filelist=`find ${JOBTMPDIR} -name "${TMP_NAME}"`
         filelist=(${filelist//${JOBTMPDIR}\//})
     fi
 

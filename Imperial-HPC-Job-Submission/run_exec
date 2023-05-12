@@ -211,8 +211,15 @@ while [[ ${TMP_NAME} != '---------'* && ${move_file} == true ]]; do
 
     # List files, to get all matched files in 'SAVED_NAME' settings
 
-    filelist=`find ${INPDIR} -name "${SAVED_NAME}"`
-    filelist=(${filelist//${INPDIR}\//})
+    if [[ ${SAVED_NAME: -1} == '/' ]]; then
+        filelist=($(ls ${SAVED_NAME}))
+        for ((i=0; i<${#filelist[@]}; i++)); do
+            filelist[$i]=`echo "${SAVED_NAME}${filelist[$i]}"`
+        done
+    else
+        filelist=`find ${INPDIR} -name "${SAVED_NAME}"`
+        filelist=(${filelist//${INPDIR}\//})
+    fi
 
     # Make subdir for files stored in sub-folders 
 
@@ -227,10 +234,18 @@ while [[ ${TMP_NAME} != '---------'* && ${move_file} == true ]]; do
             continue
         fi
 
-        # If TMP_NAME has '*', keep the original name
+        TMP_NAME_REAL=${TMP_NAME}
+
+        # If TMP_NAME is '*', keep the original name
 
         if [[ ${TMP_NAME} == *'*'* ]]; then
-            TMP_NAME=${file}
+            TMP_NAME_REAL=${file##*/}
+        fi
+
+        # If TMP_NAME ends with '/', update it
+
+        if [[ ${TMP_NAME: -1} == '/' ]]; then
+            TMP_NAME_REAL=`echo "${TMP_NAME}${file##*/}"`
         fi
 
         # Find files in INPDIR and  copy them to JOBTMPDIR
@@ -245,22 +260,22 @@ while [[ ${TMP_NAME} != '---------'* && ${move_file} == true ]]; do
             is_jobfile=false
         fi
 
-        if [[ -e ${JOBTMPDIR}/${TMP_NAME} && -s ${JOBTMPDIR}/${TMP_NAME} && ! -d ${JOBTMPDIR}/${TMP_NAME} ]]; then
+        if [[ -e ${JOBTMPDIR}/${TMP_NAME_REAL} && -s ${JOBTMPDIR}/${TMP_NAME_REAL} ]]; then
             if [[ ${is_jobfile} != true ]]; then
                 continue
             fi
-            echo "Warning! Duplicate file detected in temporary directory: ${JOBTMPDIR}/${TMP_NAME}." 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+            echo "Warning! Duplicate file detected in temporary directory: ${JOBTMPDIR}/${TMP_NAME_REAL}." 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
             echo "  The file will be covered by the new entry ${INPDIR}/${file}." 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
         fi
-        cp -r ${INPDIR}/${file} ${JOBTMPDIR}/${TMP_NAME}
-        echo "Input ${file} copied."
-            
+        cp -r ${INPDIR}/${file} ${JOBTMPDIR}/${TMP_NAME_REAL}
+        echo "Input ${file} copied as ${JOBTMPDIR##*/}/${TMP_NAME_REAL}."
+
         # Synchonise files on all nodes
 
         if [[ ! -z ${PCLIST} ]]; then
             for PC in ${PCLIST[@]}; do
-                scp ${INPDIR}/${file} ${PC}     : ${JOBTMPDIR}/${TMP_NAME}
-                echo "File synchonised on ${PC} : ${JOBTMPDIR}/${TMP_NAME}"
+                scp ${INPDIR}/${file} ${PC}     : ${JOBTMPDIR}/${TMP_NAME_REAL}
+                echo "File synchonised on ${PC} : ${JOBTMPDIR}/${TMP_NAME_REAL}"
             done
         fi
     done
@@ -287,8 +302,15 @@ while [[ ${TMP_NAME} != '---------'* && ${move_file} == true && ${REFNAME} != 'n
 
     # List files, to get all matched files in 'SAVED_NAME' settings
 
-    filelist=`find ${INPDIR} -name "${SAVED_NAME}"`
-    filelist=(${filelist//${INPDIR}\//})
+    if [[ ${SAVED_NAME: -1} == '/' ]]; then
+        filelist=($(ls ${SAVED_NAME}))
+        for ((i=0; i<${#filelist[@]}; i++)); do
+            filelist[$i]=`echo "${SAVED_NAME}${filelist[$i]}"`
+        done
+    else
+        filelist=`find ${INPDIR} -name "${SAVED_NAME}"`
+        filelist=(${filelist//${INPDIR}\//})
+    fi
 
     # Make subdir for files stored in sub-folders 
 
@@ -303,10 +325,18 @@ while [[ ${TMP_NAME} != '---------'* && ${move_file} == true && ${REFNAME} != 'n
             continue
         fi
 
-        # If TMP_NAME has '*', keep the original name
+        TMP_NAME_REAL=${TMP_NAME}
+
+        # If TMP_NAME is '*', keep the original name
 
         if [[ ${TMP_NAME} == *'*'* ]]; then
-            TMP_NAME=${file}
+            TMP_NAME_REAL=${file##*/}
+        fi
+
+        # If TMP_NAME ends with '/', update it
+
+        if [[ ${TMP_NAME: -1} == '/' ]]; then
+            TMP_NAME_REAL=`echo "${TMP_NAME}${file##*/}"`
         fi
 
         # Find files in INPDIR and  copy them to JOBTMPDIR
@@ -315,20 +345,20 @@ while [[ ${TMP_NAME} != '---------'* && ${move_file} == true && ${REFNAME} != 'n
 
         # Do not cover the duplicate file. 
 
-        if [[ -e ${JOBTMPDIR}/${TMP_NAME} && -s ${JOBTMPDIR}/${TMP_NAME} && ! -d ${JOBTMPDIR}/${TMP_NAME} ]]; then
-            echo "Warning! Duplicate file detected in temporary directory: ${JOBTMPDIR}/${TMP_NAME}." 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+        if [[ -e ${JOBTMPDIR}/${TMP_NAME_REAL} && -s ${JOBTMPDIR}/${TMP_NAME_REAL} ]]; then
+            echo "Warning! Duplicate file detected in temporary directory: ${JOBTMPDIR}/${TMP_NAME_REAL}." 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
             echo "  The new reference entry ${INPDIR}/${file} is ignored." 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
             continue
         fi
-        cp -r ${INPDIR}/${file} ${JOBTMPDIR}/${TMP_NAME}
-        echo "Input ${file} copied."
+        cp -r ${INPDIR}/${file} ${JOBTMPDIR}/${TMP_NAME_REAL}
+        echo "Input ${file} copied as ${JOBTMPDIR##*/}/${TMP_NAME_REAL}."
 
         # Synchonise files on all nodes
 
         if [[ ! -z ${PCLIST} ]]; then
             for PC in ${PCLIST[@]}; do
-                scp ${INPDIR}/${file}     ${PC} : ${JOBTMPDIR}/${TMP_NAME}
-                echo "File synchonised on ${PC} : ${JOBTMPDIR}/${TMP_NAME}"
+                scp ${INPDIR}/${file}     ${PC} : ${JOBTMPDIR}/${TMP_NAME_REAL}
+                echo "File synchonised on ${PC} : ${JOBTMPDIR}/${TMP_NAME_REAL}"
             done
         fi
     done
