@@ -729,8 +729,8 @@ File ${JOBNAME}.${SUB_EXT} has been generated.
 Job information:
 ----------------------------------------------------------------
     PBS qsub file                 = ${JOBNAME}.${SUB_EXT}
-    Job submission script         = ${SCRIPTDIR}${SCRIPT}
-    Post processing script        = ${SCRIPTDIR}${POSCRIPT}
+    Job submission script         = ${SCRIPTDIR}/${SCRIPT}
+    Post processing script        = ${SCRIPTDIR}/${POSCRIPT}
     Settings script               = ${SETFILE}
     Number of nodes               = ${ND}
     Commands                      = ${COMMAND[@]}
