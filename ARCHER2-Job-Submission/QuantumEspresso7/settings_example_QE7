@@ -99,7 +99,7 @@ export OMP_NUM_THREADS=${V_TRED}
 export OMP_PLACES=cores
 
 # Set temporary directory
-export ESPRESSO_TMPDIR=$(pwd)/${V_JOBNAME}_${SLURM_JOB_ID}
+export ESPRESSO_TMPDIR=$(pwd)/${V_JOBNAME}.save
 
 # start calculation: command added below by gen_sub
 ----------------------------------------------------------------------------------------
