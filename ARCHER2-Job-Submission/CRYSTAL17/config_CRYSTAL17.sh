@@ -207,7 +207,7 @@ function set_settings {
     sed -i "/QOS/a\standard" ${SETFILE}
     sed -i "/PARTITION/a\standard" ${SETFILE}
     sed -i "/TIME_OUT/a\3" ${SETFILE}
-    sed -i "/JOB_TMPDIR/a\ default" ${SETFILE}
+    sed -i "/JOB_TMPDIR/a\/tmp" ${SETFILE}
     sed -i "/EXEDIR/a\ ${EXEDIR}" ${SETFILE}
     sed -i "/MPIDIR/a\ ${MPIDIR}" ${SETFILE}
 

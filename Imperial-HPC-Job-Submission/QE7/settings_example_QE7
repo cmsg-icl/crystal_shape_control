@@ -1,30 +1,30 @@
 # Job submission scripts
 SUBMISSION_EXT
-.slurm
+ .qsub
 
 NCPU_PER_NODE
-128
+ 256
 
 MEM_PER_NODE
+ 100
 
 NTHREAD_PER_PROC
  1
 
 NGPU_PER_NODE
+ 0
 
 GPU_TYPE
+ RTX6000
 
 BUDGET_CODE
- e89-ic_c
 
 QOS
-standard
 
 PARTITION
-standard
 
 TIME_OUT
-3
+ 3
 
 JOB_TMPDIR
  nodir
@@ -32,19 +32,19 @@ JOB_TMPDIR
 
 # Executables
 EXEDIR
- /work/e89/e89/hyz20ic/apps/QuantumEspresso_v7.1/bin/
+ module load  /rds/general/user/hz1420/home/apps/QE-7.1/share/module_qe
 
 MPIDIR
- module load PrgEnv-aocc/8.0.0 ; module swap aocc/2.2.0.1 aocc/3.0.0 ; module load aocl
+ module load mkl/latest mpi/latest
 
 EXE_TABLE                                                               [jobname]
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 LABEL      MPI & OPTION                                                 EXECUTABLE & OPTION                                          DEFINITION
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
-pw         srun --hint=nomultithread --distribution=block:block         pw.x < [job].in                                              Parallel PWscf calculation
-ph         srun --hint=nomultithread --distribution=block:block         ph.x < [job].in                                              Parallel Phonon (DFPT) calculation
-cp         srun --hint=nomultithread --distribution=block:block         cp.x < [job].in                                              Parallel Car-Parrinello MD
-pp         srun --hint=nomultithread --distribution=block:block         pp.x < [job].in                                              Parallel data postprocessing
+pw         mpiexec                                                      pw.x < [job].in                                              Parallel PWscf calculation
+ph         mpiexec                                                      ph.x < [job].in                                              Parallel Phonon (DFPT) calculation
+cp         mpiexec                                                      cp.x < [job].in                                              Parallel Car-Parrinello MD
+pp         mpiexec                                                      pp.x < [job].in                                              Parallel data postprocessing
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -69,38 +69,39 @@ SAVED                TEMPORARY            DEFINITION
                          
 
 JOB_SUBMISSION_TEMPLATE
-----------------------------------------------------------------------------------------
-#!/bin/bash
-#SBATCH --nodes=${V_ND}
-#SBATCH --ntasks-per-node=${V_PROC}
-#SBATCH --cpus-per-task=${V_TRED}
-#SBATCH --time=${V_TWT}
+-----------------------------------------------------------------------------------
+#!/bin/bash  --login
+#PBS -N ${V_JOBNAME}
+#PBS -l select=${V_ND}:ncpus=${V_NCPU}:mem=${V_MEM}:mpiprocs=${V_PROC}:ompthreads=${V_TRED}${V_NGPU}${V_TGPU}:avx2=true
+#PBS -l walltime=${V_TWT}
 
-# Replace [budget code] below with your full project code
-#SBATCH --account=${V_BUDGET}
-#SBATCH --partition=${V_PARTITION}
-#SBATCH --qos=${V_QOS}
-#SBATCH --export=none
-
-echo "SLURM Job Report"
+echo "PBS Job Report"
 echo "--------------------------------------------"
 echo "  Start Date : $(date)"
-echo "  SLURM Job ID : ${SLURM_JOB_ID}"
+echo "  PBS Job ID : ${PBS_JOBID}"
 echo "  Status"
-squeue -j ${SLURM_JOB_ID} 2>&1
+qstat -f ${PBS_JOBID}
 echo "--------------------------------------------"
 echo ""
 
-# Address the memory leak
-export FI_MR_CACHE_MAX_COUNT=0
+# number of cores per node used
+export NCORES=${V_NCPU}
+# number of processes
+export NPROCESSES=${V_TPROC}
 
-# Set number of threads and OMP level
+# Make sure any symbolic links are resolved to absolute path
+export PBS_O_WORKDIR=$(readlink -f ${PBS_O_WORKDIR})
+
+# Set the number of threads and OMP level
 export OMP_NUM_THREADS=${V_TRED}
 export OMP_PLACES=cores
+
+# to sync nodes
+cd ${PBS_O_WORKDIR}
 
 # Set temporary directory
 export ESPRESSO_TMPDIR=$(pwd)/${V_JOBNAME}.save
 
 # start calculation: command added below by gen_sub
-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
 

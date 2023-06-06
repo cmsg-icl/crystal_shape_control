@@ -1,0 +1,41 @@
+#!/bin/bash  --login
+#PBS -N f2-PBE-D3
+#PBS -l select=1:ncpus=256:mem=500GB:mpiprocs=256:ompthreads=1:avx2=true
+#PBS -l walltime=00:30:00
+
+echo "PBS Job Report"
+echo "--------------------------------------------"
+echo "  Start Date : $(date)"
+echo "  PBS Job ID : ${PBS_JOBID}"
+echo "  Status"
+qstat -f ${PBS_JOBID}
+echo "--------------------------------------------"
+echo ""
+
+# number of cores per node used
+export NCORES=256
+# number of processes
+export NPROCESSES=256
+
+# Make sure any symbolic links are resolved to absolute path
+export PBS_O_WORKDIR=$(readlink -f ${PBS_O_WORKDIR})
+
+# Set the number of threads and OMP level
+export OMP_NUM_THREADS=1
+export OMP_PLACES=cores
+
+# to sync nodes
+cd ${PBS_O_WORKDIR}
+
+# Set temporary directory
+export ESPRESSO_TMPDIR=$(pwd)/f2-PBE-D3.save
+
+# start calculation: command added below by gen_sub
+timeout 27m /rds/general/user/hz1420/home/GitHub/Spica-Vir/crystal_shape_control/Imperial-HPC-Job-Submission/run_exec -set /rds/general/user/hz1420/home/etc/runQE7/settings -in f2-PBE-D3.in -ref no -- 'mpiexec pw.x < f2-PBE-D3.in'
+/rds/general/user/hz1420/home/GitHub/Spica-Vir/crystal_shape_control/Imperial-HPC-Job-Submission/post_proc -in f2-PBE-D3.in -set /rds/general/user/hz1420/home/etc/runQE7/settings
+
+
+if [[ -f ./f2-PBE-D3.run ]];then
+chmod 755 ./f2-PBE-D3.run
+./f2-PBE-D3.run
+fi

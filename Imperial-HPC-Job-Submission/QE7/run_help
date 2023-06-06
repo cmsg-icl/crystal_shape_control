@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# Instructions of pre-defined commands
+
+function print_ALIAS_HOWTO_ {
+    cat << EOF
+    -------------------------------------------
+    Imperial CX1 Quantum-Esppresso 7 job submission script HOWTO
+    -------------------------------------------
+    Use 'source ~/.bashrc' to activate pre-defined
+    commands
+
+    Pre-defined commands
+        PWqe7    : Run parallel crystal calculations
+        PHqe7    : Run OpenMP parallel crystal calculations
+        CPqe7    : Run massive parallel crystal calculations
+        PPqe7    : Run OpenMP massive parallel crystal calculations
+        Xqe7     : Run user defined commands (Advanced)
+        SETqe7   : Quick reference of settings file
+        HELPqe7  : Print help file
+
+    Example code:
+        PWqe7 -in mgo.in -wt 02:00 -nd 2
+
+EOF
+}
+
+# Instructions of user-defined commands
+
+function print_GENSUB_HOWTO_ {
+    SOURCE=${CTRLDIR}/gen_sub
+    source ${SOURCE} -help
+}
+
+CONFIGDIR=`realpath $(dirname $0)`
+CTRLDIR=`realpath ${CONFIGDIR}/../`
+

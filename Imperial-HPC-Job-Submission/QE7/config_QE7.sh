@@ -2,15 +2,15 @@
 
 function welcome_msg {
     core_version=`grep 'core' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,22,11))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
-    core_date=`grep 'core' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,33,21))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'` 
+    core_date=`grep 'core' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,33,21))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
     core_author=`grep 'core' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,54,21))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
     core_contact=`grep 'core' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,75,31))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
     core_acknolg=`grep 'core' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,106,length($0)))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
-    code_version=`grep 'Quantum-Espresso7' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,22,11))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
-    code_date=`grep 'Quantum-Espresso7' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,33,21))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
-    code_author=`grep 'Quantum-Espresso7' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,54,21))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
-    code_contact=`grep 'Quantum-Espresso7' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,75,31))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
-    code_acknolg=`grep 'Quantum-Espresso7' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,106,length($0)))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
+    code_version=`grep 'QE7' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,22,11))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
+    code_date=`grep 'QE7' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,33,21))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
+    code_author=`grep 'QE7' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,54,21))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
+    code_contact=`grep 'QE7' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,75,31))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
+    code_acknolg=`grep 'QE7' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,106,length($0)))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
     cat << EOF
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
@@ -25,14 +25,14 @@ function welcome_msg {
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
-Quantum-Espresso7 job submission script for ARCHER2 - Setting up
+Quantum Espresso7 job submission script for Imperial HPC - Setting up
 
 Job submission script installed date : `date`
-Batch system                         : SLURM
+Batch system                         : PBS
 Job submission script version        : ${code_version} (${code_date})
 Job submission script author         : ${code_author} (${code_contact})
 Core script version                  : ${core_version} (${core_date})
-Core script author                   : ${core_author} (${core_contact})
+Job submission script author         : ${core_author} (${core_contact})
 
 ${code_acknolg}
 ${core_acknolg}
@@ -47,21 +47,21 @@ function get_scriptdir {
     Please specify your installation path.
 
     Default Option
-    ${WORK}/etc/runQE7
+    ${HOME}/etc/runQE7/):
 
 EOF
 
     read -p " " SCRIPTDIR
 
     if [[ -z ${SCRIPTDIR} ]]; then
-        SCRIPTDIR=${WORK}/etc/runQE7
+        SCRIPTDIR=${HOME}/etc/runQE7
     fi
 
     if [[ ${SCRIPTDIR: -1} == '/' ]]; then
         SCRIPTDIR=${SCRIPTDIR%/*}
     fi
-
-	SCRIPTDIR=`realpath $(echo ${SCRIPTDIR}) 2>&1 | sed -r 's/.*\:(.*)\:.*/\1/' | sed 's/[[:space:]]//g'` # Ignore errors
+    
+    SCRIPTDIR=`realpath $(echo ${SCRIPTDIR}) 2>&1 | sed -r 's/.*\:(.*)\:.*/\1/' | sed 's/[[:space:]]//g'` # Ignore errors
     source_dir=`realpath $(dirname $0)`
     if [[ ${source_dir} == ${SCRIPTDIR} ]]; then
         cat << EOF
@@ -76,7 +76,7 @@ EOF
         if [[ $? == 0 ]]; then
             cat << EOF
 --------------------------------------------------------------------------------
-    Warning: Directory exists - currnet folder will be removed.
+    Warning: Directory exists - current folder will be removed.
 
 EOF
             rm -r ${SCRIPTDIR}
@@ -84,34 +84,14 @@ EOF
     fi
 }
 
-function get_budget_code {
-    cat << EOF
-================================================================================
-    Please specify your budget code:
-
-EOF
-    
-    read -p " " BUDGET_CODE
-    BUDGET_CODE=`echo ${BUDGET_CODE}`
-
-    if [[ -z ${BUDGET_CODE} ]]; then
-        cat << EOF
---------------------------------------------------------------------------------
-    Error: Budget code must be specified. Exiting current job. 
-
-EOF
-        exit
-    fi
-}
-
 function set_exe {
     cat << EOF
 ================================================================================
-    Please specify the directory of CRYSTAL exectuables, 
-    or the command to load CRYSTAL modules
+    Please specify the directory of Quantum Espresso7 exectuables, 
+    or the command to load QE7 modules
 
     Default Option
-    quantum_espresso/7.1 (Available module)
+    Quantum Espresso 7.1 - mpi/omp
 
 EOF
     
@@ -119,7 +99,7 @@ EOF
     EXEDIR=`echo ${EXEDIR}`
 
     if [[ -z ${EXEDIR} ]]; then
-        EXEDIR='module load quantum_espresso/7.1'
+        EXEDIR='module load  /rds/general/user/hz1420/home/apps/QE-7.1/share/module_qe'
     fi
 
     if [[ ! -d ${EXEDIR} && (${EXEDIR} != *'module load'*) ]]; then
@@ -150,7 +130,7 @@ function set_mpi {
     Please specify the directory of MPI executables or mpi modules
 
     Default Option
-    cpe/22.04 cray-dsmml/0.2.2 cray-mpich/8.1.15 craype/2.7.15
+    Intel OneAPI 2022.1.2
 
 EOF
     
@@ -158,7 +138,8 @@ EOF
     MPIDIR=`echo ${MPIDIR}`
 
     if [[ -z ${MPIDIR} ]]; then
-        MPIDIR='module load cpe/22.04 cray-dsmml/0.2.2 craype/2.7.15'
+	    export MODULEPATH="/rds/general/user/hz1420/home/apps/IntelOneAPI_v2022.1.2/modulefiles:${MODULEPATH}"
+        MPIDIR='module load mkl/latest mpi/latest'
     fi
 
     if [[ ! -d ${EXEDIR} && (${EXEDIR} != *'module load'*) ]]; then
@@ -199,13 +180,13 @@ function set_settings {
     SETFILE=${SCRIPTDIR}/settings
 
     # Values for keywords
-    sed -i "/SUBMISSION_EXT/a\.slurm" ${SETFILE}
-    sed -i "/NCPU_PER_NODE/a\128" ${SETFILE}
+    sed -i "/SUBMISSION_EXT/a\ .qsub" ${SETFILE}
+    sed -i "/NCPU_PER_NODE/a\ 24" ${SETFILE}
+    sed -i "/MEM_PER_NODE/a\ 100" ${SETFILE}
     sed -i "/NTHREAD_PER_PROC/a\ 1" ${SETFILE}
-    sed -i "/BUDGET_CODE/a\ ${BUDGET_CODE}" ${SETFILE}
-    sed -i "/QOS/a\standard" ${SETFILE}
-    sed -i "/PARTITION/a\standard" ${SETFILE}
-    sed -i "/TIME_OUT/a\3" ${SETFILE}
+    sed -i "/NGPU_PER_NODE/a\ 0" ${SETFILE}
+    sed -i "/GPU_TYPE/a\ RTX6000" ${SETFILE}
+    sed -i "/TIME_OUT/a\ 3" ${SETFILE}
     sed -i "/JOB_TMPDIR/a\ nodir" ${SETFILE}
     sed -i "/EXEDIR/a\ ${EXEDIR}" ${SETFILE}
     sed -i "/MPIDIR/a\ ${MPIDIR}" ${SETFILE}
@@ -214,72 +195,76 @@ function set_settings {
 
     LINE_EXE=`grep -nw 'EXE_TABLE' ${SETFILE}`
     LINE_EXE=`echo "scale=0;${LINE_EXE%:*}+3" | bc`
-    sed -i "${LINE_EXE}a\pp         srun --hint=nomultithread --distribution=block:block         pp.x < [job].in                                              Parallel data postprocessing" ${SETFILE}
-    sed -i "${LINE_EXE}a\cp         srun --hint=nomultithread --distribution=block:block         cp.x < [job].in                                              Parallel Car-Parrinello MD" ${SETFILE}
-    sed -i "${LINE_EXE}a\ph         srun --hint=nomultithread --distribution=block:block         ph.x < [job].in                                              Parallel Phonon (DFPT) calculation" ${SETFILE}
-    sed -i "${LINE_EXE}a\pw         srun --hint=nomultithread --distribution=block:block         pw.x < [job].in                                              Parallel PWscf calculation" ${SETFILE}
+    sed -i "${LINE_EXE}a\pp         mpiexec                                                      pp.x < [job].in                                              Parallel data postprocessing" ${SETFILE}
+    sed -i "${LINE_EXE}a\cp         mpiexec                                                      cp.x < [job].in                                              Parallel Car-Parrinello MD" ${SETFILE}
+    sed -i "${LINE_EXE}a\ph         mpiexec                                                      ph.x < [job].in                                              Parallel Phonon (DFPT) calculation" ${SETFILE}
+    sed -i "${LINE_EXE}a\pw         mpiexec                                                      pw.x < [job].in                                              Parallel PWscf calculation" ${SETFILE}
 
-    # Use QE's built-in temporary file management commands
-    # # Input file table
+    # Input file table
 
-    # LINE_PRE=`grep -nw 'PRE_CALC' ${SETFILE}`
+	# LINE_PRE=`grep -nw 'PRE_CALC' ${SETFILE}`
     # LINE_PRE=`echo "scale=0;${LINE_PRE%:*}+3" | bc`
-    # sed -i "${LINE_PRE}a\[jobname].POINTCHG   POINTCHG.INP         Dummy atoms with 0 mass and given charge" ${SETFILE}
+    # sed -i "${LINE_PRE}a\[jobname].gin        [jobname].gin        GULP input file" ${SETFILE}
 
-    # # Reference file table
-
-    # LINE_REF=`grep -nw 'REF_FILE' ${SETFILE}`
-    # LINE_REF=`echo "scale=0;${LINE_REF%:*}+3" | bc`
-    # sed -i "${LINE_REF}a\[refname].f31        fort.32              Derivative of density matrix" ${SETFILE}
     
-    # # Post-processing file table
+    # Reference file table
+
+	# LINE_REF=`grep -nw 'REF_FILE' ${SETFILE}`
+    # LINE_REF=`echo "scale=0;${LINE_REF%:*}+3" | bc`
+    # sed -i "${LINE_REF}a\[refname].something  something            Some reference files" ${SETFILE}
+    
+    # Post-processing file table
 
     # LINE_POST=`grep -nw 'POST_CALC' ${SETFILE}`
     # LINE_POST=`echo "scale=0;${LINE_POST%:*}+3" | bc`
     
-    # sed -i "${LINE_POST}a\[jobname].POTC       POTC.DAT             Electrostatic potential and derivatives" ${SETFILE}
-    
-    # Job submission file template - should be placed at the end of file
+    # sed -i "${LINE_POST}a\*                    *.inp                Force field coefficient file LAMMPS format" ${SETFILE}
+    # sed -i "${LINE_POST}a\*                    *.lmp                Geometry file LAMMPS format" ${SETFILE}
+    # sed -i "${LINE_POST}a\*                    *.xyz                Geometry file xyz format" ${SETFILE}
+
+    # Job submission file template
+
     cat << EOF >> ${SETFILE}
-----------------------------------------------------------------------------------------
-#!/bin/bash
-#SBATCH --nodes=\${V_ND}
-#SBATCH --ntasks-per-node=\${V_PROC}
-#SBATCH --cpus-per-task=\${V_TREAD}
-#SBATCH --time=\${V_TWT}
+-----------------------------------------------------------------------------------
+#!/bin/bash  --login
+#PBS -N \${V_JOBNAME}
+#PBS -l select=\${V_ND}:ncpus=\${V_NCPU}:mem=\${V_MEM}:mpiprocs=\${V_PROC}:ompthreads=\${V_TRED}\${V_NGPU}\${V_TGPU}:avx2=true
+#PBS -l walltime=\${V_TWT}
 
-# Replace [budget code] below with your full project code
-#SBATCH --account=\${V_BUDGET}
-#SBATCH --partition=\${V_PARTITION}
-#SBATCH --qos=\${V_QOS}
-#SBATCH --export=none
-
-echo "SLURM Job Report"
+echo "PBS Job Report"
 echo "--------------------------------------------"
 echo "  Start Date : \$(date)"
-echo "  SLURM Job ID : \${SLURM_JOB_ID}"
+echo "  PBS Job ID : \${PBS_JOBID}"
 echo "  Status"
-squeue -j \${SLURM_JOB_ID} 2>&1
+qstat -f \${PBS_JOBID}
 echo "--------------------------------------------"
 echo ""
 
-# Address the memory leak
-export FI_MR_CACHE_MAX_COUNT=0
+# number of cores per node used
+export NCORES=\${V_NCPU}
+# number of processes
+export NPROCESSES=\${V_TPROC}
 
-# Set number of threads and OMP level
+# Make sure any symbolic links are resolved to absolute path
+export PBS_O_WORKDIR=\$(readlink -f \${PBS_O_WORKDIR})
+
+# Set the number of threads
 export OMP_NUM_THREADS=\${V_TRED}
 export OMP_PLACES=cores
+
+# to sync nodes
+cd \${PBS_O_WORKDIR}
 
 # Set temporary directory
 export ESPRESSO_TMPDIR=\$(pwd)/\${V_JOBNAME}.save
 
 # start calculation: command added below by gen_sub
-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
 
 EOF
     cat << EOF
 ================================================================================
-    Paramters specified in ${SETFILE}.
+    Paramters specified in ${SETFILE}. 
 
 EOF
 }
@@ -287,8 +272,8 @@ EOF
 # Configure user alias
 
 function set_commands {
-    bgline=`grep -nw "# >>> begin Quantum-Esppresso 7 job submitter settings >>>" ${HOME}/.bashrc`
-    edline=`grep -nw "# <<< finish Quantum-Esppresso 7 job submitter settings <<<" ${HOME}/.bashrc`
+    bgline=`grep -nw "# >>> begin QE7 job submitter settings >>>" ${HOME}/.bashrc`
+    edline=`grep -nw "# <<< finish QE7 job submitter settings <<<" ${HOME}/.bashrc`
 
     if [[ ! -z ${bgline} && ! -z ${edline} ]]; then
         bgline=${bgline%%:*}
@@ -296,7 +281,7 @@ function set_commands {
         sed -i "${bgline},${edline}d" ${HOME}/.bashrc
     fi
 
-    echo "# >>> begin Quantum-Esppresso 7 job submitter settings >>>" >> ${HOME}/.bashrc
+    echo "# >>> begin QE7 job submitter settings >>>" >> ${HOME}/.bashrc
     echo "alias PWqe7='${CTRLDIR}/gen_sub -x pw -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
     echo "alias PHqe7='${CTRLDIR}/gen_sub -x ph -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
     echo "alias CPqe7='${CTRLDIR}/gen_sub -x cp -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
@@ -304,9 +289,7 @@ function set_commands {
     echo "alias Xqe7='${CTRLDIR}/gen_sub -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
     echo "alias SETqe7='cat ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
     echo "alias HELPqe7='source ${CONFIGDIR}/run_help; print_ALIAS_HOWTO_; print_GENSUB_HOWTO_'" >> ${HOME}/.bashrc
-    echo "chmod -R 'u+r+w+x' ${CTRLDIR}" >> ${HOME}/.bashrc
-    echo "chmod 'u+r+w+x' ${CONFIGDIR}/run_help" >> ${HOME}/.bashrc
-    echo "# <<< finish Quantum-Esppresso 7 job submitter settings <<<" >> ${HOME}/.bashrc
+    echo "# <<< finish QE7 job submitter settings <<<" >> ${HOME}/.bashrc
 
     source ${CONFIGDIR}/run_help; print_ALIAS_HOWTO_
 }
@@ -323,7 +306,6 @@ CTRLDIR=`realpath ${CONFIGDIR}/../`
 welcome_msg
 get_scriptdir
 copy_scripts
-get_budget_code
 set_exe
 set_mpi
 set_settings

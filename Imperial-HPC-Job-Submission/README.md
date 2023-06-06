@@ -319,6 +319,37 @@ ${EPHEMERAL}
 
 Note that this is also an illustruction of multi-threading feature of CRYSTAL23. Since a serial executable is used, the 'ompthreads' and 'OMP\_NUM\_THREADS' are changed to 24, while 'mpiproc' and 'NPROCESSES' are 1.
 
+### Quantum Espresso 7
+
+*Author: Spica. Vir.*
+
+**Default settings file**
+
+${HOME}/etc/runQE7/settings
+
+**Default executable**
+
+Version 7.1 MPI/OMP compiled by Intel OneAPI 2022.1.2 icx/icpx/ifx, mkl and mpi
+
+| LABEL | ACTUAL IN-LINE COMMAND    |
+|:-----:|:--------------------------|
+| pw    | mpiexec pw.x < \[job\].in |
+| ph    | mpiexec ph.x < \[job\].in |
+| cp    | mpiexec cp.x < \[job\].in |
+| pp    | mpiexec pp.x < \[job\].in |
+
+**Default ephemeral directory**
+
+'nodir'
+
+Note: In practice, the environment vairable `${ESPRESSO_TMPDIR}=${JOBNAME}_${SLURM_JOB_ID}` is exported, which utilises the built-in temporary file management feature of Quantum Espresso.
+
+**Commands**
+
+`PWqe7` `PHqe7` `CPqe7` `PPqe7` `Xqe7` `SETqe7` `HELPqe7`
+
+**Command used for testcase**
+
 ### GULP6
 
 *Author: Spica. Vir.*
