@@ -252,11 +252,11 @@ export PBS_O_WORKDIR=\$(readlink -f \${PBS_O_WORKDIR})
 export OMP_NUM_THREADS=\${V_TRED}
 export OMP_PLACES=cores
 
-# Set temporary directory
-export ESPRESSO_TMPDIR=\$(pwd)/\${V_JOBNAME}_\${PBS_JOBID}
-
 # to sync nodes
 cd \${PBS_O_WORKDIR}
+
+# Set temporary directory
+export ESPRESSO_TMPDIR=\$(pwd)/\${V_JOBNAME}.save
 
 # start calculation: command added below by gen_sub
 -----------------------------------------------------------------------------------

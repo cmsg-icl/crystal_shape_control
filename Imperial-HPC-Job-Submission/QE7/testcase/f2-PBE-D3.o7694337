@@ -1,0 +1,181 @@
+PBS Job Report
+--------------------------------------------
+  Start Date : Tue  6 Jun 14:16:21 BST 2023
+  PBS Job ID : 7694337.pbs
+  Status
+--------------------------------------------
+
+Parameter list:  --set '/rds/general/user/hz1420/home/etc/runQE7/settings' --in 'f2-PBE-D3.in' --ref 'no' -- 'mpiexec' 'pw.x' '<' 'f2-PBE-D3.in'
+Printed output filename /rds/general/user/hz1420/home/conform_paw/testqsub/f2-PBE-D3.out
+Loading Quantum Espresso 7.1 ...
+Modules loaded:
+	Intel OneAPI 2022.1.2 : MPI, MKL
+Loading mpi version 2021.5.1
+Loading mkl version 2022.0.2
+Loading tbb version 2021.5.1
+Loading compiler-rt version 2022.0.2
+
+Loading /rds/general/user/hz1420/home/apps/QE-7.1/share/module_qe
+  Loading requirement: mpi/latest tbb/latest compiler-rt/latest mkl/latest
+MPI command: mpiexec pw.x < f2-PBE-D3.in
+Temporary file stored under the current directory /rds/general/user/hz1420/home/conform_paw/testqsub
+Job Executation Script
+--------------------------------------------
+/rds/general/user/hz1420/home/conform_paw/testqsub/Job_script_7694337
+--------------------------------------------
+
+Running Job Report
+--------------------------------------------
+DATE START : Tue  6 Jun 14:18:33 BST 2023
+
+PBE NODEFILE Info
+--------------------------------------------
+Found in /var/spool/PBS/aux/7694337.pbs
+  temporary directory on cx3-2-3.cx3.hpc.ic.ac.uk
+--------------------------------------------
+
+Pre-Calc Summary
+--------------------------------------------
+  date:                Tue  6 Jun 14:18:52 BST 2023
+  hostname:            cx3-2-3.cx3.hpc.ic.ac.uk
+  system:              Linux cx3-2-3.cx3.hpc.ic.ac.uk 4.18.0-348.20.1.el8_5.x86_64 #1 SMP Tue Mar 8 12:56:54 EST 2022 x86_64 x86_64 x86_64 GNU/Linux
+  user:                hz1420
+  input:               /rds/general/user/hz1420/home/conform_paw/testqsub/f2-PBE-D3.in
+  output:              /rds/general/user/hz1420/home/conform_paw/testqsub/f2-PBE-D3.out
+  temporary directory: /rds/general/user/hz1420/home/conform_paw/testqsub
+  executable script:   /rds/general/user/hz1420/home/GitHub/Spica-Vir/crystal_shape_control/Imperial-HPC-Job-Submission/run_exec
+  executable dir:      module load /rds/general/user/hz1420/home/apps/QE-7.1/share/module_qe
+  mpi + exe command:    mpiexec pw.x < f2-PBE-D3.in
+-------------------------------------------
+
+PBS Job Status
+-------------------------------------------
+  Connection timed out
+qstat: cannot connect to server pbs (errno=110)
+-------------------------------------------
+
+All files are synchonised.
+
+Job Ready to Go
+-------------------------------------------
+  Job name       : f2-PBE-D3
+  ID             : 7694337.pbs
+  Command        : mpiexec pw.x < f2-PBE-D3.in >> /rds/general/user/hz1420/home/conform_paw/testqsub/f2-PBE-D3.out 2>&1
+  Temporary dir  : /rds/general/user/hz1420/home/conform_paw/testqsub
+  List of files  : total 35
+-rw-------. 1 hz1420 hpc-nmh   353 Jun  6 14:18 f2-PBE-D3.e7694337
+-rw-r-----. 1 hz1420 hpc-nmh  2283 Jun  4 23:01 f2-PBE-D3.in
+-rw-------. 1 hz1420 hpc-nmh  2512 Jun  6 14:21 f2-PBE-D3.o7694337
+-rw-------. 1 hz1420 hpc-nmh  1218 Jun  6 14:21 f2-PBE-D3.out
+-rw-r--r--. 1 hz1420 hpc-nmh  1330 Jun  5 13:36 f2-PBE-D3.qsub
+-rw-------. 1 hz1420 hpc-nmh 12552 Jun  6 14:18 Job_script_7694337
+  Input script   :
+&CONTROL
+  title         = 'Paracetamol conformation energy PBE-D3 Form 2'
+  calculation   = 'scf'
+  verbosity     = 'default'
+  disk_io       = 'low'
+  pseudo_dir    = '/rds/general/user/hz1420/home/apps/QE-7.1/share/pseudo/'
+  tprnfor       = .true.
+  tstress       = .true.
+/
+&SYSTEM
+  ibrav               = 1
+  celldm(1)           = 50
+  nat                 = 20
+  ntyp                = 4
+  ecutwfc             = 100
+  ecutrho             = 400
+  occupations         = 'fixed'
+  input_dft           = 'pbe'
+  vdw_corr            = 'dft-d3'
+  dftd3_version       = 4
+  dftd3_threebody     = .TRUE.
+  space_group         = 0
+  assume_isolated     = 'makov-payne'
+/
+&ELECTRONS
+  electron_maxstep = 100
+  conv_thr         = 2.0D-9
+  startingwfc      = 'atomic'
+/
+ATOMIC_SPECIES
+  O  16.00  O.pbe-n-kjpaw_psl.1.0.0.UPF
+  N  14.01  N.pbe-n-kjpaw_psl.1.0.0.UPF
+  C  12.01  C.pbe-n-kjpaw_psl.1.0.0.UPF
+  H   1.008 H.pbe-kjpaw_psl.1.0.0.UPF
+
+ATOMIC_POSITIONS {angstrom}
+ H   4.865857582711E-01  3.953629002086E+00  8.758397361862E-01
+ C   9.704942697101E-01  3.984964686121E+00 -1.007432133120E-01
+ C   1.018515453472E+00  5.184818727322E+00 -7.987961431834E-01
+ C   1.532487893039E+00  2.818964554076E+00 -6.411506641523E-01
+ H   5.582524614421E-01  6.075225367204E+00 -3.769468264397E-01
+ C   1.640613337578E+00  5.250231717028E+00 -2.052718215126E+00
+ C   2.108185668568E+00  2.871717255168E+00 -1.919430740474E+00
+ N   1.518948251738E+00  1.666874313293E+00  1.802753123136E-01
+ O   1.742588470641E+00  6.426312011674E+00 -2.742701121274E+00
+ C   2.162815558956E+00  4.078703039939E+00 -2.614797533009E+00
+ H   2.532884428970E+00  1.974927388370E+00 -2.357452849692E+00
+ H   1.390930649198E+00  1.858635669274E+00  1.183041743435E+00
+ C   1.744786721935E+00  3.712073738496E-01 -1.482142143104E-01
+ H   1.629504688120E+00  7.209346712694E+00 -2.118762381702E+00
+ H   2.643773539698E+00  4.121228607037E+00 -3.590791536474E+00
+ O   2.013804408187E+00  3.326049054721E-03 -1.317132051854E+00
+ C   1.670174163331E+00 -5.935415458867E-01  1.007868152906E+00
+ H   1.077414883776E+00 -2.034806818714E-01  1.841592558019E+00
+ H   1.242884502402E+00 -1.542640778895E+00  6.688365851910E-01
+ H   2.686202740930E+00 -7.900355535974E-01  1.379989500189E+00
+
+K_POINTS {tpiba}
+1
+  0.0 0.0 0.0 1.0
+-------------------------------------------
+
+Entering temporary directory...
+Launching the job...
+
+DATE END   : Tue  6 Jun 14:30:27 BST 2023
+Script run_exec done.
+--------------------------------------------
+
+Parameter list:  --in 'f2-PBE-D3.in' --set '/rds/general/user/hz1420/home/etc/runQE7/settings' --
+Post Processing Report
+--------------------------------------------
+Begining of post processing : Tue  6 Jun 14:30:27 BST 2023
+List of saved files
+  TEMPORARY            SAVED
+--------------------------------------------
+
+Temporary Directory Disk Info
+--------------------------------------------
+  Temporary directory      : /rds/general/user/hz1420/home/conform_paw/testqsub
+
+  Disk usage (df -h)
+Filesystem      Size  Used Avail Use% Mounted on
+rds              14P   12P  1.6P  89% /rds
+
+  Usage by folders (du -m)
+1413	/rds/general/user/hz1420/home/conform_paw/testqsub/f2-PBE-D3.save/pwscf.save
+1413	/rds/general/user/hz1420/home/conform_paw/testqsub/f2-PBE-D3.save
+1429	/rds/general/user/hz1420/home/conform_paw/testqsub
+
+  Detailed file list (ls -l .)
+    see /rds/general/user/hz1420/home/conform_paw/testqsub/*.o7694337.pbs file
+total 16450
+-rw-------. 1 hz1420 hpc-nmh   353 Jun  6 14:18 f2-PBE-D3.e7694337
+-rw-r-----. 1 hz1420 hpc-nmh  2283 Jun  4 23:01 f2-PBE-D3.in
+-rw-------. 1 hz1420 hpc-nmh  6686 Jun  6 14:30 f2-PBE-D3.o7694337
+-rw-------. 1 hz1420 hpc-nmh 35922 Jun  6 14:30 f2-PBE-D3.out
+-rw-r--r--. 1 hz1420 hpc-nmh  1330 Jun  5 13:36 f2-PBE-D3.qsub
+drwx--S---. 3 hz1420 hpc-nmh 16384 Jun  6 14:30 f2-PBE-D3.save
+-rw-------. 1 hz1420 hpc-nmh 12552 Jun  6 14:18 Job_script_7694337
+-rw-------. 1 hz1420 hpc-nmh  4577 Jun  6 14:30 Post_script_7694337
+--------------------------------------------
+
+Check files across nodes ...
+List of saved files
+  TEMPORARY            SAVED
+End of post processing : Tue  6 Jun 14:30:27 BST 2023
+Script post_proc done.
+--------------------------------------------

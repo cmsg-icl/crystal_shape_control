@@ -3,7 +3,7 @@ SUBMISSION_EXT
  .qsub
 
 NCPU_PER_NODE
- 24
+ 256
 
 MEM_PER_NODE
  100
@@ -92,11 +92,15 @@ export NPROCESSES=${V_TPROC}
 # Make sure any symbolic links are resolved to absolute path
 export PBS_O_WORKDIR=$(readlink -f ${PBS_O_WORKDIR})
 
-# Set the number of threads
+# Set the number of threads and OMP level
 export OMP_NUM_THREADS=${V_TRED}
+export OMP_PLACES=cores
 
 # to sync nodes
 cd ${PBS_O_WORKDIR}
+
+# Set temporary directory
+export ESPRESSO_TMPDIR=$(pwd)/${V_JOBNAME}.save
 
 # start calculation: command added below by gen_sub
 -----------------------------------------------------------------------------------
