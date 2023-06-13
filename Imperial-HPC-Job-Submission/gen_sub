@@ -628,10 +628,11 @@ EOF
                 exit
             fi
         fi
-		
+
         # substitute jobname
 
-		COMMAND[$i]=`echo ${cmd} | sed "s/\[job.*\]/${JOBNAME[$i]}/g"`
+		inpname=${INFILE[$i]%.*}
+        COMMAND[$i]=`echo ${cmd} | sed "s/\[job.*\]/${inpname}/g"`
 
     done
 }
