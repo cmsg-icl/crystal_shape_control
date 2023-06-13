@@ -610,10 +610,6 @@ function check_executable_ {
 EOF
                 exit
             fi
-
-            # substitute jobname
-
-            COMMAND[$i]=`echo "${cmd}" | sed "s/\[job.*\]/${JOBNAME[$i]}/g"`
         else
             ls ${XDIR}/${cmd%% *} > /dev/null 2>&1 
             if [[ $? -ne 0 ]]; then
@@ -628,12 +624,13 @@ EOF
 EOF
                 exit
             fi
+        if
 
-            # substitute jobname
+        # substitute jobname
 
-            COMMAND[$i]=`echo "${XDIR}/${cmd}" | sed "s/\[job.*\]/${JOBNAME[$i]}/g"`
-        fi
-	
+        inpname=${INFILE[$i]%.*}
+        COMMAND[$i]=`echo "${XDIR}/${cmd}" | sed "s/\[job.*\]/${inpname}/g"`
+
     done
 }
 
