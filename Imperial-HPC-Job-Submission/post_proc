@@ -177,7 +177,7 @@ EOF
 #tag_end_copy
 # Check files on all nodes before exiting
 
-cat << EOF > ${JOBTMPDIR}/checkfile0
+cat << EOF > ${JOBTMPDIR}/checkfile0_${PBS_JOBID%.*}
 #!/bin/bash
 JOBNAME=${JOBNAME}
 SETFILE=${SETFILE}
@@ -187,7 +187,7 @@ JOBTMPDIR=${JOBTMPDIR}
 cd  ${JOBTMPDIR}
 EOF
 sed '1,/^#tag_s/d;/^#tag_e/,$d'  $0 >> ${JOBTMPDIR}/checkfile0_${PBS_JOBID%.*}
-chmod 755 ${JOBTMPDIR}/checkfile0
+chmod 755 ${JOBTMPDIR}/checkfile0_${PBS_JOBID%.*}
 if [[ ! -z ${PBS_NODEFILE} ]]; then
     echo "Check files across nodes ..."
     echo "List of saved files"
@@ -197,8 +197,8 @@ if [[ ! -z ${PBS_NODEFILE} ]]; then
         PC=${PCLIST[$i]}
         echo "--------------------------------------------"
         echo "node: ${PC}, checkfile..."
-        echo "scp ${JOBTMPDIR}/checkfile0    ${PC}:${JOBTMPDIR}/checkfile"
-        scp ${JOBTMPDIR}/checkfile0 ${PC}:${JOBTMPDIR}/checkfile
+        echo "scp ${JOBTMPDIR}/checkfile0_${PBS_JOBID%.*}    ${PC}:${JOBTMPDIR}/checkfile"
+        scp ${JOBTMPDIR}/checkfile0_${PBS_JOBID%.*} ${PC}:${JOBTMPDIR}/checkfile
         ssh ${PC} "source ${JOBTMPDIR}/checkfile"
         echo "node: ${PC}, checkfile ended."
         echo "--------------------------------------------"
