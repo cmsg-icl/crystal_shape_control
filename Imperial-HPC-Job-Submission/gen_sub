@@ -506,19 +506,20 @@ function generate_subfile_ {
     cat << EOF > ${JOBNAME}.${SUB_EXT}
 ${TEMPT}
 EOF
-    
+
     # Calculate the timeout for calculations and calculate total walltime
-    tthr=0
-    ttmn=0
-    for (( i = 0; i < ${#WT[@]}; i++ )); do
-        time=${WT[$i]}
+
+    tt=0
+    for time in ${WT[@]}; do
         thr=${time%:*}
-        tthr=`echo "scale=0;${thr}+${tthr}" | bc`
         tmn=${time#*:}
-        ttmn=`echo "scale=0;${tmn}+${ttmn}" | bc`
-        tot=`echo "scale=0;${thr}*60+${tmn}-${TOUT_PER_JOB}" | bc`
-        TOUT+=("${tot}m")
+        tt=`echo "scale=0;${thr}*60+${tmn}+${tt}" | bc`
+        tout=`echo "scale=0;${thr}*60+${tmn}-${TOUT_PER_JOB}" | bc`
+        TOUT+=("${tout}m")
     done
+    ttmn=`echo "scale=0; ${tt}%60" | bc`
+	tthr=`echo "scale=0; (${tt}-${ttmn})/60" | bc`
+    TWT=`echo "$(printf "%02d\n" ${tthr}):$(printf "%02d\n" ${ttmn}):00"`
     TWT=`echo "$(printf "%02d\n" ${tthr}):$(printf "%02d\n" ${ttmn}):00"`
 
     # Generate job executation and post processing commands
