@@ -7,11 +7,11 @@ function welcome_msg {
     core_author=`grep 'core' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,54,21))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
     core_contact=`grep 'core' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,75,31))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
     core_acknolg=`grep 'core' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,106,length($0)))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
-    code_version=`grep 'CRYSTAL23' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,22,11))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
-    code_date=`grep 'CRYSTAL23' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,33,21))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
-    code_author=`grep 'CRYSTAL23' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,54,21))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
-    code_contact=`grep 'CRYSTAL23' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,75,31))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
-    code_acknolg=`grep 'CRYSTAL23' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,106,length($0)))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
+    code_version=`grep 'CRYSTAL17' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,22,11))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
+    code_date=`grep 'CRYSTAL17' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,33,21))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
+    code_author=`grep 'CRYSTAL17' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,54,21))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
+    code_contact=`grep 'CRYSTAL17' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,75,31))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
+    code_acknolg=`grep 'CRYSTAL17' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,106,length($0)))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
     cat << EOF
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
@@ -26,7 +26,7 @@ function welcome_msg {
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
-CRYSTAL23 job submission script for NHPC101 - Setting up
+CRYSTAL17 job submission script for NHPC101 - Setting up
 
 Job submission script installed date : `date`
 Job submission script version        : ${code_version} (${code_date})
@@ -49,7 +49,7 @@ function get_scriptdir {
     Please specify your installation path.
 
     Default Option
-    ~/etc/runCRYSTAL23
+    ~/etc/runCRYSTAL17
 
 EOF
 #---- END_USER ----#
@@ -58,7 +58,7 @@ EOF
 
     if [[ -z ${SCRIPTDIR} ]]; then
 #---- BEGIN_USER ----# if input is empty, use default
-        SCRIPTDIR="${HOME}/etc/runCRYSTAL23"
+        SCRIPTDIR="${HOME}/etc/runCRYSTAL17"
 #---- END_USER ----#
     fi
 
@@ -97,7 +97,7 @@ function set_exe {
     or the command to load CRYSTAL modules
 
     Default Option
-    CRYSTAL/23v1.0.1-intel
+    CRYSTAL/17v1.0.1-intel
 
 EOF
 #---- END_USER ----#
@@ -107,7 +107,7 @@ EOF
 
     if [[ -z ${EXEDIR} ]]; then
 #---- BEGIN_USER ----# if input is empty, use default
-        EXEDIR='module load CRYSTAL/23v1.0.1-intel'
+        EXEDIR='module load CRYSTAL/17v1.0.1-intel'
 #---- END_USER ----#
     fi
 
@@ -210,8 +210,8 @@ function set_settings {
     LINE_EXE=`grep -nw 'EXE_TABLE' ${SETFILE}`
     LINE_EXE=`echo "scale=0;${LINE_EXE%:*}+3" | bc`
 #---- BEGIN_USER ----# MPI+executable options
-    sed -i "${LINE_EXE}a\pprop      mpiexec -np 1                                                properties < INPUT                                           Serial properties calculation OMP" ${SETFILE}
-    sed -i "${LINE_EXE}a\scrys      mpiexec -np 1                                                crystal < INPUT                                              Serial crystal calculation OMP" ${SETFILE}
+    sed -i "${LINE_EXE}a\pprop      mpiexec -np 1                                                properties < INPUT                                           Serial properties calculation" ${SETFILE}
+    sed -i "${LINE_EXE}a\scrys      mpiexec -np 1                                                crystal < INPUT                                              Serial crystal calculation" ${SETFILE}
     sed -i "${LINE_EXE}a\pprop      mpiexec -np \${V_NP}                                          Pproperties                                                  Parallel properties calculation" ${SETFILE}
     sed -i "${LINE_EXE}a\mppcrys    mpiexec -np \${V_NP}                                          MPPcrystal                                                   Massive parallel crystal calculation" ${SETFILE}
     sed -i "${LINE_EXE}a\pcrys      mpiexec -np \${V_NP}                                          Pcrystal                                                     Parallel crystal calculation" ${SETFILE}
@@ -290,8 +290,7 @@ function set_settings {
     sed -i "${LINE_POST}a\[jobname].gui        fort.34              Geometry, CRYSTAL fort34 format" ${SETFILE}
     sed -i "${LINE_POST}a\[jobname].ERROR      fort.87              Error report" ${SETFILE}
 #---- END_USER ----#
-    # Job submission file template - should be placed at the end of file
-#---- BEGIN_USER ----# 
+    # Job submission file template - Not used.
     cat << EOF >> ${SETFILE}
 ----------------------------------------------------------------------------------------
 
@@ -304,13 +303,14 @@ EOF
 
 EOF
 }
-#---- END_USER ----#
 
 # Configure user alias
 
 function set_commands {
-    bgline=`grep -nw "# >>> begin CRYSTAL23 job submitter settings >>>" ${HOME}/.bashrc`
-    edline=`grep -nw "# <<< finish CRYSTAL23 job submitter settings <<<" ${HOME}/.bashrc`
+#---- BEGIN_USER ----# Cover the old alias commands block
+    bgline=`grep -nw "# >>> begin CRYSTAL17 job submitter settings >>>" ${HOME}/.bashrc`
+    edline=`grep -nw "# <<< finish CRYSTAL17 job submitter settings <<<" ${HOME}/.bashrc`
+#---- END_USER ----#
 
     if [[ ! -z ${bgline} && ! -z ${edline} ]]; then
         bgline=${bgline%%:*}
@@ -318,18 +318,18 @@ function set_commands {
         sed -i "${bgline},${edline}d" ${HOME}/.bashrc
     fi
 #---- BEGIN_USER ----# Alias commands. The 'chmod' command should be kept unmodified
-    echo "# >>> begin CRYSTAL23 job submitter settings >>>" >> ${HOME}/.bashrc
-    echo "alias Pcrys23='${CTRLDIR}/run_job -x pcrys -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "alias MPPcrys23='${CTRLDIR}/run_job -x mppcrys -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "alias Pprop23='${CTRLDIR}/run_job -x pprop -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "alias Scrys23='${CTRLDIR}/run_job -x scrys -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "alias Sprop23='${CTRLDIR}/run_job -x sprop -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "alias Xcrys23='${CTRLDIR}/run_job -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "alias SETcrys23='cat ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "alias HELPcrys23='bash ${CONFIGDIR}/run_help gensub'" >> ${HOME}/.bashrc
+    echo "# >>> begin CRYSTAL17 job submitter settings >>>" >> ${HOME}/.bashrc
+    echo "alias Pcrys17='${CTRLDIR}/run_job -x pcrys -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
+    echo "alias MPPcrys17='${CTRLDIR}/run_job -x mppcrys -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
+    echo "alias Pprop17='${CTRLDIR}/run_job -x pprop -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
+    echo "alias Scrys17='${CTRLDIR}/run_job -x scrys -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
+    echo "alias Sprop17='${CTRLDIR}/run_job -x sprop -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
+    echo "alias Xcrys17='${CTRLDIR}/run_job -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
+    echo "alias SETcrys17='cat ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
+    echo "alias HELPcrys17='bash ${CONFIGDIR}/run_help gensub'" >> ${HOME}/.bashrc
     echo "chmod -R 'u+r+w+x' ${CTRLDIR}" >> ${HOME}/.bashrc
     echo "chmod 'u+r+w+x' ${CONFIGDIR}/run_help" >> ${HOME}/.bashrc
-    echo "# <<< finish CRYSTAL23 job submitter settings <<<" >> ${HOME}/.bashrc
+    echo "# <<< finish CRYSTAL17 job submitter settings <<<" >> ${HOME}/.bashrc
 #---- END_USER ----# 
     bash ${CONFIGDIR}/run_help
 }

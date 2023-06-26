@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# Instructions of pre-defined commands
+
+function print_ALIAS_HOWTO_ {
+    cat << EOF
+    -------------------------------------------
+    NHPC101 CRYSTAL17 job submission script HOWTO
+    -------------------------------------------
+    Use 'source ~/.bashrc' to activate pre-defined
+    commands
+
+    Pre-defined commands
+        Pcrys17    : Run parallel crystal calculations
+        MPPcrys17  : Run massive parallel crystal calculations
+        Pprop17    : Run parallel properties calculations
+        Scrys17    : Run serial crystal calculations
+        Sprop17    : Run serial properties calculations
+        Xcrys17    : Run user defined commands (Advanced)
+        SETcrys17  : Quick reference of settings file
+        HELPcrys17 : Print help file
+
+    Example code:
+        Pcrys17 -in mgo.d12 -np 2
+        Xcrys17 -name mag-band -np 2 -nt 2 -x pcrys -in mgo.d12 -ref no -x pprop -in band.d3 -ref mgo
+
+EOF
+}
+
+# Instructions of user-defined commands
+
+function print_GENSUB_HOWTO_ {
+    SOURCE="${CTRLDIR}/run_job"
+    bash ${SOURCE} -help
+}
+
+print_ALIAS_HOWTO_
+
+if [[ $1 == 'gensub' ]]; then
+    CONFIGDIR=`realpath $(dirname $0)`
+    CTRLDIR=`realpath ${CONFIGDIR}/../`
+    print_GENSUB_HOWTO_
+fi
