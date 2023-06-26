@@ -1,5 +1,6 @@
 #!/bin/bash
 
+#---- BEGIN_USER ----# A reminder of providing version & other information to version_control.txt file. All 'CRYSTAL17' should be substituted
 function welcome_msg {
     core_version=`grep 'core' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,22,11))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
     core_date=`grep 'core' ${CTRLDIR}/version_control.txt | awk '{printf("%s", substr($0,33,21))}' | awk '{sub(/^ */, ""); sub(/ *$/, "")}1'`
@@ -25,10 +26,9 @@ function welcome_msg {
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
-CRYSTAL17 job submission script for ARCHER2 - Setting up
+CRYSTAL17 job submission script for NHPC101 - Setting up
 
 Job submission script installed date : `date`
-Batch system                         : SLURM
 Job submission script version        : ${code_version} (${code_date})
 Job submission script author         : ${code_author} (${code_contact})
 Core script version                  : ${core_version} (${core_date})
@@ -39,23 +39,27 @@ ${core_acknolg}
 
 EOF
 }
+#---- END_USER ----#
 
 function get_scriptdir {
-    WORK=`echo "/work/${HOME#*/home/}"`
+#---- BEGIN_USER ----# version number
     cat << EOF
 ================================================================================
     Note: all scripts should be placed into the same directory!
     Please specify your installation path.
 
     Default Option
-    ${WORK}/etc/runCRYSTAL17
+    ~/etc/runCRYSTAL17
 
 EOF
+#---- END_USER ----#
 
     read -p " " SCRIPTDIR
 
     if [[ -z ${SCRIPTDIR} ]]; then
-        SCRIPTDIR=${WORK}/etc/runCRYSTAL17
+#---- BEGIN_USER ----# if input is empty, use default
+        SCRIPTDIR="${HOME}/etc/runCRYSTAL17"
+#---- END_USER ----#
     fi
 
     if [[ ${SCRIPTDIR: -1} == '/' ]]; then
@@ -85,42 +89,26 @@ EOF
     fi
 }
 
-function get_budget_code {
-    cat << EOF
-================================================================================
-    Please specify your budget code:
-
-EOF
-    
-    read -p " " BUDGET_CODE
-    BUDGET_CODE=`echo ${BUDGET_CODE}`
-
-    if [[ -z ${BUDGET_CODE} ]]; then
-        cat << EOF
---------------------------------------------------------------------------------
-    Error: Budget code must be specified. Exiting current job. 
-
-EOF
-        exit
-    fi
-}
-
 function set_exe {
+#---- BEGIN_USER ----# version number
     cat << EOF
 ================================================================================
     Please specify the directory of CRYSTAL exectuables, 
     or the command to load CRYSTAL modules
 
     Default Option
-    crystal/17-1.0.2 (Available module)
+    CRYSTAL/17v1.0.1-intel
 
 EOF
+#---- END_USER ----#
     
     read -p " " EXEDIR
     EXEDIR=`echo ${EXEDIR}`
 
     if [[ -z ${EXEDIR} ]]; then
-        EXEDIR='module load other-software crystal/17-1.0.2'
+#---- BEGIN_USER ----# if input is empty, use default
+        EXEDIR='module load CRYSTAL/17v1.0.1-intel'
+#---- END_USER ----#
     fi
 
     if [[ ! -d ${EXEDIR} && (${EXEDIR} != *'module load'*) ]]; then
@@ -146,20 +134,24 @@ EOF
 }
 
 function set_mpi {
+#---- BEGIN_USER ----# version number
     cat << EOF
 ================================================================================
     Please specify the directory of MPI executables or mpi modules
 
     Default Option
-    PrgEnv-cray/8.0.0 cray-mpich/8.1.4 cray-libsci/21.04.1.1 cce/11.0.4
+    RunEnv/Intel-2023.1.0
 
 EOF
+#---- END_USER ----#
     
     read -p " " MPIDIR
     MPIDIR=`echo ${MPIDIR}`
 
     if [[ -z ${MPIDIR} ]]; then
-        MPIDIR='module load PrgEnv-cray/8.0.0 cray-mpich/8.1.4 cray-libsci/21.04.1.1 cce/11.0.4'
+#---- BEGIN_USER ----# if input is empty, use default
+        MPIDIR='module load RunEnv/Intel-2023.1.0'
+#---- END_USER ----#
     fi
 
     if [[ ! -d ${EXEDIR} && (${EXEDIR} != *'module load'*) ]]; then
@@ -200,14 +192,16 @@ function set_settings {
     SETFILE=${SCRIPTDIR}/settings
 
     # Values for keywords
-    sed -i "/SUBMISSION_EXT/a\.slurm" ${SETFILE}
-    sed -i "/NCPU_PER_NODE/a\128" ${SETFILE}
-    sed -i "/NTHREAD_PER_PROC/a\ 1" ${SETFILE}
-    sed -i "/BUDGET_CODE/a\ ${BUDGET_CODE}" ${SETFILE}
-    sed -i "/QOS/a\standard" ${SETFILE}
-    sed -i "/PARTITION/a\standard" ${SETFILE}
-    sed -i "/TIME_OUT/a\3" ${SETFILE}
-    sed -i "/JOB_TMPDIR/a\/tmp" ${SETFILE}
+    # sed -i "/SUBMISSION_EXT/a\.slurm" ${SETFILE}
+#---- BEGIN_USER ----#
+    # sed -i "/NCPU_PER_NODE/a\128" ${SETFILE}
+    # sed -i "/NTHREAD_PER_PROC/a\ 1" ${SETFILE}
+    # sed -i "/BUDGET_CODE/a\ ${BUDGET_CODE}" ${SETFILE}
+    # sed -i "/QOS/a\standard" ${SETFILE}
+    # sed -i "/PARTITION/a\standard" ${SETFILE}
+    # sed -i "/TIME_OUT/a\3" ${SETFILE}
+    sed -i "/JOB_TMPDIR/a\ default" ${SETFILE}
+#---- END_USER ----#
     sed -i "/EXEDIR/a\ ${EXEDIR}" ${SETFILE}
     sed -i "/MPIDIR/a\ ${MPIDIR}" ${SETFILE}
 
@@ -215,23 +209,28 @@ function set_settings {
 
     LINE_EXE=`grep -nw 'EXE_TABLE' ${SETFILE}`
     LINE_EXE=`echo "scale=0;${LINE_EXE%:*}+3" | bc`
-    sed -i "${LINE_EXE}a\pprop      srun --hint=nomultithread --distribution=block:block         Pproperties                                                  Parallel properties calculation" ${SETFILE}
-    sed -i "${LINE_EXE}a\mppcrys    srun --hint=nomultithread --distribution=block:block         MPPcrystal                                                   Massive parallel crystal calculation" ${SETFILE}
-    sed -i "${LINE_EXE}a\pcrys      srun --hint=nomultithread --distribution=block:block         Pcrystal                                                     Parallel crystal calculation" ${SETFILE}
-
+#---- BEGIN_USER ----# MPI+executable options
+    sed -i "${LINE_EXE}a\pprop      mpiexec -np 1                                                properties < INPUT                                           Serial properties calculation" ${SETFILE}
+    sed -i "${LINE_EXE}a\scrys      mpiexec -np 1                                                crystal < INPUT                                              Serial crystal calculation" ${SETFILE}
+    sed -i "${LINE_EXE}a\pprop      mpiexec -np \${V_NP}                                          Pproperties                                                  Parallel properties calculation" ${SETFILE}
+    sed -i "${LINE_EXE}a\mppcrys    mpiexec -np \${V_NP}                                          MPPcrystal                                                   Massive parallel crystal calculation" ${SETFILE}
+    sed -i "${LINE_EXE}a\pcrys      mpiexec -np \${V_NP}                                          Pcrystal                                                     Parallel crystal calculation" ${SETFILE}
+#---- END_USER ----#
     # Input file table
 
     LINE_PRE=`grep -nw 'PRE_CALC' ${SETFILE}`
     LINE_PRE=`echo "scale=0;${LINE_PRE%:*}+3" | bc`
+#---- BEGIN_USER ----# Files with [jobname] or [job]
     sed -i "${LINE_PRE}a\[jobname].POINTCHG   POINTCHG.INP         Dummy atoms with 0 mass and given charge" ${SETFILE}
     sed -i "${LINE_PRE}a\[jobname].gui        fort.34              Geometry input" ${SETFILE}
     sed -i "${LINE_PRE}a\[jobname].d3         INPUT                Properties input file" ${SETFILE}
     sed -i "${LINE_PRE}a\[jobname].d12        INPUT                Crystal input file" ${SETFILE}
-
+#---- END_USER ----#
     # Reference file table
 
     LINE_REF=`grep -nw 'REF_FILE' ${SETFILE}`
     LINE_REF=`echo "scale=0;${LINE_REF%:*}+3" | bc`
+#---- BEGIN_USER ----# Files with [refname] or [ref]
     sed -i "${LINE_REF}a\[refname].f31        fort.32              Derivative of density matrix" ${SETFILE}
     sed -i "${LINE_REF}a\[refname].f80        fort.81              Wannier funcion - input" ${SETFILE}
     sed -i "${LINE_REF}a\[refname].f28        fort.28              Binary IR intensity restart data" ${SETFILE}
@@ -243,12 +242,12 @@ function set_settings {
     sed -i "${LINE_REF}a\[refname].OPTINFO    OPTINFO.DAT          Optimisation restart data" ${SETFILE}
     sed -i "${LINE_REF}a\[refname].f9         fort.9               Last step wavefunction - properties input" ${SETFILE}
     sed -i "${LINE_REF}a\[refname].f9         fort.20              Last step wavefunction - crystal input" ${SETFILE}
-    
+#---- END_USER ----# 
     # Post-processing file table
 
     LINE_POST=`grep -nw 'POST_CALC' ${SETFILE}`
     LINE_POST=`echo "scale=0;${LINE_POST%:*}+3" | bc`
-    
+#---- BEGIN_USER ----# Output files
     sed -i "${LINE_POST}a\[jobname].POTC       POTC.DAT             Electrostatic potential and derivatives" ${SETFILE}
     sed -i "${LINE_POST}a\[jobname]_POT.CUBE   POT_CUBE.DAT         3D electrostatic potential CUBE format  " ${SETFILE}
     sed -i "${LINE_POST}a\[jobname]_SPIN.CUBE  SPIN_CUBE.DAT        3D spin density CUBE format" ${SETFILE}
@@ -267,6 +266,7 @@ function set_settings {
     sed -i "${LINE_POST}a\[jobname].IRSPEC     IRSPEC.DAT           IR absorbance and reflectance" ${SETFILE}
     sed -i "${LINE_POST}a\[jobname].IRREFR     IRREFR.DAT           IR refractive index" ${SETFILE}
     sed -i "${LINE_POST}a\[jobname].IRDIEL     IRDIEL.DAT           IR dielectric function" ${SETFILE}
+    sed -i "${LINE_POST}a\[jobname].PHONDOS    PHONDOS.DAT          Phonon DOS xmgrace format" ${SETFILE}
     sed -i "${LINE_POST}a\[jobname].PHONBANDS  PHONBANDS.DAT        Phonon bands xmgrace format" ${SETFILE}
     sed -i "${LINE_POST}a\[jobname].f25        fort.25              Data in Crgra2006 format" ${SETFILE}
     sed -i "${LINE_POST}a\[jobname].scanmode/  SCAN*                Displaced geometry along scanned mode" ${SETFILE}
@@ -289,39 +289,11 @@ function set_settings {
     sed -i "${LINE_POST}a\[jobname].xyz        fort.33              Geometry, non-periodic xyz format" ${SETFILE}
     sed -i "${LINE_POST}a\[jobname].gui        fort.34              Geometry, CRYSTAL fort34 format" ${SETFILE}
     sed -i "${LINE_POST}a\[jobname].ERROR      fort.87              Error report" ${SETFILE}
-
-    # Job submission file template - should be placed at the end of file
+#---- END_USER ----#
+    # Job submission file template - Not used.
     cat << EOF >> ${SETFILE}
 ----------------------------------------------------------------------------------------
-#!/bin/bash
-#SBATCH --nodes=\${V_ND}
-#SBATCH --ntasks-per-node=\${V_PROC}
-#SBATCH --cpus-per-task=\${V_TRED}
-#SBATCH --time=\${V_TWT}
 
-# Replace [budget code] below with your full project code
-#SBATCH --account=\${V_BUDGET}
-#SBATCH --partition=\${V_PARTITION}
-#SBATCH --qos=\${V_QOS}
-#SBATCH --export=none
-
-echo "SLURM Job Report"
-echo "--------------------------------------------"
-echo "  Start Date : \$(date)"
-echo "  SLURM Job ID : \${SLURM_JOB_ID}"
-echo "  Status"
-squeue -j \${SLURM_JOB_ID} 2>&1
-echo "--------------------------------------------"
-echo ""
-
-# Address the memory leak
-export FI_MR_CACHE_MAX_COUNT=0
-
-# Set number of threads and OMP level
-export OMP_NUM_THREADS=\${V_TRED}
-export OMP_PLACES=cores
-
-# start calculation: command added below by gen_sub
 ----------------------------------------------------------------------------------------
 
 EOF
@@ -335,26 +307,30 @@ EOF
 # Configure user alias
 
 function set_commands {
+#---- BEGIN_USER ----# Cover the old alias commands block
     bgline=`grep -nw "# >>> begin CRYSTAL17 job submitter settings >>>" ${HOME}/.bashrc`
     edline=`grep -nw "# <<< finish CRYSTAL17 job submitter settings <<<" ${HOME}/.bashrc`
+#---- END_USER ----#
 
     if [[ ! -z ${bgline} && ! -z ${edline} ]]; then
         bgline=${bgline%%:*}
         edline=${edline%%:*}
         sed -i "${bgline},${edline}d" ${HOME}/.bashrc
     fi
-
+#---- BEGIN_USER ----# Alias commands. The 'chmod' command should be kept unmodified
     echo "# >>> begin CRYSTAL17 job submitter settings >>>" >> ${HOME}/.bashrc
-    echo "alias Pcrys17='${CTRLDIR}/gen_sub -x pcrys -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "alias MPPcrys17='${CTRLDIR}/gen_sub -x mppcrys -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "alias Pprop17='${CTRLDIR}/gen_sub -x pprop -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "alias Xcrys17='${CTRLDIR}/gen_sub -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
+    echo "alias Pcrys17='${CTRLDIR}/run_job -x pcrys -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
+    echo "alias MPPcrys17='${CTRLDIR}/run_job -x mppcrys -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
+    echo "alias Pprop17='${CTRLDIR}/run_job -x pprop -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
+    echo "alias Scrys17='${CTRLDIR}/run_job -x scrys -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
+    echo "alias Sprop17='${CTRLDIR}/run_job -x sprop -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
+    echo "alias Xcrys17='${CTRLDIR}/run_job -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
     echo "alias SETcrys17='cat ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "alias HELPcrys17='source ${CONFIGDIR}/run_help gensub'" >> ${HOME}/.bashrc
+    echo "alias HELPcrys17='bash ${CONFIGDIR}/run_help gensub'" >> ${HOME}/.bashrc
     echo "chmod -R 'u+r+w+x' ${CTRLDIR}" >> ${HOME}/.bashrc
     echo "chmod 'u+r+w+x' ${CONFIGDIR}/run_help" >> ${HOME}/.bashrc
     echo "# <<< finish CRYSTAL17 job submitter settings <<<" >> ${HOME}/.bashrc
-
+#---- END_USER ----# 
     bash ${CONFIGDIR}/run_help
 }
 
@@ -370,7 +346,6 @@ CTRLDIR=`realpath ${CONFIGDIR}/../`
 welcome_msg
 get_scriptdir
 copy_scripts
-get_budget_code
 set_exe
 set_mpi
 set_settings

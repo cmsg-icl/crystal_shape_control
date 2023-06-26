@@ -5,7 +5,7 @@
 function print_ALIAS_HOWTO_ {
     cat << EOF
     -------------------------------------------
-    Imperial HPC CRYSTAL17 job submitter HOWTO
+    NHPC101 CRYSTAL17 job submission script HOWTO
     -------------------------------------------
     Use 'source ~/.bashrc' to activate pre-defined
     commands
@@ -21,8 +21,8 @@ function print_ALIAS_HOWTO_ {
         HELPcrys17 : Print help file
 
     Example code:
-        Pcrys17 -in mgo.d12 -wt 02:00 -nd 2
-        Xcrys17 -name mag-band -nd 1 -x pcrystal -in mgo.d12 -wt 01:00 -ref no -x pproperties -in band.d3 -wt 00:30 -ref mgo
+        Pcrys17 -in mgo.d12 -np 2
+        Xcrys17 -name mag-band -np 2 -nt 2 -x pcrys -in mgo.d12 -ref no -x pprop -in band.d3 -ref mgo
 
 EOF
 }
@@ -30,8 +30,8 @@ EOF
 # Instructions of user-defined commands
 
 function print_GENSUB_HOWTO_ {
-    SOURCE=${CTRLDIR}/gen_sub
-    source ${SOURCE} -help
+    SOURCE="${CTRLDIR}/run_job"
+    bash ${SOURCE} -help
 }
 
 print_ALIAS_HOWTO_

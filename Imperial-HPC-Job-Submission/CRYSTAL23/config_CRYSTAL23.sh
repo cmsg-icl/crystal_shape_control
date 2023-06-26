@@ -336,14 +336,14 @@ function set_commands {
     echo "alias Sprop23='${CTRLDIR}/gen_sub -x sprop -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
     echo "alias Xcrys23='${CTRLDIR}/gen_sub -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
     echo "alias SETcrys23='cat ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "alias HELPcrys23='source ${CONFIGDIR}/run_help; print_ALIAS_HOWTO_; print_GENSUB_HOWTO_'" >> ${HOME}/.bashrc
+    echo "alias HELPcrys23='bash ${CONFIGDIR}/run_help gensub'" >> ${HOME}/.bashrc
     # echo "chmod 777 $(dirname $0)/gen_sub" >> ${HOME}/.bashrc
     # echo "chmod 777 $(dirname $0)/run_exec" >> ${HOME}/.bashrc
     # echo "chmod 777 $(dirname $0)/post_proc" >> ${HOME}/.bashrc 
     # echo "chmod 777 $(dirname $0)/run_help" >> ${HOME}/.bashrc 
     echo "# <<< finish CRYSTAL23 job submitter settings <<<" >> ${HOME}/.bashrc
     
-    source ${CONFIGDIR}/run_help; print_ALIAS_HOWTO_
+    bash ${CONFIGDIR}/run_help
 }
 
 # Main I/O function

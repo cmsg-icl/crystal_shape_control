@@ -95,10 +95,15 @@ while [[ ${TMP_NAME} != '---------'* && ${move_file} == true ]]; do
     # List files, to get all matched files in 'TMP_NAME' settings
 
     if [[ ${TMP_NAME: -1} == '/' ]]; then
-        filelist=($(ls ${TMP_NAME}))
-        for ((i=0; i<${#filelist[@]}; i++)); do
-            filelist[$i]=`echo "${TMP_NAME}${filelist[$i]}"`
-        done
+        ls ${TMP_NAME} > /dev/null 2>&1
+        if [[ $? -eq 0 ]]; then
+            filelist=($(ls ${TMP_NAME}))
+            for ((i=0; i<${#filelist[@]}; i++)); do
+                filelist[$i]=`echo "${TMP_NAME}${filelist[$i]}"`
+            done
+        else
+            filelist=()
+        fi
     else
         filelist=`find ${JOBTMPDIR} -name "${TMP_NAME}"`
         filelist=(${filelist//${JOBTMPDIR}\//})

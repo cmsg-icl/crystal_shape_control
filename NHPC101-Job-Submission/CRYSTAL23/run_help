@@ -5,25 +5,24 @@
 function print_ALIAS_HOWTO_ {
     cat << EOF
     -------------------------------------------
-    ARCHER2 CRYSTAL23 job submission script HOWTO
+    NHPC101 CRYSTAL23 job submission script HOWTO
     -------------------------------------------
     Use 'source ~/.bashrc' to activate pre-defined
     commands
 
     Pre-defined commands
-        Pcrys23    : Run parallel crystal calculations
-        OPcrys23   : Run OpenMP parallel crystal calculations
-        MPPcrys23  : Run massive parallel crystal calculations
-        OMPPcrys23 : Run OpenMP massive parallel crystal calculations
-        Pprop23    : Run parallel properties calculations
-        MPPprop23  : Run massive parallel properties calculations
+        Pcrys23    : Run parallel + OpenMP crystal calculations
+        MPPcrys23  : Run massive parallel + OpenMP crystal calculations
+        Pprop23    : Run parallel + OpenMP properties calculations
+        Scrys23    : Run serial + OpenMP crystal calculations
+        Sprop23    : Run serial + OpenMP properties calculations
         Xcrys23    : Run user defined commands (Advanced)
         SETcrys23  : Quick reference of settings file
         HELPcrys23 : Print help file
 
     Example code:
-        Pcrys23 -in mgo.d12 -wt 02:00 -nd 2
-        Xcrys23 -name mag-band -nd 1 -x pcrys -in mgo.d12 -wt 01:00 -ref no -x pprop -in band.d3 -wt 00:30 -ref mgo
+        Pcrys23 -in mgo.d12 -np 2
+        Xcrys23 -name mag-band -np 2 -nt 2 -x pcrys -in mgo.d12 -ref no -x pprop -in band.d3 -ref mgo
 
 EOF
 }
@@ -31,8 +30,8 @@ EOF
 # Instructions of user-defined commands
 
 function print_GENSUB_HOWTO_ {
-    SOURCE=${CTRLDIR}/gen_sub
-    source ${SOURCE} -help
+    SOURCE="${CTRLDIR}/run_job"
+    bash ${SOURCE} -help
 }
 
 print_ALIAS_HOWTO_

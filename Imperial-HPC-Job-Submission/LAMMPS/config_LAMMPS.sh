@@ -280,13 +280,13 @@ function set_commands {
     echo "alias Slmp='${CTRLDIR}/gen_sub -x slmp -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
     echo "alias Xlmp='${CTRLDIR}/gen_sub -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
     echo "alias SETlmp='cat ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "alias HELPlmp='source ${CONFIGDIR}/run_help; print_ALIAS_HOWTO_; print_GENSUB_HOWTO_'" >> ${HOME}/.bashrc
+    echo "alias HELPlmp='bash ${CONFIGDIR}/run_help gensub'" >> ${HOME}/.bashrc
     # echo "chmod 777 ${SCRIPTDIR}/gen_sub" >> ${HOME}/.bashrc
     # echo "chmod 777 ${SCRIPTDIR}/run_exec" >> ${HOME}/.bashrc
     # echo "chmod 777 ${SCRIPTDIR}/post_proc" >> ${HOME}/.bashrc 
     echo "# <<< finish LAMMPS job submitter settings <<<" >> ${HOME}/.bashrc
 
-    source ${CONFIGDIR}/run_help; print_ALIAS_HOWTO_
+    bash ${CONFIGDIR}/run_help
 }
 
 # Main I/O function

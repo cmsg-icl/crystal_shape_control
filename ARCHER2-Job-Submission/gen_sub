@@ -458,11 +458,11 @@ EOF
 function print_HOWTO_ {
     cat << EOF
     -------------------------------------------
-    Imperial HPC job submitter HOWTO - ADVANCED
+    ARCHER2 job submitter HOWTO - ADVANCED
     -------------------------------------------
     Use '-help' flag to get instructions.
 
-    Qsub generation script
+    Slurm generation script
 
         $(dirname $0)/gen_sub
 
@@ -509,17 +509,16 @@ EOF
 
     # Calculate the timeout for calculations and calculate total walltime
 
-    tthr=0
-    ttmn=0
-    for (( i = 0; i < ${#WT[@]}; i++ )); do
-        time=${WT[$i]}
+    tt=0
+    for time in ${WT[@]}; do
         thr=${time%:*}
-        tthr=`echo "scale=0;${thr}+${tthr}" | bc`
         tmn=${time#*:}
-        ttmn=`echo "scale=0;${tmn}+${ttmn}" | bc`
-        tot=`echo "scale=0;${thr}*60+${tmn}-${TOUT_PER_JOB}" | bc`
-        TOUT+=("${tot}m")
+        tt=`echo "scale=0;${thr}*60+${tmn}+${tt}" | bc`
+        tout=`echo "scale=0;${thr}*60+${tmn}-${TOUT_PER_JOB}" | bc`
+        TOUT+=("${tout}m")
     done
+	ttmn=`echo "scale=0; ${tt}%60" | bc`
+	tthr=`echo "scale=0; (${tt}-${ttmn})/60" | bc`
     TWT=`echo "$(printf "%02d\n" ${tthr}):$(printf "%02d\n" ${ttmn}):00"`
 
 	# Generate job executation and post processing commands
@@ -610,6 +609,11 @@ function check_executable_ {
 EOF
                 exit
             fi
+
+            # substitute jobname
+
+            inpname=${INFILE[$i]%.*}
+			COMMAND[$i]=`echo "${cmd}" | sed "s/\[job.*\]/${inpname}/g"`
         else
             ls ${XDIR}/${cmd%% *} > /dev/null 2>&1 
             if [[ $? -ne 0 ]]; then
@@ -624,13 +628,13 @@ EOF
 EOF
                 exit
             fi
-        if
 
-        # substitute jobname
+            # substitute jobname
 
-        inpname=${INFILE[$i]%.*}
-        COMMAND[$i]=`echo "${XDIR}/${cmd}" | sed "s/\[job.*\]/${inpname}/g"`
-
+            inpname=${INFILE[$i]%.*}
+			COMMAND[$i]=`echo "${XDIR}/${cmd}" | sed "s/\[job.*\]/${inpname}/g"`
+        fi
+	
     done
 }
 

@@ -303,12 +303,12 @@ function set_commands {
     echo "alias PPqe7='${CTRLDIR}/gen_sub -x pp -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
     echo "alias Xqe7='${CTRLDIR}/gen_sub -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
     echo "alias SETqe7='cat ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "alias HELPqe7='source ${CONFIGDIR}/run_help; print_ALIAS_HOWTO_; print_GENSUB_HOWTO_'" >> ${HOME}/.bashrc
+    echo "alias HELPqe7='source ${CONFIGDIR}/run_help gensub" >> ${HOME}/.bashrc
     echo "chmod -R 'u+r+w+x' ${CTRLDIR}" >> ${HOME}/.bashrc
     echo "chmod 'u+r+w+x' ${CONFIGDIR}/run_help" >> ${HOME}/.bashrc
     echo "# <<< finish Quantum-Esppresso 7 job submitter settings <<<" >> ${HOME}/.bashrc
 
-    source ${CONFIGDIR}/run_help; print_ALIAS_HOWTO_
+    bash ${CONFIGDIR}/run_help
 }
 
 # Main I/O function
