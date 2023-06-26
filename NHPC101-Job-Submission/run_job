@@ -1,0 +1,1001 @@
+#!/bin/bash
+
+# General input format
+# runcrys --np NCPU --in input --ref refname
+# NCPU: int, number of CPUs used
+# input: str, input .d3 file, basename recommanded
+# refname: str, optional, basename of the reference SCF calculation. (With extension also accepted)
+
+function get_input_ {
+
+    # List of flags: -set, -x, -np, -nt, -in, -ref, -name, -help
+
+    param_list=$(getopt -a -l help,x:,set:,np:,nt:,in:,ref:,name: -n "$0" -- ${in_var} 2> /dev/null) 
+    cat << EOF
+    INPUT parameters:
+        ${param_list}
+
+EOF
+
+    eval set -- "${param_list}"
+    while [[ true ]]; do
+        case $1 in
+        --help )
+            print_HOWTO_; exit ;;
+        --set )
+            shift; SETFILE=$1 ;;
+        --x ) 
+            shift; EXELABEL+=($1) ;;
+        --in ) 
+            shift; INFILE+=($1) ;;
+        --ref ) 
+            shift; REFNAME+=($1) ;;
+        --np ) 
+            shift; NP=$1 ;;
+        --nt ) 
+            shift; NT=$1 ;;
+        --name )
+            shift; TMPJOBNAME=$1 ;;
+        -- ) 
+            break ;;
+        * ) 
+            cat << EOF
+    ERROR: 
+        Format error in input list.
+
+EOF
+            print_HOWTO_
+            exit ;;
+        esac
+        shift
+    done
+    INPDIR=$(realpath ${INFILE[0]})
+    INPDIR=${INPDIR%/*}
+    check_SETFILE_
+    check_EXELABEL_
+    check_INFILE_
+    if [[ ! -z ${REFNAME} ]]; then
+        check_REFNAME_
+    else
+        for ((i=0; i<${#EXELABEL[@]}; i++)); do
+            REFNAME+=('no')
+        done
+    fi
+    check_NP_
+    check_NT_
+    if [[ ${#EXELABEL[@]} -gt 1 ]]; then
+        set_multijob_name_
+    fi
+
+    cat << EOF
+Formatted INPUT parameters:
+-----------------------------------------
+    Number of processors = ${NP}
+    Number of threads    = ${NT}
+    Executable label(s)  = ${EXELABEL[@]}
+    Input file(s)        = ${INFILE[@]}
+    Reference job(s)     = ${REFNAME[@]}
+    Settings             = ${SETFILE}
+-----------------------------------------
+
+EOF
+}
+
+# Check settings file
+
+function check_SETFILE_ {
+    if [[ ! -e ${SETFILE} || ! -s ${SETFILE} ]]; then
+        cat << EOF
+    ERROR:
+        File 'settings' not found.
+
+        Specified directory : ${SETFILE}
+
+EOF
+        print_HOWTO_SETFILE_
+        exit
+    fi
+}
+
+# Instruction for -- setfile
+
+function print_HOWTO_SETFILE_ {
+    cat << EOF
+    -------------------------------------------
+    -set flag
+
+    Set the path to the 'settings' file, mandatory.
+
+EOF
+}
+
+# Get label of command from input and find corresponding command
+
+function check_EXELABEL_ {
+    
+    # No -x input
+
+    if [[ -z ${EXELABEL} ]]; then
+        cat << EOF
+    ERROR:
+        Executable label must be specified by '-x' flag.
+
+EOF
+        print_HOWTO_EXELABEL_
+        exit
+    fi
+
+    # Executable label not found
+
+    for exe in ${EXELABEL[@]}; do
+        line_exe=`grep -nw 'EXE_TABLE' ${SETFILE}`
+        line_exe=`echo "scale=0;${line_exe%%:*}+4" | bc`
+        avail_exe=`echo $(awk 'NR=="'${line_exe}'"{printf("%s", substr($0,1,11))}' ${SETFILE})`
+        found_exe=false
+        while [[ ${avail_exe} != '---------'* ]]; do
+            echo ${exe} | grep -i -E "^${avail_exe}$" > /dev/null 2>&1
+            if [[ $? -eq 0 ]]; then
+                found_exe=true
+                MPICOMMAND+=("`echo $(awk 'NR=="'${line_exe}'"{printf("%s", substr($0,12,61))}' ${SETFILE})`")
+                COMMAND+=("`echo $(awk 'NR=="'${line_exe}'"{printf("%s", substr($0,73,61))}' ${SETFILE})`")
+                break
+            fi
+            line_exe=`echo "scale=0;${line_exe}+1" | bc`
+            avail_exe=`echo $(awk 'NR=="'${line_exe}'"{printf("%s", substr($0,1,11))}' ${SETFILE})`
+        done
+        if [[ ${found_exe} != true ]]; then
+            cat << EOF
+    ERROR:
+        Label not found. Check 'EXE_TABLE' of ${SETFILE}.
+
+        Executable label : ${exe}
+
+EOF
+            exit
+        fi
+    done
+}
+
+# Instruction for executable label
+
+function print_HOWTO_EXELABEL_ {
+    cat << EOF
+    -------------------------------------------
+    -x flag
+
+    Label of executable + in-line option, case insensitive.
+    Defined in the 'EXE_TABLE' of ${SETFILE}. 
+
+EOF
+}
+
+# Check input file, jobname.<ext>
+
+function check_INFILE_ {
+
+    # No -in input / number of -in not consistent with number of -x
+
+    if [[ -z ${INFILE} || ${#INFILE[@]} -ne ${#EXELABEL[@]} ]]; then
+                cat << EOF
+    ERROR:
+        Input files must be specified by '-in' flag and consistent
+        with executable labels specified by '-x' flag.
+
+EOF
+        print_HOWTO_INFILE_
+        exit
+    fi
+
+    for (( i = 0; i < ${#INFILE[@]}; i++ )); do
+
+        # Specified input not found / empty
+
+        file=${INFILE[${i}]}
+        file=${INPDIR}/${file##*/}
+        if [[ ! -e ${file} || ! -s ${file} ]]; then
+            cat << EOF
+    ERROR:
+        Input file does not exit / is empty. 
+
+        Supposed input : ${file}
+
+EOF
+            exit
+        fi
+
+        # output exists
+
+        output=${file%.*}.out
+        if [[ -e ${output} && -s ${output} ]]; then
+            cat << EOF
+    ERROR:
+        Output file exists. Move it to a safe place or remove it. 
+
+        Output : ${output}
+
+EOF
+            exit
+        fi
+        echo "Calculation output will be found in ${output}"
+    done
+
+    # set jobname if only one input is generated
+
+    if [[ ${#INFILE[@]} -eq 1 ]]; then
+        JOBNAME=${INFILE[0]%.*}
+        JOBNAME=${JOBNAME##*/}
+        echo "Base name of temporary job files : ${JOBNAME}"
+    fi
+}
+
+# Instruction for input file
+
+function print_HOWTO_INFILE_ {
+    cat << EOF
+    -------------------------------------------
+    -in flag
+
+    Basename of the input file, with extension. 
+
+    NOTE: The number of -in flags should be
+    consistent with number of -x flags
+
+EOF
+}
+
+# Check reference file name
+
+function check_REFNAME_ {
+
+    # If '-ref' flag is set, check whether it is consistent with '-x'
+
+    if [[ ${#REFNAME[@]} != ${#EXELABEL[@]} ]]; then
+        cat << EOF
+    ERROR: 
+        The length of '-ref' flag should be either 0 or consistent
+        with the length of '-x' flag.
+
+EOF
+        print_HOWTO_REFNAME_
+        exit
+    fi
+
+    # Wheter the file(s) with string ${REFNAME} exist
+
+    for (( i = 0; i < ${#REFNAME[@]}; i++ )); do
+        ref=${REFNAME[$i]}
+        if [[ ${ref} == 'no' ]]; then
+            continue
+        else
+            if [[ -z $(find ${INPDIR} -maxdepth 1 -name "*${ref}*") ]]; then
+                cat << EOF
+   ERROR:
+        ${ref}* not found in ${INPDIR}/ and its 1st level sub-directories.
+
+        Refname -ref  : ${ref}
+
+EOF
+                exit
+            fi
+        fi
+    done
+}
+
+# Instruction for REFNAME
+
+function print_HOWTO_REFNAME_ {
+    cat << EOF
+    -------------------------------------------
+    -ref flag
+
+    Basename of reference file(s), no extension. 
+
+    NOTES: 
+
+    1. The number of -ref flag should be either
+    0 or consistent with number of -x flag
+
+    2. 'no' is a reserved keyword for empty
+    reference input.
+
+EOF
+}
+
+# Check number of CPUs
+
+function check_NP_ {
+
+    # No -np input
+
+    if [[ -z ${NP} || ${NP} -eq 0 ]]; then
+        cat << EOF
+    WARNING:
+        Reasonable number of CPUs MUST BE specified. 
+        Set to default value NP=1.
+
+EOF
+        NP=1
+    fi
+
+    CHECK_IF_NP_IS_AN_INTEGER=`echo $NP | awk 'BEGIN{S="YES"};{
+        L=length($1);
+        for(i=1;i<=L;i++){
+            if(substr($1,i,1) !~  /[0-9]/ ){
+                S="NO";
+                exit
+            }
+        }};END{print S}'`
+
+    if [[ ${CHECK_IF_NP_IS_AN_INTEGER} == "NO" ]]; then
+        cat << EOF
+    ERROR:
+        Number of nodes has to be an integer. 
+        Check the value: ${NP}
+
+EOF
+        print_HOWTO_NP_
+        exit
+    fi
+}
+
+# Instruction for NP
+
+function print_HOWTO_NP_ {
+    cat << EOF
+    -------------------------------------------
+    -np flag
+
+    The number of CPUs, an integer.
+
+EOF
+}
+
+# Check number of threads
+
+function check_NT_ {
+
+    # No -nt input. Use default = 1
+
+    if [[ -z ${NT} || ${NT} -eq 0 ]]; then
+        NT=1
+    fi
+
+    CHECK_IF_NT_IS_AN_INTEGER=`echo $NT | awk 'BEGIN{S="YES"};{
+        L=length($1);
+        for(i=1;i<=L;i++){
+            if(substr($1,i,1) !~  /[0-9]/ ){
+                S="NO";
+                exit
+            }
+        }};END{print S}'`
+
+    if [[ ${CHECK_IF_NT_IS_AN_INTEGER} == "NO" ]]; then
+        cat << EOF
+    ERROR:
+        Number of nodes has to be an integer. 
+        Check the value: ${NT}
+
+EOF
+        print_HOWTO_NT_
+        exit
+    fi
+}
+
+# Instruction for NT
+
+function print_HOWTO_NT_ {
+    cat << EOF
+    -------------------------------------------
+    -nt flag
+
+    The number of threads, an integer.
+
+EOF
+}
+
+# Set a universial name for multiple jobs
+
+function set_multijob_name_ {
+    if [[ -z ${TMPJOBNAME} ]]; then
+        JOBNAME=${INFILE[0]%.*}_et_al
+        JOBNAME=${JOBNAME##*/}
+    else
+        JOBNAME=${TMPJOBNAME}
+    fi
+    echo "Base name of temporary job files : ${JOBNAME}"
+}
+
+# Instruction for -name flag
+
+function print_HOWTO_NAME_ {
+    cat << EOF
+    -------------------------------------------
+    -name flag
+
+    Set a common name for multiple jobs. If not
+    set and multiple -x flags are detected, the
+    common name is set to 'job1_et_al'.
+
+EOF
+}
+
+# General instruction
+
+function print_HOWTO_ {
+    cat << EOF
+    -------------------------------------------
+    NHPC101 job submitter HOWTO - ADVANCED
+    -------------------------------------------
+    Use '-help' flag to get instructions.
+
+    Available flags
+
+        -set -x  -in  -ref  -np  -nt  -name  -help
+        The sequence of input parameters is flexible
+
+    Multiple input example code
+
+        $(dirname $0)/run_exec -name mgo_band -set ~/etc/runCRYSTAL23/settings -np 4 -nt 2 -x Pcrys -in mgo.d12 -ref no -x Pprop -in mgo.d3 -ref mgo 
+
+    Typically an alias is defined beginning with 'X', which does not require -set flag. For example:
+
+        Xcrys23 -name mgo_band -np 4 -nt 2 -x Pcrys -in mgo.d12 -ref no -x Pprop -in mgo.d3 -ref mgo
+
+    This command submits the file which sequentially run parallel crystal
+    calculation by 'mgo.d12' without reference and a parallel properties
+    calculation by 'mgo.d3' with 'mgo' SCF calculation as reference. It
+    runs a 4-process, 2-thread job.
+
+EOF
+    
+    print_HOWTO_NAME_
+    print_HOWTO_SETFILE_
+    print_HOWTO_NP_
+    print_HOWTO_NT_
+    print_HOWTO_EXELABEL_
+    print_HOWTO_INFILE_
+    print_HOWTO_REFNAME_
+}
+
+function check_executable_ {
+
+    XDIR=`echo $(grep -w -A 1 'EXEDIR' ${SETFILE} | tail -1)`
+
+    # command existance
+
+    if [[ ${XDIR} == *'module load'* ]]; then
+        ${XDIR} > /dev/null 2>&1
+        which ${ACOMMAND%% *} > /dev/null 2>&1
+        if [[ $? -ne 0 ]]; then
+            cat << EOF >> ${OUTDIR}/${JOBNAME}.log
+    ERROR:
+        Simulation executable not found.
+
+        Command    : ${ACOMMAND}
+        Executable : ${ACOMMAND%% *}
+        Module     : ${XDIR}
+
+EOF
+            exit
+        fi
+
+        # substitute jobname
+
+        inpname=${AINFILE%.*}
+        ACOMMAND=`echo "${ACOMMAND}" | sed "s/\[job.*\]/${inpname}/g"`
+    else
+        ls ${XDIR}/${ACOMMAND%% *} > /dev/null 2>&1 
+        if [[ $? -ne 0 ]]; then
+            cat << EOF >> ${OUTDIR}/${JOBNAME}.log
+    ERROR:
+        Simulation command not found.
+
+        Command    : ${ACOMMAND}
+        Executable : ${ACOMMAND%% *}
+        Directory  : ${XDIR}
+
+EOF
+            exit
+        fi
+
+        # substitute jobname
+
+        inpname=${AINFILE%.*}
+        ACOMMAND=`echo "${XDIR}/${ACOMMAND}" | sed "s/\[job.*\]/${inpname}/g"`
+    fi
+}
+
+function check_mpi_ {
+
+    MDIR=`echo $(grep -w -A 1 'MPIDIR' ${SETFILE} | tail -1)`
+
+    if [[ ${MDIR} == *'module load'* ]]; then
+        ${MDIR} > /dev/null 2>&1
+    else
+        export PATH="${MDIR}:${PATH}"
+    fi
+    which ${AMPICOMMAND%% *} > /dev/null 2>&1
+    if [[ $? -ne 0 ]]; then
+        cat << EOF >> ${OUTDIR}/${JOBNAME}.log
+    ERROR:
+        MPI executable not found.
+
+        Command    : ${AMPICOMMAND}
+        Executable : ${AMPICOMMAND%% *}
+        Module     : ${MDIR}
+
+EOF
+        exit
+    fi
+
+    # set np and nt
+
+    AMPICOMMAND=$(echo "${AMPICOMMAND}" | sed "s/\${V_NP}/${NP}/g")
+    export OMP_NUM_THREADS=${NT}
+    export OMP_PLACES=threads
+}
+
+# Run a single calculation
+
+function run_calc_ {
+
+    # Input and output file directories
+    # Renamed variables: ACOMMAND, AMPICOMMAND, AINFILE, AREFNAME
+
+    JOBFILE=${AINFILE}
+    JOBNAME=${JOBFILE%.*}
+    JOBNAME=${JOBNAME##*/}
+
+    OUTDIR=$(realpath ${JOBFILE})
+    OUTDIR=${OUTDIR%/*}
+    OUTPUT=${JOBNAME}.out
+
+    # Background info
+
+    cat << EOF >> ${OUTDIR}/${JOBNAME}.log
+============================================
+Job Executation Background Info
+--------------------------------------------
+EOF
+
+    echo "Job file                : ${JOBFILE}" >> ${OUTDIR}/${JOBNAME}.log | tee -a ${OUTDIR}/${OUTPUT}
+    if [[ -e ${OUTDIR}/${OUTPUT} && -s ${OUTDIR}/${OUTPUT} ]]; then
+        echo "Warning! Output exists: ${OUTDIR}/${OUTPUT}" >> ${OUTDIR}/${JOBNAME}.log | tee -a ${OUTDIR}/${OUTPUT}
+        echo "New data will be attached to the same file." >> ${OUTDIR}/${JOBNAME}.log | tee -a ${OUTDIR}/${OUTPUT}
+    fi
+
+    echo "Printed output filename : ${OUTDIR}/${OUTPUT}" >> ${OUTDIR}/${JOBNAME}.log
+
+    # Set executing command & MPI
+
+    check_executable_
+    check_mpi_
+    EXECOMMAND="${AMPICOMMAND} ${ACOMMAND}"
+    echo "MPI command             : ${EXECOMMAND}" >> ${OUTDIR}/${JOBNAME}.log
+
+    # Set temporary directory
+
+    JOBTMPDIR=`echo $(grep -w -A 1 'JOB_TMPDIR' ${SETFILE} | tail -1)`
+    if [[ -z ${JOBTMPDIR} || ${JOBTMPDIR} == *'default'* ]]; then # As subdirectory under the current one
+        JOBTMPDIR=$(dirname ${JOBFILE})/${JOBNAME}_tmpfile
+        JOBTMPDIR=`realpath ${JOBTMPDIR}`
+        move_file=true
+        mkdir -p ${JOBTMPDIR}
+        echo "Temporary directory     : ${JOBTMPDIR}" >> ${OUTDIR}/${JOBNAME}.log
+    elif [[ ${JOBTMPDIR} == *'nodir'* ]]; then # In current directory
+        JOBTMPDIR=$(dirname ${JOBFILE})
+        JOBTMPDIR=`realpath ${JOBTMPDIR}`
+        move_file=false
+        echo "Temporary directory     : ${OUTDIR}" >> ${OUTDIR}/${JOBNAME}.log
+    else # In a separate directory
+        JOBTMPDIR=${JOBTMPDIR}/${JOBNAME}_tmpfile
+        JOBTMPDIR=`realpath ${JOBTMPDIR}`
+        move_file=true
+        mkdir -p ${JOBTMPDIR}
+        echo "Temporary directory     : ${JOBTMPDIR}" >> ${OUTDIR}/${JOBNAME}.log
+    fi
+
+    # Create temporary copy of the script for execution
+
+    SCRIPT="Job_script_${JOBNAME}"
+    sed '1,/^#tag_start_calc/d;/^#tag_end_calc/,$d' $0 > ${JOBTMPDIR}/${SCRIPT}
+
+    # Execute file
+
+    cat << EOF  >> ${OUTDIR}/${JOBNAME}.log | tee -a ${OUTDIR}/${OUTPUT}
+Running Job Report
+--------------------------------------------
+EXECUTATION SCRIPT : ${JOBTMPDIR}/${SCRIPT}
+DATE START         : $(date)
+
+EOF
+
+    source ${JOBTMPDIR}/${SCRIPT} >> ${OUTDIR}/${JOBNAME}.log
+
+    cat << EOF >> ${OUTDIR}/${JOBNAME}.log | tee -a ${OUTDIR}/${OUTPUT}
+
+DATE END   : $(date)
+Script ${SCRIPT} done.
+============================================
+
+EOF
+}
+
+# Run a single post-processing
+
+function run_post_ {
+
+    POSTSCRIPT="Post_script_${JOBNAME}"
+    sed '1,/^#tag_start_post/d;/^#tag_end_post/,$d' $0 > ${JOBTMPDIR}/${POSTSCRIPT}
+
+    # Start post-processing
+
+    cat << EOF >> ${OUTDIR}/${JOBNAME}.log | tee -a ${OUTDIR}/${OUTPUT}
+============================================
+Post Processing Report
+--------------------------------------------
+Begining of post processing : $(date)
+List of saved files
+  TEMPORARY            SAVED
+EOF
+
+    source ${JOBTMPDIR}/${POSTSCRIPT} >> ${OUTDIR}/${JOBNAME}.log
+
+    cat << EOF >> ${OUTDIR}/${JOBNAME}.log | tee -a ${OUTDIR}/${OUTPUT}
+End of post processing : $(date)
+Script ${POSTSCRIPT} done.
+============================================
+
+EOF
+}
+
+# Main I/O function
+in_var="header "$@""
+SCRIPTDIR=`dirname $0`
+
+get_input_
+
+for (( i = 0; i < ${#COMMAND[@]}; i++ )); do
+    ACOMMAND=${COMMAND[$i]}
+    AMPICOMMAND=${MPICOMMAND[$i]}
+    AINFILE=${INFILE[$i]}
+    AREFNAME=${REFNAME[$i]}
+
+    run_calc_
+    run_post_
+done
+exit
+
+# Copied content: Below are copied in temporary directory
+# Renamed variables: ACOMMAND, AMPICOMMAND, AINFILE, AREFNAME
+
+#tag_start_calc
+# Generate basic information of output file
+
+INPDIR=${OUTDIR}
+
+cat << EOF | tee -a ${OUTDIR}/${OUTPUT}
+Pre-Calc Summary
+--------------------------------------------
+  date:                `date`
+  hostname:            `hostname`
+  system:              `uname -a`
+  user:                `whoami`
+  input:               ${OUTDIR}/${JOBFILE##/*}
+  output:              ${OUTDIR}/${OUTPUT}
+  temporary directory: ${JOBTMPDIR}
+  executable script:   $0
+  executable dir:      ${XDIR}
+  mpi + exe command:   ${EXECOMMAND}
+-------------------------------------------
+
+EOF
+
+# Check and read input file
+# Read mandatory file list - Same as JOBNAME (Table PRE_CALC)
+
+LINE_PRECALC=`grep -nw 'PRE_CALC' ${SETFILE}`
+LINE_PRECALC=`echo "scale=0;${LINE_PRECALC%%:*}+4" | bc`
+
+# Read table, substitute variable flags and spaces for saved name in JOBTMPDIR
+
+SAVED_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", substr($0,1,21))}' ${SETFILE} | sed "s/\[job.*\]/${JOBNAME}/g" | sed "s/\[ref.*\]/${AREFNAME}/g" | sed "s/\s//g"`
+
+# Read table, substitute variable flags and spaces for temporary name in JOBTMPDIR
+
+TMP_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", substr($0,22,21))}' ${SETFILE} | sed "s/\[job.*\]/${JOBNAME}/g" | sed "s/\[ref.*\]/${AREFNAME}/g" | sed "s/\s//g"`
+
+while [[ ${TMP_NAME} != '---------'* && ${move_file} == true ]]; do
+
+    # List files, to get all matched files in 'SAVED_NAME' settings
+
+    if [[ ${SAVED_NAME: -1} == '/' ]]; then
+        ls ${SAVED_NAME} > /dev/null 2>&1
+        if [[ $? -eq 0 ]]; then
+            filelist=($(ls ${SAVED_NAME}))
+            for ((i=0; i<${#filelist[@]}; i++)); do
+                filelist[$i]=`echo "${SAVED_NAME}${filelist[$i]}"`
+            done
+        else
+            filelist=()
+        fi
+    else
+        filelist=`find ${INPDIR} -name "${SAVED_NAME}"`
+        filelist=(${filelist//${INPDIR}\//})
+    fi
+
+    # Make subdir for files stored in sub-folders 
+
+    if [[ ${TMP_NAME: -1} == '/' && ${#filelist[@]} -ge 1 ]]; then
+        mkdir -p "${JOBTMPDIR}/${TMP_NAME}"
+    fi
+    for file in ${filelist[@]}; do
+
+        # Make sure the file is not empty
+
+        if [[ ! -s ${INPDIR}/${file} ]]; then
+            continue
+        fi
+
+        TMP_NAME_REAL=${TMP_NAME}
+
+        # If TMP_NAME is '*', keep the original name
+
+        if [[ ${TMP_NAME} == *'*'* ]]; then
+            TMP_NAME_REAL=${file##*/}
+        fi
+
+        # If TMP_NAME ends with '/', update it
+
+        if [[ ${TMP_NAME: -1} == '/' ]]; then
+            TMP_NAME_REAL=`echo "${TMP_NAME}${file##*/}"`
+        fi
+
+        # Find files in INPDIR and  copy them to JOBTMPDIR
+
+        echo "Find input data: ${INPDIR}/${file}" 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+
+        # Cover the duplicate file. 
+        ## Fix CRYSTRAL d12/d3: JOBFILE takes priority
+        if [[ ${file} == ${JOBFILE##*/} ]]; then
+            is_jobfile=true
+        else
+            is_jobfile=false
+        fi
+
+        if [[ -e ${JOBTMPDIR}/${TMP_NAME_REAL} && -s ${JOBTMPDIR}/${TMP_NAME_REAL} ]]; then
+            if [[ ${is_jobfile} != true ]]; then
+                continue
+            fi
+            echo "Warning! Duplicate file detected in temporary directory: ${JOBTMPDIR}/${TMP_NAME_REAL}." 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+            echo "  The file will be covered by the new entry ${INPDIR}/${file}." 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+        fi
+        cp -r ${INPDIR}/${file} ${JOBTMPDIR}/${TMP_NAME_REAL}
+        echo "Input ${file} copied as ${JOBTMPDIR##*/}/${TMP_NAME_REAL}."
+    done
+
+    LINE_PRECALC=`echo "scale=0;${LINE_PRECALC}+1" | bc`
+    SAVED_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", substr($0,1,21))}' ${SETFILE} | sed "s/\[job.*\]/${JOBNAME}/g" | sed "s/\[ref.*\]/${AREFNAME}/g" | sed "s/\s//g"`
+    TMP_NAME=`awk 'NR=="'${LINE_PRECALC}'"{printf("%s", substr($0,22,21))}' ${SETFILE} | sed "s/\[job.*\]/${JOBNAME}/g" | sed "s/\[ref.*\]/${AREFNAME}/g" | sed "s/\s//g"`
+done
+
+# Read external file list - Same as REFNAME (Table REF_FILE)
+
+LINE_REF=`grep -nw 'REF_FILE' ${SETFILE}`
+LINE_REF=`echo "scale=0;${LINE_REF%%:*}+4" | bc`
+
+# Read table, substitute variable flags and spaces for saved name in JOBTMPDIR
+
+SAVED_NAME=`awk 'NR=="'${LINE_REF}'"{printf("%s", substr($0,1,21))}' ${SETFILE} | sed "s/\[job.*\]/${JOBNAME}/g" | sed "s/\[ref.*\]/${AREFNAME}/g" | sed "s/\s//g"`
+
+# Read table, substitute variable flags and spaces for temporary name in JOBTMPDIR
+
+TMP_NAME=`awk 'NR=="'${LINE_REF}'"{printf("%s", substr($0,22,21))}' ${SETFILE} | sed "s/\[job.*\]/${JOBNAME}/g" | sed "s/\[ref.*\]/${AREFNAME}/g" | sed "s/\s//g"`
+
+while [[ ${TMP_NAME} != '---------'* && ${move_file} == true && ${AREFNAME} != 'no' ]]; do
+
+    # List files, to get all matched files in 'SAVED_NAME' settings
+
+    if [[ ${SAVED_NAME: -1} == '/' ]]; then
+        ls ${SAVED_NAME} > /dev/null 2>&1
+        if [[ $? -eq 0 ]]; then
+            filelist=($(ls ${SAVED_NAME}))
+            for ((i=0; i<${#filelist[@]}; i++)); do
+                filelist[$i]=`echo "${SAVED_NAME}${filelist[$i]}"`
+            done
+        else
+            filelist=()
+        fi
+    else
+        filelist=`find ${INPDIR} -name "${SAVED_NAME}"`
+        filelist=(${filelist//${INPDIR}\//})
+    fi
+
+    # Make subdir for files stored in sub-folders 
+
+    if [[ ${TMP_NAME: -1} == '/' && ${#filelist[@]} -ge 1 ]]; then
+        mkdir -p "${JOBTMPDIR}/${TMP_NAME}"
+    fi
+    for file in ${filelist[@]}; do
+
+        # Make sure the file is not empty
+
+        if [[ ! -s ${INPDIR}/${file} ]]; then
+            continue
+        fi
+
+        TMP_NAME_REAL=${TMP_NAME}
+
+        # If TMP_NAME is '*', keep the original name
+
+        if [[ ${TMP_NAME} == *'*'* ]]; then
+            TMP_NAME_REAL=${file##*/}
+        fi
+
+        # If TMP_NAME ends with '/', update it
+
+        if [[ ${TMP_NAME: -1} == '/' ]]; then
+            TMP_NAME_REAL=`echo "${TMP_NAME}${file##*/}"`
+        fi
+
+        # Find files in INPDIR and  copy them to JOBTMPDIR
+
+        echo "Find input reference: ${INPDIR}/${file}" 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+
+        # Do not cover the duplicate file.
+
+        if [[ -e ${JOBTMPDIR}/${TMP_NAME_REAL} && -s ${JOBTMPDIR}/${TMP_NAME_REAL} ]]; then
+            echo "Warning! Duplicate file detected in temporary directory: ${JOBTMPDIR}/${TMP_NAME_REAL}." 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+            echo "  The new reference entry ${INPDIR}/${file} is ignored." 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+            continue
+        fi
+        cp -r ${INPDIR}/${file} ${JOBTMPDIR}/${TMP_NAME_REAL}
+        echo "Input ${file} copied as ${JOBTMPDIR##*/}/${TMP_NAME_REAL}."
+    done
+
+    LINE_REF=`echo "scale=0;${LINE_REF}+1" | bc`
+    SAVED_NAME=`awk 'NR=="'${LINE_REF}'"{printf("%s", substr($0,1,21))}' ${SETFILE} | sed "s/\[job.*\]/${JOBNAME}/g" | sed "s/\[ref.*\]/${AREFNAME}/g" | sed "s/\s//g"`
+    TMP_NAME=`awk 'NR=="'${LINE_REF}'"{printf("%s", substr($0,22,21))}' ${SETFILE} | sed "s/\[job.*\]/${JOBNAME}/g" | sed "s/\[ref.*\]/${AREFNAME}/g" | sed "s/\s//g"`
+done
+
+echo "All files are synchonised." | tee -a ${OUTDIR}/${OUTPUT}
+
+# Launch calculations
+cat << EOF | tee -a ${OUTDIR}/${OUTPUT}
+
+Job Ready to Go
+-------------------------------------------
+  Job name       : ${JOBNAME}
+  Command        : ${EXECOMMAND} >> ${OUTDIR}/${OUTPUT} 2>&1
+  Temporary dir  : ${JOBTMPDIR}
+  List of files  : $(ls -l ${JOBTMPDIR} 2>&1)
+  Input script   :
+$(cat ${JOBFILE})
+-------------------------------------------
+
+EOF
+cd ${JOBTMPDIR}
+echo "Entering temporary directory..."
+echo "Launching the job..."
+
+echo "${EXECOMMAND} >> ${OUTDIR}/${OUTPUT} 2>&1" | bash
+
+cd ${OUTDIR}
+
+#tag_end_calc
+
+#tag_start_post
+
+cd ${JOBTMPDIR}
+
+# Read POST_CALC list
+
+LINE_POSTCALC=`grep -nw 'POST_CALC' ${SETFILE}`
+LINE_POSTCALC=`echo "scale=0;${LINE_POSTCALC%%:*}+4" | bc`
+
+# Read table, substitute variable flags and spaces for saved name in JOBTMPDIR
+
+SAVED_NAME=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", substr($0,1,21))}' ${SETFILE} | sed "s/\[job.*\]/${JOBNAME}/g" | sed "s/\s//g"`
+
+# Read table, substitute variable flags and spaces for temporary name in JOBTMPDIR
+
+TMP_NAME=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", substr($0,22,21))}' ${SETFILE} | sed "s/\[job.*\]/${JOBNAME}/g" | sed "s/\s//g"`
+
+while [[ ${TMP_NAME} != '---------'* && ${move_file} == true ]]; do
+
+    # List files, to get all matched files in 'TMP_NAME' settings
+
+    if [[ ${TMP_NAME: -1} == '/' ]]; then
+        ls ${TMP_NAME} > /dev/null 2>&1
+        if [[ $? -eq 0 ]]; then
+            filelist=($(ls ${TMP_NAME}))
+            for ((i=0; i<${#filelist[@]}; i++)); do
+                filelist[$i]=`echo "${TMP_NAME}${filelist[$i]}"`
+            done
+        else
+            filelist=()
+        fi
+    else
+        filelist=`find ${JOBTMPDIR} -name "${TMP_NAME}"`
+        filelist=(${filelist//${JOBTMPDIR}\//})
+    fi
+
+    # Make subdir for files stored in sub-folders 
+
+    if [[ ${SAVED_NAME: -1} == '/' && ${#filelist[@]} -ge 1 ]]; then
+        mkdir -p "${OUTDIR}/${SAVED_NAME}"
+    fi
+    for file in ${filelist[@]}; do
+
+        # Make sure the file is not empty
+
+        if [[ ! -s ${JOBTMPDIR}/${file} ]]; then
+            continue
+        fi
+
+        SAVED_NAME_REAL=${SAVED_NAME}
+
+        # If SAVED_NAME is '*', keep the original name
+
+        if [[ ${SAVED_NAME} == *'*'* ]]; then
+            SAVED_NAME_REAL=${file##*/}
+        fi
+
+        # If SAVED_NAME ends with '/', update it
+
+        if [[  ${SAVED_NAME: -1} == '/' ]]; then
+            SAVED_NAME_REAL=`echo "${SAVED_NAME}${file##*/}"`
+        fi
+
+        # Copy files - cover the old ones
+
+        if [[ -e ${OUTDIR}/${SAVED_NAME_REAL} && -s ${OUTDIR}/${SAVED_NAME_REAL} ]]; then
+            echo "Warning! Duplicate file detected in out directory: ${OUTDIR}/${SAVED_NAME_REAL}." 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+            echo "  The file will be covered by the new entry ${JOBTMPDIR}/${file}." 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+        fi
+        echo "${file} ${SAVED_NAME_REAL}" | awk '{printf("  %-21s%-52s"),$1,$2}' 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+        ls -l ${file} | awk '{printf("  %-8s %s %s %s\n"),$5,$6,$7,$8}' 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+        cp -r ${JOBTMPDIR}/${file} ${OUTDIR}/${SAVED_NAME_REAL}
+    done
+
+    LINE_POSTCALC=`echo "scale=0;${LINE_POSTCALC%%:*}+1" | bc`
+    SAVED_NAME=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", substr($0,1,21))}' ${SETFILE} | sed "s/\[job.*\]/${JOBNAME}/g" | sed "s/\s//g"`
+    TMP_NAME=`awk 'NR=="'${LINE_POSTCALC}'"{printf("%s", substr($0,22,21))}' ${SETFILE} | sed "s/\[job.*\]/${JOBNAME}/g" | sed "s/\s//g"`
+done
+
+# Calculation summary
+
+cat << EOF | tee -a ${OUTDIR}/${OUTPUT}
+--------------------------------------------
+
+Temporary Directory Disk Info
+--------------------------------------------
+  Temporary directory      : ${JOBTMPDIR}
+
+  Disk usage (df -h)
+$(df -h ${JOBTMPDIR} 2>&1)
+
+  Usage by folders (du -m)
+$(du -m ${JOBTMPDIR} 2>&1)
+
+  Detailed file list (ls -l .)
+    see ${OUTDIR}/${JOBNAME}.log file
+EOF
+cat << EOF
+$(ls -l . 2>&1)
+EOF
+cat << EOF | tee -a ${OUTDIR}/${OUTPUT}
+--------------------------------------------
+
+EOF
+
+# Remove temporary directory
+
+cd ${OUTDIR}
+if [[ ${move_file} == true ]]; then
+    rm -fr ${JOBTMPDIR}
+else
+    rm Job_script_${JOBNAME} Post_script_${JOBNAME}
+fi
+
+#tag_end_post
