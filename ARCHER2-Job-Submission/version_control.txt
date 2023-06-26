@@ -3,7 +3,7 @@ Width of columns: CODE - 21; VERSION - 11; DATE - 21; AUTHOR - 21; CONTACT - 31;
 -----------------------------------------------------------------------------------------------------------------------------------
 CODE                 VERSION    DATE                 AUTHOR               CONTACT                        ACKNOWLEDGEMENT
 -----------------------------------------------------------------------------------------------------------------------------------
-core                 v2.0       May.12, 23           Spica-Vir            ICL, spica.h.zhou@gmail.com
+core                 v2.1       Jun.26, 23           Spica-Vir            ICL, spica.h.zhou@gmail.com
 CRYSTAL23            v1.1       Apr.03, 23           Spica-Vir            ICL, spica.h.zhou@gmail.com    
 CRYSTAL17            v1.0       Mar.11, 23           Spica-Vir            ICL, spica.h.zhou@gmail.com   
 Quantum-Espresso7    v1.0       Mar.11, 23           Spica-Vir            ICL, spica.h.zhou@gmail.com

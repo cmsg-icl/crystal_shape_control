@@ -458,11 +458,11 @@ EOF
 function print_HOWTO_ {
     cat << EOF
     -------------------------------------------
-    Imperial HPC job submitter HOWTO - ADVANCED
+    ARCHER2 job submitter HOWTO - ADVANCED
     -------------------------------------------
     Use '-help' flag to get instructions.
 
-    Qsub generation script
+    Slurm generation script
 
         $(dirname $0)/gen_sub
 
