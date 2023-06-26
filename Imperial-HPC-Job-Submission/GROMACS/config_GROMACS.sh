@@ -276,13 +276,13 @@ function set_commands {
     echo "alias Pmdrun='${CTRLDIR}/gen_sub -x mdrun -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
     echo "alias Xgmx='${CTRLDIR}/gen_sub -set ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
     echo "alias SETgmx='cat ${SCRIPTDIR}/settings'" >> ${HOME}/.bashrc
-    echo "alias HELPgmx='source ${CONFIGDIR}/run_help; print_ALIAS_HOWTO_; print_GENSUB_HOWTO_'" >> ${HOME}/.bashrc
+    echo "alias HELPgmx='bash ${CONFIGDIR}/run_help gensub'" >> ${HOME}/.bashrc
     # echo "chmod 777 ${SCRIPTDIR}/gen_sub" >> ${HOME}/.bashrc
     # echo "chmod 777 ${SCRIPTDIR}/run_exec" >> ${HOME}/.bashrc
     # echo "chmod 777 ${SCRIPTDIR}/post_proc" >> ${HOME}/.bashrc 
     echo "# <<< finish GROMACS job submitter settings <<<" >> ${HOME}/.bashrc
 
-    source ${CONFIGDIR}/run_help; print_ALIAS_HOWTO_
+    bash ${CONFIGDIR}/run_help
 }
 
 # Main I/O function

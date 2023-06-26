@@ -212,10 +212,14 @@ while [[ ${TMP_NAME} != '---------'* && ${move_file} == true ]]; do
     # List files, to get all matched files in 'SAVED_NAME' settings
 
     if [[ ${SAVED_NAME: -1} == '/' ]]; then
-        filelist=($(ls ${SAVED_NAME}))
-        for ((i=0; i<${#filelist[@]}; i++)); do
-            filelist[$i]=`echo "${SAVED_NAME}${filelist[$i]}"`
-        done
+        ls ${SAVED_NAME} > /dev/null 2>&1
+        if [[ $? -eq 0 ]]; then
+            filelist=($(ls ${SAVED_NAME}))
+            for ((i=0; i<${#filelist[@]}; i++)); do
+                filelist[$i]=`echo "${SAVED_NAME}${filelist[$i]}"`
+            done
+        else
+            filelist=()
     else
         filelist=`find ${INPDIR} -name "${SAVED_NAME}"`
         filelist=(${filelist//${INPDIR}\//})
@@ -303,10 +307,14 @@ while [[ ${TMP_NAME} != '---------'* && ${move_file} == true && ${REFNAME} != 'n
     # List files, to get all matched files in 'SAVED_NAME' settings
 
     if [[ ${SAVED_NAME: -1} == '/' ]]; then
-        filelist=($(ls ${SAVED_NAME}))
-        for ((i=0; i<${#filelist[@]}; i++)); do
-            filelist[$i]=`echo "${SAVED_NAME}${filelist[$i]}"`
-        done
+        ls ${SAVED_NAME} > /dev/null 2>&1
+        if [[ $? -eq 0 ]]; then
+            filelist=($(ls ${SAVED_NAME}))
+            for ((i=0; i<${#filelist[@]}; i++)); do
+                filelist[$i]=`echo "${SAVED_NAME}${filelist[$i]}"`
+            done
+        else
+            filelist=()
     else
         filelist=`find ${INPDIR} -name "${SAVED_NAME}"`
         filelist=(${filelist//${INPDIR}\//})
@@ -391,3 +399,4 @@ echo "Launching the job..."
 
 echo "${EXECOMMAND} >> ${OUTDIR}/${OUTPUT} 2>&1" | bash
 
+cd ${OUTDIR}

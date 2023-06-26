@@ -30,6 +30,10 @@ function print_GENSUB_HOWTO_ {
     source ${SOURCE} -help
 }
 
-CONFIGDIR=`realpath $(dirname $0)`
-CTRLDIR=`realpath ${CONFIGDIR}/../`
+print_ALIAS_HOWTO_
 
+if [[ $1 == 'gensub' ]]; then
+    CONFIGDIR=`realpath $(dirname $0)`
+    CTRLDIR=`realpath ${CONFIGDIR}/../`
+    print_GENSUB_HOWTO_
+fi
