@@ -2,7 +2,6 @@
 """
 Inter-transform geometry between Quantum Espresso pw.x output and a CIF file 
 for visuallisation and further format translations. 
-
 By Spical. Vir., ICL, spica.h.zhou@gmail.com
 12:01:50, Feb.02, 23
 """
@@ -19,17 +18,21 @@ def read_qe_output(qe_file):
     data = file.readlines()
     file.close()
 
+    atom_block_flag = False
     for i, line in enumerate(data):
         if re.match(r'^\s+Crystallographic axes', line):
             atom_bg_line = i + 3
             is_cart = False
+            atom_block_flag = True
             continue
-        elif re.match(r'^\s+Cartesian axes', line):
-            atom_bg_line = i + 3
+        elif re.match(r'^\s+site n\.\s+atom\s+positions \(alat units\)', line):
+            atom_bg_line = i + 1
             is_cart = True
+            atom_block_flag = True
             continue
-        elif re.match(r'^\s+number of k points=', line):
-            atom_ed_line = i - 1
+        elif atom_block_flag and len(line.strip()) == 0:
+            atom_ed_line = i
+            atom_block_flag = False
             continue
         elif re.match(r'^\s+lattice parameter \(alat\)  =', line):
             alat = float(line.strip().split()[4]) * 0.529177210903
@@ -42,6 +45,11 @@ def read_qe_output(qe_file):
             continue
         else:
             continue
+
+    if 'is_cart' not in locals().keys():
+        raise Exception('Atomic coord. block not identified')
+    if 'latt_bg_line' not in locals().keys():
+        raise Exception('Latt. block not identified')
 
     atom_spec = [l.strip().split()[1]
                  for l in data[atom_bg_line: atom_ed_line]]
@@ -132,3 +140,5 @@ elif option == 'cif2qe' or int(option) == 2:
     cif2qe(cif_file, qe_file)
 else:
     print('ERROR: Available options: 1. qe2cif  2. cif2qe, type either option name or number')
+
+
