@@ -220,6 +220,7 @@ while [[ ${TMP_NAME} != '---------'* && ${move_file} == true ]]; do
             done
         else
             filelist=()
+        fi
     else
         filelist=`find ${INPDIR} -name "${SAVED_NAME}"`
         filelist=(${filelist//${INPDIR}\//})
@@ -315,6 +316,7 @@ while [[ ${TMP_NAME} != '---------'* && ${move_file} == true && ${REFNAME} != 'n
             done
         else
             filelist=()
+        fi
     else
         filelist=`find ${INPDIR} -name "${SAVED_NAME}"`
         filelist=(${filelist//${INPDIR}\//})
