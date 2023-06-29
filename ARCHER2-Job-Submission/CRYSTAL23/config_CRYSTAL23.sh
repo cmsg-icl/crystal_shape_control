@@ -120,7 +120,7 @@ EOF
     EXEDIR=`echo ${EXEDIR}`
 
     if [[ -z ${EXEDIR} ]]; then
-        EXEDIR='module load other-software crystal/23-1.0.1'
+        EXEDIR='module load other-software crystal/23-1.0.1-3'
     fi
 
     if [[ ! -d ${EXEDIR} && (${EXEDIR} != *'module load'*) ]]; then
