@@ -95,13 +95,13 @@ It is highly recommended to generate slurm files in the same directory as input 
 
 ### Common Outputs
 
-Although parallel codes differ from each other, 3 common outputs are generated. 
+Although parallel codes differ from each other, 2 common outputs are generated. 
 
 **.out file**  
 Output information of the code, CRYSTAL17, for example. Also includes the input file and basic information from the job submission script, such as the path to the ephemeral directory and files copied.
 
-**slurm-`${SLURM_JOB_ID}`.out file**  
-A verbose version output, error and warning messages (that should be printed on screen) of job submission script & MPI, for debugging. Besides the basic information included in .out file, it includes the list of scripts and commands used, synchronization of files and the list of files in the ephemeral directory.
+**slurm-`${SLURM_JOB_ID}`.out file / .log file**  
+A verbose version output, error and warning messages (that should be printed on screen) of job submission script & MPI, for debugging. Besides the basic information included in .out file, it includes the list of scripts and commands used, synchronization of files and the list of files in the ephemeral directory. When job is running or killed by the user, it is 'slurm-`${SLURM_JOB_ID}`.out' and when job terminates normally or run out of time, it is '.log' file.
 
 ### When a job terminates
 
@@ -149,11 +149,12 @@ In the current implementation, 'settings' is the only file in local environment,
 
 **JOB\_TMPDIR**
 
-3 options are available for this keywords:
+4 options are available for this keywords:
 
 1. Left blank for 'default' : The temporary directory will be created as a sub-directory in the input directory, with name 'jobname\_`${SLURM_JOB_ID}`/'  
 2. 'nodir' : The job will be run in the current directory and no copy/delete happens. Applicable if the code has bulit-in temporary file management system or requires minimum I/O (usually the case for serial jobs).
-3. A given directory, such as `${EPHEMERAL}` : The temporary directory will be created as a sub-directory under the given one, with the name 'jobname\_`${SLURM_JOB_ID}`/'.
+3. 'node' : Node-specific temporary files are distributed to the node memory '/tmp/jobname\_`${SLURM_JOB_ID}`/'. Recommanded for large jobs. If the job is killed by the user, temporary files cannot be saved.  
+4. A given directory, such as `${EPHEMERAL}` : The temporary directory will be created as a sub-directory under the given one, with the name 'jobname\_`${SLURM_JOB_ID}`/'.
 
 **EXE\_TABLE** 
 For each job submission script, multiple executables can be placed in the same directory, 'EXEDIR'. The corresponding commands to launch the executables are listed in 'EXE\_TABLE'. The following table gives information of each column. 
