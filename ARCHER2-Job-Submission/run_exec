@@ -24,11 +24,11 @@ function get_input_ {
             shift; JOBFILE=$(realpath $1); JOBNAME=${JOBFILE%.*}; JOBNAME=${JOBNAME##*/} ;;
         --ref )
             shift;
-			if [[ ! -z $1 ]]; then
-			    REFNAME=$1;
-				REFNAME=${REFNAME%.*};
-				REFNAME=${REFNAME##*/};
-			fi ;;
+            if [[ ! -z $1 ]]; then
+                REFNAME=$1;
+                REFNAME=${REFNAME%.*};
+                REFNAME=${REFNAME##*/};
+            fi ;;
         -- )
             shift;
             while [[ ! -z $1 ]]; do
@@ -98,10 +98,10 @@ elif [[ ${JOBTMPDIR} == *'nodir'* ]]; then # In current directory
     srun_flag=''
     echo "Temporary file stored under the current directory ${OUTDIR}"
 elif [[ ${JOBTMPDIR} == *'node'* ]]; then # In node temporary directory
-	JOBTMPDIR=/tmp/${JOBNAME}_${SLURM_JOB_ID}
-	move_file=true
+    JOBTMPDIR=/tmp/${JOBNAME}_${SLURM_JOB_ID}
+    move_file=true
     srun_flag="srun --ntasks=${SLURM_NNODES} --ntasks-per-node=1 " # Run parallel copy file for nodes
-	echo "Temporary directory on individual nodes : ${JOBTMPDIR}"
+    echo "Temporary directory on individual nodes : ${JOBTMPDIR}"
 else # In a separate directory
     JOBTMPDIR=${JOBTMPDIR}/${JOBNAME}_${SLURM_JOB_ID}
     JOBTMPDIR=`realpath ${JOBTMPDIR}`

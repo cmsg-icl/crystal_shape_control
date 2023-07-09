@@ -47,8 +47,8 @@ elif [[ ${JOBTMPDIR} == *'nodir'* ]]; then # In current directory
     move_file=false
     srun_flag=''
 elif [[ ${JOBTMPDIR} == *'node'* ]]; then # In node temporary directory
-	JOBTMPDIR=/tmp/${JOBNAME}_${SLURM_JOB_ID}
-	move_file=true
+    JOBTMPDIR=/tmp/${JOBNAME}_${SLURM_JOB_ID}
+    move_file=true
     srun_flag="srun --ntasks=${SLURM_NNODES} --ntasks-per-node=1 " # Run parallel copy file for nodes
 else # In a separate directory
     JOBTMPDIR=${JOBTMPDIR}/${JOBNAME}_${SLURM_JOB_ID}
@@ -184,9 +184,9 @@ EOF
 
 cd ${OUTDIR}
 if [[ ${move_file} == true ]]; then
-	${srun_flag}rm -fr ${JOBTMPDIR}
+    ${srun_flag}rm -fr ${JOBTMPDIR}
 else
-	${srun_flag}rm ${JOBTMPDIR}/Job_script_${SLURM_JOB_ID} ${JOBTMPDIR}/Post_script_${SLURM_JOB_ID}
+    ${srun_flag}rm ${JOBTMPDIR}/Job_script_${SLURM_JOB_ID} ${JOBTMPDIR}/Post_script_${SLURM_JOB_ID}
 fi
 
 mv slurm-${SLURM_JOB_ID}.out ${JOBNAME}.log
