@@ -24,10 +24,10 @@ PARTITION
 standard
 
 TIME_OUT
-3
+1
 
 JOB_TMPDIR
- default
+node
 
 
 # Executables
@@ -35,7 +35,7 @@ EXEDIR
  module load other-software crystal/17-1.0.2
 
 MPIDIR
- module load PrgEnv-cray/8.0.0 cray-mpich/8.1.4 cray-libsci/21.04.1.1 cce/11.0.4
+ module load PrgEnv-cray/8.3.3 cray-mpich/8.1.23 cray-libsci/22.12.1.1 cce/15.0.0
 
 EXE_TABLE                                                               [jobname]
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -66,6 +66,7 @@ KEYWORD              TEMPORATY            DEFINITION
 [refname].f9         fort.9               Last step wavefunction - properties input
 [refname].OPTINFO    OPTINFO.DAT          Optimisation restart data
 [refname].FREQINFO   FREQINFO.DAT         Frequency restart data
+[refname].freqtsk/   *                    Frequency restart data multitask
 [refname].BORN       BORN.DAT             Born tensor
 [refname].TENS_RAMAN TENS_RAMAN.DAT       Raman tensor
 [refname].f13        fort.13              Binary reducible density matrix
@@ -93,11 +94,11 @@ SAVED                TEMPORARY            DEFINITION
 [jobname].HESSOPT    HESSOPT.DAT          Hessian matrix per optimisation step
 [jobname].optstory/  opt*                 Optimised geometry per step 
 [jobname].FREQINFO   FREQINFO.DAT         Frequency restart data
+[jobname].freqtsk/   FREQINFO.DAT.tsk*    Frequency restart data multitask
 [jobname].f13        fort.13              Binary reducible density matrix
 [jobname].f28        fort.28              Binary IR intensity restart data
 [jobname].f80        fort.80              Wannier funcion - output
 [jobname].scanmode/  SCAN*                Displaced geometry along scanned mode
-[jobname].FREQINFO   FREQINFO.DAT         Frequency restart data
 [jobname].f25        fort.25              Data in Crgra2006 format
 [jobname].PHONBANDS  PHONBANDS.DAT        Phonon bands xmgrace format
 [jobname].IRDIEL     IRDIEL.DAT           IR dielectric function
@@ -119,7 +120,6 @@ SAVED                TEMPORARY            DEFINITION
 [jobname]_POT.CUBE   POT_CUBE.DAT         3D electrostatic potential CUBE format  
 [jobname].POTC       POTC.DAT             Electrostatic potential and derivatives
 -----------------------------------------------------------------------------------
-                         
 
 JOB_SUBMISSION_TEMPLATE
 ----------------------------------------------------------------------------------------
@@ -135,13 +135,14 @@ JOB_SUBMISSION_TEMPLATE
 #SBATCH --qos=${V_QOS}
 #SBATCH --export=none
 
+echo "============================================"
 echo "SLURM Job Report"
 echo "--------------------------------------------"
 echo "  Start Date : $(date)"
 echo "  SLURM Job ID : ${SLURM_JOB_ID}"
 echo "  Status"
 squeue -j ${SLURM_JOB_ID} 2>&1
-echo "--------------------------------------------"
+echo "============================================"
 echo ""
 
 # Address the memory leak

@@ -4,22 +4,22 @@
 
 function get_input_ {
 
-    # Useful variables: 
+    # Useful variables:
     # SETFILE: Path to 'settings' file
     # JOBNAME: Input file name without extension
 
-    param_list=$(getopt -a -l set:,in: -n "$0" -- ${in_var} 2> /dev/null) 
+    param_list=$(getopt -a -l set:,in: -n "$0" -- ${in_var} 2> /dev/null)
     eval set -- "${param_list}"
     echo "Parameter list: ${param_list}"
     while [[ true ]]; do
         case $1 in
-        --in ) 
-            shift; JOBFILE=$1; JOBNAME=${JOBFILE%.*}; JOBNAME=${JOBNAME##*/}  ;;
+        --in )
+            shift; JOBFILE=$(realpath $1); JOBNAME=${JOBFILE%.*}; JOBNAME=${JOBNAME##*/}  ;;
         --set )
-            shift; SETFILE=$1 ;;
-        -- ) 
+            shift; SETFILE=$(realpath $1) ;;
+        -- )
             break;;
-        * ) 
+        * )
             echo "Error: Input not recognized. Refer to the manual. ";
             echo "Job terminated without calculation. ";
             exit;;
@@ -29,25 +29,32 @@ function get_input_ {
 }
 
 # Restore variables - kept same as job submission script
+
 in_var="header "$@""
 get_input_
-OUTDIR=$(realpath ${JOBFILE})
-OUTDIR=${OUTDIR%/*}
+OUTDIR=${JOBFILE%/*}
 OUTPUT=${JOBNAME}.out
 INPDIR=${OUTDIR}
 JOBTMPDIR=`echo $(grep -w -A 1 'JOB_TMPDIR' ${SETFILE} | tail -1)`
-if [[ -z ${JOBTMPDIR} || ${JOBTMPDIR} == 'default' ]]; then # As subdirectory under the current one
+if [[ -z ${JOBTMPDIR} || ${JOBTMPDIR} == *'default'* ]]; then # As subdirectory under the current one
     JOBTMPDIR=$(dirname ${JOBFILE})/${JOBNAME}_${SLURM_JOB_ID}
     JOBTMPDIR=`realpath ${JOBTMPDIR}`
     move_file=true
-elif [[ ${JOBTMPDIR} == 'nodir' ]]; then # In current directory
+    srun_flag=''
+elif [[ ${JOBTMPDIR} == *'nodir'* ]]; then # In current directory
     JOBTMPDIR=$(dirname ${JOBFILE})
     JOBTMPDIR=`realpath ${JOBTMPDIR}`
     move_file=false
+    srun_flag=''
+elif [[ ${JOBTMPDIR} == *'node'* ]]; then # In node temporary directory
+	JOBTMPDIR=/tmp/${JOBNAME}_${SLURM_JOB_ID}
+	move_file=true
+    srun_flag="srun --ntasks=${SLURM_NNODES} --ntasks-per-node=1 " # Run parallel copy file for nodes
 else # In a separate directory
     JOBTMPDIR=${JOBTMPDIR}/${JOBNAME}_${SLURM_JOB_ID}
     JOBTMPDIR=`realpath ${JOBTMPDIR}`
     move_file=true
+    srun_flag=''
 fi
 
 # Create temporary copy of the script for execution
@@ -57,10 +64,11 @@ sed '1,/^#tag_copy/d' $0 > ${JOBTMPDIR}/${POSTSCRIPT}
 
 # Start post-processing
 cat << EOF | tee -a ${OUTDIR}/${OUTPUT}
+============================================
 Post Processing Report
 --------------------------------------------
 Begining of post processing : $(date)
-List of saved files
+List of saved files from Node 0
   TEMPORARY            SAVED
 EOF
 
@@ -69,14 +77,13 @@ source ${JOBTMPDIR}/${POSTSCRIPT}
 cat << EOF | tee -a ${OUTDIR}/${OUTPUT}
 End of post processing : $(date)
 Script post_proc done.
---------------------------------------------
+===========================================
 EOF
 exit
 
 # Copied content: Between #tag_start_copy and #tag_end_copy are copied in temporary directory
-#tag_copy
-cd ${JOBTMPDIR}
 
+#tag_copy
 # Read POST_CALC list
 
 LINE_POSTCALC=`grep -nw 'POST_CALC' ${SETFILE}`
@@ -95,21 +102,16 @@ while [[ ${TMP_NAME} != '---------'* && ${move_file} == true ]]; do
     # List files, to get all matched files in 'TMP_NAME' settings
 
     if [[ ${TMP_NAME: -1} == '/' ]]; then
-        ls ${TMP_NAME} > /dev/null 2>&1
-        if [[ $? -eq 0 ]]; then
-            filelist=($(ls ${TMP_NAME}))
-            for ((i=0; i<${#filelist[@]}; i++)); do
-                filelist[$i]=`echo "${TMP_NAME}${filelist[$i]}"`
-            done
-        else
-            filelist=()
-        fi
+        filelist=($(ls ${TMP_NAME}))
+        for ((i=0; i<${#filelist[@]}; i++)); do
+            filelist[$i]=`echo "${TMP_NAME}${filelist[$i]}"`
+        done
     else
         filelist=`find ${JOBTMPDIR} -name "${TMP_NAME}"`
         filelist=(${filelist//${JOBTMPDIR}\//})
     fi
 
-    # Make subdir for files stored in sub-folders 
+    # Make subdir for files stored in sub-folders
 
     if [[ ${SAVED_NAME: -1} == '/' && ${#filelist[@]} -ge 1 ]]; then
         mkdir -p "${OUTDIR}/${SAVED_NAME}"
@@ -143,7 +145,7 @@ while [[ ${TMP_NAME} != '---------'* && ${move_file} == true ]]; do
             echo "  The file will be covered by the new entry ${JOBTMPDIR}/${file}." 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
         fi
         echo "${file} ${SAVED_NAME_REAL}" | awk '{printf("  %-21s%-52s"),$1,$2}' 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
-        ls -l ${file} | awk '{printf("  %-8s %s %s %s\n"),$5,$6,$7,$8}' 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
+        ls -l ${JOBTMPDIR}/${file} | awk '{printf("  %-8s %s %s %s\n"),$5,$6,$7,$8}' 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
         cp -r ${JOBTMPDIR}/${file} ${OUTDIR}/${SAVED_NAME_REAL}
     done
 
@@ -167,11 +169,11 @@ $(df -h ${JOBTMPDIR} 2>&1)
   Usage by folders (du -m)
 $(du -m ${JOBTMPDIR} 2>&1)
 
-  Detailed file list (ls -l .)
+  Detailed file list of Node 0(ls -l .)
     see ${OUTDIR}/${JOBNAME}.log file
 EOF
 cat << EOF
-$(ls -l . 2>&1)
+$(ls -l ${JOBTMPDIR} 2>&1)
 EOF
 cat << EOF | tee -a ${OUTDIR}/${OUTPUT}
 --------------------------------------------
@@ -182,9 +184,10 @@ EOF
 
 cd ${OUTDIR}
 if [[ ${move_file} == true ]]; then
-    rm -fr ${JOBTMPDIR}
+	${srun_flag}rm -fr ${JOBTMPDIR}
 else
-    rm Job_script_${SLURM_JOB_ID} Post_script_${SLURM_JOB_ID}
+	${srun_flag}rm ${JOBTMPDIR}/Job_script_${SLURM_JOB_ID} ${JOBTMPDIR}/Post_script_${SLURM_JOB_ID}
 fi
 
 mv slurm-${SLURM_JOB_ID}.out ${JOBNAME}.log
+
