@@ -63,9 +63,9 @@ EOF
     if [[ ! -z ${REFNAME} ]]; then
         check_REFNAME_
     else
-	    for ((i=0; i<${#EXELABEL[@]}; i++)); do
-		    REFNAME+=('no')
-		done
+        for ((i=0; i<${#EXELABEL[@]}; i++)); do
+            REFNAME+=('no')
+        done
     fi
     check_ND_
     check_WT_
@@ -517,11 +517,11 @@ EOF
         tout=`echo "scale=0;${thr}*60+${tmn}-${TOUT_PER_JOB}" | bc`
         TOUT+=("${tout}m")
     done
-	ttmn=`echo "scale=0; ${tt}%60" | bc`
-	tthr=`echo "scale=0; (${tt}-${ttmn})/60" | bc`
+    ttmn=`echo "scale=0; ${tt}%60" | bc`
+    tthr=`echo "scale=0; (${tt}-${ttmn})/60" | bc`
     TWT=`echo "$(printf "%02d\n" ${tthr}):$(printf "%02d\n" ${ttmn}):00"`
 
-	# Generate job executation and post processing commands
+    # Generate job executation and post processing commands
     ############## Command template ################
     # timeout ${TOUT} ${SCRIPTDIR}/${SCRIPT} -set ${SETFILE} -in ${INFILE} -ref ${REFNAME} -- ${MPICOMMAND} ${COMMAND} 
     # ${SCRIPTDIR}/${POSCRIPT} -in ${INFILE} -set ${SETFILE}
@@ -613,7 +613,7 @@ EOF
             # substitute jobname
 
             inpname=${INFILE[$i]%.*}
-			COMMAND[$i]=`echo "${cmd}" | sed "s/\[job.*\]/${inpname}/g"`
+            COMMAND[$i]=`echo "${cmd}" | sed "s/\[job.*\]/${inpname}/g"`
         else
             ls ${XDIR}/${cmd%% *} > /dev/null 2>&1 
             if [[ $? -ne 0 ]]; then
@@ -632,9 +632,9 @@ EOF
             # substitute jobname
 
             inpname=${INFILE[$i]%.*}
-			COMMAND[$i]=`echo "${XDIR}/${cmd}" | sed "s/\[job.*\]/${inpname}/g"`
+            COMMAND[$i]=`echo "${XDIR}/${cmd}" | sed "s/\[job.*\]/${inpname}/g"`
         fi
-	
+    
     done
 }
 
@@ -696,17 +696,17 @@ function get_subinfo_ {
 
     TOUT_PER_JOB=`echo $(grep -w -A 1 'TIME_OUT' ${SETFILE} | tail -1)`
 
-	# Budget code
+    # Budget code
 
-	BUDGET=`echo $(grep -w -A 1 'BUDGET_CODE' ${SETFILE} | tail -1)`
+    BUDGET=`echo $(grep -w -A 1 'BUDGET_CODE' ${SETFILE} | tail -1)`
 
-	# QOS
+    # QOS
 
-	QOS=`echo $(grep -w -A 1 'QOS' ${SETFILE} | tail -1)`
+    QOS=`echo $(grep -w -A 1 'QOS' ${SETFILE} | tail -1)`
 
-	# Partition of service
+    # Partition of service
 
-	PARTITION=`echo $(grep -w -A 1 'PARTITION' ${SETFILE} | tail -1)`
+    PARTITION=`echo $(grep -w -A 1 'PARTITION' ${SETFILE} | tail -1)`
 }
 
 # get submission file template and necessary information

@@ -61,8 +61,8 @@ EOF
     if [[ ${SCRIPTDIR: -1} == '/' ]]; then
         SCRIPTDIR=${SCRIPTDIR%/*}
     fi
-    
-	SCRIPTDIR=`realpath $(echo ${SCRIPTDIR}) 2>&1 | sed -r 's/.*\:(.*)\:.*/\1/' | sed 's/[[:space:]]//g'` # Ignore errors
+
+    SCRIPTDIR=`realpath $(echo ${SCRIPTDIR}) 2>&1 | sed -r 's/.*\:(.*)\:.*/\1/' | sed 's/[[:space:]]//g'` # Ignore errors
     source_dir=`realpath $(dirname $0)`
     if [[ ${source_dir} == ${SCRIPTDIR} ]]; then
         cat << EOF
@@ -91,7 +91,7 @@ function get_budget_code {
     Please specify your budget code:
 
 EOF
-    
+
     read -p " " BUDGET_CODE
     BUDGET_CODE=`echo ${BUDGET_CODE}`
 
@@ -108,14 +108,14 @@ EOF
 function set_exe {
     cat << EOF
 ================================================================================
-    Please specify the directory of CRYSTAL exectuables, 
+    Please specify the directory of CRYSTAL exectuables,
     or the command to load CRYSTAL modules
 
     Default Option
-    crystal/17-1.0.2 (Available module)
+    module load other-software crystal/17-1.0.2
 
 EOF
-    
+
     read -p " " EXEDIR
     EXEDIR=`echo ${EXEDIR}`
 
@@ -151,15 +151,15 @@ function set_mpi {
     Please specify the directory of MPI executables or mpi modules
 
     Default Option
-    PrgEnv-cray/8.0.0 cray-mpich/8.1.4 cray-libsci/21.04.1.1 cce/11.0.4
+    module load PrgEnv-cray/8.3.3 cce/15.0.0 cray-mpich/8.1.23 cray-libsci/22.12.1.1
 
 EOF
-    
+
     read -p " " MPIDIR
     MPIDIR=`echo ${MPIDIR}`
 
     if [[ -z ${MPIDIR} ]]; then
-        MPIDIR='module load PrgEnv-cray/8.0.0 cray-mpich/8.1.4 cray-libsci/21.04.1.1 cce/11.0.4'
+        MPIDIR='module load PrgEnv-cray/8.3.3 cray-mpich/8.1.23 cray-libsci/22.12.1.1 cce/15.0.0'
     fi
 
     if [[ ! -d ${EXEDIR} && (${EXEDIR} != *'module load'*) ]]; then
@@ -243,12 +243,12 @@ function set_settings {
     sed -i "${LINE_REF}a\[refname].OPTINFO    OPTINFO.DAT          Optimisation restart data" ${SETFILE}
     sed -i "${LINE_REF}a\[refname].f9         fort.9               Last step wavefunction - properties input" ${SETFILE}
     sed -i "${LINE_REF}a\[refname].f9         fort.20              Last step wavefunction - crystal input" ${SETFILE}
-    
+
     # Post-processing file table
 
     LINE_POST=`grep -nw 'POST_CALC' ${SETFILE}`
     LINE_POST=`echo "scale=0;${LINE_POST%:*}+3" | bc`
-    
+
     sed -i "${LINE_POST}a\[jobname].POTC       POTC.DAT             Electrostatic potential and derivatives" ${SETFILE}
     sed -i "${LINE_POST}a\[jobname]_POT.CUBE   POT_CUBE.DAT         3D electrostatic potential CUBE format  " ${SETFILE}
     sed -i "${LINE_POST}a\[jobname]_SPIN.CUBE  SPIN_CUBE.DAT        3D spin density CUBE format" ${SETFILE}
@@ -305,13 +305,14 @@ function set_settings {
 #SBATCH --qos=\${V_QOS}
 #SBATCH --export=none
 
+echo "============================================"
 echo "SLURM Job Report"
 echo "--------------------------------------------"
 echo "  Start Date : \$(date)"
 echo "  SLURM Job ID : \${SLURM_JOB_ID}"
 echo "  Status"
 squeue -j \${SLURM_JOB_ID} 2>&1
-echo "--------------------------------------------"
+echo "============================================"
 echo ""
 
 # Address the memory leak

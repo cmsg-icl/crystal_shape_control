@@ -61,8 +61,8 @@ EOF
     if [[ ${SCRIPTDIR: -1} == '/' ]]; then
         SCRIPTDIR=${SCRIPTDIR%/*}
     fi
-    
-	SCRIPTDIR=`realpath $(echo ${SCRIPTDIR}) 2>&1 | sed -r 's/.*\:(.*)\:.*/\1/' | sed 's/[[:space:]]//g'` # Ignore errors
+
+    SCRIPTDIR=`realpath $(echo ${SCRIPTDIR}) 2>&1 | sed -r 's/.*\:(.*)\:.*/\1/' | sed 's/[[:space:]]//g'` # Ignore errors
     source_dir=`realpath $(dirname $0)`
     if [[ ${source_dir} == ${SCRIPTDIR} ]]; then
         cat << EOF
@@ -91,7 +91,7 @@ function get_budget_code {
     Please specify your budget code:
 
 EOF
-    
+
     read -p " " BUDGET_CODE
     BUDGET_CODE=`echo ${BUDGET_CODE}`
 
@@ -112,10 +112,10 @@ function set_exe {
     or the command to load CRYSTAL modules
 
     Default Option
-    crystal/23-1.0.1 (Available module)
+    module load other-software crystal/23-1.0.1-3
 
 EOF
-    
+
     read -p " " EXEDIR
     EXEDIR=`echo ${EXEDIR}`
 
@@ -151,15 +151,15 @@ function set_mpi {
     Please specify the directory of MPI executables or mpi modules
 
     Default Option
-    gcc/10.2.0 PrgEnv-gnu/8.0.0 cray-mpich/8.1.9 cray-libsci/21.08.1.2 craype/2.7.10
+    module load PrgEnv-gnu/8.3.3 gcc/11.2.0 cray-mpich/8.1.23 cray-libsci/22.12.1.1
 
 EOF
-    
+
     read -p " " MPIDIR
     MPIDIR=`echo ${MPIDIR}`
 
     if [[ -z ${MPIDIR} ]]; then
-        MPIDIR='module load gcc/10.2.0 PrgEnv-gnu/8.0.0 cray-mpich/8.1.9 cray-libsci/21.08.1.2 craype/2.7.10'
+        MPIDIR='module load PrgEnv-gnu/8.3.3 gcc/11.2.0 cray-mpich/8.1.23 cray-libsci/22.12.1.1'
     fi
 
     if [[ ! -d ${EXEDIR} && (${EXEDIR} != *'module load'*) ]]; then
@@ -282,7 +282,7 @@ function set_settings {
     sed -i "${LINE_POST}a\[jobname].HESSOPT    HESSOPT.DAT          Hessian matrix per optimisation step" ${SETFILE}
     sed -i "${LINE_POST}a\[jobname].OPTINFO    OPTINFO.DAT          Optimisation restart data" ${SETFILE}
     sed -i "${LINE_POST}a\[jobname].SCFLOG     SCFOUT.LOG           SCF output per step" ${SETFILE}
-	sed -i "${LINE_POST}a\[jobname].f53        fort.53              Optimised Basis Set Output" ${SETFILE}
+    sed -i "${LINE_POST}a\[jobname].f53        fort.53              Optimised Basis Set Output" ${SETFILE}
     sed -i "${LINE_POST}a\[jobname].PPAN       PPAN.DAT             Mulliken population" ${SETFILE}
     sed -i "${LINE_POST}a\[jobname].f98        fort.98              Formatted wavefunction" ${SETFILE}
     sed -i "${LINE_POST}a\[jobname].f9         fort.9               Last step wavefunction - crystal output" ${SETFILE}
@@ -309,13 +309,14 @@ function set_settings {
 #SBATCH --qos=\${V_QOS}
 #SBATCH --export=none
 
+echo "============================================"
 echo "SLURM Job Report"
 echo "--------------------------------------------"
 echo "  Start Date : \$(date)"
 echo "  SLURM Job ID : \${SLURM_JOB_ID}"
 echo "  Status"
 squeue -j \${SLURM_JOB_ID} 2>&1
-echo "--------------------------------------------"
+echo "============================================"
 echo ""
 
 # Address the memory leak

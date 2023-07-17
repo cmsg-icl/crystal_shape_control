@@ -61,7 +61,7 @@ EOF
         SCRIPTDIR=${SCRIPTDIR%/*}
     fi
 
-	SCRIPTDIR=`realpath $(echo ${SCRIPTDIR}) 2>&1 | sed -r 's/.*\:(.*)\:.*/\1/' | sed 's/[[:space:]]//g'` # Ignore errors
+    SCRIPTDIR=`realpath $(echo ${SCRIPTDIR}) 2>&1 | sed -r 's/.*\:(.*)\:.*/\1/' | sed 's/[[:space:]]//g'` # Ignore errors
     source_dir=`realpath $(dirname $0)`
     if [[ ${source_dir} == ${SCRIPTDIR} ]]; then
         cat << EOF
@@ -90,14 +90,14 @@ function get_budget_code {
     Please specify your budget code:
 
 EOF
-    
+
     read -p " " BUDGET_CODE
     BUDGET_CODE=`echo ${BUDGET_CODE}`
 
     if [[ -z ${BUDGET_CODE} ]]; then
         cat << EOF
 --------------------------------------------------------------------------------
-    Error: Budget code must be specified. Exiting current job. 
+    Error: Budget code must be specified. Exiting current job.
 
 EOF
         exit
@@ -107,14 +107,14 @@ EOF
 function set_exe {
     cat << EOF
 ================================================================================
-    Please specify the directory of CRYSTAL exectuables, 
+    Please specify the directory of CRYSTAL exectuables,
     or the command to load CRYSTAL modules
 
     Default Option
-    quantum_espresso/7.1 (Available module)
+    module load quantum_espresso/7.1
 
 EOF
-    
+
     read -p " " EXEDIR
     EXEDIR=`echo ${EXEDIR}`
 
@@ -150,15 +150,15 @@ function set_mpi {
     Please specify the directory of MPI executables or mpi modules
 
     Default Option
-    cpe/22.04 cray-dsmml/0.2.2 cray-mpich/8.1.15 craype/2.7.15
+    module load PrgEnv-gnu/8.3.3 gcc/11.2.0 cray-mpich/8.1.23 cray-libsci/22.12.1.1
 
 EOF
-    
+
     read -p " " MPIDIR
     MPIDIR=`echo ${MPIDIR}`
 
     if [[ -z ${MPIDIR} ]]; then
-        MPIDIR='module load cpe/22.04 cray-dsmml/0.2.2 craype/2.7.15'
+        MPIDIR='module load PrgEnv-gnu/8.3.3 gcc/11.2.0 cray-mpich/8.1.23 cray-libsci/22.12.1.1'
     fi
 
     if [[ ! -d ${EXEDIR} && (${EXEDIR} != *'module load'*) ]]; then
@@ -231,14 +231,14 @@ function set_settings {
     # LINE_REF=`grep -nw 'REF_FILE' ${SETFILE}`
     # LINE_REF=`echo "scale=0;${LINE_REF%:*}+3" | bc`
     # sed -i "${LINE_REF}a\[refname].f31        fort.32              Derivative of density matrix" ${SETFILE}
-    
+
     # # Post-processing file table
 
     # LINE_POST=`grep -nw 'POST_CALC' ${SETFILE}`
     # LINE_POST=`echo "scale=0;${LINE_POST%:*}+3" | bc`
-    
+
     # sed -i "${LINE_POST}a\[jobname].POTC       POTC.DAT             Electrostatic potential and derivatives" ${SETFILE}
-    
+
     # Job submission file template - should be placed at the end of file
     cat << EOF >> ${SETFILE}
 ----------------------------------------------------------------------------------------
@@ -254,13 +254,14 @@ function set_settings {
 #SBATCH --qos=\${V_QOS}
 #SBATCH --export=none
 
+echo "============================================"
 echo "SLURM Job Report"
 echo "--------------------------------------------"
 echo "  Start Date : \$(date)"
 echo "  SLURM Job ID : \${SLURM_JOB_ID}"
 echo "  Status"
 squeue -j \${SLURM_JOB_ID} 2>&1
-echo "--------------------------------------------"
+echo "============================================"
 echo ""
 
 # Address the memory leak

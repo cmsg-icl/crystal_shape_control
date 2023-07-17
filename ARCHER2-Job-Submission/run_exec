@@ -4,14 +4,14 @@
 
 function get_input_ {
 
-    # Useful variables: 
+    # Useful variables:
     # SETFILE: Path to 'settings' file
     # JOBFILE: Full name of the main input file
     # JOBNAME: Input file name without extension
     # REFNAME: Reference file name without extension
     # COMMAND: Command + options to lauch calculation
 
-    param_list=$(getopt -a -l set:,in:,ref: -n "$0" -- ${in_var} 2> /dev/null) 
+    param_list=$(getopt -a -l set:,in:,ref: -n "$0" -- ${in_var} 2> /dev/null)
     eval set -- "${param_list}"
     COMMAND=""
     REFNAME=""
@@ -19,24 +19,24 @@ function get_input_ {
     while [[ true ]]; do
         case $1 in
         --set )
-            shift; SETFILE=$1 ;;
-        --in ) 
-            shift; JOBFILE=$1; JOBNAME=${JOBFILE%.*}; JOBNAME=${JOBNAME##*/} ;;
+            shift; SETFILE=$(realpath $1) ;;
+        --in )
+            shift; JOBFILE=$(realpath $1); JOBNAME=${JOBFILE%.*}; JOBNAME=${JOBNAME##*/} ;;
         --ref )
-            shift; 
-			if [[ ! -z $1 ]]; then
-			    REFNAME=$1;
-				REFNAME=${REFNAME%.*}; 
-				REFNAME=${REFNAME##*/};
-			fi ;;
-        -- ) 
+            shift;
+            if [[ ! -z $1 ]]; then
+                REFNAME=$1;
+                REFNAME=${REFNAME%.*};
+                REFNAME=${REFNAME##*/};
+            fi ;;
+        -- )
             shift;
             while [[ ! -z $1 ]]; do
                 COMMAND=`echo "${COMMAND} $1"`;
                 shift;
-            done; 
+            done;
             break ;;
-        * ) 
+        * )
             echo "Error: Input not recognized. Refer to the manual. ";
             echo "Job terminated without calculation. ";
             exit ;;
@@ -52,8 +52,7 @@ get_input_
 
 # Input and output file directories
 
-OUTDIR=$(realpath ${JOBFILE})
-OUTDIR=${OUTDIR%/*}
+OUTDIR=${JOBFILE%/*}
 OUTPUT=${JOBNAME}.out
 
 if [[ -e ${OUTDIR}/${OUTPUT} && -s ${OUTDIR}/${OUTPUT} ]]; then
@@ -80,7 +79,7 @@ else
     export PATH="${MDIR}:${PATH}"
 fi
 # This substitution is doubtful - works occasionally. [job] is substituted in gen_sub.
-EXECOMMAND=`echo ${COMMAND} | sed "s/\[job.*\]/${JOBNAME}/g"` 
+EXECOMMAND=`echo ${COMMAND} | sed "s/\[job.*\]/${JOBNAME}/g"`
 echo "MPI command: ${EXECOMMAND}"
 
 # Set temporary directory
@@ -90,20 +89,28 @@ if [[ -z ${JOBTMPDIR} || ${JOBTMPDIR} == *'default'* ]]; then # As subdirectory 
     JOBTMPDIR=$(dirname ${JOBFILE})/${JOBNAME}_${SLURM_JOB_ID}
     JOBTMPDIR=`realpath ${JOBTMPDIR}`
     move_file=true
-    mkdir -p ${JOBTMPDIR}
+    srun_flag=''
     echo "Temporary directory : ${JOBTMPDIR}"
 elif [[ ${JOBTMPDIR} == *'nodir'* ]]; then # In current directory
     JOBTMPDIR=$(dirname ${JOBFILE})
     JOBTMPDIR=`realpath ${JOBTMPDIR}`
     move_file=false
+    srun_flag=''
     echo "Temporary file stored under the current directory ${OUTDIR}"
+elif [[ ${JOBTMPDIR} == *'node'* ]]; then # In node temporary directory
+    JOBTMPDIR=/tmp/${JOBNAME}_${SLURM_JOB_ID}
+    move_file=true
+    srun_flag="srun --ntasks=${SLURM_NNODES} --ntasks-per-node=1 " # Run parallel copy file for nodes
+    echo "Temporary directory on individual nodes : ${JOBTMPDIR}"
 else # In a separate directory
     JOBTMPDIR=${JOBTMPDIR}/${JOBNAME}_${SLURM_JOB_ID}
     JOBTMPDIR=`realpath ${JOBTMPDIR}`
     move_file=true
-    mkdir -p ${JOBTMPDIR}
+    srun_flag=''
     echo "Temporary directory : ${JOBTMPDIR}"
 fi
+
+${srun_flag}mkdir -p ${JOBTMPDIR}
 
 # Create temporary copy of the script for execution
 
@@ -113,6 +120,9 @@ sed '1,/^#tag_copy/d' $0 > ${JOBTMPDIR}/${SCRIPT}
 # Execute file
 
 cat << EOF
+============================================
+Job Executation Report
+--------------------------------------------
 Job Executation Script
 --------------------------------------------
 ${JOBTMPDIR}/${SCRIPT}
@@ -125,12 +135,19 @@ Running Job Report
 DATE START : $(date)
 
 EOF
+
+# Move files and run job
+
 source ${JOBTMPDIR}/${SCRIPT}
+
+# Job finished
+
+cd ${OUTDIR}
 cat << EOF | tee -a ${OUTDIR}/${OUTPUT}
 
 DATE END   : $(date)
 Script run_exec done.
---------------------------------------------
+============================================
 
 EOF
 exit
@@ -203,24 +220,19 @@ while [[ ${TMP_NAME} != '---------'* && ${move_file} == true ]]; do
     # List files, to get all matched files in 'SAVED_NAME' settings
 
     if [[ ${SAVED_NAME: -1} == '/' ]]; then
-        ls ${SAVED_NAME} > /dev/null 2>&1
-        if [[ $? -eq 0 ]]; then
-            filelist=($(ls ${SAVED_NAME}))
-            for ((i=0; i<${#filelist[@]}; i++)); do
-                filelist[$i]=`echo "${SAVED_NAME}${filelist[$i]}"`
-            done
-        else
-            filelist=()
-        fi
+        filelist=($(ls ${SAVED_NAME}))
+        for ((i=0; i<${#filelist[@]}; i++)); do
+            filelist[$i]=`echo "${SAVED_NAME}${filelist[$i]}"`
+        done
     else
         filelist=`find ${INPDIR} -name "${SAVED_NAME}"`
         filelist=(${filelist//${INPDIR}\//})
     fi
 
-    # Make subdir for files stored in sub-folders 
+    # Make subdir for files stored in sub-folders
 
     if [[ ${TMP_NAME: -1} == '/' && ${#filelist[@]} -ge 1 ]]; then
-        mkdir -p "${JOBTMPDIR}/${TMP_NAME}"
+        ${srun_flag}mkdir -p "${JOBTMPDIR}/${TMP_NAME}"
     fi
     for file in ${filelist[@]}; do
 
@@ -248,7 +260,7 @@ while [[ ${TMP_NAME} != '---------'* && ${move_file} == true ]]; do
 
         echo "Find input data: ${INPDIR}/${file}" 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
 
-        # Cover the duplicate file. 
+        # Cover the duplicate file.
         ## Fix CRYSTRAL d12/d3: JOBFILE takes priority
         if [[ ${file} == ${JOBFILE##*/} ]]; then
             is_jobfile=true
@@ -263,7 +275,7 @@ while [[ ${TMP_NAME} != '---------'* && ${move_file} == true ]]; do
             echo "Warning! Duplicate file detected in temporary directory: ${JOBTMPDIR}/${TMP_NAME_REAL}." 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
             echo "  The file will be covered by the new entry ${INPDIR}/${file}." 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
         fi
-        cp -r ${INPDIR}/${file} ${JOBTMPDIR}/${TMP_NAME_REAL}
+        ${srun_flag}cp -r ${INPDIR}/${file} ${JOBTMPDIR}/${TMP_NAME_REAL}
         echo "Input ${file} copied as ${JOBTMPDIR##*/}/${TMP_NAME_REAL}."
     done
 
@@ -290,24 +302,19 @@ while [[ ${TMP_NAME} != '---------'* && ${move_file} == true && ${REFNAME} != 'n
     # List files, to get all matched files in 'SAVED_NAME' settings
 
     if [[ ${SAVED_NAME: -1} == '/' ]]; then
-        ls ${SAVED_NAME} > /dev/null 2>&1
-        if [[ $? -eq 0 ]]; then
-            filelist=($(ls ${SAVED_NAME}))
-            for ((i=0; i<${#filelist[@]}; i++)); do
-                filelist[$i]=`echo "${SAVED_NAME}${filelist[$i]}"`
-            done
-        else
-            filelist=()
-        fi
+        filelist=($(ls ${SAVED_NAME}))
+        for ((i=0; i<${#filelist[@]}; i++)); do
+            filelist[$i]=`echo "${SAVED_NAME}${filelist[$i]}"`
+        done
     else
         filelist=`find ${INPDIR} -name "${SAVED_NAME}"`
         filelist=(${filelist//${INPDIR}\//})
     fi
 
-    # Make subdir for files stored in sub-folders 
+    # Make subdir for files stored in sub-folders
 
     if [[ ${TMP_NAME: -1} == '/' && ${#filelist[@]} -ge 1 ]]; then
-        mkdir -p "${JOBTMPDIR}/${TMP_NAME}"
+        ${srun_flag}mkdir -p "${JOBTMPDIR}/${TMP_NAME}"
     fi
     for file in ${filelist[@]}; do
 
@@ -342,7 +349,7 @@ while [[ ${TMP_NAME} != '---------'* && ${move_file} == true && ${REFNAME} != 'n
             echo "  The new reference entry ${INPDIR}/${file} is ignored." 2>&1 | tee -a ${OUTDIR}/${OUTPUT}
             continue
         fi
-        cp -r ${INPDIR}/${file} ${JOBTMPDIR}/${TMP_NAME_REAL}
+        ${srun_flag}cp -r ${INPDIR}/${file} ${JOBTMPDIR}/${TMP_NAME_REAL}
         echo "Input ${file} copied as ${JOBTMPDIR##*/}/${TMP_NAME_REAL}."
     done
 
@@ -358,20 +365,20 @@ cat << EOF | tee -a ${OUTDIR}/${OUTPUT}
 
 Job Ready to Go
 -------------------------------------------
-  Job name       : ${JOBNAME}
-  ID             : ${SLURM_JOB_ID}
-  Command        : ${EXECOMMAND} >> ${OUTDIR}/${OUTPUT} 2>&1
-  Temporary dir  : ${JOBTMPDIR}
-  List of files  : $(ls -l ${JOBTMPDIR} 2>&1)
-  Input script   :
+  Job name               : ${JOBNAME}
+  ID                     : ${SLURM_JOB_ID}
+  Command                : ${EXECOMMAND} >> ${OUTDIR}/${OUTPUT} 2>&1
+  Temporary dir          : ${JOBTMPDIR}
+  List of files (Node 0) : $(ls -l ${JOBTMPDIR} 2>&1)
+  Input script           :
 $(cat ${JOBFILE})
 -------------------------------------------
 
 EOF
-cd ${JOBTMPDIR}
+
 echo "Entering temporary directory..."
 echo "Launching the job..."
 
-echo "${EXECOMMAND} >> ${OUTDIR}/${OUTPUT} 2>&1" | bash
+export SLURM_WORKING_DIR=${JOBTMPDIR}
+${EXECOMMAND} >> ${OUTDIR}/${OUTPUT} 2>&1
 
-cd ${OUTDIR}
