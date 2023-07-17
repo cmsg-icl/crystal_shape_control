@@ -1,9 +1,0 @@
-VERSION_INFO
-Width of columns: CODE - 21; VERSION - 11; DATE - 21; AUTHOR - 21; CONTACT - 31; ACKNOWLEDGEMENT - No limit
------------------------------------------------------------------------------------------------------------------------------------
-CODE                 VERSION    DATE                 AUTHOR               CONTACT                        ACKNOWLEDGEMENT
------------------------------------------------------------------------------------------------------------------------------------
-core                 v1.1       Jun.26, 23           Spica-Vir            ICL, spica.h.zhou@gmail.com
-CRYSTAL23            v0.1       Jun.25, 23           Spica-Vir            ICL, spica.h.zhou@gmail.com
-CRYSTAL17            v0.1       Jun.26, 23           Spica-Vir            ICL, spica.h.zhou@gmail.com
------------------------------------------------------------------------------------------------------------------------------------
