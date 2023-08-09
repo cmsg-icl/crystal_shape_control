@@ -112,7 +112,7 @@ def cif2qe(cif_file, qe_file):
     output.write('%15s%4i\n' %
                  ('space_group =', pmg_struc.get_space_group_info()[1]))
     output.write('%15s%16.8f\n' %
-                 ('a =', pmg_struc.lattice.a * 0.529177210903))
+                 ('a =', pmg_struc.lattice.a / 0.529177210903))
     output.write('%15s%16.8f\n' %
                  ('b/a =', pmg_struc.lattice.b / pmg_struc.lattice.a))
     output.write('%15s%16.8f\n' %
