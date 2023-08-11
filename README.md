@@ -26,7 +26,9 @@ Supported:
 2. **ONETEP_conv_test**, ONETEP convergence testing scripts in bash. See [README](https://github.com/cmsg-icl/crystal_shape_control/tree/main/ONETEP_conv_test) for details. *Spica. Vir.*  
 3. **Dimer-disp.ipynb**, a python3 script displacing a molecule in dimer along any vector. Geometry read from CRYSTAL output. [CRYSTALpytools](https://github.com/crystal-code-tools/CRYSTALpytools) package required. *Spica. Vir.*  
 4. **Surface-Cut**, a 'semi-atomic' scheme based on python3 script stacking 2D periodic molecular layers to generate twisted slab surfaces for molecular crystals. *Spica. Vir.*
-5. **qe2cif.py**, Read Quantum-Espresso pw.x output file and generate cif geometry. *Spica. Vir.*
+5. **qe2cif.py**, Convert Quantum-Espresso pw.x output file into cif geometry, or convert a cif file into formatted QE input keyword / card. *Spica. Vir.*  
+5. **get_qe_optgeom.py**, Similar to 'qe2cif.py'. Used for substracting geometries from pw.x optimisations only. Formatted QE input keyword / card are printed onto the screen.  *Spica. Vir.*  
+5. **xsd2qe.py**, Convert Materials Studio xml formatted geometry file (xsd) into QE input keyword / card. Constraints on atomic coordinates are available. *Spica. Vir.*  
 6. **xsf-kit**, Read [XCrySDen](http://www.xcrysden.org/) real space 3D grid data in [xsf format](http://www.xcrysden.org/doc/XSF.html) and perform planar-averaged 1D profile analysis along 3 lattice vectors / get 3D differential data / get planar-averaged 1D differential profile. Also as a practice of free format Fortran. See the comment lins of 'main.f' for instructions. *Spica. Vir.*
 
 ## Student
