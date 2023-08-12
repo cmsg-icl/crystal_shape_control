@@ -47,10 +47,18 @@ def read_qe_output(qe_file):
         else:
             continue
 
-    atom_spec = [l.strip().split()[0]
-                 for l in data[atom_bg_line: atom_ed_line]]
-    atom_cord = [l.strip().split()[1:4]
-                 for l in data[atom_bg_line: atom_ed_line]]
+    atom_spec = []
+    atom_cord = []
+    atom_rstct = []
+    for l in data[atom_bg_line, atom_ed_line]:
+        l_data = l.strip().split()
+        atom_spec.append(l_data[0])
+        atom_cord.append(l_data[1:4])
+        if len(l_data) > 4:
+            atom_rstct.append(''.join(l_data[4:]))
+        else:
+            atom_rstct.append('')
+
     atom_cord = np.array(atom_cord, dtype=float)
 
     if strip_latt:
@@ -59,7 +67,7 @@ def read_qe_output(qe_file):
         latt = [l.strip().split() for l in data[latt_bg_line: latt_ed_line]]
     latt = np.array(latt, dtype=float) * alat
 
-    return latt, atom_spec, atom_cord, is_cart
+    return latt, atom_spec, atom_cord, atom_rstct, is_cart
 
 
 def lattice_transfer(qe_file):
@@ -70,7 +78,7 @@ def lattice_transfer(qe_file):
     from pymatgen.core.structure import Structure
     import numpy as np
 
-    latt, atom_spec, atom_cord, is_cart = read_qe_output(qe_file)
+    latt, atom_spec, atom_cord, atom_rstct, is_cart = read_qe_output(qe_file)
     box = Lattice(latt)
     celldms = np.array([box.a / 0.529177210903,
                         box.b / box.a,
@@ -103,8 +111,8 @@ print('\n')
 print('Atomic coordinates (fractional): ')
 for idx, atom in enumerate(struc.frac_coords):
     if idx % int(nformula) == 0:
-        print('%3s%12f%12f%12f' %
-              (struc.species[idx], atom[0], atom[1], atom[2]))
+        print('%3s%12f%12f%12f%4s%s' %
+              (struc.species[idx], atom[0], atom[1], atom[2], '', atom_rstct[idx]))
     else:
         continue
 print('\n')
@@ -112,6 +120,6 @@ print('Atomic coordinates (Cartesian): ')
 for idx, atom in enumerate(struc.cart_coords):
     if idx % int(nformula) == 0:
         print('%3s%12f%12f%12f' %
-              (struc.species[idx], atom[0], atom[1], atom[2]))
+              (struc.species[idx], atom[0], atom[1], atom[2], '', atom_rstct[idx]))
     else:
         continue
