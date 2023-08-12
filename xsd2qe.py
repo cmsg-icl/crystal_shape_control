@@ -24,9 +24,15 @@ def xsd_parser(filename):
     atom_rstct = []
     for a in atoms:
         # atom_id.append(a.getAttribute('ID'))
-        atom_element.append(a.getAttribute('Components'))
-        atom_frac.append(a.getAttribute('XYZ').split(','))
-        atom_rstct.append(a.getAttribute('RestrictedProperties'))
+        compt = a.getAttribute('Components')
+        xyz = a.getAttribute('XYZ')
+        rstct = a.getAttribute('RestrictedProperties')
+        if compt != '': # Real atoms
+            atom_element.append(compt)
+            atom_frac.append(xyz.split(','))
+            atom_rstct.append(rstct)
+        else: # Dummy atoms
+            continue
 
     # atom_id = np.array(atom_id, dtype=int)
     atom_frac = np.array(atom_frac, dtype=float)
