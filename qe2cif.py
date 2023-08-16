@@ -13,6 +13,7 @@ def read_qe_output(qe_file):
     """
     import re
     import numpy as np
+    from scipy import constants
 
     file = open(qe_file, 'r', errors='ignore')
     data = file.readlines()
@@ -20,12 +21,12 @@ def read_qe_output(qe_file):
 
     atom_block_flag = False
     for i, line in enumerate(data):
-        if re.match(r'^\s+Crystallographic axes', line):
-            atom_bg_line = i + 3
+        if re.match(r'^\s+site n\.\s+atom\s+positions \(alat units\)', line):
+            atom_bg_line = i + 1
             is_cart = False
             atom_block_flag = True
             continue
-        elif re.match(r'^\s+site n\.\s+atom\s+positions \(alat units\)', line):
+        if re.match(r'^ATOMIC_POSITIONS \(angstrom\)', line):
             atom_bg_line = i + 1
             is_cart = True
             atom_block_flag = True
@@ -34,8 +35,12 @@ def read_qe_output(qe_file):
             atom_ed_line = i
             atom_block_flag = False
             continue
+        elif atom_block_flag and re.match(r'^End final coordinates', line):
+            atom_ed_line = i
+            atom_block_flag = False
+            continue
         elif re.match(r'^\s+lattice parameter \(alat\)  =', line):
-            alat = float(line.strip().split()[4]) * 0.529177210903
+            alat = float(line.strip().split()[4]) * constants.physical_constants['atomic unit of length'][0] * 1e10
             continue
         elif re.match(r'^\s+crystal axes\: \(cart\. coord\. in units of alat\)', line):
             latt_bg_line = i + 1
@@ -51,31 +56,38 @@ def read_qe_output(qe_file):
     if 'latt_bg_line' not in locals().keys():
         raise Exception('Latt. block not identified')
 
-    atom_spec = [l.strip().split()[1]
-                 for l in data[atom_bg_line: atom_ed_line]]
-    atom_cord = [l.strip().split()[6:9]
-                 for l in data[atom_bg_line: atom_ed_line]]
+    print('\nPlease check: \nLattice starting line = {}\nLattice ending line = {}\n'.format(latt_bg_line + 1, latt_ed_line + 1))
+    print('Please check: \nAtomic coordinate starting line = {}\nAtomic coordinate ending line = {}\n'.format(atom_bg_line + 1, atom_ed_line + 1))
+    print('Please check: \nAlat unit = {:.4f} Angstrom\n'.format(alat))
+    atom_spec = []
+    atom_cord = []
+    for l in data[atom_bg_line: atom_ed_line]:
+        atom_spec.append(re.findall(r'[A-Z]{1}[a-z,A-Z]{0}', l)[0])
+        atom_cord.append(re.findall(r'[0-9,\-]+\.[0-9]{7,}', l))
     atom_cord = np.array(atom_cord, dtype=float)
-    if is_cart:
+    if not is_cart:
         atom_cord *= alat
 
     latt = [l.strip().split()[3:6] for l in data[latt_bg_line: latt_ed_line]]
     latt = np.array(latt, dtype=float) * alat
 
-    return latt, atom_spec, atom_cord, is_cart
+    return latt, atom_spec, atom_cord
 
 
-def qe2cif(qe_file, cif_file):
+def qe2cif(qe_file, cif_file, symm):
     """
     Quantum Espresso --> CIF
     """
     from pymatgen.io.cif import CifWriter
     from pymatgen.core.structure import Structure
 
-    lattice, species, coords, is_cart = read_qe_output(qe_file)
+    lattice, species, coords = read_qe_output(qe_file)
     pmg_struc = Structure(lattice=lattice, species=species,
-                          coords=coords, coords_are_cartesian=is_cart)
-    CifWriter(pmg_struc, symprec=True).write_file(cif_file)
+                          coords=coords, coords_are_cartesian=True)
+    if symm == True:
+        CifWriter(pmg_struc, symprec=True).write_file(cif_file)
+    else:
+        CifWriter(pmg_struc, symprec=None).write_file(cif_file)
 
     return
 
@@ -112,7 +124,7 @@ def cif2qe(cif_file, qe_file):
     output.write('%15s%4i\n' %
                  ('space_group =', pmg_struc.get_space_group_info()[1]))
     output.write('%15s%16.8f\n' %
-                 ('a =', pmg_struc.lattice.a / 0.529177210903))
+                 ('a =', pmg_struc.lattice.a * 0.529177210903))
     output.write('%15s%16.8f\n' %
                  ('b/a =', pmg_struc.lattice.b / pmg_struc.lattice.a))
     output.write('%15s%16.8f\n' %
@@ -128,17 +140,23 @@ def cif2qe(cif_file, qe_file):
     return
 
 
-option = input(
-    'Options: 1. qe2cif  2. cif2qe; Type either option name or number: ')
+option = input('Options: 1. qe2cif  2. cif2qe; Type either option name or number: ')
 if option == 'qe2cif' or int(option) == 1:
     qe_file = input('Enter the Quantum Espresso pw.x output file: ')
     cif_file = input('Enter the name of CIF file: ')
-    qe2cif(qe_file, cif_file)
+    symm = input('Write symmetry? 0: No  1: Yes; Type either option name or number: ')
+    if symm == 'No' or int(symm) == 0:
+        qe2cif(qe_file, cif_file, False)
+    elif symm == 'Yes' or int(symm) == 1:
+        qe2cif(qe_file, cif_file, True)
+    else:
+        raise ValueError('Available options: 0: No  1: Yes. Type either option name or number.')
+
 elif option == 'cif2qe' or int(option) == 2:
     cif_file = input('Enter the name of CIF file: ')
     qe_file = input('Enter the name of Quantum Espresso keyword / card file: ')
     cif2qe(cif_file, qe_file)
 else:
-    print('ERROR: Available options: 1. qe2cif  2. cif2qe, type either option name or number')
+    raise ValueError('Available options: 1. qe2cif  2. cif2qe, type either option name or number.')
 
 
