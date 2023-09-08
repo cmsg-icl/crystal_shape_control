@@ -35,9 +35,10 @@
      &           + BOX(3,AVGVEC)**2)**0.5 * A2BR
           DDIST = TDIST / NGDAVG
 
-          allocate(DIST(NGDAVG+1),AVGDATA(NGDAVG+1))
-          do I = 1,NGDAVG + 1
-            DIST(I) = DDIST * (I - 1) + ORG(NGDAVG) * A2BR
+          allocate(DIST(NGDAVG),AVGDATA(NGDAVG))
+          do I = 1,NGDAVG
+! Data point at the middle of a slice
+            DIST(I) = DDIST * (I - 0.5) + ORG(NGDAVG) * A2BR
             AVGDATA(I) = 0.
           enddo
 
@@ -50,8 +51,6 @@
                 enddo
               enddo
             enddo
-! force periodic boundary
-            AVGDATA(NGDX+1) = AVGDATA(1)
           else if (AVGVEC == 2) then
             DAREA = AREA / NGDX / NGDZ
             do J = 1,NGDY
@@ -61,7 +60,6 @@
                 enddo
               enddo
             enddo
-            AVGDATA(NGDY+1) = AVGDATA(1)
           else if (AVGVEC == 3) then
             DAREA = AREA / NGDX / NGDY
             do K = 1,NGDZ
@@ -71,7 +69,6 @@
                 enddo
               enddo
             enddo
-            AVGDATA(NGDZ+1) = AVGDATA(1)
           endif
 
           print*,'Planar averaged data calculated along ', AVGVEC
