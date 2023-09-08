@@ -36,7 +36,7 @@
           DDIST = TDIST / NGDAVG
 
           allocate(DIST(NGDAVG),AVGDATA(NGDAVG))
-          do I = 1,NGDAVG
+          do I = 1,NGDAVG + 1
             DIST(I) = DDIST * (I - 1) + ORG(NGDAVG) * A2BR
             AVGDATA(I) = 0.
           enddo
