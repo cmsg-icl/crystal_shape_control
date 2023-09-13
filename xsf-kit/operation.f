@@ -6,14 +6,15 @@
         real,parameter    :: A2BR = 1.889726128
         integer,parameter :: NGDM = 1000
 
-        public :: planar_avg,plane_area
+        public :: planar_avg,shift_origin,plane_area
 
         contains
-        subroutine planar_avg(ORG,BOX,GRID,AVGVEC,DIST,AVGDATA)
+        subroutine planar_avg(ORG,BOX,GRID,AVGVEC,DIST,AVGDATA,AVG3D)
 !         Calculate the planar averaged data along the given direction
 !         AVGVEC  : 1,2,3, lattice vectors along which the planar averaged data is computed
 !         DIST    : NGDAVG * 1 Plane distances, in Bohr
 !         AVGDATA : NGDAVG * 1 Planar averaged data in Unit.Bohr^-1
+!         AVG3D   : NGDAVG * 1 Planar averaged data in Unit.Bohr^-3
           real,dimension(3),intent(in)     :: ORG
           real,dimension(3,3),intent(in)   :: BOX
           real,dimension(:,:,:),intent(in) :: GRID
@@ -21,8 +22,8 @@
           integer                          :: NGDAVG,NGDX,NGDY,NGDZ
           integer                          :: I,J,K
           real                             :: AREA,DAREA,TDIST,DDIST
-          real,dimension(:),allocatable,intent(out)    :: DIST
-          real,dimension(:),allocatable,intent(out)    :: AVGDATA
+          real,dimension(:),allocatable,intent(out)    :: DIST,AVGDATA,
+     &                                                    AVG3D
 
           NGDX = size(GRID,dim=1)
           NGDY = size(GRID,dim=2)
@@ -35,7 +36,7 @@
      &           + BOX(3,AVGVEC)**2)**0.5 * A2BR
           DDIST = TDIST / NGDAVG
 
-          allocate(DIST(NGDAVG),AVGDATA(NGDAVG))
+          allocate(DIST(NGDAVG),AVGDATA(NGDAVG),AVG3D(NGDAVG))
           do I = 1,NGDAVG
 ! Data point at the middle of a slice
             DIST(I) = DDIST * (I - 0.5) + ORG(NGDAVG) * A2BR
@@ -70,9 +71,76 @@
               enddo
             enddo
           endif
-
+          do I = 1,NGDAVG
+            AVG3D(I) = AVGDATA(I) / AREA
+          enddo
           print*,'Planar averaged data calculated along ', AVGVEC
         end subroutine planar_avg
+        
+        subroutine shift_origin(LATT,ATCOORD,AVGVEC,SHIFT,
+     &                          DIST,AVGDATA,AVG3D)
+!         Shift origin of slab along the averaged direction
+!         SHIFT : Shifting length. In Angstrom
+          real,dimension(3,3),intent(in)  :: LATT
+          real,dimension(:,:),intent(in)  :: ATCOORD
+          integer,intent(in)              :: AVGVEC
+          real,intent(in)                 :: SHIFT
+          integer                         :: NATOM,NPT,I,J
+          real                            :: FRAC,FRACMI=2.,FRACMX=-2.,
+     &                                       LENVEC=0.,DTPDT,DISP,TMP
+          real,dimension(3)               :: VEC
+          real,dimension(:),intent(inout) :: DIST,AVGDATA,AVG3D
+
+          NATOM = size(ATCOORD,dim=2)
+          do I = 1,3
+            VEC(I) = LATT(I,AVGVEC) * A2BR
+            LENVEC = LENVEC + VEC(I)**2
+          enddo
+          LENVEC = LENVEC**0.5
+          do I = 1,NATOM
+            DTPDT = 0.
+            do J = 1,3
+              DTPDT = DTPDT + VEC(J) / LENVEC * ATCOORD(J,I) * A2BR
+            enddo
+            FRAC = DTPDT / LENVEC
+            if (FRAC < FRACMI) then
+              FRACMI = FRAC
+            endif
+            if (FRAC > FRACMI) then
+              FRACMX = FRAC
+            endif
+          enddo
+          
+          DISP = SHIFT * A2BR - LENVEC * (FRACMX + FRACMI) / 2
+          NPT = size(DIST)
+          do I = 1,NPT
+            FRAC = (DIST(I) + DISP - SHIFT) / LENVEC
+            if (FRAC > 0.5) then
+              DIST(I) = DIST(I) + DISP - LENVEC
+            else if (FRAC < -0.5) then
+              DIST(I) = DIST(I) + DISP + LENVEC
+            else
+              DIST(I) = DIST(I) + DISP
+            endif
+          enddo
+          
+!         Sort DIST,AVGDATA,AVG3D
+          do I = 1,NPT-1
+            do J = I+1,NPT
+              if (DIST(I) > DIST(J)) then
+                TMP = DIST(I)
+                DIST(I) = DIST(J)
+                DIST(J) = TMP
+                TMP = AVGDATA(I)
+                AVGDATA(I) = AVGDATA(J)
+                AVGDATA(J) = TMP
+                TMP = AVG3D(I)
+                AVG3D(I) = AVG3D(J)
+                AVG3D(J) = TMP
+              endif
+            enddo
+          enddo
+        end subroutine
 
         function plane_area(BOX,AVGVEC) result(AREA)
 !         Calculate the area of the lattice plane defined by 2 base vectors other than AVGVEC
