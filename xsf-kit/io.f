@@ -98,7 +98,8 @@
           NGDAVG = size(DIST)
 
           open(20,file=TXTOUT)
-          write(20,200) 'N Points',NGDAVG,'Step in Bohr',DIST(2)
+          write(20,200) 'N Points',NGDAVG,
+     &                  'Step in Bohr',DIST(2) - DIST(1)
 200       format(A15,I4,4X,A15,F15.6)
           write(20,'(A16,4X,A16,4x,A16)') 
      &         'x(Bohr)','y(Bohr**-1)','y(Bohr**-3)'

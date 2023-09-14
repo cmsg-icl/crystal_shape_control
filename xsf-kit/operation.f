@@ -87,7 +87,8 @@
           real,intent(in)                 :: SHIFT
           integer                         :: NATOM,NPT,I,J
           real                            :: FRAC,FRACMI=2.,FRACMX=-2.,
-     &                                       LENVEC=0.,DTPDT,DISP,TMP
+     &                                       FRACMID,LENVEC=0.,DTPDT,
+     &                                       DISP,TMP
           real,dimension(3)               :: VEC
           real,dimension(:),intent(inout) :: DIST,AVGDATA,AVG3D
 
@@ -106,15 +107,16 @@
             if (FRAC < FRACMI) then
               FRACMI = FRAC
             endif
-            if (FRAC > FRACMI) then
+            if (FRAC > FRACMX) then
               FRACMX = FRAC
             endif
           enddo
           
-          DISP = SHIFT * A2BR - LENVEC * (FRACMX + FRACMI) / 2
+          FRACMID = (FRACMX + FRACMI) / 2
+          DISP = -LENVEC * FRACMID
           NPT = size(DIST)
           do I = 1,NPT
-            FRAC = (DIST(I) + DISP - SHIFT) / LENVEC
+            FRAC = DIST(I) / LENVEC - FRACMID
             if (FRAC > 0.5) then
               DIST(I) = DIST(I) + DISP - LENVEC
             else if (FRAC < -0.5) then
@@ -122,8 +124,8 @@
             else
               DIST(I) = DIST(I) + DISP
             endif
+            DIST(I) = DIST(I) + SHIFT * A2BR
           enddo
-          
 !         Sort DIST,AVGDATA,AVG3D
           do I = 1,NPT-1
             do J = I+1,NPT
