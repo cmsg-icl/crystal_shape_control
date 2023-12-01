@@ -85,22 +85,26 @@
 1000      print*,'Error opening or reading the 3D XSF file ',XSF;stop
         end subroutine read_3dxsf
 !----
-        subroutine write_1dtxt(TXTOUT,DIST,AVGDATA)
+        subroutine write_1dtxt(TXTOUT,DIST,AVGDATA,AVG3D)
 !         Write 1D planar-averaged data into a txt file
 !         TXTOUT  : Output file name
 !         DIST    : Displacement (x axis), in Bohr
 !         AVGDATA : Averaged data (y axis), in Unit.Bohr^-1
+!         AVG3D   : Averaged data (y axis), in Unit.Bohr^-3. Cross section area normalized to 1
           character(len=80),intent(in) :: TXTOUT
-          real,dimension(:),intent(in) :: DIST,AVGDATA
+          real,dimension(:),intent(in) :: DIST,AVGDATA,AVG3D
           integer                      :: I
 
           NGDAVG = size(DIST)
 
           open(20,file=TXTOUT)
-          write(20,200) 'N Points',NGDAVG,'Step in Bohr',DIST(2)
+          write(20,200) 'N Points',NGDAVG,
+     &                  'Step in Bohr',DIST(2) - DIST(1)
 200       format(A15,I4,4X,A15,F15.6)
-          write(20,'(A16,4X,A16)') 'x-axis','y-axis'
-          write(20,'(F16.8,4X,F16.8)') (DIST(I),AVGDATA(I),I=1,NGDAVG)
+          write(20,'(A16,4X,A16,4x,A16)') 
+     &         'x(Bohr)','y(Bohr**-1)','y(Bohr**-3)'
+          write(20,'(F16.8,4X,F16.8,4x,F16.8)') 
+     &         (DIST(I),AVGDATA(I),AVG3D(I),I=1,NGDAVG)
           write(20,'(/)')
 
           close(20)

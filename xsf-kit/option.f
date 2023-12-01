@@ -12,14 +12,17 @@
           use io
           use operation
 
-          character(len=80),intent(in)              :: INPUT,OUTPUT
-          integer                                   :: AVGVEC
-          real,dimension(3,3)                       :: LATT,BOX
-          character,dimension(:),allocatable        :: ATLABEL
-          real,dimension(:,:),allocatable           :: ATCOORD
-          real,dimension(3)                         :: ORG
-          real,dimension(:,:,:),allocatable         :: GRID
-          real,dimension(:),allocatable             :: DIST,AVGDATA
+          character(len=80),intent(in)       :: INPUT,OUTPUT
+          integer                            :: AVGVEC
+          character(len=10)                  :: SHIFTC
+          real                               :: SHIFT=0.0
+          logical                            :: DOSHIFT
+          real,dimension(3,3)                :: LATT,BOX
+          character,dimension(:),allocatable :: ATLABEL
+          real,dimension(:,:),allocatable    :: ATCOORD
+          real,dimension(3)                  :: ORG
+          real,dimension(:,:,:),allocatable  :: GRID
+          real,dimension(:),allocatable      :: DIST,AVGDATA,AVG3D
 
           print*,'Please specify the direction of 1D line profile: ', 
      &      '(1-3 only. 1=Lattice vector 1, 2=Lattice vector 2, ',
@@ -30,10 +33,24 @@
             print*,'Only the line profiles along a,b, or c are allowed.'
             stop
           endif
+          
+          print*,'Please specify the shift along the averaged direction:
+     & (Unit: Angstrom): ',"Use 'no' for no shift."
+          read*,SHIFTC
+          if (SHIFTC == 'no') then
+            DOSHIFT = .false.
+          else
+            DOSHIFT = .true.
+            read(SHIFTC,'(f10.6)') SHIFT
+          endif
 
           call read_3dxsf(INPUT,LATT,ATLABEL,ATCOORD,ORG,BOX,GRID)
-          call planar_avg(ORG,BOX,GRID,AVGVEC,DIST,AVGDATA)
-          call write_1dtxt(OUTPUT,DIST,AVGDATA)
+          call planar_avg(ORG,BOX,GRID,AVGVEC,DIST,AVGDATA,AVG3D)
+          if (DOSHIFT) then
+            call shift_origin(LATT,ATCOORD,AVGVEC,SHIFT,DIST,AVGDATA,
+     &                        AVG3D)
+          endif
+          call write_1dtxt(OUTPUT,DIST,AVGDATA,AVG3D)
         end subroutine option1
 !----
         subroutine option2(INPUT0,OUTPUT)
