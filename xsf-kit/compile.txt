@@ -1,1 +1,0 @@
-gfortran operation.f io.f option.f main.f
