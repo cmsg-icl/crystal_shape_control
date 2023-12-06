@@ -12,17 +12,17 @@
           use io
           use operation
 
-          character(len=80),intent(in)       :: INPUT,OUTPUT
-          integer                            :: AVGVEC
-          character(len=10)                  :: SHIFTC
-          real                               :: SHIFT=0.0
-          logical                            :: DOSHIFT
-          real,dimension(3,3)                :: LATT,BOX
-          character,dimension(:),allocatable :: ATLABEL
-          real,dimension(:,:),allocatable    :: ATCOORD
-          real,dimension(3)                  :: ORG
-          real,dimension(:,:,:),allocatable  :: GRID
-          real,dimension(:),allocatable      :: DIST,AVGDATA,AVG3D
+          character(len=80),intent(in)         :: INPUT,OUTPUT
+          integer                              :: AVGVEC
+          character(len=10)                    :: SHIFTC
+          real                                 :: SHIFT=0.0,AREA
+          logical                              :: DOSHIFT
+          real,dimension(3,3)                  :: LATT,BOX
+          character*2,dimension(:),allocatable :: ATLABEL
+          real,dimension(:,:),allocatable      :: ATCOORD
+          real,dimension(3)                    :: ORG
+          real,dimension(:,:,:),allocatable    :: GRID
+          real,dimension(:),allocatable        :: DIST,AVG1D
 
           print*,'Please specify the direction of 1D line profile: ', 
      &      '(1-3 only. 1=Lattice vector 1, 2=Lattice vector 2, ',
@@ -45,12 +45,11 @@
           endif
 
           call read_3dxsf(INPUT,LATT,ATLABEL,ATCOORD,ORG,BOX,GRID)
-          call planar_avg(ORG,BOX,GRID,AVGVEC,DIST,AVGDATA,AVG3D)
+          call planar_avg(ORG,BOX,GRID,AVGVEC,AREA,DIST,AVG1D)
           if (DOSHIFT) then
-            call shift_origin(LATT,ATCOORD,AVGVEC,SHIFT,DIST,AVGDATA,
-     &                        AVG3D)
+            call shift_origin(LATT,ATCOORD,AVGVEC,SHIFT,DIST,AVG1D)
           endif
-          call write_1dtxt(OUTPUT,DIST,AVGDATA,AVG3D)
+          call write_1dtxt(OUTPUT,AREA,DIST,AVG1D)
         end subroutine option1
 !----
         subroutine option2(INPUT0,OUTPUT)
@@ -62,7 +61,7 @@
           real,dimension(3,3) :: LATT0,LATT1,BOX0,BOX1
           integer             :: NINPUT,I
           integer             :: NGDX0,NGDX1,NGDY0,NGDY1,NGDZ0,NGDZ1
-          character,dimension(:),allocatable        :: ATLABEL0,ATLABEL1
+          character*2,dimension(:),allocatable      :: ATLABEL0,ATLABEL1
           real,dimension(:,:),allocatable           :: ATCOORD0,ATCOORD1
           real,dimension(3)                         :: ORG0,ORG1
           real,dimension(:,:,:),allocatable         :: GRID0,GRID1

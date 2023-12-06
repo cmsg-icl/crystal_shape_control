@@ -1,0 +1,15 @@
+cube2xsf converts CRYSTAL CUBE format (with periodic boundary information) into 3D periodic XSF data format.
+
+xsfkit computes planar averaged data along the specified lattice vector, with surface normalized to 1 (Cross section area printed out). xsfkit also computes charge density difference. xsfkit is compatible with xsf files by cube2xsf and Quantum Espresso pw.x.
+
+The default unit for 3D geometry is Angstrom. Unit of grid data is consistent with software output. For charge of CRYSTAL CUBE and Quantum Espresso, e/Bohr**-3. Geometry for plane averaged data is computed and reported in Bohr to be compatible with grid data. 
+
+Compile cube2xsf:
+
+gcc -std=c++11 cube2xsf.cpp -lstdc++ -lm -static
+mv a.out cube2xsf.x
+
+Compile xsfkit:
+
+gfortran operation.f io.f option.f main.f -static
+mv a.out xsfkit.x

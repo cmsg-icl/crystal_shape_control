@@ -22,14 +22,14 @@
 !         ORG     : Origin of data box, in Angstrom
 !         BOX     : Matrix of 3D data box, in Angstrom
 !         GRID    : NGDX*NGDY*NGDZ grid data. For QE, e/Bohr^3. For VASP, e
-          character(len=80),intent(in)                   :: XSF
-          character(len=100)                             :: HEADER
-          integer                                        :: I,J,K
-          real,dimension(3,3),intent(out)                :: LATT,BOX
-          character,dimension(:),allocatable,intent(out) :: ATLABEL
-          real,dimension(:,:),allocatable,intent(out)    :: ATCOORD
-          real,dimension(3),intent(out)                  :: ORG
-          real,dimension(:,:,:),allocatable,intent(out)  :: GRID
+          character(len=80),intent(in)                     :: XSF
+          character(len=100)                               :: HEADER
+          integer                                          :: I,J,K
+          real,dimension(3,3),intent(out)                  :: LATT,BOX
+          character*2,dimension(:),allocatable,intent(out) :: ATLABEL
+          real,dimension(:,:),allocatable,intent(out)      :: ATCOORD
+          real,dimension(3),intent(out)                    :: ORG
+          real,dimension(:,:,:),allocatable,intent(out)    :: GRID
 
           open(10,file=XSF,status='OLD',err=1000)
           read(10,'(A)',err=1000,end=1000) HEADER
@@ -52,7 +52,7 @@
             stop
           endif
           allocate(ATLABEL(NAT),ATCOORD(3,NAT))
-          read(10,'(A6,3F15.9)',err=1000,end=1000) (ATLABEL(I),
+          read(10,'(A2,4X,3F15.9)',err=1000,end=1000) (ATLABEL(I),
      &      ATCOORD(1,I),ATCOORD(2,I),ATCOORD(3,I),I=1,NAT)
 
           print*,'3D geometry data read'
@@ -85,26 +85,26 @@
 1000      print*,'Error opening or reading the 3D XSF file ',XSF;stop
         end subroutine read_3dxsf
 !----
-        subroutine write_1dtxt(TXTOUT,DIST,AVGDATA,AVG3D)
+        subroutine write_1dtxt(TXTOUT,AREA,DIST,AVG1D)
 !         Write 1D planar-averaged data into a txt file
 !         TXTOUT  : Output file name
 !         DIST    : Displacement (x axis), in Bohr
-!         AVGDATA : Averaged data (y axis), in Unit.Bohr^-1
-!         AVG3D   : Averaged data (y axis), in Unit.Bohr^-3. Cross section area normalized to 1
+!         AVG1D   : Averaged data (y axis). Cross section area normalized to 1
           character(len=80),intent(in) :: TXTOUT
-          real,dimension(:),intent(in) :: DIST,AVGDATA,AVG3D
+          real,intent(in)              :: AREA
+          real,dimension(:),intent(in) :: DIST,AVG1D
           integer                      :: I
 
           NGDAVG = size(DIST)
 
           open(20,file=TXTOUT)
           write(20,200) 'N Points',NGDAVG,
-     &                  'Step in Bohr',DIST(2) - DIST(1)
-200       format(A15,I4,4X,A15,F15.6)
-          write(20,'(A16,4X,A16,4x,A16)') 
-     &         'x(Bohr)','y(Bohr**-1)','y(Bohr**-3)'
+     &                  'Step in Bohr',DIST(2) - DIST(1),
+     &                  'Cross section area(Bohr**2)',AREA
+200       format(A15,I4,4X,A15,F15.6,4X,A30,E15.9)
+          write(20,'(A16,4X,A16,4x,A16)') 'x(Bohr)','y(Bohr**-3)'
           write(20,'(F16.8,4X,F16.8,4x,F16.8)') 
-     &         (DIST(I),AVGDATA(I),AVG3D(I),I=1,NGDAVG)
+     &         (DIST(I),AVG1D(I),I=1,NGDAVG)
           write(20,'(/)')
 
           close(20)
@@ -112,11 +112,10 @@
 !----
         subroutine write_3dxsf(XSFOUT,LATT,ATLABEL,ATCOORD,ORG,BOX,GRID)
 !         Write 3D grid data into a XCrySDen xsf file
-!         BR2A   : Conversion rate from Bohr to Angstrom
 !         XSFOUT : Output file name
           character(len=80),intent(in)             :: XSFOUT
           real,dimension(3,3),intent(in)           :: LATT,BOX
-          character,dimension(:),intent(in)        :: ATLABEL
+          character*2,dimension(:),intent(in)      :: ATLABEL
           real,dimension(:,:),intent(in)           :: ATCOORD
           real,dimension(3),intent(in)             :: ORG
           real,dimension(:,:,:),intent(in)         :: GRID
@@ -133,8 +132,9 @@
           write(21,'(3F15.9)') ((LATT(I,J),I=1,3),J=1,3)
           write(21,'(A10)') ' PRIMCOORD'
           write(21,'(2I12)') NAT,1
-          write(21,'(A6,3F15.9)')
-     &      ((ATLABEL(J),ATCOORD(I,J),I=1,3),J=1,NAT)
+          do J = 1,NAT
+            write(21,'(A6,3F15.9)') ATLABEL(J),ATCOORD(1:3,J)
+          enddo
           write(21,'(A)') 'BEGIN_BLOCK_DATAGRID_3D'
           write(21,'(A)') '3D_XSFDATA'
           write(21,'(A)') 'BEGIN_DATAGRID_3D_UNKNOWN'
@@ -147,7 +147,7 @@
               do I = 1,NGDX
                 NGD = NGD + 1
                 if (mod(NGD,6) == 0) then
-                  write(21,'(E14.6,/)') GRID(I,J,K)
+                  write(21,'(E14.6)') GRID(I,J,K)
                 else
                   write(21,'(E14.6,$)') GRID(I,J,K)
                 endif

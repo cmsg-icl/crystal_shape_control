@@ -9,21 +9,20 @@
         public :: planar_avg,shift_origin,plane_area
 
         contains
-        subroutine planar_avg(ORG,BOX,GRID,AVGVEC,DIST,AVGDATA,AVG3D)
+        subroutine planar_avg(ORG,BOX,GRID,AVGVEC,AREA,DIST,AVG1D)
 !         Calculate the planar averaged data along the given direction
 !         AVGVEC  : 1,2,3, lattice vectors along which the planar averaged data is computed
 !         DIST    : NGDAVG * 1 Plane distances, in Bohr
-!         AVGDATA : NGDAVG * 1 Planar averaged data in Unit.Bohr^-1
-!         AVG3D   : NGDAVG * 1 Planar averaged data in Unit.Bohr^-3
+!         AVG1D   : NGDAVG * 1 Planar averaged data, surface area normalized to 1
           real,dimension(3),intent(in)     :: ORG
           real,dimension(3,3),intent(in)   :: BOX
           real,dimension(:,:,:),intent(in) :: GRID
           integer,intent(in)               :: AVGVEC
           integer                          :: NGDAVG,NGDX,NGDY,NGDZ
           integer                          :: I,J,K
-          real                             :: AREA,DAREA,TDIST,DDIST
-          real,dimension(:),allocatable,intent(out)    :: DIST,AVGDATA,
-     &                                                    AVG3D
+          real                             :: TDIST,DDIST
+          real,intent(out)                 :: AREA
+          real,dimension(:),allocatable,intent(out) :: DIST,AVG1D
 
           NGDX = size(GRID,dim=1)
           NGDY = size(GRID,dim=2)
@@ -36,49 +35,43 @@
      &           + BOX(3,AVGVEC)**2)**0.5 * A2BR
           DDIST = TDIST / NGDAVG
 
-          allocate(DIST(NGDAVG),AVGDATA(NGDAVG),AVG3D(NGDAVG))
+          allocate(DIST(NGDAVG),AVG1D(NGDAVG))
           do I = 1,NGDAVG
 ! Data point at the middle of a slice
             DIST(I) = DDIST * (I - 0.5) + ORG(NGDAVG) * A2BR
-            AVGDATA(I) = 0.
+! Initialize AVG1D
+            AVG1D(I) = 0.
           enddo
 
           if (AVGVEC == 1) then
-            DAREA = AREA / NGDY / NGDZ
             do I = 1,NGDX
               do K = 1,NGDZ
                 do J = 1,NGDY
-                  AVGDATA(I) = AVGDATA(I) + GRID(I,J,K) * DAREA
+                  AVG1D(I) = AVG1D(I) + GRID(I,J,K) / NGDY / NGDZ
                 enddo
               enddo
             enddo
           else if (AVGVEC == 2) then
-            DAREA = AREA / NGDX / NGDZ
             do J = 1,NGDY
               do K = 1,NGDZ
                 do I = 1,NGDX
-                  AVGDATA(J) = AVGDATA(J) + GRID(I,J,K) * DAREA
+                  AVG1D(J) = AVG1D(J) + GRID(I,J,K) / NGDX / NGDZ
                 enddo
               enddo
             enddo
           else if (AVGVEC == 3) then
-            DAREA = AREA / NGDX / NGDY
             do K = 1,NGDZ
               do J = 1,NGDY
                 do I = 1,NGDX
-                  AVGDATA(K) = AVGDATA(K) + GRID(I,J,K) * DAREA
+                  AVG1D(K) = AVG1D(K) + GRID(I,J,K) / NGDX / NGDY
                 enddo
               enddo
             enddo
           endif
-          do I = 1,NGDAVG
-            AVG3D(I) = AVGDATA(I) / AREA
-          enddo
           print*,'Planar averaged data calculated along ', AVGVEC
         end subroutine planar_avg
         
-        subroutine shift_origin(LATT,ATCOORD,AVGVEC,SHIFT,
-     &                          DIST,AVGDATA,AVG3D)
+        subroutine shift_origin(LATT,ATCOORD,AVGVEC,SHIFT,DIST,AVG1D)
 !         Shift origin of slab along the averaged direction
 !         SHIFT : Shifting length. In Angstrom
           real,dimension(3,3),intent(in)  :: LATT
@@ -90,7 +83,7 @@
      &                                       FRACMID,LENVEC=0.,DTPDT,
      &                                       DISP,TMP
           real,dimension(3)               :: VEC
-          real,dimension(:),intent(inout) :: DIST,AVGDATA,AVG3D
+          real,dimension(:),intent(inout) :: DIST,AVG1D
 
           NATOM = size(ATCOORD,dim=2)
           do I = 1,3
@@ -126,19 +119,16 @@
             endif
             DIST(I) = DIST(I) + SHIFT * A2BR
           enddo
-!         Sort DIST,AVGDATA,AVG3D
+!         Sort DIST,AVG1D
           do I = 1,NPT-1
             do J = I+1,NPT
               if (DIST(I) > DIST(J)) then
                 TMP = DIST(I)
                 DIST(I) = DIST(J)
                 DIST(J) = TMP
-                TMP = AVGDATA(I)
-                AVGDATA(I) = AVGDATA(J)
-                AVGDATA(J) = TMP
-                TMP = AVG3D(I)
-                AVG3D(I) = AVG3D(J)
-                AVG3D(J) = TMP
+                TMP = AVG1D(I)
+                AVG1D(I) = AVG1D(J)
+                AVG1D(J) = TMP
               endif
             enddo
           enddo
