@@ -22,6 +22,8 @@
 !     ------------------------------------------------------------------
 !     Revised for XCrySDen by Spica.Vir, ICL, 26th Mar., 2023
 !     ------------------------------------------------------------------
+!     Revised for data normalization by Spica.Vir, ICL, 2nd Feb., 2024
+!     ------------------------------------------------------------------
         use option
 
         integer           :: OPTNUM
@@ -30,6 +32,7 @@
         print*,'1. Planar-averaged line profile of 3D XSF data.'
         print*,'2. 3D XSF data differences of multiple files.'
         print*,'3. 3D data difference + line profile.'
+        print*,'4. Normalize the integrated grid value.'
         print*,'Please enter your option: '
         read*,OPTNUM
 
@@ -53,6 +56,12 @@
           print*,'Please specify the name of 1D line profile file: '
           read*,OUTPUT2
           call option3(INPUT,OUTPUT,OUTPUT2)
+        else if (OPTNUM == 4) then
+          print*,'Please specify the name of 3D XSF input: '
+          read*,INPUT
+          print*,'Please specify the name of 3D XSF output: '
+          read*,OUTPUT
+          call option4(INPUT,OUTPUT)
         else
           print*,'Error: Option not supported. Exiting.'
           stop

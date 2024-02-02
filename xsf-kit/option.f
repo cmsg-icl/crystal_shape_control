@@ -4,7 +4,7 @@
         integer,parameter :: NGDM = 1000
         integer,parameter :: NATM = 1000
         
-        public :: option1,option2,option3
+        public :: option1,option2,option3,option4
 
         contains
         subroutine option1(INPUT,OUTPUT)
@@ -101,4 +101,45 @@
           call option2(INPUT0,OUT3)
           call option1(OUT3,OUT1)
         end subroutine option3
+!----
+        subroutine option4(INPUT,OUTPUT)
+!----     Normalize the integrated 3D grid data to 1
+          use io
+
+          character(len=80),intent(in)         :: INPUT,OUTPUT
+          real,dimension(3,3)                  :: LATT,BOX
+          character*2,dimension(:),allocatable :: ATLABEL
+          real,dimension(:,:),allocatable      :: ATCOORD
+          real,dimension(3)                    :: ORG
+          real,dimension(:,:,:),allocatable    :: GRID
+          real                                 :: GRIDSUM = 0.,NEWSUM
+          integer                              :: NGDX,NGDY,NGDZ,I,J,K
+
+          print*,'Please specify value that 3D data is normalized to: '
+          print*,'  Note: For the sake of good visualization, value >='
+          print*,'        10000 is suggested.'
+          read*,NEWSUM
+
+          call read_3dxsf(INPUT,LATT,ATLABEL,ATCOORD,ORG,BOX,GRID)
+          NGDX = size(GRID,dim=1)
+          NGDY = size(GRID,dim=2)
+          NGDZ = size(GRID,dim=3)
+
+          do K = 1,NGDZ
+            do J = 1,NGDY
+              do I = 1,NGDX
+                GRIDSUM = GRIDSUM + GRID(I,J,K)
+              enddo
+            enddo
+          enddo
+          do K = 1,NGDZ
+            do J = 1,NGDY
+              do I = 1,NGDX
+                GRID(I,J,K) = GRID(I,J,K) / GRIDSUM * NEWSUM
+              enddo
+            enddo
+          enddo
+
+          call write_3dxsf(OUTPUT,LATT,ATLABEL,ATCOORD,ORG,BOX,GRID)
+        end subroutine option4
       end module option
